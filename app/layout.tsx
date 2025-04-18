@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "antd/dist/reset.css"; // antd 리셋 css
+
 import Layout from "@/components/layout/Layout";
 export const metadata: Metadata = {
   title: "Create Next App",
