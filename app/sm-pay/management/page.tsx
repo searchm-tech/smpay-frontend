@@ -1,3 +1,9 @@
+import { Button } from "@/components/ui/button";
+
 export default function SMPayManagementPage() {
-  return <div>SMPayManagementPage</div>;
+  return (
+    <div>
+      <Button>aa</Button>
+    </div>
+  );
 }
