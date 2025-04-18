@@ -1,35 +1,30 @@
-import { Descriptions } from "antd";
+import {
+  Descriptions,
+  DescriptionItem,
+} from "@/components/composite/description-components";
 import { Label } from "@/components/ui/label";
 
 const AdvertiserDesc = () => {
   return (
-    <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-      <Descriptions.Item label={<span className="font-bold">사업자명</span>}>
+    <Descriptions columns={1} bordered>
+      <DescriptionItem label="사업자명">
         <Label>주식회사 카타미</Label>
-      </Descriptions.Item>
-      <Descriptions.Item
-        label={<span className="font-bold">광고주 닉테임</span>}
-      >
+      </DescriptionItem>
+      <DescriptionItem label="광고주 닉테임">
         <Label>carrot</Label>
-      </Descriptions.Item>
-      <Descriptions.Item label={<span className="font-bold">대표자명</span>}>
+      </DescriptionItem>
+      <DescriptionItem label="대표자명">
         <Label>김카타</Label>
-      </Descriptions.Item>
-      <Descriptions.Item
-        label={<span className="font-bold">사업자 등록 번호</span>}
-      >
+      </DescriptionItem>
+      <DescriptionItem label="사업자 등록 번호">
         <Label>123-45-67890</Label>
-      </Descriptions.Item>
-      <Descriptions.Item
-        label={<span className="font-bold">담당자 휴대폰 번호</span>}
-      >
+      </DescriptionItem>
+      <DescriptionItem label="담당자 휴대폰 번호">
         <Label>010-1234-5678</Label>
-      </Descriptions.Item>
-      <Descriptions.Item
-        label={<span className="font-bold">담당자 이메일 주소</span>}
-      >
+      </DescriptionItem>
+      <DescriptionItem label="담당자 이메일 주소">
         <Label>carrot@gmail.com</Label>
-      </Descriptions.Item>
+      </DescriptionItem>
     </Descriptions>
   );
 };

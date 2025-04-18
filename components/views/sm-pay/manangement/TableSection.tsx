@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
-import { ConfirmDialog } from "@/components/composite/modal";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LinkTextButton } from "@/components/composite/button-components";
 
 import RejectModal from "./modal/RejectModal";

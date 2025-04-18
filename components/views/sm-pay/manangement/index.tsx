@@ -6,9 +6,9 @@ import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 import GuideModal from "./modal/GuideModal";
 
-// SM-Pay 관리 페이지 : 공통 ???
 const SMPayManagementView = () => {
   const [isOpen, setIsOpen] = useState(true);
+
   return (
     <div>
       <SearchSection />

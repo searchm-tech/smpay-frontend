@@ -1,4 +1,4 @@
-import { Modal } from "@/components/composite/modal";
+import { Modal } from "@/components/composite/modal-components";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 

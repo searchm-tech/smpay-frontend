@@ -1,5 +1,11 @@
-import { Modal, type ModalProps } from '@/components/composite/modal';
-import { Descriptions } from 'antd';
+import {
+  Modal,
+  type ModalProps,
+} from "@/components/composite/modal-components";
+import {
+  Descriptions,
+  DescriptionItem,
+} from "@/components/composite/description-components";
 
 const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
   return (
@@ -14,9 +20,9 @@ const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
       <div className="min-w-[900px]">
         <p>다음과 같은 사유로 일시중지되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
-          <Descriptions column={1} bordered>
-            <Descriptions.Item label="사업자명">주식회사 써치엠</Descriptions.Item>
-            <Descriptions.Item label="대표자명">홍길동</Descriptions.Item>
+          <Descriptions columns={1} bordered>
+            <DescriptionItem label="사업자명">주식회사 써치엠</DescriptionItem>
+            <DescriptionItem label="대표자명1">홍길동</DescriptionItem>
           </Descriptions>
         </div>
       </div>

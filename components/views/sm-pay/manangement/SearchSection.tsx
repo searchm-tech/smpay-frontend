@@ -6,6 +6,7 @@ import { SearchInput } from "@/components/composite/input-components";
 
 const SearchSection = () => {
   const router = useRouter();
+
   return (
     <SearchBox className="justify-between">
       <div className="flex items-center gap-2">

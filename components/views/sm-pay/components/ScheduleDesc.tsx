@@ -1,20 +1,21 @@
-import { Input } from '@/components/ui/input';
-import { Descriptions } from 'antd';
-
-const descLabelClassName = 'font-bold';
+import { Input } from "@/components/ui/input";
+import {
+  Descriptions,
+  DescriptionItem,
+} from "@/components/composite/description-components";
 
 const ScheduleDesc = () => {
   return (
-    <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-      <Descriptions.Item label={<span className={descLabelClassName}>일 최대 충전 한도</span>}>
+    <Descriptions columns={1} bordered>
+      <DescriptionItem label="일 최대 충전 한도">
         <span>1일 1회</span>
-      </Descriptions.Item>
-      <Descriptions.Item label={<span className={descLabelClassName}>최초 충전 금액 설정</span>}>
+      </DescriptionItem>
+      <DescriptionItem label="최초 충전 금액 설정">
         <span className="text-blue-600">100,000원</span>
-      </Descriptions.Item>
-      <Descriptions.Item label={<span className={descLabelClassName}>일 최대 충전 한도</span>}>
+      </DescriptionItem>
+      <DescriptionItem label="일 최대 충전 한도">
         <span className="text-blue-600">300,000원</span>
-      </Descriptions.Item>
+      </DescriptionItem>
     </Descriptions>
   );
 };
@@ -23,16 +24,16 @@ export default ScheduleDesc;
 
 export const ScheduleEditDesc = () => {
   return (
-    <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-      <Descriptions.Item label={<span className={descLabelClassName}>일 최대 충전 한도</span>}>
+    <Descriptions columns={1} bordered>
+      <DescriptionItem label="일 최대 충전 한도">
         <span>1일 1회</span>
-      </Descriptions.Item>
-      <Descriptions.Item label={<span className={descLabelClassName}>최초 충전 금액 설정</span>}>
+      </DescriptionItem>
+      <DescriptionItem label="최초 충전 금액 설정">
         <Input className="max-w-[500px]" />
-      </Descriptions.Item>
-      <Descriptions.Item label={<span className={descLabelClassName}>일 최대 충전 한도</span>}>
+      </DescriptionItem>
+      <DescriptionItem label="일 최대 충전 한도">
         <Input className="max-w-[500px]" />
-      </Descriptions.Item>
+      </DescriptionItem>
     </Descriptions>
   );
 };

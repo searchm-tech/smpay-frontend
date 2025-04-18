@@ -1,14 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Descriptions } from "antd";
+import {
+  Descriptions,
+  DescriptionItem,
+} from "@/components/composite/description-components";
 
 const RuleDesc = () => {
   return (
-    <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-      <Descriptions.Item
-        label={<span className="font-bold">충전 규칙 설정</span>}
-      >
+    <Descriptions columns={1} bordered>
+      <DescriptionItem label="충전 규칙 설정">
         <div className="text-sm flex flex-col gap-2">
           <p>
             기준 ROAS가 <span className="font-medium">400% 이상</span>이면 충전
@@ -19,7 +20,7 @@ const RuleDesc = () => {
             금액을 <span className="text-red-600">정률로 5%씩 감액</span>합니다.
           </p>
         </div>
-      </Descriptions.Item>
+      </DescriptionItem>
     </Descriptions>
   );
 };
@@ -29,10 +30,8 @@ export default RuleDesc;
 // 충전 규식 설정 작성 구간
 export const RuleEditDesc = () => {
   return (
-    <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-      <Descriptions.Item
-        label={<span className="font-bold">충전 규칙 설정</span>}
-      >
+    <Descriptions columns={1} bordered>
+      <DescriptionItem label="충전 규칙 설정">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <span className="min-w-[100px]">기준 ROAS가</span>
@@ -88,9 +87,9 @@ export const RuleEditDesc = () => {
             </div>
           </div>
         </div>
-      </Descriptions.Item>
+      </DescriptionItem>
 
-      <Descriptions.Item label={<span className="font-bold">설정 결과</span>}>
+      <DescriptionItem label="설정 결과">
         <div className="text-sm flex flex-col gap-2">
           <p>
             기준 ROAS가 <span className="font-medium">400% 이상</span>이면 충전
@@ -101,7 +100,7 @@ export const RuleEditDesc = () => {
             금액을 <span className="text-red-600">정률로 5%씩 감액</span>합니다.
           </p>
         </div>
-      </Descriptions.Item>
+      </DescriptionItem>
     </Descriptions>
   );
 };
