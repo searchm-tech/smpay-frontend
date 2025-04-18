@@ -55,8 +55,8 @@ const GUID_CONTENT: Record<ViewType, React.ReactNode> = {
             있습니다.
           </p>
           <p>
-            동의 요청서의 인증 만료 기한은 7일이며, 기한이 만료된 경우에는 'SM
-            Pay 관리 페이지'에서 재발송하실 수 있습니다.
+            동의 요청서의 인증 만료 기한은 7일이며, 기한이 만료된 경우에는
+            &apos;SM Pay 관리 페이지&apos;에서 재발송하실 수 있습니다.
           </p>
           <p>
             광고주가 동의하지 않은 경우, 신규 신청을 통해서만 SM Pay를 다시
