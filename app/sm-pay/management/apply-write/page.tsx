@@ -1,12 +1,12 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import { type DashboardSubItem } from "@/constants/dasboard";
-import SMPayApplyAdvertisersView from "@/components/views/sm-pay/manangement/apply-advertisers";
+import SMPayApplyWriteView from "@/components/views/sm-pay/manangement/apply-write";
 
-export default function SMPayApplyAdvertisersPage() {
+export default function SMPayApplyWritePage() {
   return (
     <div>
       <ContentHeader title="SM Pay 신청" items={breadcrumbItems} />
-      <SMPayApplyAdvertisersView />
+      <SMPayApplyWriteView />
     </div>
   );
 }
@@ -22,6 +22,6 @@ const breadcrumbItems: DashboardSubItem[] = [
   },
   {
     title: "SM Pay 신청",
-    url: "/sm-pay/management/apply-advertisers",
+    url: "/sm-pay/management/apply-write",
   },
 ];

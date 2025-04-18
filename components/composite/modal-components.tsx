@@ -107,7 +107,7 @@ export const Modal = ({
             {confirmText}
           </AlertDialogAction>
           <AlertDialogCancel
-            className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4] hover:bg-[#e1e5e8]"
+            className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
             onClick={onClose}
           >
             {cancelText}
