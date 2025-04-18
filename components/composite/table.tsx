@@ -1,24 +1,45 @@
 "use client";
 
-// antd 테이블 기반의 테이블 컴포넌트
-import { Table as AntdTable, type TableProps as AntdTableProps } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import {
+  Table as AntdTable,
+  Skeleton,
+  type TableProps as AntdTableProps,
+} from "antd";
 import { cn } from "@/lib/utils";
 
 interface TableProps<T> extends AntdTableProps<T> {
   total?: number;
+  loading?: boolean;
 }
 
+// antd 테이블 기반의 테이블 컴포넌트
 function TableComponent<T extends { id: string | number }>({
   columns,
   dataSource,
   total = 50,
+  loading = false,
   ...rest
 }: TableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [renderLoading, setRenderLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRenderLoading(false);
+    }, 1500); // 1.5초 후 데이터 세팅
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (renderLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <AntdTable<T>
+      loading={loading}
       columns={columns}
       dataSource={dataSource}
       rowKey={(record) => record.id}

@@ -1,6 +1,7 @@
 "use client";
 
-import { Descriptions as AntdDescriptions } from "antd";
+import { useState, useEffect } from "react";
+import { Descriptions as AntdDescriptions, Skeleton } from "antd";
 
 export type DescriptionProps = {
   columns?: number;
@@ -42,6 +43,18 @@ export function Descriptions({
   children,
   styles = { label: { width: 200, fontWeight: "bold" } },
 }: DescriptionProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  }, []);
+
+  if (isLoading) {
+    return <Skeleton active />;
+  }
+
   return (
     <AntdDescriptions
       column={columns}
