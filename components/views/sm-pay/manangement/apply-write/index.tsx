@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 
 import ViewList from "./ViewList";
-import ViewCreate from "./ViewCreate";
+import ViewWrite from "./ViewWrite";
 
 import GuidSection, { type ViewType } from "../../components/GuideSection";
 
-const SMPayApplyAdvertisersView = () => {
+// list : 등록된 광고주 목록
+// create : SM Pay 신청
+const SMPayApplyWriteView = () => {
   const [viewType, setViewType] = useState<ViewType>("list");
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const SMPayApplyAdvertisersView = () => {
         display={viewType === "list"}
       />
 
-      <ViewCreate
+      <ViewWrite
         onSubmit={() => {}}
         onCancel={() => setViewType("list")}
         display={viewType === "create"}
@@ -34,7 +36,7 @@ const SMPayApplyAdvertisersView = () => {
   );
 };
 
-export default SMPayApplyAdvertisersView;
+export default SMPayApplyWriteView;
 
 export type ViewProps = {
   onSubmit: () => void;
