@@ -14,7 +14,9 @@ const SearchSection = () => {
         <Button>검색</Button>
       </div>
 
-      <LinkButton onClick={() => router.push("/sm-pay/apply")}>
+      <LinkButton
+        onClick={() => router.push("/sm-pay/management/apply-advertisers")}
+      >
         + SM Pay 신청
       </LinkButton>
     </SearchBox>

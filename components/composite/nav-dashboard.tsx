@@ -3,6 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
+import { useRoleStore } from "@/store/useRoleStore";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,19 +24,20 @@ import {
 import { cn } from "@/lib/utils";
 import { dashboardItems } from "@/constants/dasboard";
 
-// import { useRoleStore } from "@/store/useRoleStore";
-
 export function NavDashboard() {
   const pathname = usePathname();
   const router = useRouter();
-  // const { role } = useRoleStore();
-  const role = "admin";
+  const { role } = useRoleStore();
 
   const { state, toggleSidebar } = useSidebar();
 
-  const handleClick = (url: string) => {
+  const handleClick = (url: string, isHasSubMenu: boolean) => {
     if (state === "collapsed") {
       toggleSidebar();
+      return;
+    }
+
+    if (isHasSubMenu) {
       return;
     }
 
@@ -58,7 +61,7 @@ export function NavDashboard() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     className="cursor-pointer"
-                    onClick={() => handleClick(item.url)}
+                    onClick={() => handleClick(item.url, item.items.length > 0)}
                   >
                     {item.icon && <item.icon />}
                     <span className="font-medium">{item.title}</span>
@@ -101,7 +104,7 @@ export function NavDashboard() {
               >
                 <div
                   className="flex items-center gap-2 cursor-pointer"
-                  onClick={() => handleClick(item.url)}
+                  onClick={() => handleClick(item.url, false)}
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
