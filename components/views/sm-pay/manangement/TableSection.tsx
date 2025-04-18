@@ -105,6 +105,10 @@ const TableSection = () => {
   const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
   const [openStopModal, setOpenStopModal] = useState<boolean>(false);
 
+  const handleMoveDetailPage = (id: number) => {
+    router.push(`/sm-pay/management/apply-detail/${id}`);
+  };
+
   const columns: TableProps<SmPayData>["columns"] = [
     {
       title: "No",
@@ -171,7 +175,7 @@ const TableSection = () => {
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() => router.push(`/sm-pay/management/${record.id}`)}
+                onClick={() => handleMoveDetailPage(record.id)}
               >
                 조회
               </Button>
