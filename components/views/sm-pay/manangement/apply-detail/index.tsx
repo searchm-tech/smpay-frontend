@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 
-import AdvertiserSection from "./AdvertiserSection";
-import RuleSection from "./RuleSection";
-import ScheduleSection from "./ScheduleSection";
+import AdvertiserSection from "../../components/AdvertiserSection";
+import RuleSection from "../../components/RuleSection";
+import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
 
 // [대행사, 관리자] SM Pay 관리 -> 조회 -> 신청 내역 상세
