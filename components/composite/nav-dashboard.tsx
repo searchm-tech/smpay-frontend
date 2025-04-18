@@ -24,8 +24,6 @@ import {
 import { cn } from "@/lib/utils";
 import { dashboardItems } from "@/constants/dasboard";
 
-// import { useRoleStore } from "@/store/useRoleStore";
-
 export function NavDashboard() {
   const pathname = usePathname();
   const router = useRouter();
@@ -33,13 +31,13 @@ export function NavDashboard() {
 
   const { state, toggleSidebar } = useSidebar();
 
-  const handleClick = (url: string, isSubMenu: boolean) => {
+  const handleClick = (url: string, isHasSubMenu: boolean) => {
     if (state === "collapsed") {
       toggleSidebar();
       return;
     }
 
-    if (isSubMenu) {
+    if (isHasSubMenu) {
       return;
     }
 
@@ -106,7 +104,7 @@ export function NavDashboard() {
               >
                 <div
                   className="flex items-center gap-2 cursor-pointer"
-                  onClick={() => handleClick(item.url)}
+                  onClick={() => handleClick(item.url, false)}
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
