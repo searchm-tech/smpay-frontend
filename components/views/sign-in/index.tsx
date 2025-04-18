@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { InputForm } from "@/components/composite/input-form";
+import { InputForm } from "@/components/composite/input-components";
 import CheckboxLabel from "@/components/composite/checkbox-label";
 import Title from "@/components/common/Title";
 

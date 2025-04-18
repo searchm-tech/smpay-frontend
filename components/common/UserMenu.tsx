@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { BulletLabel } from "@/components/composite/label";
+import { LabelBullet } from "@/components/composite/label-bullet";
 
 import { useRoleStore } from "@/store/useRoleStore";
 
@@ -32,42 +32,42 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <BulletLabel>기본 정보 변경</BulletLabel>
+            <LabelBullet>기본 정보 변경</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setRole("admin")}
             className="cursor-pointer"
           >
-            <BulletLabel>관리자</BulletLabel>
+            <LabelBullet>관리자</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setRole("agency")}
             className="cursor-pointer"
           >
-            <BulletLabel>대행사</BulletLabel>
+            <LabelBullet>대행사</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
             <Link href="/membership/member-info">
-              <BulletLabel>비밀번호 변경</BulletLabel>
+              <LabelBullet>비밀번호 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <BulletLabel>로그아웃</BulletLabel>
+            <LabelBullet>로그아웃</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer">
             <Link href="/membership/naver-service">
-              <BulletLabel>네이버 서비스 설정</BulletLabel>
+              <LabelBullet>네이버 서비스 설정</LabelBullet>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer">
-            <BulletLabel>공지사항</BulletLabel>
+            <LabelBullet>공지사항</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <BulletLabel>고객센터</BulletLabel>
+            <LabelBullet>고객센터</LabelBullet>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"; // Tailwind className 병합 유틸
 
-function BulletLabel({
+function LabelBullet({
   children,
   className,
   labelClassName,
@@ -17,4 +17,4 @@ function BulletLabel({
   );
 }
 
-export { BulletLabel };
+export { LabelBullet };
