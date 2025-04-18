@@ -13,11 +13,11 @@ export default function SMPayManagementPage() {
 
 const breadcrumbItems: DashboardSubItem[] = [
   {
-    title: "SM Pay 관리",
+    title: "SM Pay",
     url: "/sm-pay",
   },
   {
-    title: "SM Pay관리",
+    title: "SM Pay 관리",
     url: "/sm-pay/management",
   },
 ];
