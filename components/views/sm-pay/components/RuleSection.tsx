@@ -9,9 +9,8 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import RuleDesc, {
   RuleEditDesc,
 } from "@/components/views/sm-pay/components/RuleDesc";
-
 import { hoverData } from "@/components/views/sm-pay/components/constants";
-import HistoryModal from "../../components/HistoryModal";
+import HistoryModal from "./HistoryModal";
 
 const RuleSection = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -21,9 +20,11 @@ const RuleSection = () => {
       {isHistory && (
         <HistoryModal open={isHistory} onClose={() => setIsHistory(false)} />
       )}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 py-4">
-          <LabelBullet labelClassName="text-base">충전 규칙 설정</LabelBullet>
+      <div className="flex items-center gap-4 py-2">
+        <div className="flex items-center gap-2">
+          <LabelBullet labelClassName="text-base font-bold">
+            충전 규칙 설정
+          </LabelBullet>
 
           <TooltipHover
             triggerContent={hoverData["rule"].triggerContent}
@@ -39,7 +40,6 @@ const RuleSection = () => {
           변경 이력 보기
         </Button>
       </div>
-
       {!isEditing && <RuleDesc />}
       {isEditing && <RuleEditDesc />}
     </section>

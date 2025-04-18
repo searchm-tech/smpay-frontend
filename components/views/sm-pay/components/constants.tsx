@@ -16,15 +16,15 @@ export const hoverData: Record<HoverDataKey, HoverData> = {
       />
     ),
     content: (
-      <div className="flex flex-start gap-2">
+      <div className="flex items-start gap-2 bg-white">
         <IconBadge
           name="CircleHelp"
           bgColor="#F6BE2C"
-          className="cursor-pointer mt-1"
+          className="cursor-pointer shrink-0 mt-0.5"
         />
-        <p>
-          입력된 ROAS를 기준으로, 기준 이상이면 충전 금액을 증액하고, 기준
-          미만이면 감액합니다
+        <p className="text-sm text-gray-700">
+          매출계정는 판매정산 대금이 풀랫폼사로부터 입금되는 계좌, 또는 후불
+          광고비에 대해 출금이 이루어질 광고주 명의의 계좌를 뜻합니다.
         </p>
       </div>
     ),
@@ -38,15 +38,14 @@ export const hoverData: Record<HoverDataKey, HoverData> = {
       />
     ),
     content: (
-      <div className="flex flex-start gap-2">
+      <div className="flex items-start gap-2 bg-white">
         <IconBadge
           name="CircleHelp"
           bgColor="#F6BE2C"
-          className="cursor-pointer mt-1"
+          className="cursor-pointer shrink-0 mt-0.5"
         />
-        <p>
-          입력한 최초 충전 금액을 기준으로 충전 금액을 자동으로 증액하거나
-          감액하며, 일 최대 예산을 초과하여 충전하지 않습니다.
+        <p className="text-sm text-gray-700">
+          충전계좌는 네이버 광고비 충전 전용 계좌를 뜻합니다.
         </p>
       </div>
     ),
