@@ -8,6 +8,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
 import { Control, FieldValues, Path } from "react-hook-form";
 
 interface InputFormProps<T extends FieldValues> {
@@ -21,7 +23,7 @@ interface InputFormProps<T extends FieldValues> {
   showError?: boolean;
 }
 
-export function InputForm<T extends FieldValues>({
+function InputForm<T extends FieldValues>({
   name,
   control,
   label,
@@ -70,3 +72,33 @@ export function InputForm<T extends FieldValues>({
     />
   );
 }
+
+// 검색 input
+interface SearchInputProps {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  className?: string;
+}
+
+const SearchInput = ({
+  value,
+  onChange,
+  placeholder,
+  className,
+}: SearchInputProps) => {
+  return (
+    <div className={cn("relative w-full bg-white rounded-md", className)}>
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <Input
+        type="text"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder || "검색어를 입력해주세요."}
+        className="pl-8"
+      />
+    </div>
+  );
+};
+
+export { InputForm, SearchInput };
