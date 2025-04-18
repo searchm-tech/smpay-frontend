@@ -12,11 +12,11 @@ const RuleDesc = () => {
       <DescriptionItem label="충전 규칙 설정">
         <div className="text-sm flex flex-col gap-2">
           <p>
-            기준 ROAS가 <span className="font-medium">400% 이상</span>이면 충전
+            기준 ROAS가 <span className="font-bold">400% 이상</span>이면 충전
             금액을 <span className="text-blue-600">정률로 3%씩 증액</span>하고
           </p>
           <p>
-            기준 ROAS가 <span className="font-medium">400% 미만</span>이면 충전
+            기준 ROAS가 <span className="font-bold">400% 미만</span>이면 충전
             금액을 <span className="text-red-600">정률로 5%씩 감액</span>합니다.
           </p>
         </div>
@@ -92,11 +92,11 @@ export const RuleEditDesc = () => {
       <DescriptionItem label="설정 결과">
         <div className="text-sm flex flex-col gap-2">
           <p>
-            기준 ROAS가 <span className="font-medium">400% 이상</span>이면 충전
+            기준 ROAS가 <span className="font-bold">400% 이상</span>이면 충전
             금액을 <span className="text-blue-600">정률로 3%씩 증액</span>하고
           </p>
           <p>
-            기준 ROAS가 <span className="font-medium">400% 미만</span>이면 충전
+            기준 ROAS가 <span className="font-bold">400% 미만</span>이면 충전
             금액을 <span className="text-red-600">정률로 5%씩 감액</span>합니다.
           </p>
         </div>

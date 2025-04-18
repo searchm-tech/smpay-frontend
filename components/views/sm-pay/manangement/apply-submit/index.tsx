@@ -1,21 +1,23 @@
 import { Button } from "@/components/ui/button";
-
 import AdvertiserSection from "../../components/AdvertiserSection";
-import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
+import RuleSection from "../../components/RuleSection";
 import GuidSection from "../../components/GuideSection";
-
-// [대행사, 관리자] SM Pay 관리 -> 조회 -> 신청 내역 상세
-const SmPayApplyDetailView = () => {
+import AccountDesc from "../../components/AccountDesc";
+const ApplySubmitView = () => {
   return (
     <div>
       <GuidSection viewType="list" />
-      <AdvertiserSection />
-      <RuleSection />
-      <ScheduleSection />
+
+      <div className="mt-4 flex flex-col gap-2">
+        <AdvertiserSection />
+        <AccountDesc />
+        <RuleSection />
+        <ScheduleSection />
+      </div>
 
       <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]">확인</Button>
+        <Button className="w-[150px]">심사 요청</Button>
         <Button variant="cancel" className="w-[150px]">
           취소
         </Button>
@@ -24,4 +26,4 @@ const SmPayApplyDetailView = () => {
   );
 };
 
-export default SmPayApplyDetailView;
+export default ApplySubmitView;

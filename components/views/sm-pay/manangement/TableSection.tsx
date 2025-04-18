@@ -257,7 +257,7 @@ const TableSection = () => {
           content={dialogContent[openDialog].content}
           onConfirm={() => {
             if (openDialog === "request") {
-              router.push("/sm-pay/management/1");
+              router.push("/sm-pay/management/apply-submit/1");
             }
           }}
         />

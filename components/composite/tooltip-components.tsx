@@ -1,8 +1,9 @@
-import { HoverCardContent } from "@radix-ui/react-hover-card";
-
-import { HoverCardTrigger } from "@radix-ui/react-hover-card";
-
-import { HoverCard } from "@radix-ui/react-hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardPortal,
+  HoverCardTrigger,
+} from "@radix-ui/react-hover-card";
 
 interface TooltipHoverProps {
   triggerContent?: React.ReactNode;
@@ -14,15 +15,17 @@ const TooltipHover = ({ triggerContent, content }: TooltipHoverProps) => {
   return (
     <HoverCard openDelay={0} closeDelay={0}>
       <HoverCardTrigger asChild>
-        {triggerContent || <span>Trigger</span>}
+        <div>{triggerContent || <span>Trigger</span>}</div>
       </HoverCardTrigger>
-      <HoverCardContent
-        side="right"
-        sideOffset={8}
-        className="p-4 bg-white text-black rounded-xl shadow-md border border-gray-200 w-[320px]"
-      >
-        {content}
-      </HoverCardContent>
+      <HoverCardPortal>
+        <HoverCardContent
+          side="right"
+          sideOffset={8}
+          className="p-4 bg-white text-black rounded-xl shadow-md border border-gray-200 w-[320px] z-50"
+        >
+          {content}
+        </HoverCardContent>
+      </HoverCardPortal>
     </HoverCard>
   );
 };

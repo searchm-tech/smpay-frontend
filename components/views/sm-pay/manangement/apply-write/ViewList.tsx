@@ -103,7 +103,9 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewProps) => {
   return (
     <section className={cn(!display && "hidden")}>
       <div>
-        <LabelBullet labelClassName="text-base">광고주 검색</LabelBullet>
+        <LabelBullet labelClassName="text-base font-bold">
+          광고주 검색
+        </LabelBullet>
         <SearchBox className="gap-2">
           <SearchInput className="w-[425px]" />
           <Button>검색</Button>
@@ -111,7 +113,9 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewProps) => {
       </div>
 
       <div>
-        <LabelBullet labelClassName="text-base">광고주 등록 내역</LabelBullet>
+        <LabelBullet labelClassName="text-base font-bold">
+          광고주 등록 내역
+        </LabelBullet>
         <Table<AdvertiserData>
           columns={columns}
           dataSource={dataSource}
