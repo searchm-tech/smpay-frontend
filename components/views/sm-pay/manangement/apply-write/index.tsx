@@ -1,15 +1,14 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import ViewList from "./ViewList";
 import ViewWrite from "./ViewWrite";
 
 import GuidSection, { type ViewType } from "../../components/GuideSection";
-
-// list : 등록된 광고주 목록
-// create : SM Pay 신청
 const SMPayApplyWriteView = () => {
-  const [viewType, setViewType] = useState<ViewType>("list");
+  const router = useRouter();
+  const [viewType, setViewType] = useState<ViewType>("guide");
 
   useEffect(() => {
     window.scrollTo({
@@ -22,15 +21,15 @@ const SMPayApplyWriteView = () => {
     <div>
       <GuidSection viewType={viewType} />
       <ViewList
-        onSubmit={() => setViewType("create")}
-        onCancel={() => {}}
-        display={viewType === "list"}
+        onSubmit={() => setViewType("write")}
+        onCancel={() => router.push("/sm-pay/management")}
+        display={viewType === "guide"}
       />
 
       <ViewWrite
         onSubmit={() => {}}
-        onCancel={() => setViewType("list")}
-        display={viewType === "create"}
+        onCancel={() => setViewType("guide")}
+        display={viewType === "write"}
       />
     </div>
   );
