@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-// import { useId } from "react";
+import { useId } from "react";
 
 type CheckboxLabelProps = {
   isChecked: boolean;
@@ -8,18 +8,19 @@ type CheckboxLabelProps = {
 };
 
 const CheckboxLabel = ({ isChecked, onChange, label }: CheckboxLabelProps) => {
-  //   const id = useId();
+  const id = useId();
 
   return (
     <div className="flex items-center gap-2">
       <Checkbox
-        //   id={id}
+        id={id}
         checked={isChecked}
         onCheckedChange={onChange}
+        className="cursor-pointer"
       />
       <label
-        // htmlFor={id}
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+        htmlFor={id}
+        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none"
       >
         {label}
       </label>

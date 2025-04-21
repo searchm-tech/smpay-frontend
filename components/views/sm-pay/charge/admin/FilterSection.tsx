@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { format } from "date-fns";
+import { FileDown } from "lucide-react";
 
 import {
   Select,
@@ -10,7 +12,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CalendarPopover } from "@/components/ui/calendar";
-import { format } from "date-fns";
+
+import { SelectSearch } from "@/components/composite/select-search";
 
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
@@ -110,12 +113,12 @@ const FilterSection = () => {
         <Button variant="cancel">최근7일</Button>
         <Button variant="cancel">이번달</Button>
         <Button variant="cancel">지난달</Button>
+        <Button variant="cancel" size="icon">
+          <FileDown />
+        </Button>
       </div>
     </section>
   );
 };
 
 export default FilterSection;
-
-import * as React from "react";
-import { SelectSearch } from "@/components/composite/select-search";
