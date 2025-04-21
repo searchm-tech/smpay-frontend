@@ -1,5 +1,6 @@
 import SMPayManagementView from "@/components/views/sm-pay/manangement";
 import ContentHeader from "@/components/common/ContentHeader";
+
 import type { DashboardSubItem } from "@/constants/dasboard";
 
 export default function SMPayManagementPage() {
