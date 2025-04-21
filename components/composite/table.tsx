@@ -38,38 +38,41 @@ function TableComponent<T extends { id: string | number }>({
   }
 
   return (
-    <AntdTable<T>
-      loading={loading}
-      columns={columns}
-      dataSource={dataSource}
-      rowKey={(record) => record.id}
-      pagination={{
-        pageSize: 10,
-        current: currentPage,
-        total,
-        onChange: (page) => setCurrentPage(page),
-        itemRender: (page, type) => {
-          // originalElement
-          if (type === "prev") {
-            return <button className="custom-arrow">&larr;</button>;
-          }
-          if (type === "next") {
-            return <button className="custom-arrow">&rarr;</button>;
-          }
-          return (
-            <button
-              className={cn(
-                "custom-page",
-                page === currentPage && "custom-page-active"
-              )}
-            >
-              {page}
-            </button>
-          );
-        },
-      }}
-      {...rest}
-    />
+    <div className="flex flex-col">
+      <AntdTable<T>
+        loading={loading}
+        columns={columns}
+        dataSource={dataSource}
+        rowKey={(record) => record.id}
+        pagination={{
+          pageSize: 10,
+          current: currentPage,
+          total,
+          position: ["bottomCenter"],
+          onChange: (page) => setCurrentPage(page),
+          className: "flex justify-center",
+          itemRender: (page, type) => {
+            if (type === "prev") {
+              return <button className="custom-arrow">&larr;</button>;
+            }
+            if (type === "next") {
+              return <button className="custom-arrow">&rarr;</button>;
+            }
+            return (
+              <button
+                className={cn(
+                  "custom-page",
+                  page === currentPage && "custom-page-active"
+                )}
+              >
+                {page}
+              </button>
+            );
+          },
+        }}
+        {...rest}
+      />
+    </div>
   );
 }
 
