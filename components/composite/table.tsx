@@ -28,7 +28,7 @@ function TableComponent<T extends { id: string | number }>({
   useEffect(() => {
     const timer = setTimeout(() => {
       setRenderLoading(false);
-    }, 1500); // 1.5초 후 데이터 세팅
+    }, 1000); // 1초 후 데이터 세팅
 
     return () => clearTimeout(timer);
   }, []);
