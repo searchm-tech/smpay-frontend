@@ -4,9 +4,12 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 const AdvertiserSection = () => {
   return (
     <section>
-      <LabelBullet labelClassName="text-base font-bold">
-        광고주 기본 정보
-      </LabelBullet>
+      <div className="flex items-center gap-4 py-2">
+        <LabelBullet labelClassName="text-base font-bold">
+          광고주 기본 정보
+        </LabelBullet>
+      </div>
+
       <AdvertiserDesc />
     </section>
   );
