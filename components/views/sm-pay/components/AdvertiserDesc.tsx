@@ -10,7 +10,7 @@ const AdvertiserDesc = () => {
       <DescriptionItem label="사업자명">
         <Label>주식회사 카타미</Label>
       </DescriptionItem>
-      <DescriptionItem label="광고주 닉테임">
+      <DescriptionItem label="광고주 닉네임">
         <Label>carrot</Label>
       </DescriptionItem>
       <DescriptionItem label="대표자명">
