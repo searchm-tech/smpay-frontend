@@ -76,7 +76,7 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
         </div>
 
         {isChanged && (
-          <Descriptions columns={1} bordered>
+          <Descriptions columns={1}>
             <DescriptionItem label="사업자명">
               <Input className="max-w-[500px]" />
             </DescriptionItem>
