@@ -20,7 +20,7 @@ const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
       <div className="min-w-[900px]">
         <p>다음과 같은 사유로 일시중지되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
-          <Descriptions columns={1} bordered>
+          <Descriptions columns={1}>
             <DescriptionItem label="사업자명">주식회사 써치엠</DescriptionItem>
             <DescriptionItem label="대표자명1">홍길동</DescriptionItem>
           </Descriptions>

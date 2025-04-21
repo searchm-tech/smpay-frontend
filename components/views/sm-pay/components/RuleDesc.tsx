@@ -8,17 +8,17 @@ import {
 
 const RuleDesc = () => {
   return (
-    <Descriptions columns={1} bordered>
+    <Descriptions columns={1}>
       <DescriptionItem label="충전 규칙 설정">
         <div className="text-sm flex flex-col gap-2">
-          <p>
+          <div>
             기준 ROAS가 <span className="font-bold">400% 이상</span>이면 충전
             금액을 <span className="text-blue-600">정률로 3%씩 증액</span>하고
-          </p>
-          <p>
+          </div>
+          <div>
             기준 ROAS가 <span className="font-bold">400% 미만</span>이면 충전
             금액을 <span className="text-red-600">정률로 5%씩 감액</span>합니다.
-          </p>
+          </div>
         </div>
       </DescriptionItem>
     </Descriptions>
@@ -30,7 +30,7 @@ export default RuleDesc;
 // 충전 규식 설정 작성 구간
 export const RuleEditDesc = () => {
   return (
-    <Descriptions columns={1} bordered>
+    <Descriptions columns={1}>
       <DescriptionItem label="충전 규칙 설정">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
