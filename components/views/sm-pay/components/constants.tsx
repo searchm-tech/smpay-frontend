@@ -66,8 +66,8 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "confirm",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>입력하신 정보로 광고주의 기본 정보가 업데이트 됩니다.</p>
-        <p>변경하시겠습니까?</p>
+        <span>입력하신 정보로 광고주의 기본 정보가 업데이트 됩니다.</span>
+        <span>변경하시겠습니까?</span>
       </div>
     ),
   },
@@ -75,7 +75,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "send",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>광고주의 이메일과 SMS 동의요청이 발송되었습니다.</p>
+        <span>광고주의 이메일과 SMS 동의요청이 발송되었습니다.</span>
       </div>
     ),
   },

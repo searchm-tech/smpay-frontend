@@ -30,6 +30,21 @@ const processSteps = [
 ];
 
 const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
+  const handleDontShowToday = () => {
+    const today = new Date();
+    const expiryDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1,
+      0,
+      0,
+      0
+    ).getTime();
+
+    localStorage.setItem("hideGuideModal", expiryDate.toString());
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
@@ -145,7 +160,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
               </Button>
               <Button
                 className="w-[150px] bg-white text-gray-700 hover:bg-gray-50"
-                onClick={onClose}
+                onClick={handleDontShowToday}
               >
                 오늘 하루 보지 않기
               </Button>

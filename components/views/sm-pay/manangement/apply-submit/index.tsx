@@ -15,7 +15,7 @@ const ApplySubmitView = () => {
 
   return (
     <div>
-      <GuidSection viewType="list" />
+      <GuidSection viewType="submit" />
 
       <div className="mt-4 flex flex-col gap-2">
         <AdvertiserSection />

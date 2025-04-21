@@ -1,19 +1,26 @@
 import { useState } from "react";
-import { Descriptions } from "antd";
+
+import {
+  Descriptions,
+  DescriptionItem,
+} from "@/components/composite/description-components";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { dialogContent, hoverData } from "../../components/constants";
-import { ViewProps } from ".";
+
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
+
+import type { ViewProps } from ".";
 
 const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
   const [isChanged, setIsChanged] = useState(false);
@@ -69,37 +76,31 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
         </div>
 
         {isChanged && (
-          <Descriptions column={1} bordered styles={{ label: { width: 200 } }}>
-            <Descriptions.Item
-              label={<span className="font-bold">사업자명</span>}
-            >
+          <Descriptions columns={1} bordered>
+            <DescriptionItem label="사업자명">
               <Input className="max-w-[500px]" />
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className="font-bold">대표자명</span>}
-            >
+            </DescriptionItem>
+            <DescriptionItem label="광고주 닉네임">
+              <Label>carrot</Label>
+            </DescriptionItem>
+
+            <DescriptionItem label="대표자명">
               <Input className="max-w-[500px]" />
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className="font-bold">사업자 등록 번호</span>}
-            >
+            </DescriptionItem>
+            <DescriptionItem label="사업자 등록 번호">
               <div className="flex gap-2">
                 <Input className="max-w-[400px]" />
                 <Button variant="outline" className="w-[100px]">
                   중복 체크
                 </Button>
               </div>
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className="font-bold">담당자 휴대폰 번호</span>}
-            >
+            </DescriptionItem>
+            <DescriptionItem label="담당자 휴대폰 번호">
               <Input className="max-w-[500px]" />
-            </Descriptions.Item>
-            <Descriptions.Item
-              label={<span className="font-bold">담당자 이메일 주소</span>}
-            >
+            </DescriptionItem>
+            <DescriptionItem label="담당자 이메일 주소">
               <Input className="max-w-[500px]" />
-            </Descriptions.Item>
+            </DescriptionItem>
           </Descriptions>
         )}
 

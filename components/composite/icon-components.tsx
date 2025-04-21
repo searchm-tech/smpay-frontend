@@ -7,6 +7,7 @@ interface IconProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   iconProps?: LucideProps;
   bgColor?: string; // 예: "#1062FF" 또는 "bg-[#1062FF]"
+  size?: "sm" | "md" | "lg";
 }
 
 const IconBadge = ({
@@ -14,22 +15,33 @@ const IconBadge = ({
   className,
   iconProps,
   bgColor = "#1062FF",
+  size = "sm",
   ...props
 }: IconProps) => {
   const LucideIcon = Icons[name] as React.ComponentType<LucideProps>;
 
   if (!LucideIcon) return null;
 
+  const sizeStyles = {
+    sm: "w-[18px] h-[18px]",
+    md: "w-[24px] h-[24px]",
+    lg: "w-[32px] h-[32px]",
+  };
+
   return (
     <div
       className={cn(
-        "flex items-center justify-center w-[18px] h-[18px] rounded-full",
+        "flex items-center justify-center rounded-full",
+        sizeStyles[size],
         className
       )}
       style={{ backgroundColor: bgColor }}
       {...props}
     >
-      <LucideIcon className="w-[18px] h-[18px] text-white" {...iconProps} />
+      <LucideIcon
+        className={cn("text-white", sizeStyles[size])}
+        {...iconProps}
+      />
     </div>
   );
 };

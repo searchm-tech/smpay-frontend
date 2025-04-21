@@ -266,10 +266,16 @@ const TableSection = () => {
       <RejectModal
         open={openRejectModal}
         onClose={() => setOpenRejectModal(false)}
+        onConfirm={() => {
+          router.push("/sm-pay/management/apply-detail/1");
+        }}
       />
       <StopInfoModal
         open={openStopModal}
         onClose={() => setOpenStopModal(false)}
+        onConfirm={() => {
+          router.push("/sm-pay/management/apply-detail/1");
+        }}
       />
 
       <Table<SmPayData>

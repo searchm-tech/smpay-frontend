@@ -43,4 +43,22 @@ const LinkTextButton = ({
   );
 };
 
-export { LinkButton, LinkTextButton };
+const GuideButton = ({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) => {
+  return (
+    <Button
+      variant="outline"
+      onClick={onClick}
+      className="w-[117px] h-[29px] border border-[#78A4E8] bg-white hover:bg-white/90 px-[10px] flex items-center justify-center"
+    >
+      <span className="text-[#1062FF]">{children}</span>
+    </Button>
+  );
+};
+
+export { LinkButton, LinkTextButton, GuideButton };

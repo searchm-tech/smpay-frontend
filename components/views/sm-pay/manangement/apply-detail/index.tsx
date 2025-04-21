@@ -14,7 +14,7 @@ const SmPayApplyDetailView = () => {
 
   return (
     <div>
-      <GuidSection viewType="list" />
+      <GuidSection viewType="guide" />
       <AdvertiserSection />
       <RuleSection />
       <ScheduleSection />
