@@ -13,7 +13,6 @@ import { useGuideModalStore } from "@/store/useGuideModalStore";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
-
   const pathname = usePathname();
 
   const isNoNavPage =
@@ -21,12 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/sign-in" ||
     pathname === "/membership/member-info";
 
-  if (isNoNavPage) {
-    return <div>{children}</div>;
-  }
-
   useEffect(() => {
-    if (pathname.includes("/sm-pay/management")) {
+    if (!isNoNavPage && pathname.includes("/sm-pay/management")) {
       const hideGuideModal = localStorage.getItem("hideGuideModal");
       const now = new Date().getTime();
 
@@ -34,7 +29,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         setGuideOpen(true);
       }
     }
-  }, [pathname, setGuideOpen]);
+  }, [pathname, setGuideOpen, isNoNavPage]);
+
+  if (isNoNavPage) {
+    return <div>{children}</div>;
+  }
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
