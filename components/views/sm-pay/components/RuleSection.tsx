@@ -21,7 +21,7 @@ const RuleSection = () => {
         <HistoryModal open={isHistory} onClose={() => setIsHistory(false)} />
       )}
       <div className="flex items-center gap-4 py-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 py-2">
           <LabelBullet labelClassName="text-base font-bold">
             충전 규칙 설정
           </LabelBullet>

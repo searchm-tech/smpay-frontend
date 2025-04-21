@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Descriptions as AntdDescriptions, Skeleton } from "antd";
+import { Descriptions as AntdDescriptions } from "antd";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type DescriptionProps = {
   columns?: number;
@@ -43,16 +44,25 @@ export function Descriptions({
   children,
   styles = { label: { width: 200, fontWeight: "bold" } },
 }: DescriptionProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    setMounted(true);
   }, []);
 
-  if (isLoading) {
-    return <Skeleton active />;
+  if (!mounted) {
+    return (
+      <div className="space-y-2">
+        <div className="flex gap-4">
+          <Skeleton className="h-10 w-[200px]" />
+          <Skeleton className="h-10 w-[200px]" />
+        </div>
+        <div className="flex gap-4">
+          <Skeleton className="h-10 w-[200px]" />
+          <Skeleton className="h-10 w-[200px]" />
+        </div>
+      </div>
+    );
   }
 
   return (
