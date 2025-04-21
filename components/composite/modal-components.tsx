@@ -101,7 +101,7 @@ export const Modal = ({
 
         <AlertDialogFooter className="py-4 bg-[#E2E2E2] rounded-b-lg">
           <AlertDialogAction
-            className="min-w-[150px] min-h-[35px] bg-[#545F71]"
+            className="min-w-[150px] min-h-[35px]"
             onClick={onConfirm}
           >
             {confirmText}
