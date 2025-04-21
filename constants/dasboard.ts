@@ -124,7 +124,7 @@ export const DASHBOARD_ITEMS_ADMIN = [
       },
       {
         title: "SM Pay 심사",
-        url: "/sm-pay/submit",
+        url: "/sm-pay/judgement",
       },
     ],
   },
