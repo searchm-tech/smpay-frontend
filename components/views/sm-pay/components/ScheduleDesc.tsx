@@ -6,7 +6,7 @@ import {
 
 const ScheduleDesc = () => {
   return (
-    <Descriptions columns={1} bordered>
+    <Descriptions columns={1}>
       <DescriptionItem label="일 최대 충전 한도">
         <span>1일 1회</span>
       </DescriptionItem>
@@ -24,7 +24,7 @@ export default ScheduleDesc;
 
 export const ScheduleEditDesc = () => {
   return (
-    <Descriptions columns={1} bordered>
+    <Descriptions columns={1}>
       <DescriptionItem label="일 최대 충전 한도">
         <span>1일 1회</span>
       </DescriptionItem>

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 
 const AdvertiserDesc = () => {
   return (
-    <Descriptions columns={1} bordered>
+    <Descriptions columns={1}>
       <DescriptionItem label="사업자명">
         <Label>주식회사 카타미</Label>
       </DescriptionItem>

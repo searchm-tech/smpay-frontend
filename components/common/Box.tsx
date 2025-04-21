@@ -15,9 +15,14 @@ const SearchBox = ({ children, className }: Props) => {
   );
 };
 
-const GuideBox = ({ children }: Props) => {
+const GuideBox = ({ children, className }: Props) => {
   return (
-    <section className="mt-4 border border-[#CDE0FF] bg-[#E8F1FF] flex items-center justify-between p-4">
+    <section
+      className={cn(
+        "mt-4 border border-[#CDE0FF] bg-[#E8F1FF] flex items-center justify-between p-4",
+        className
+      )}
+    >
       {children}
     </section>
   );
