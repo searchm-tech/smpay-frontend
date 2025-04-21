@@ -17,7 +17,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "request",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 심사 요청을 하시겠습니까?</p>
+        <span>SM Pay 심사 요청을 하시겠습니까?</span>
       </div>
     ),
   },
@@ -25,7 +25,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "resend",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>광고주의 동의 요청을 재발송 하시겠습니까?</p>
+        <span>광고주의 동의 요청을 재발송 하시겠습니까?</span>
       </div>
     ),
   },
@@ -33,10 +33,10 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "terminate",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 서비스를 해지 하시겠습니까?</p>
-        <p>
+        <span>SM Pay 서비스를 해지 하시겠습니까?</span>
+        <span>
           해당 광고주는 미수금이 남아 있어, 미수금 회수 완료 후 해지 처리됩니다.
-        </p>
+        </span>
       </div>
     ),
   },
@@ -44,10 +44,10 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "stop",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 서비스를 일시중지 하시겠습니까?</p>
-        <p>
+        <span>SM Pay 서비스를 일시중지 하시겠습니까?</span>
+        <span>
           해당 광고주는 미수금이 남아 있어, 미수금 회수 완료 후 해지 처리됩니다.
-        </p>
+        </span>
       </div>
     ),
   },
@@ -55,7 +55,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "resumption",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 서비스를 다시 시작하게 하시겠습니까?</p>
+        <span>SM Pay 서비스를 다시 시작하게 하시겠습니까?</span>
       </div>
     ),
   },
@@ -63,7 +63,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "cancel",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 신청을 취소하시겠습니까?</p>
+        <span>SM Pay 신청을 취소하시겠습니까?</span>
       </div>
     ),
   },
@@ -71,7 +71,7 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
     status: "confirm",
     content: (
       <div className="flex flex-col items-center pb-4 font-medium">
-        <p>SM Pay 심사 요청이 완료하였습니다.</p>
+        <span>SM Pay 심사 요청이 완료하였습니다.</span>
       </div>
     ),
   },
