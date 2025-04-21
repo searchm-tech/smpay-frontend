@@ -107,6 +107,10 @@ const SignInView = () => {
             // error={ERROR_MESSAGES.password.required}
           />
 
+          <Button type="submit" className="w-full h-12 text-base">
+            로그인
+          </Button>
+
           <div className="flex items-center justify-between">
             <CheckboxLabel
               isChecked={isRememberUsername}
@@ -121,9 +125,16 @@ const SignInView = () => {
             </span>
           </div>
 
-          <Button type="submit" className="w-full h-12">
-            로그인
-          </Button>
+          <div className="mx-auto border-dotted border-gray-400 border-b w-full" />
+
+          <div className="flex flex-col gap-2  justify-center">
+            <span className="text-[#545F71] font-bold">
+              아직 SM Pay 회원이 아니신가요?
+            </span>
+            <Button className="w-full h-12 mt-4">
+              <span className="text-base">대행사 등록 신청</span>
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

@@ -100,7 +100,8 @@ npm run start
    - charge # 충전 회수 관리
      ├──
    - judement # SM Pay 심사
-     ├──
+     ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
+     ├── detail : # SM Pay 심사 요청 상세
    - management # SM Pay 관리
      ├── apply-detail : # 신청 상세
      ├── apply-submit : # 신청서 제출
