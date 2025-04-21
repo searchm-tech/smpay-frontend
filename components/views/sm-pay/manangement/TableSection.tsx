@@ -8,8 +8,8 @@ import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import RejectModal from "./modal/RejectModal";
-import StopInfoModal from "./modal/StopInfoModal";
+import StopInfoModal from "../components/StopInfoModal";
+import RejectModal from "../components/RejectModal";
 import { dialogContent, type DialogStatus } from "./constants";
 
 import type { TableProps } from "antd";
