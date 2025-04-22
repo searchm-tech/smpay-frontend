@@ -62,7 +62,9 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
       )}
       <div className="mt-4">
         <div className="flex items-center gap-4 pb-4">
-          <LabelBullet labelClassName="text-base">광고주 기본 정보</LabelBullet>
+          <LabelBullet labelClassName="text-base font-bold">
+            광고주 기본 정보
+          </LabelBullet>
 
           {isChanged ? (
             <Button variant="outline" onClick={() => setIsChanged(false)}>
@@ -109,7 +111,9 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
 
       <section>
         <div className="flex items-center gap-2 py-2">
-          <LabelBullet labelClassName="text-base">충전 규칙 설정</LabelBullet>
+          <LabelBullet labelClassName="text-base font-bold">
+            충전 규칙 설정
+          </LabelBullet>
 
           <TooltipHover
             triggerContent={hoverData["rule"].triggerContent}
@@ -121,7 +125,7 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
 
       <section>
         <div className="flex items-center gap-2 py-2">
-          <LabelBullet labelClassName="text-base">
+          <LabelBullet labelClassName="text-base font-bold">
             선결제 스케쥴 설정
           </LabelBullet>
           <TooltipHover
