@@ -1,11 +1,11 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import MemberInfoView from "@/components/views/membership/member-info";
+import UserInfoView from "@/components/views/user/info";
 import { type DashboardSubItem } from "@/constants/dasboard";
-export default function MemberInfoPage() {
+export default function UserInfoPage() {
   return (
     <div>
       <ContentHeader title="회원 정보" items={breadcrumbItems} />
-      <MemberInfoView />
+      <UserInfoView />
     </div>
   );
 }
@@ -13,6 +13,6 @@ export default function MemberInfoPage() {
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "기본 정보 변경",
-    url: "/membership/member-info",
+    url: "/user/info",
   },
 ];

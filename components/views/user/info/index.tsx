@@ -15,7 +15,7 @@ import {
 import { useRoleStore } from "@/store/useRoleStore";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-const MemberInfoView = () => {
+const UserInfoView = () => {
   const router = useRouter();
   const { role } = useRoleStore();
 
@@ -91,4 +91,4 @@ const MemberInfoView = () => {
   );
 };
 
-export default MemberInfoView;
+export default UserInfoView;
