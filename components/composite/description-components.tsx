@@ -18,7 +18,7 @@ export type DescriptionProps = {
 };
 
 export type DescriptionItemProps = {
-  label: string;
+  label: string | React.ReactNode;
   children: React.ReactNode;
   span?: number;
   className?: string;
