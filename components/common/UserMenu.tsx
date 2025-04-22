@@ -47,7 +47,7 @@ export function UserMenu() {
             <LabelBullet>대행사</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/membership/member-info">
+            <Link href="/membership/password-reset">
               <LabelBullet>비밀번호 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
