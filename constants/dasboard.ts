@@ -140,7 +140,7 @@ export const DASHBOARD_ITEMS_ADMIN = [
       },
       {
         title: "회원 관리",
-        url: "/account/member-management",
+        url: "/account/membership-management",
       },
     ],
   },
