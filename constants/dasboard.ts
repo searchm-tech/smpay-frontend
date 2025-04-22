@@ -96,8 +96,8 @@ export const DASHBOARD_ITEMS_AGENCY = [
     isActive: true,
     items: [
       {
-        title: "회원 등록",
-        url: "/account/member-register",
+        title: "회원 관리",
+        url: "/account/membership-management",
       },
       {
         title: "부서 관리",

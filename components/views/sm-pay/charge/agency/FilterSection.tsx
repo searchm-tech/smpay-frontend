@@ -2,16 +2,17 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { FileDown } from "lucide-react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { CalendarPopover } from "@/components/ui/calendar";
+import Select from "@/components/composite/select-components";
+
 import DetailSelectModal from "./DetailSelectModal";
+
+const optsSelect = [
+  { label: "일별조회", value: "daily" },
+  { label: "주별조회", value: "weekly" },
+  { label: "월별조회", value: "monthly" },
+];
 
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
@@ -26,16 +27,7 @@ const FilterSection = () => {
       />
       <div className="flex gap-2 items-center">
         <Button onClick={() => setIsOpen(true)}>광고주 세부선택</Button>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="구분 : 일별조회" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-          </SelectContent>
-        </Select>
+        <Select options={optsSelect} placeholder="구분 : 일별조회" />
 
         <CalendarPopover
           date={date}

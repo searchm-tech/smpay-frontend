@@ -19,14 +19,12 @@ const SearchSection = ({ role }: SearchSectionProps) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <LinkButton onClick={() => router.push("/account/member-register")}>
+        <LinkButton onClick={() => router.push("/account/membership-register")}>
           회원 등록
         </LinkButton>
 
         {role === "agency" && (
-          <LinkButton onClick={() => router.push("/account/member-register")}>
-            회원 삭제
-          </LinkButton>
+          <LinkButton onClick={() => {}}>회원 삭제</LinkButton>
         )}
       </div>
     </SearchBox>
