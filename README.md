@@ -23,7 +23,7 @@
 
 ### ui 라이브러리 이슈
 
-0. 최대한 shadcn 위주로 작업하는게 목표. tailwinds 방식이 요새 선호하는 추세
+0. 최대한 shadcn 위주로 작업as하는게 목표. tailwinds 방식이 요새 선호하는 추세
 
 1. Table
 
@@ -47,6 +47,7 @@
 ### 빌드
 
 ```bash
+
 npm run build
 ```
 
@@ -65,7 +66,7 @@ npm run start
 ## 프로젝트 구조
 
 ```bash
-/
+root
 ├── app/                    # Next.js 14 app directory
 │   └── layout.tsx         # 루트 레이아웃
 │
