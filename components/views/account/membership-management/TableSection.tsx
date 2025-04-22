@@ -2,21 +2,20 @@
 
 import { useState } from "react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 import Table from "@/components/composite/table";
+import Select from "@/components/composite/select-components";
 
 import { type MemberData, mockMemberData } from "./constant";
 import type { TableProps } from "antd";
 import type { TableRowSelection } from "antd/es/table/interface";
 import type { TableParams } from "@/types";
+
+const optsStatus = [
+  { label: "정상", value: "active" },
+  { label: "비활성", value: "inactive" },
+];
 
 /**
  *  관리자 일 경우 테이블
@@ -89,20 +88,12 @@ const AdminTableSection = () => {
 
         return (
           <Select
+            options={optsStatus}
             value={selectedValue}
-            onValueChange={(newValue) => {
-              console.log(`id: ${record.no}, 변경된 값: ${newValue}`);
-              // 상태 업데이트 로직을 이곳에 작성 (예: API 호출 등)
-            }}
-          >
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder="선택">{value}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">정상</SelectItem>
-              <SelectItem value="inactive">비활성</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(newValue) =>
+              console.log(`id: ${record.no}, 변경된 값: ${newValue}`)
+            }
+          />
         );
       },
     },
@@ -196,23 +187,14 @@ const AgencyTableSection = () => {
       align: "center",
       render: (value, record) => {
         const selectedValue = value === "정상" ? "active" : "inactive";
-
         return (
           <Select
+            options={optsStatus}
             value={selectedValue}
-            onValueChange={(newValue) => {
-              console.log(`id: ${record.no}, 변경된 값: ${newValue}`);
-              // 상태 업데이트 로직을 이곳에 작성 (예: API 호출 등)
-            }}
-          >
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder="선택">{value}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">정상</SelectItem>
-              <SelectItem value="inactive">비활성</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(newValue) =>
+              console.log(`id: ${record.no}, 변경된 값: ${newValue}`)
+            }
+          />
         );
       },
     },

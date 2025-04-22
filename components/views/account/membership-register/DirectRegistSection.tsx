@@ -2,13 +2,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { PhoneInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import {
@@ -16,10 +10,17 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import RadioLabel from "@/components/composite/radio-label";
+import Select from "@/components/composite/select-components";
 
-const options = [
+const optsRadio = [
   { label: "그룹장", value: "leader" },
   { label: "그룹원", value: "member" },
+];
+
+const optsSelect = [
+  { label: "일별조회", value: "daily" },
+  { label: "주별조회", value: "weekly" },
+  { label: "월별조회", value: "monthly" },
 ];
 
 const DirectRegistSection = () => {
@@ -33,20 +34,17 @@ const DirectRegistSection = () => {
       </LabelBullet>
       <Descriptions columns={1} bordered>
         <DescriptionItem label="부서 선택 *">
-          <Select>
-            <SelectTrigger className="w-[500px]">
-              <SelectValue placeholder="구분 : 일별조회" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-          </Select>
+          <Select
+            options={optsSelect}
+            value={selected}
+            onChange={setSelected}
+            placeholder="구분 : 일별조회"
+            className="w-[500px]"
+          />
         </DescriptionItem>
         <DescriptionItem label="회원 구분 *">
           <RadioLabel
-            options={options}
+            options={optsRadio}
             value={selected}
             onChange={setSelected}
           />
