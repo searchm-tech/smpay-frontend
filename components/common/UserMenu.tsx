@@ -32,7 +32,7 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/membership/member-info">
+            <Link href="/user/info">
               <LabelBullet>기본 정보 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
@@ -49,7 +49,7 @@ export function UserMenu() {
             <LabelBullet>대행사</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/membership/password-reset">
+            <Link href="/user/password-reset">
               <LabelBullet>비밀번호 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
@@ -59,7 +59,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/membership/naver-service">
+            <Link href="/user/naver-service">
               <LabelBullet>네이버 서비스 설정</LabelBullet>
             </Link>
           </DropdownMenuItem>
