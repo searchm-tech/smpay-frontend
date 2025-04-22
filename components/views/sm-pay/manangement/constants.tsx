@@ -16,17 +16,17 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
   request: {
     status: "request",
     content: (
-      <div className="flex flex-col items-center pb-4 font-medium">
-        <span>SM Pay 심사 요청을 하시겠습니까?</span>
-      </div>
+      <span className="flex justify-center text-base font-bold">
+        SM Pay 심사 요청을 하시겠습니까?
+      </span>
     ),
   },
   resend: {
     status: "resend",
     content: (
-      <div className="flex flex-col items-center pb-4 font-medium">
-        <span>광고주의 동의 요청을 재발송 하시겠습니까?</span>
-      </div>
+      <span className="flex justify-center text-base font-bold">
+        광고주의 동의 요청을 재발송 하시겠습니까?
+      </span>
     ),
   },
   terminate: {
@@ -54,25 +54,25 @@ export const dialogContent: Record<DialogStatus, DialogContent> = {
   resumption: {
     status: "resumption",
     content: (
-      <div className="flex flex-col items-center pb-4 font-medium">
-        <span>SM Pay 서비스를 다시 시작하게 하시겠습니까?</span>
-      </div>
+      <span className="flex justify-center text-base font-bold">
+        SM Pay 서비스를 다시 시작하게 하시겠습니까?
+      </span>
     ),
   },
   cancel: {
     status: "cancel",
     content: (
-      <div className="flex flex-col items-center pb-4 font-medium">
-        <span>SM Pay 신청을 취소하시겠습니까?</span>
-      </div>
+      <span className="flex justify-center text-base font-bold">
+        SM Pay 신청을 취소하시겠습니까?
+      </span>
     ),
   },
   confirm: {
     status: "confirm",
     content: (
-      <div className="flex flex-col items-center pb-4 font-medium">
-        <span>SM Pay 심사 요청이 완료하였습니다.</span>
-      </div>
+      <span className="flex justify-center text-base font-bold">
+        SM Pay 심사 요청이 완료하였습니다.
+      </span>
     ),
   },
 };

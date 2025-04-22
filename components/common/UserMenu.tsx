@@ -32,7 +32,9 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <LabelBullet>기본 정보 변경</LabelBullet>
+            <Link href="/membership/member-info">
+              <LabelBullet>기본 정보 변경</LabelBullet>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setRole("admin")}
