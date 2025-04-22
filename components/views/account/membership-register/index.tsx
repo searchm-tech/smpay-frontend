@@ -5,7 +5,7 @@ import MailSendSection from "./MailSendSection";
 import DirectRegistSection from "./DirectRegistSection";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { TabSwitch } from "@/components/ui/tab-switch";
+import { TabSwitch } from "@/components/composite/tab-switch";
 
 const MemberRegisterView = () => {
   const [isDirectRegist, setIsDirectRegist] = useState(true);
