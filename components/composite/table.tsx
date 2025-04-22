@@ -15,7 +15,7 @@ interface TableProps<T> extends AntdTableProps<T> {
 }
 
 // antd 테이블 기반의 테이블 컴포넌트
-function TableComponent<T extends { id: string | number }>({
+function Table<T extends { id: string | number }>({
   columns,
   dataSource,
   total = 50,
@@ -76,4 +76,4 @@ function TableComponent<T extends { id: string | number }>({
   );
 }
 
-export default TableComponent;
+export default Table;
