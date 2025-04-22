@@ -1,23 +1,5 @@
-import ContentHeader from "@/components/common/ContentHeader";
-import MembershipManagementView from "@/components/views/account/membership-management";
-import { type DashboardSubItem } from "@/constants/dasboard";
+import { redirect } from "next/navigation";
 
 export default function AccountPage() {
-  return (
-    <div>
-      <ContentHeader title="계정 관리" items={breadcrumbItems} />
-      <MembershipManagementView />
-    </div>
-  );
+  redirect("/account/membership-management");
 }
-
-const breadcrumbItems: DashboardSubItem[] = [
-  {
-    title: "계정 관리",
-    url: "/account",
-  },
-  {
-    title: "회원 관리",
-    url: "/account/membership-management",
-  },
-];
