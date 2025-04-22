@@ -12,7 +12,10 @@ import { cn } from "@/lib/utils";
 interface TableProps<T> extends AntdTableProps<T> {
   total?: number;
   loading?: boolean;
+  defaultPageSize?: number;
 }
+
+const PAGE_SIZE_OPTIONS = ["10", "20", "50", "100"];
 
 // antd 테이블 기반의 테이블 컴포넌트
 function Table<T extends { id: string | number }>({
@@ -20,9 +23,11 @@ function Table<T extends { id: string | number }>({
   dataSource,
   total = 50,
   loading = false,
+  defaultPageSize = 10,
   ...rest
 }: TableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   const [renderLoading, setRenderLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +42,7 @@ function Table<T extends { id: string | number }>({
     return <Skeleton />;
   }
 
+  // [&_.ant-pagination-options]:!right-10  -> 페이지 크기 위치 맨 외른쪽
   return (
     <div className="flex flex-col">
       <AntdTable<T>
@@ -44,13 +50,18 @@ function Table<T extends { id: string | number }>({
         columns={columns}
         dataSource={dataSource}
         rowKey={(record) => record.id}
+        className="[&_.ant-pagination-options]:!absolute [&_.ant-pagination-options]:!right-10 [&_.ant-table-pagination]:!flex [&_.ant-table-pagination]:!items-center [&_.ant-table-pagination]:!justify-center [&_.ant-table-pagination]:!relative"
         pagination={{
-          pageSize: 10,
+          pageSize,
           current: currentPage,
           total,
           position: ["bottomCenter"],
-          onChange: (page) => setCurrentPage(page),
-          className: "flex justify-center",
+          onChange: (page, newPageSize) => {
+            setCurrentPage(page);
+            setPageSize(newPageSize);
+          },
+          showSizeChanger: true,
+          pageSizeOptions: PAGE_SIZE_OPTIONS,
           itemRender: (page, type) => {
             if (type === "prev") {
               return <button className="custom-arrow">&larr;</button>;

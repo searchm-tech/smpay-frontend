@@ -237,6 +237,8 @@ const AgencyTableSection = () => {
 
   console.log("selectedRowKeys", selectedRowKeys);
 
+  console.log("data", data);
+
   return (
     <Table<MemberData>
       columns={MemberShipColumns}

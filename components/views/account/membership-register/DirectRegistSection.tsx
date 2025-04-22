@@ -90,5 +90,3 @@ const DirectRegistSection = () => {
 };
 
 export default DirectRegistSection;
-
-const descLabelClassName = "w-[200px] font-bold";
