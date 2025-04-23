@@ -9,8 +9,9 @@ import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
-import RadioLabel from "@/components/composite/radio-label";
+
 import Select from "@/components/composite/select-components";
+import { RadioGroup } from "@/components/composite/radio-component";
 
 const optsRadio = [
   { label: "그룹장", value: "leader" },
@@ -43,7 +44,7 @@ const DirectRegistSection = () => {
           />
         </DescriptionItem>
         <DescriptionItem label="회원 구분 *">
-          <RadioLabel
+          <RadioGroup
             options={optsRadio}
             value={selected}
             onChange={setSelected}
