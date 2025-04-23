@@ -83,6 +83,8 @@ const Radio = ({
       <button
         type="button"
         role="radio"
+        aria-checked={checked}
+        data-state={checked ? "checked" : "unchecked"}
         disabled={disabled}
         onClick={() => onClick(!checked)}
         className={cn(
