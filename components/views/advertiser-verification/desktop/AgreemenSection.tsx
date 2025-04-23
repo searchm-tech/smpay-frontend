@@ -9,7 +9,7 @@ const AgreemenSection = () => {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <section className="mt-6 w-full inline-block mx-auto =">
+    <section className="mt-6 w-full inline-block mx-auto">
       <Radio
         checked={agreed}
         onClick={() => setAgreed(!agreed)}
