@@ -13,7 +13,7 @@ export interface Member {
 export const members: Member[] = [
   {
     id: "1",
-    email: "admin@example.com",
+    email: "admin@smpay.com",
     password: "admin123!",
     name: "시스템 관리자",
     role: "admin",
@@ -22,7 +22,7 @@ export const members: Member[] = [
   },
   {
     id: "2",
-    email: "agency@smpay.com",
+    email: "agency@example.com",
     password: "agency123!",
     name: "마케팅 매니저",
     role: "agency",
