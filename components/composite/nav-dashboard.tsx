@@ -3,8 +3,6 @@
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
-import { useRoleStore } from "@/store/useRoleStore";
-
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,12 +22,13 @@ import {
 import { cn } from "@/lib/utils";
 import { dashboardItems } from "@/constants/dasboard";
 
+import { useUserStore } from "@/store/useUserStore";
+
 export function NavDashboard() {
   const pathname = usePathname();
   const router = useRouter();
-  const { role } = useRoleStore();
-
   const { state, toggleSidebar } = useSidebar();
+  const { user } = useUserStore();
 
   const handleClick = (url: string, isHasSubMenu: boolean) => {
     if (state === "collapsed") {
@@ -48,7 +47,7 @@ export function NavDashboard() {
     <SidebarGroup>
       <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
       <SidebarMenu>
-        {dashboardItems[role].map((item) =>
+        {dashboardItems[user?.role || "agency"].map((item) =>
           item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}

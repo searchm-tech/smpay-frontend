@@ -15,17 +15,18 @@ import {
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 
-import { useRoleStore } from "@/store/useRoleStore";
+import type { TUser } from "@/types/user";
+import { useUserStore } from "@/store/useUserStore";
 
-export function UserMenu() {
+export function UserMenu({ user }: { user: TUser }) {
   const [open, setOpen] = useState(false);
-  const { setRole } = useRoleStore();
+  const { setUser } = useUserStore();
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <div className="flex items-center space-x-2 cursor-pointer">
-          <span>XXX 님 환영합니다.</span>
+          <span>{user.name} 님 환영합니다.</span>
           <ChevronDown size={16} />
         </div>
       </DropdownMenuTrigger>
@@ -37,13 +38,13 @@ export function UserMenu() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setRole("admin")}
+            onClick={() => setUser({ ...user, role: "admin" })}
             className="cursor-pointer"
           >
             <LabelBullet>관리자</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setRole("agency")}
+            onClick={() => setUser({ ...user, role: "agency" })}
             className="cursor-pointer"
           >
             <LabelBullet>대행사</LabelBullet>

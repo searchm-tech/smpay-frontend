@@ -8,6 +8,7 @@ interface RoleState {
   setRole: (role: TRole) => void;
 }
 
+// TODO : 불필요할 경우 제거
 export const useRoleStore = create<RoleState>((set) => ({
   role: "admin",
   setRole: (role) => set({ role }),
