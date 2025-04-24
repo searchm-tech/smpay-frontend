@@ -1,25 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { Separator } from "@/components/ui/separator";
 import UserMenu from "@/components/common/UserMenu";
-
+import { useUserStore } from "@/store/useUserStore";
 interface User {
   name: string;
   email: string;
 }
 
 const Header = () => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    setUser({
-      name: "XXX",
-      email: "xxx@xxx.com",
-    });
-  }, []);
+  const { user: currentUser } = useUserStore();
 
   return (
     <header className="flex justify-end items-center space-x-4 text-sm py-3 px-4">
@@ -28,8 +20,8 @@ const Header = () => {
       <Link href="/notice">공지사항</Link>
       <Separator orientation="vertical" />
 
-      {user ? (
-        <UserMenu />
+      {currentUser ? (
+        <UserMenu user={currentUser} />
       ) : (
         <>
           <Link href="/support">로그인</Link>

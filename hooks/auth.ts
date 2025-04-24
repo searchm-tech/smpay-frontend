@@ -1,8 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
-import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
-import { TUser } from "@/types/user";
+import { useMutation } from "@tanstack/react-query";
+
+import { login } from "@/services/auth";
 import { useUserStore } from "@/store/useUserStore";
+import type { TUser } from "@/types/user";
 
 export interface LoginCredentials {
   email: string;
@@ -14,7 +15,7 @@ export interface LoginResponse {
   user: TUser;
 }
 
-export const useLogin = () => {
+export const userSignIn = () => {
   const router = useRouter();
   const { setUser, setToken } = useUserStore();
 
@@ -29,11 +30,5 @@ export const useLogin = () => {
     onError: (error: Error) => {
       console.error("Login error:", error.message);
     },
-  });
-};
-
-export const userSignIn = () => {
-  return useMutation({
-    mutationFn: login,
   });
 };
