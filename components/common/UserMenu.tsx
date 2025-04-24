@@ -59,7 +59,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/user/naver-service">
+            <Link href="/naver-service">
               <LabelBullet>네이버 서비스 설정</LabelBullet>
             </Link>
           </DropdownMenuItem>
