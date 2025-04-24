@@ -1,19 +1,21 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { SearchBox } from "@/components/common/Box";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-import type { SortOrder, FilterValue } from "antd/es/table/interface";
-import type { AlignType } from "rc-table/lib/interface";
 import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { AdvertiserData, mockAdvertiserData } from "./constants";
 import Table from "@/components/composite/table";
-import { TableProps } from "antd";
+
+import { AdvertiserData, mockAdvertiserData } from "./constants";
+
+import type { TableProps } from "antd";
+import type { SortOrder, FilterValue } from "antd/es/table/interface";
+import type { AlignType } from "rc-table/lib/interface";
 
 interface TableParams {
   pagination?: {

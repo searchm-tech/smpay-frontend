@@ -1,5 +1,4 @@
 import Image from "next/image";
-
 import { ArrowRight } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -12,19 +11,13 @@ const LicenseSection = () => {
     <section className="p-4">
       <LabelBullet className="text-base mb-2">API 라이선스 정보</LabelBullet>
       <Descriptions columns={1}>
-        <Descriptions.Item
-          label={<span className="font-bold">CUSTOMER ID *</span>}
-        >
+        <Descriptions.Item label="CUSTOMER ID *">
           <Input className="max-w-[500px]" />
         </Descriptions.Item>
-        <Descriptions.Item
-          label={<span className="font-bold">ACCESS LIC KEY *</span>}
-        >
+        <Descriptions.Item label="ACCESS LIC KEY *">
           <Input className="max-w-[500px]" />
         </Descriptions.Item>
-        <Descriptions.Item
-          label={<span className="font-bold">SECRET KEY *</span>}
-        >
+        <Descriptions.Item label="SECRET KEY *">
           <Input className="max-w-[500px]" />
         </Descriptions.Item>
       </Descriptions>

@@ -142,6 +142,10 @@ export const DASHBOARD_ITEMS_ADMIN = [
         title: "회원 관리",
         url: "/account/membership-management",
       },
+      {
+        title: "부서 관리",
+        url: "/account/department",
+      },
     ],
   },
   {
