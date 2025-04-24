@@ -1,9 +1,11 @@
+import type { TRole } from "@/store/useRoleStore";
+
 export interface Member {
   id: string;
   email: string;
   password: string;
   name: string;
-  role: "admin" | "user" | "manager";
+  role: TRole;
   status: "active" | "inactive" | "pending";
   department?: string;
 }
@@ -23,7 +25,7 @@ export const members: Member[] = [
     email: "agency@smpay.com",
     password: "agency123!",
     name: "마케팅 매니저",
-    role: "manager",
+    role: "agency",
     status: "active",
     department: "Marketing",
   },
@@ -32,7 +34,7 @@ export const members: Member[] = [
     email: "user1@example.com",
     password: "user123",
     name: "홍길동",
-    role: "user",
+    role: "agency",
     status: "active",
     department: "Sales",
   },
@@ -41,7 +43,7 @@ export const members: Member[] = [
     email: "user2@example.com",
     password: "user123",
     name: "김철수",
-    role: "user",
+    role: "agency",
     status: "inactive",
     department: "HR",
   },
@@ -50,7 +52,7 @@ export const members: Member[] = [
     email: "user3@example.com",
     password: "user123",
     name: "이영희",
-    role: "user",
+    role: "agency",
     status: "pending",
     department: "Finance",
   },
@@ -59,7 +61,7 @@ export const members: Member[] = [
     email: "manager2@example.com",
     password: "manager123",
     name: "박지성",
-    role: "manager",
+    role: "agency",
     status: "active",
     department: "Operations",
   },
@@ -77,7 +79,7 @@ export const members: Member[] = [
     email: "user4@example.com",
     password: "user123",
     name: "정다은",
-    role: "user",
+    role: "agency",
     status: "active",
     department: "Customer Service",
   },
@@ -86,7 +88,7 @@ export const members: Member[] = [
     email: "user5@example.com",
     password: "user123",
     name: "송민준",
-    role: "user",
+    role: "agency",
     status: "inactive",
     department: "R&D",
   },
@@ -95,7 +97,7 @@ export const members: Member[] = [
     email: "manager3@example.com",
     password: "manager123",
     name: "한지민",
-    role: "manager",
+    role: "agency",
     status: "active",
     department: "Product",
   },

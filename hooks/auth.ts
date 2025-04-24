@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
-import { members } from "@/services/mock/members";
-import { Member } from "@/services/mock/members";
+import { TUser } from "@/types/user";
+import { useUserStore } from "@/store/useUserStore";
 
 export interface LoginCredentials {
   email: string;
@@ -11,22 +11,20 @@ export interface LoginCredentials {
 
 export interface LoginResponse {
   token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: Member["role"];
-  };
+  user: TUser;
 }
 
 export const useLogin = () => {
   const router = useRouter();
+  const { setUser, setToken } = useUserStore();
 
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
-      router.push("/dashboard");
+      setUser(data.user);
+      setToken(data.token);
+
+      router.push("/sm-pay/management");
     },
     onError: (error: Error) => {
       console.error("Login error:", error.message);

@@ -18,7 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isNoNavPage =
     pathname === "/advertiser-verification" ||
     pathname === "/sign-in" ||
-    pathname === "/membership/password-reset";
+    pathname === "/membership/password-reset" ||
+    pathname === "/sign-out";
 
   useEffect(() => {
     if (!isNoNavPage && pathname.includes("/sm-pay/management")) {

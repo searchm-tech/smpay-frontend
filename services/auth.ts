@@ -1,3 +1,4 @@
+import { TUser } from "@/types/user";
 import { members } from "./mock/members";
 
 interface LoginCredentials {
@@ -7,12 +8,7 @@ interface LoginCredentials {
 
 interface LoginResponse {
   token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  };
+  user: TUser;
 }
 
 export const login = async (
@@ -33,14 +29,17 @@ export const login = async (
     throw new Error("비밀번호가 일치하지 않습니다.");
   }
 
-  // 로그인 성공 시 토큰과 사용자 정보 반환
-  return {
+  const result: LoginResponse = {
     token: "mock-jwt-token-" + Math.random(),
     user: {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
+      token: "mock-jwt-token-" + Math.random(),
     },
   };
+
+  // 로그인 성공 시 토큰과 사용자 정보 반환
+  return result;
 };

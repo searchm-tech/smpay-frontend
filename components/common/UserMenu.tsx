@@ -54,7 +54,9 @@ export function UserMenu() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <LabelBullet>로그아웃</LabelBullet>
+            <Link href="/sign-out">
+              <LabelBullet>로그아웃</LabelBullet>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 

@@ -1,7 +1,8 @@
 // store/useRoleStore.ts
 import { create } from "zustand";
 
-type TRole = "admin" | "agency";
+export type TRole = "admin" | "agency";
+
 interface RoleState {
   role: TRole; // string;
   setRole: (role: TRole) => void;
