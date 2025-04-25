@@ -9,8 +9,8 @@ import Select from "@/components/composite/select-components";
 
 import { type MemberData, mockMemberData } from "./constant";
 import type { TableProps } from "antd";
-import type { TableRowSelection } from "antd/es/table/interface";
-import type { TableParams } from "@/types";
+import type { FilterValue, TableRowSelection } from "antd/es/table/interface";
+import type { TableParams } from "@/types/table";
 
 const optsStatus = [
   { label: "정상", value: "active" },
@@ -115,7 +115,7 @@ const AdminTableSection = () => {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
-      filters,
+      filters: filters as Record<string, FilterValue>,
       sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
       sortOrder: !Array.isArray(sorter) ? sorter.order : undefined,
     });
@@ -225,7 +225,7 @@ const AgencyTableSection = () => {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
-      filters,
+      filters: filters as Record<string, FilterValue>,
       sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
       sortOrder: !Array.isArray(sorter) ? sorter.order : undefined,
     });
