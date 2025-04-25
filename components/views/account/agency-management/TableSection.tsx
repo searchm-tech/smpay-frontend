@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { TableProps } from "antd";
-
 import { Button } from "@/components/ui/button";
 import Select from "@/components/composite/select-components";
 import Table from "@/components/composite/table";
 import { getAgencies, type AgencyData } from "@/services/agency";
-import { type TableParams } from "@/types/table";
+
+import type { TableParams } from "@/types/table";
+import type { TableProps } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
 
 const columns: TableProps<AgencyData>["columns"] = [
   {
@@ -99,7 +100,7 @@ const TableSection = () => {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
-      filters,
+      filters: filters as Record<string, FilterValue>,
       sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
       sortOrder: !Array.isArray(sorter) ? sorter.order : undefined,
     });

@@ -70,16 +70,21 @@ root
 ├── app/                    # Next.js 14 app directory
 │   └── layout.tsx         # 루트 레이아웃
 │
-├── components/            # 컴포넌트 디렉토리
+├── components/           # 컴포넌트 디렉토리
 │   ├── ui/               # 순수 shadcn-ui 컴포넌트
 │   ├── layout/           # 전체 레이아웃 구성 컴포넌트
 │   ├── composite/        # 조합형 UI (shadcn, antd 기반)
 │   ├── common/           # 기타 공통 컴포넌트
 │   └── views/            # 클라이언트 view 컴포넌트
 │
+├── constants/            # 공통 값
+│
 ├── lib/                  # 유틸리티 함수 및 설정
 │   ├── utils.ts
+│   ├── providers         # react-query provier
 │   └── constants.ts
+│
+├── service/              # api service
 │
 ├── hooks/               # 커스텀 훅
 │   └── use-*.ts
@@ -88,7 +93,7 @@ root
 │   └── *.store.ts
 │
 ├── types/              # TypeScript 타입 정의 - 추가 예정
-    └── *.d.ts
+    └── *..ts
 
 ```
 
@@ -97,15 +102,36 @@ root
 ```bash
 
 0. sign-in # 로그인 화면
-1. sm-pay
+1. sign-out # 로그아웃
+2. sm-pay
    - charge # 충전 회수 관리
      ├──
    - judement # SM Pay 심사
      ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
-     ├── detail : # SM Pay 심사 요청 상세
+     ├── [slug] : # SM Pay 심사 요청 상세
    - management # SM Pay 관리
      ├── apply-detail : # 신청 상세
      ├── apply-submit : # 신청서 제출
      ├── apply-write : # 신청서 작성
      ├── / : # SM Pay 메인 페이지 (SM Pay 목록 페이지)
+3. user
+   - info # (회원 정보)기본 정보 변경
+     ├──
+   - password-reset # 비밀번호 변경
+     ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
+     ├── [slug] : # SM Pay 심사 요청 상세
+   - management # SM Pay 관리
+     ├── apply-detail : # 신청 상세
+     ├── apply-submit : # 신청서 제출
+     ├── apply-write : # 신청서 작성
+     ├── / : # SM Pay 메인 페이지 (SM Pay 목록 페이지)
+4. account # 계정 관리
+   - agency-management # 대행사 관리
+   - agency-register # 대행사 등록
+   - department # 부서관리
+   - membership-management # 회원관리
+   - membership-register # 회원등록
+5. advertiser-verification # sm-pay 신청 > 동의서 페이지
+6. naver-service # 네이버 서비스 설정
+
 ```

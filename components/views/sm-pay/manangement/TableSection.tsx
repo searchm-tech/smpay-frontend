@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
@@ -10,96 +10,40 @@ import { LinkTextButton } from "@/components/composite/button-components";
 
 import StopInfoModal from "../components/StopInfoModal";
 import RejectModal from "../components/RejectModal";
-import { dialogContent, type DialogStatus } from "./constants";
+
+import { useSmpayDataStore } from "@/store/useSmpayDataStore";
+import { useSmPayList } from "@/hooks/queries/sm-pay";
+
+import {
+  dialogContent,
+  statusActions,
+  statusLabels,
+  type DialogStatus,
+} from "./constants";
 
 import type { TableProps } from "antd";
 
-type SmPayStatus =
-  | "ADVERTISER_AGREEMENT_REQUEST" // 광고주 동의 요청
-  | "ADVERTISER_DISAGREED" // 광고주 미동의
-  | "ADVERTISER_AGREEMENT_EXPIRED" // 광고주 동의기한 만료
-  | "ADVERTISER_AGREEMENT_COMPLETED" // 광고주 동의 완료
-  | "REVIEW_PENDING" // 심사 대기
-  | "REVIEW_APPROVED" // 심사 승인
-  | "REJECTED" // 반려
-  | "SUSPENDED" // 일시중지
-  | "TERMINATION_IN_PROGRESS" // 해지 신청 진행
-  | "TERMINATED"; // 해지
+import type { FilterValue } from "antd/es/table/interface";
+import type { TableParams } from "@/types/table";
+import type { SmPayStatus, SmPayData } from "@/types/sm-pay";
+import { SmPayResponse } from "@/services/types";
 
-type ActionButton =
-  | "view"
-  | "cancel"
-  | "resend"
-  | "request"
-  | "stop"
-  | "terminate"
-  | "resume";
-
-const statusActions: Record<SmPayStatus, ActionButton[]> = {
-  ADVERTISER_AGREEMENT_REQUEST: ["view"],
-  ADVERTISER_DISAGREED: ["view", "cancel"],
-  ADVERTISER_AGREEMENT_EXPIRED: ["view", "cancel", "resend"],
-  ADVERTISER_AGREEMENT_COMPLETED: ["view", "cancel", "request"],
-  REVIEW_PENDING: ["view"],
-  REVIEW_APPROVED: ["view", "stop", "terminate"],
-  REJECTED: ["view"],
-  SUSPENDED: ["view", "terminate", "resume"],
-  TERMINATION_IN_PROGRESS: [],
-  TERMINATED: [],
-};
-
-const statusLabels: Record<SmPayStatus, string> = {
-  ADVERTISER_AGREEMENT_REQUEST: "광고주 동의 요청",
-  ADVERTISER_DISAGREED: "광고주 미동의",
-  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의기한 만료",
-  ADVERTISER_AGREEMENT_COMPLETED: "광고주 동의 완료",
-  REVIEW_PENDING: "심사 대기",
-  REVIEW_APPROVED: "심사 승인",
-  REJECTED: "반려",
-  SUSPENDED: "일시중지",
-  TERMINATION_IN_PROGRESS: "해지 신청 진행",
-  TERMINATED: "해지",
-};
-
-const statusList: SmPayStatus[] = [
-  "ADVERTISER_AGREEMENT_REQUEST",
-  "ADVERTISER_DISAGREED",
-  "ADVERTISER_AGREEMENT_EXPIRED",
-  "ADVERTISER_AGREEMENT_COMPLETED",
-  "REVIEW_PENDING",
-  "REVIEW_APPROVED",
-  "REJECTED",
-  "SUSPENDED",
-  "TERMINATION_IN_PROGRESS",
-  "TERMINATED",
-];
-
-interface SmPayData {
-  id: number;
-  owner: string;
-  accountId: string;
-  accountName: string;
-  businessName: string;
-  bussiness_num: string;
-  status: SmPayStatus;
-  createdAt: string;
+interface TableSectionProps {
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
+  total: number;
+  loadingData: boolean;
+  smpayList: SmPayData[];
 }
 
-const mockData: SmPayData[] = Array.from({ length: 20 }).map((_, i) => ({
-  id: i + 1,
-  owner: `대표자 ${i + 1}`,
-  accountId: `account_${i + 1}`,
-  accountName: `계좌명 ${i + 1}`,
-  businessName: `사업자 ${i + 1}`,
-  bussiness_num: `110-22-33${i.toString().padStart(2, "0")}`,
-  status: statusList[i % statusList.length],
-  createdAt: new Date().toISOString().slice(0, 10),
-}));
-
-const TableSection = () => {
+const TableSection = ({
+  tableParams,
+  setTableParams,
+  total,
+  loadingData,
+  smpayList,
+}: TableSectionProps) => {
   const router = useRouter();
-
-  const [dataSource] = useState<SmPayData[]>(mockData);
 
   const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
   const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
@@ -109,34 +53,52 @@ const TableSection = () => {
     router.push(`/sm-pay/management/apply-detail/${id}`);
   };
 
+  const handleTableChange: TableProps<SmPayData>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    setTableParams({
+      pagination: {
+        current: pagination.current || 1,
+        pageSize: pagination.pageSize || 10,
+        total: pagination.total || 0,
+      },
+      filters: filters as Record<string, FilterValue>,
+      ...(!Array.isArray(sorter) && {
+        sortField: sorter.field?.toString(),
+        sortOrder: sorter.order,
+      }),
+    });
+  };
+
   const columns: TableProps<SmPayData>["columns"] = [
     {
       title: "No",
       dataIndex: "id",
       align: "center",
     },
-
     {
       title: "대표자명",
       dataIndex: "owner",
       align: "center",
-      sorter: (a, b) => a.owner.localeCompare(b.owner),
+      sorter: (a: SmPayData, b: SmPayData) => a.owner.localeCompare(b.owner),
     },
     {
       title: "사업자 등록 번호",
       dataIndex: "bussiness_num",
       align: "center",
-      sorter: (a, b) => a.bussiness_num.localeCompare(b.bussiness_num),
+      sorter: (a: SmPayData, b: SmPayData) =>
+        a.bussiness_num.localeCompare(b.bussiness_num),
     },
-
     {
       title: "사업자명",
       dataIndex: "businessName",
       align: "center",
-      sorter: (a, b) => a.businessName.localeCompare(b.businessName),
-      render: (value) => <LinkTextButton>{value}</LinkTextButton>,
+      sorter: (a: SmPayData, b: SmPayData) =>
+        a.businessName.localeCompare(b.businessName),
+      render: (value: string) => <LinkTextButton>{value}</LinkTextButton>,
     },
-
     {
       title: "활성여부",
       dataIndex: "status",
@@ -162,7 +124,6 @@ const TableSection = () => {
         return <span>{statusLabels[value]}</span>;
       },
     },
-
     {
       title: "기능",
       dataIndex: "action",
@@ -238,7 +199,6 @@ const TableSection = () => {
         );
       },
     },
-
     {
       title: "가입일",
       dataIndex: "createdAt",
@@ -247,6 +207,13 @@ const TableSection = () => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     },
   ];
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [tableParams.pagination?.current]);
 
   return (
     <section>
@@ -280,8 +247,15 @@ const TableSection = () => {
 
       <Table<SmPayData>
         columns={columns}
-        dataSource={dataSource}
-        total={dataSource.length}
+        dataSource={smpayList}
+        loading={loadingData}
+        onChange={handleTableChange}
+        pagination={{
+          ...tableParams.pagination,
+          total: total,
+          position: ["bottomCenter"],
+          showSizeChanger: true,
+        }}
       />
     </section>
   );

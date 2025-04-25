@@ -1,6 +1,7 @@
 import React from "react";
 import OrganizationModal from "@/components/common/OrganizationModal";
 
+// TODO : 조직도 모달 테스트용
 export default function OrganizationPage() {
   return (
     <div className="container mx-auto py-10">
