@@ -81,6 +81,7 @@ interface SearchInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const SearchInput = ({
@@ -88,6 +89,7 @@ const SearchInput = ({
   onChange,
   placeholder,
   className,
+  onKeyDown,
 }: SearchInputProps) => {
   return (
     <div className={cn("relative w-full bg-white rounded-md", className)}>
@@ -96,6 +98,7 @@ const SearchInput = ({
         type="text"
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder || "검색어를 입력해주세요."}
         className="pl-8"
       />
