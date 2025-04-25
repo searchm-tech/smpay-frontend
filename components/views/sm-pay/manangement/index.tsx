@@ -13,6 +13,7 @@ import type { TableParams } from "@/types/table";
 const SMPayManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -34,6 +35,7 @@ const SMPayManagementView = () => {
     filters: {
       ...(tableParams.filters as Record<string, string[]>),
       ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
+      ...(searchKeyword ? { search: [searchKeyword] } : {}),
     },
   });
 
@@ -54,9 +56,21 @@ const SMPayManagementView = () => {
     }));
   };
 
+  const handleSearch = (keyword: string) => {
+    setSearchKeyword(keyword);
+    setSelectedStatus("ALL");
+    setTableParams((prev) => ({
+      ...prev,
+      pagination: {
+        ...prev.pagination,
+        current: 1,
+      },
+    }));
+  };
+
   return (
     <div>
-      <SearchSection />
+      <SearchSection onSearch={handleSearch} />
       <FilterSection
         selectedStatus={selectedStatus}
         onStatusChange={handleStatusChange}
