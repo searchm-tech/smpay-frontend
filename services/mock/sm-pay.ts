@@ -16,12 +16,14 @@ const statusList: SmPayStatus[] = [
 export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
   (_, i) => ({
     id: i + 1,
-    owner: `대표자 ${i + 1}`,
-    accountId: `account_${i + 1}`,
-    accountName: `계좌명 ${i + 1}`,
-    businessName: `사업자 ${i + 1}`,
-    bussiness_num: `110-22-33${i.toString().padStart(2, "0")}`,
+    no: i + 1,
+    manager: `담당자 ${i + 1}`,
+    customerId: `CUST_${(i + 1).toString().padStart(5, "0")}`,
+    loginId: `user_${(i + 1).toString().padStart(3, "0")}`,
+    advertiserName: `광고주 ${i + 1}`,
     status: statusList[i % statusList.length],
-    createdAt: new Date().toISOString().slice(0, 10),
+    lastModifiedAt: new Date(
+      Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+    ).toISOString(),
   })
 );

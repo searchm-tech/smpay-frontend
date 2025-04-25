@@ -1,4 +1,15 @@
 export interface SmPayData {
+  id: number; // For table key
+  no: number; // No
+  manager: string; // 담당자
+  customerId: string; // CUSTOMER ID
+  loginId: string; // 로그인 ID
+  advertiserName: string; // 광고주명
+  status: SmPayStatus; // 상태
+  lastModifiedAt: string; // 최종 수정일시
+}
+
+export interface SmPayData2 {
   id: number;
   owner: string;
   accountId: string;
