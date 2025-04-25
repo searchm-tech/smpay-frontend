@@ -11,9 +11,6 @@ import { LinkTextButton } from "@/components/composite/button-components";
 import StopInfoModal from "../components/StopInfoModal";
 import RejectModal from "../components/RejectModal";
 
-import { useSmpayDataStore } from "@/store/useSmpayDataStore";
-import { useSmPayList } from "@/hooks/queries/sm-pay";
-
 import {
   dialogContent,
   statusActions,
@@ -22,11 +19,9 @@ import {
 } from "./constants";
 
 import type { TableProps } from "antd";
-
 import type { FilterValue } from "antd/es/table/interface";
-import type { TableParams } from "@/types/table";
 import type { SmPayStatus, SmPayData } from "@/types/sm-pay";
-import { SmPayResponse } from "@/services/types";
+import type { TableParams } from "@/types/table";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -58,7 +53,7 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    setTableParams({
+    const newParams: TableParams = {
       pagination: {
         current: pagination.current || 1,
         pageSize: pagination.pageSize || 10,
@@ -69,8 +64,16 @@ const TableSection = ({
         sortField: sorter.field?.toString(),
         sortOrder: sorter.order,
       }),
-    });
+    };
+    setTableParams(newParams);
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [tableParams.pagination?.current]);
 
   const columns: TableProps<SmPayData>["columns"] = [
     {
@@ -208,13 +211,6 @@ const TableSection = ({
     },
   ];
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [tableParams.pagination?.current]);
-
   return (
     <section>
       {openDialog && (
@@ -248,14 +244,14 @@ const TableSection = ({
       <Table<SmPayData>
         columns={columns}
         dataSource={smpayList}
-        loading={loadingData}
-        onChange={handleTableChange}
         pagination={{
           ...tableParams.pagination,
-          total: total,
+          total,
           position: ["bottomCenter"],
           showSizeChanger: true,
         }}
+        loading={loadingData}
+        onChange={handleTableChange}
       />
     </section>
   );

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { getSmPayStatus } from "@/services/sm-pay";
 
 // default : #363C45
 // 값 있음 : #9BA5B7
@@ -7,23 +9,41 @@ import { Badge } from "@/components/ui/badge";
 type FilterItem = {
   title: string;
   count: number;
-  fixedColor?: string; // "전체"만 고정 색상
+  status: string;
+  fixedColor?: string;
 };
 
-const FilterSection = () => {
-  const filters: FilterItem[] = [
-    { title: "전체", count: 10, fixedColor: "#363C45" },
-    { title: "광고주 동의 요청", count: 10 },
-    { title: "광고주 미동의", count: 10 },
-    { title: "광고주 동의기한 만료", count: 0 },
-    { title: "광고주 동의 완료", count: 0 },
-    { title: "심사 대기", count: 0 },
-    { title: "심사 승인", count: 0 },
-    { title: "반려", count: 0 },
-    { title: "일시중지", count: 0 },
-    { title: "해지 신청 진행", count: 0 },
-    { title: "해지", count: 0 },
-  ];
+interface FilterSectionProps {
+  selectedStatus: string;
+  onStatusChange: (status: string) => void;
+}
+
+const FilterSection = ({
+  selectedStatus,
+  onStatusChange,
+}: FilterSectionProps) => {
+  const [filters, setFilters] = useState<FilterItem[]>([]);
+
+  useEffect(() => {
+    const fetchStatusCounts = async () => {
+      const response = await getSmPayStatus();
+      if (response.success) {
+        const filterItems = response.data.map((item) => ({
+          title: item.name,
+          count: item.count,
+          status: item.status,
+          fixedColor: item.status === "ALL" ? "#363C45" : undefined,
+        }));
+        setFilters(filterItems);
+      }
+    };
+
+    fetchStatusCounts();
+  }, []);
+
+  const handleFilterClick = (status: string) => {
+    onStatusChange(status);
+  };
 
   return (
     <section className="p-4 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -32,7 +52,10 @@ const FilterSection = () => {
           key={filter.title}
           title={filter.title}
           count={filter.count}
+          status={filter.status}
           fixedColor={filter.fixedColor}
+          isSelected={selectedStatus === filter.status}
+          onClick={() => handleFilterClick(filter.status)}
         />
       ))}
     </section>
@@ -41,24 +64,37 @@ const FilterSection = () => {
 
 export default FilterSection;
 
+interface FilterItemProps {
+  title: string;
+  count: number;
+  status: string;
+  fixedColor?: string;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
 const FilterItem = ({
   title,
   count,
+  status,
   fixedColor,
-}: {
-  title: string;
-  count: number;
-  fixedColor?: string; // "전체"만 고정 색상
-}) => {
+  isSelected,
+  onClick,
+}: FilterItemProps) => {
   const badgeColor = fixedColor ?? (count > 0 ? "#9BA5B7" : "#EEF1F4");
-  const textColor = fixedColor
+  const textColor = isSelected
+    ? "text-black font-bold"
+    : fixedColor
     ? "text-black"
     : count > 0
     ? "text-black"
     : "text-[#949494]";
 
   return (
-    <span className={`flex items-center gap-1 cursor-pointer ${textColor}`}>
+    <span
+      className={`flex items-center gap-1 cursor-pointer ${textColor}`}
+      onClick={onClick}
+    >
       {title}
       <Badge count={count} color={badgeColor} />
     </span>

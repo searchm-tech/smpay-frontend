@@ -1,5 +1,9 @@
 import { mockData } from "./mock/sm-pay";
-import type { FetchSmPayParams, SmPayResponse } from "./types";
+import type {
+  FetchSmPayParams,
+  SmPayResponse,
+  SmPayStatusResponse,
+} from "./types";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -57,6 +61,222 @@ export const fetchSmPayData = async (
   return {
     data: paginatedData,
     total: filteredData.length,
+    success: true,
+  };
+};
+
+export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
+  // 서버 응답을 시뮬레이션하기 위한 지연
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // 상태별 카운트 계산
+  const statusCounts = mockData.reduce((acc, item) => {
+    acc[item.status] = (acc[item.status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // 전체 카운트 계산
+  const totalCount = mockData.length;
+
+  return {
+    data: [
+      {
+        id: 0,
+        name: "전체",
+        status: "ALL",
+        count: totalCount,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 1,
+        name: "광고주 동의 요청",
+        status: "ADVERTISER_AGREEMENT_REQUEST",
+        count: statusCounts["ADVERTISER_AGREEMENT_REQUEST"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 2,
+        name: "광고주 미동의",
+        status: "ADVERTISER_DISAGREED",
+        count: statusCounts["ADVERTISER_DISAGREED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 3,
+        name: "광고주 동의기한 만료",
+        status: "ADVERTISER_AGREEMENT_EXPIRED",
+        count: statusCounts["ADVERTISER_AGREEMENT_EXPIRED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 4,
+        name: "광고주 동의 완료",
+        status: "ADVERTISER_AGREEMENT_COMPLETED",
+        count: statusCounts["ADVERTISER_AGREEMENT_COMPLETED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 5,
+        name: "심사 대기",
+        status: "REVIEW_PENDING",
+        count: statusCounts["REVIEW_PENDING"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 6,
+        name: "심사 승인",
+        status: "REVIEW_APPROVED",
+        count: statusCounts["REVIEW_APPROVED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 7,
+        name: "반려",
+        status: "REJECTED",
+        count: statusCounts["REJECTED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 8,
+        name: "일시중지",
+        status: "SUSPENDED",
+        count: statusCounts["SUSPENDED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 9,
+        name: "해지 신청 진행",
+        status: "TERMINATION_IN_PROGRESS",
+        count: statusCounts["TERMINATION_IN_PROGRESS"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 10,
+        name: "해지",
+        status: "TERMINATED",
+        count: statusCounts["TERMINATED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+    ],
+    success: true,
+  };
+};
+
+export const getSmPayStatusCounts = async (): Promise<SmPayStatusResponse> => {
+  // 서버 응답을 시뮬레이션하기 위한 지연
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // 상태별 카운트 계산
+  const statusCounts = mockData.reduce((acc, item) => {
+    acc[item.status] = (acc[item.status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // 전체 카운트 계산
+  const totalCount = mockData.length;
+
+  return {
+    data: [
+      {
+        id: 0,
+        name: "전체",
+        status: "ALL",
+        count: totalCount,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 1,
+        name: "광고주 동의 요청",
+        status: "ADVERTISER_AGREEMENT_REQUEST",
+        count: statusCounts["ADVERTISER_AGREEMENT_REQUEST"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 2,
+        name: "광고주 미동의",
+        status: "ADVERTISER_DISAGREED",
+        count: statusCounts["ADVERTISER_DISAGREED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 3,
+        name: "광고주 동의기한 만료",
+        status: "ADVERTISER_AGREEMENT_EXPIRED",
+        count: statusCounts["ADVERTISER_AGREEMENT_EXPIRED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 4,
+        name: "광고주 동의 완료",
+        status: "ADVERTISER_AGREEMENT_COMPLETED",
+        count: statusCounts["ADVERTISER_AGREEMENT_COMPLETED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 5,
+        name: "심사 대기",
+        status: "REVIEW_PENDING",
+        count: statusCounts["REVIEW_PENDING"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 6,
+        name: "심사 승인",
+        status: "REVIEW_APPROVED",
+        count: statusCounts["REVIEW_APPROVED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 7,
+        name: "반려",
+        status: "REJECTED",
+        count: statusCounts["REJECTED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 8,
+        name: "일시중지",
+        status: "SUSPENDED",
+        count: statusCounts["SUSPENDED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 9,
+        name: "해지 신청 진행",
+        status: "TERMINATION_IN_PROGRESS",
+        count: statusCounts["TERMINATION_IN_PROGRESS"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+      {
+        id: 10,
+        name: "해지",
+        status: "TERMINATED",
+        count: statusCounts["TERMINATED"] || 0,
+        createdAt: "",
+        updatedAt: "",
+      },
+    ],
     success: true,
   };
 };
