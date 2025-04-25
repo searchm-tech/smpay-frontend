@@ -25,3 +25,17 @@ export interface SmPayResponse {
   total: number;
   success: boolean;
 }
+
+export interface SmPayStatusData {
+  id: number;
+  name: string;
+  status: string;
+  count: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SmPayStatusResponse {
+  data: SmPayStatusData[];
+  success: boolean;
+}

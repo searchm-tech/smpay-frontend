@@ -12,6 +12,7 @@ import type { TableParams } from "@/types/table";
 
 const SMPayManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
+  const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
 
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -30,7 +31,10 @@ const SMPayManagementView = () => {
       tableParams.sortField && tableParams.sortOrder
         ? { field: tableParams.sortField, order: tableParams.sortOrder }
         : undefined,
-    filters: tableParams.filters as Record<string, string[]>,
+    filters: {
+      ...(tableParams.filters as Record<string, string[]>),
+      ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
+    },
   });
 
   useEffect(() => {
@@ -39,10 +43,24 @@ const SMPayManagementView = () => {
     }
   }, [response?.data]);
 
+  const handleStatusChange = (status: string) => {
+    setSelectedStatus(status);
+    setTableParams((prev) => ({
+      ...prev,
+      pagination: {
+        ...prev.pagination,
+        current: 1,
+      },
+    }));
+  };
+
   return (
     <div>
       <SearchSection />
-      <FilterSection />
+      <FilterSection
+        selectedStatus={selectedStatus}
+        onStatusChange={handleStatusChange}
+      />
       <TableSection
         tableParams={tableParams}
         setTableParams={setTableParams}
