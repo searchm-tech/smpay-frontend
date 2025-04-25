@@ -4,8 +4,14 @@ import { Badge } from "@/components/ui/badge";
 // 값 있음 : #9BA5B7
 // 값 없음 : #EEF1F4
 
+type FilterItem = {
+  title: string;
+  count: number;
+  fixedColor?: string; // "전체"만 고정 색상
+};
+
 const FilterSection = () => {
-  const filters = [
+  const filters: FilterItem[] = [
     { title: "전체", count: 10, fixedColor: "#363C45" },
     { title: "광고주 동의 요청", count: 10 },
     { title: "광고주 미동의", count: 10 },
