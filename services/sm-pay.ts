@@ -3,6 +3,7 @@ import type {
   FetchSmPayParams,
   SmPayResponse,
   SmPayStatusResponse,
+  AdvertiserListResponse,
 } from "./types";
 
 export const fetchSmPayData = async (

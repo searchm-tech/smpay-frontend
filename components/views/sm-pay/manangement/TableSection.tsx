@@ -215,7 +215,7 @@ const TableSection = ({
     {
       title: "최종 수정일시",
       dataIndex: "lastModifiedAt",
-      width: 150,
+      width: 200,
       align: "center",
       render: (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     },
