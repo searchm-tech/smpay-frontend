@@ -24,9 +24,9 @@ const Header = () => {
         <UserMenu user={currentUser} />
       ) : (
         <>
-          <Link href="/support">로그인</Link>
+          <Link href="/sign-in">로그인</Link>
           <Separator orientation="vertical" />
-          <Link href="/notice">회원가입</Link>
+          <Link href="/sign-up">회원가입</Link>
         </>
       )}
     </header>
