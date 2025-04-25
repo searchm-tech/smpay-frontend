@@ -23,6 +23,8 @@ import type { FilterValue } from "antd/es/table/interface";
 import type { SmPayStatus, SmPayData } from "@/types/sm-pay";
 import type { TableParams } from "@/types/table";
 
+import dayjs from "dayjs";
+
 interface TableSectionProps {
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
@@ -78,35 +80,42 @@ const TableSection = ({
   const columns: TableProps<SmPayData>["columns"] = [
     {
       title: "No",
-      dataIndex: "id",
+      dataIndex: "no",
       align: "center",
     },
     {
-      title: "대표자명",
-      dataIndex: "owner",
+      title: "담당자",
+      dataIndex: "manager",
       align: "center",
-      sorter: (a: SmPayData, b: SmPayData) => a.owner.localeCompare(b.owner),
     },
     {
-      title: "사업자 등록 번호",
-      dataIndex: "bussiness_num",
+      title: "CUSTOMER ID",
+      dataIndex: "customerId",
       align: "center",
-      sorter: (a: SmPayData, b: SmPayData) =>
-        a.bussiness_num.localeCompare(b.bussiness_num),
     },
     {
-      title: "사업자명",
-      dataIndex: "businessName",
+      title: "로그인 ID",
+      dataIndex: "loginId",
       align: "center",
-      sorter: (a: SmPayData, b: SmPayData) =>
-        a.businessName.localeCompare(b.businessName),
-      render: (value: string) => <LinkTextButton>{value}</LinkTextButton>,
+      render: (text: string, record: SmPayData) => (
+        <LinkTextButton
+          onClick={() => {
+            router.push(`/sm-pay/management/apply-detail/${record.no}`);
+          }}
+        >
+          {text}
+        </LinkTextButton>
+      ),
     },
     {
-      title: "활성여부",
+      title: "광고주명",
+      dataIndex: "advertiserName",
+      align: "center",
+    },
+    {
+      title: "상태",
       dataIndex: "status",
       align: "center",
-      sorter: (a, b) => Number(b.status) - Number(a.status),
       render: (value: SmPayStatus) => {
         if (value === "REJECTED") {
           return (
@@ -127,6 +136,7 @@ const TableSection = ({
         return <span>{statusLabels[value]}</span>;
       },
     },
+
     {
       title: "기능",
       dataIndex: "action",
@@ -139,7 +149,7 @@ const TableSection = ({
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() => handleMoveDetailPage(record.id)}
+                onClick={() => handleMoveDetailPage(record.no)}
               >
                 조회
               </Button>
@@ -203,11 +213,11 @@ const TableSection = ({
       },
     },
     {
-      title: "가입일",
-      dataIndex: "createdAt",
+      title: "최종 수정일시",
+      dataIndex: "lastModifiedAt",
+      width: 150,
       align: "center",
-      sorter: (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      render: (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     },
   ];
 
@@ -243,6 +253,7 @@ const TableSection = ({
 
       <Table<SmPayData>
         columns={columns}
+        rowKey="id"
         dataSource={smpayList}
         pagination={{
           ...tableParams.pagination,
