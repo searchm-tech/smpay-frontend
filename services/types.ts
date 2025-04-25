@@ -1,3 +1,4 @@
+import type { AdvertiserData } from "@/types/adveriser";
 import type { SmPayData } from "@/types/sm-pay";
 
 export interface PaginationParams {
@@ -37,5 +38,16 @@ export interface SmPayStatusData {
 
 export interface SmPayStatusResponse {
   data: SmPayStatusData[];
+  success: boolean;
+}
+
+export interface FetchAdvertiserParams {
+  pagination: PaginationParams;
+  sort?: SortParams;
+  filters?: FilterParams;
+}
+
+export interface AdvertiserListResponse {
+  data: AdvertiserData[];
   success: boolean;
 }
