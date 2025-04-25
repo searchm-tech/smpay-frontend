@@ -13,7 +13,7 @@ import CheckboxLabel from "@/components/composite/checkbox-label";
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
-import { userSignIn } from "@/hooks/auth";
+import { userSignIn } from "@/hooks/queries/auth";
 import { STORAGE_KEYS, createFormSchema } from "./constants";
 
 interface SignInViewProps {
@@ -48,6 +48,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     }
   };
 
+  // TODO : 그냥 상관없이 처리하기
   function onSubmit(values: FormValues) {
     const email =
       loginType === "agency" ? `${values.email}@${company}` : values.email;
