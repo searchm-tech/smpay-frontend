@@ -171,4 +171,26 @@ const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
   );
 };
 
-export { InputForm, SearchInput, PhoneInput };
+interface NumberInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "onChange" | "value"
+  > {
+  value: string | number;
+  onChange: (value: string) => void;
+}
+
+function NumberInput({ value, onChange, ...rest }: NumberInputProps) {
+  return (
+    <Input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      value={value}
+      onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, ""))}
+      {...rest}
+    />
+  );
+}
+
+export { InputForm, SearchInput, PhoneInput, NumberInput };
