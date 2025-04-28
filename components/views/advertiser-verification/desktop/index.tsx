@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import HeaderSection from "./HeaderSection";
@@ -10,13 +11,7 @@ import FooterSection from "./FooterSection";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { dialogContent, type DialogStatus } from "./constants";
-import { useRouter } from "next/navigation";
-
-export type AccountInfo = {
-  bank: string;
-  accountNumber: string;
-  accountHolder: string;
-};
+import type { AccountInfo } from "..";
 
 const DesktopView = () => {
   const router = useRouter();

@@ -16,3 +16,9 @@ const AdvertiserVerificationView = () => {
 };
 
 export default AdvertiserVerificationView;
+
+export type AccountInfo = {
+  bank: string;
+  accountNumber: string;
+  accountHolder: string;
+};
