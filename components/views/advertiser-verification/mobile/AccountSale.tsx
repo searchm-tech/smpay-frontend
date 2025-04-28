@@ -15,6 +15,7 @@ type AccountSaleProps = {
   setSalesAccount: (account: AccountInfo) => void;
   handleReset: () => void;
   handleARS: () => void;
+  arsCertified: boolean;
 };
 
 const AccountSale = ({
@@ -22,6 +23,7 @@ const AccountSale = ({
   setSalesAccount,
   handleReset,
   handleARS,
+  arsCertified,
 }: AccountSaleProps) => {
   const handleSalesCertification = () => {
     if (
@@ -82,9 +84,7 @@ const AccountSale = ({
         <div className="flex justify-center gap-2">
           <Button
             className="h-[35px] w-1/2 font-bold"
-            onClick={() => {
-              alert("계좌 인증하기");
-            }}
+            onClick={handleSalesCertification}
           >
             계좌 인증하기
           </Button>
@@ -103,8 +103,9 @@ const AccountSale = ({
         <Button
           className="h-[40px] w-full bg-[#9BA5B7] font-bold text-lg"
           onClick={handleARS}
+          disabled={arsCertified}
         >
-          ARS 인증하기
+          {arsCertified ? "ARS 인증 완료" : "ARS 인증하기"}
         </Button>
       </div>
     </section>

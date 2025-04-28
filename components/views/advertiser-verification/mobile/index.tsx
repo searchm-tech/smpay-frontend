@@ -90,6 +90,7 @@ const MobilewView = () => {
     }
 
     setArsCertified(true);
+    alert("ARS 인증이 완료 되었습니다.");
   };
 
   return (
@@ -118,6 +119,7 @@ const MobilewView = () => {
               setSalesAccount={setSalesAccount}
               handleReset={() => setSalesAccount(DEFAULT_ACCOUNT_INFO)}
               handleARS={handleARS}
+              arsCertified={arsCertified}
             />
           )}
         </div>
