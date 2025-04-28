@@ -79,7 +79,7 @@ const Radio = ({
   const id = useId();
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className} flex items-center gap-2`}>
       <button
         type="button"
         role="radio"
