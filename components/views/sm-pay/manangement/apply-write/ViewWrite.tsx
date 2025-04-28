@@ -28,6 +28,14 @@ type ViewWrieProps = ViewProps & {
   selectedAdNum: number | null;
 };
 
+export type RuleInfo = {
+  roas: number;
+  increase: number;
+  increaseType: string;
+  decrease: number;
+  decreaseType: string;
+};
+
 const ViewWrite = ({
   onSubmit,
   onCancel,
@@ -37,6 +45,14 @@ const ViewWrite = ({
   const [isChanged, setIsChanged] = useState(false);
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [openDialogRequest, setOpenDialogRequest] = useState(false);
+
+  const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
+    roas: 0,
+    increase: 0,
+    increaseType: "flat", // flat, rate
+    decrease: 0,
+    decreaseType: "flat", // flat, rate
+  });
 
   const { data: response, refetch } = useAdvertiserDetail(
     selectedAdNum as number
@@ -57,6 +73,10 @@ const ViewWrite = ({
   const [editAdvertiser, setEditAdvertiser] = useState<AdvertiserData | null>(
     null
   );
+
+  const handleRuleInfoChange = (value: any) => {
+    setRuleInfo({ ...ruleInfo, ...value });
+  };
 
   const handleCancel = () => {
     setOpenDialogRequest(true);
@@ -165,7 +185,10 @@ const ViewWrite = ({
             content={hoverData["rule"].content}
           />
         </div>
-        <RuleEditDesc />
+        <RuleEditDesc
+          ruleInfo={ruleInfo}
+          handleRuleInfoChange={handleRuleInfoChange}
+        />
       </section>
 
       <section>
