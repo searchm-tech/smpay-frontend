@@ -1,7 +1,10 @@
 import { mockAdvertiserData } from "./mock/advertiser";
 import type { FetchAdvertiserParams, AdvertiserListResponse } from "./types";
 import type { AdvertiserData } from "@/types/adveriser";
-
+import type {
+  RuleInfo,
+  ScheduleInfo,
+} from "@/components/views/sm-pay/manangement/apply-write/ViewWrite";
 /**
  * 광고주 목록 조회 api
  * @param params
@@ -132,5 +135,35 @@ export const checkAdvertiser = async (businessNumber: string) => {
     success: true,
     data: findAdvertiser,
     message: findAdvertiser ? "중복된 사업자등록번호입니다." : undefined,
+  };
+};
+
+/**
+ * 광고주 동의 요청 발송 api
+ * @param id
+ * @returns
+ */
+
+export type SendAdvertiserAgreementResponse = {
+  success: boolean;
+  message?: string;
+};
+
+export type SendAdvertiserAgreementParams = {
+  id: number;
+  ruleInfo: RuleInfo;
+  scheduleInfo: ScheduleInfo;
+};
+
+export const sendAdvertiserAgreement = async (
+  params: SendAdvertiserAgreementParams
+) => {
+  // 서버 응답을 시뮬레이션하기 위한 지연
+  console.log("params", params);
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    success: true,
   };
 };
