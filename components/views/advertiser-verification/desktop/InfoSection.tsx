@@ -13,38 +13,65 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import { dialogContent, type DialogStatus, hoverData } from "./constants";
+import { dialogContent, hoverData, TEST_BANK_OPTIONS } from "../constants";
 
-import type { AccountInfo } from "..";
+import type { AccountInfo } from "@/types/vertification";
 
 type InfoSectionProps = {
   chargeAccount: AccountInfo;
   salesAccount: AccountInfo;
+  arsCertified: boolean;
   setChargeAccount: (account: AccountInfo) => void;
   setSalesAccount: (account: AccountInfo) => void;
+  setArsCertified: (arsCertified: boolean) => void;
 };
 const InfoSection = ({
   chargeAccount,
   salesAccount,
+  arsCertified,
   setChargeAccount,
   setSalesAccount,
+  setArsCertified,
 }: InfoSectionProps) => {
-  const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
+  const [certifiedMessage, setCertifiedMessage] = useState<
+    "charge" | "sales" | null
+  >(null);
+
   const [error, setError] = useState<string | null>(null);
 
-  const handleCertification = () => {
+  const handleChargeCertification = () => {
     if (
       !chargeAccount.accountHolder ||
-      !salesAccount.accountHolder ||
       !chargeAccount.accountNumber ||
+      !chargeAccount.bank
+    ) {
+      setError("입력하지 않은 구간이 있습니다.");
+      return;
+    }
+
+    setCertifiedMessage("charge");
+  };
+
+  const handleSalesCertification = () => {
+    if (
+      !salesAccount.accountHolder ||
       !salesAccount.accountNumber ||
-      !chargeAccount.bank ||
       !salesAccount.bank
     ) {
       setError("입력하지 않은 구간이 있습니다.");
       return;
     }
-    setOpenDialog("certification");
+
+    setCertifiedMessage("sales");
+  };
+
+  const handleARS = () => {
+    if (!chargeAccount.isCertified || !salesAccount.isCertified) {
+      setError("계좌 인증을 진행해주세요.");
+      return;
+    }
+
+    setArsCertified(true);
   };
 
   return (
@@ -57,11 +84,19 @@ const InfoSection = ({
           cancelDisabled={true}
         />
       )}
-      {openDialog && (
+      {certifiedMessage && (
         <ConfirmDialog
           open
-          onConfirm={() => setOpenDialog(null)}
-          content={dialogContent[openDialog].content}
+          onConfirm={() => {
+            if (certifiedMessage === "charge") {
+              setChargeAccount({ ...chargeAccount, isCertified: true });
+            } else {
+              setSalesAccount({ ...salesAccount, isCertified: true });
+            }
+
+            setCertifiedMessage(null);
+          }}
+          content={dialogContent["certification"].content}
           cancelDisabled={true}
         />
       )}
@@ -82,15 +117,12 @@ const InfoSection = ({
             label={<span className="w-[200px]">충전 계좌 은행 *</span>}
           >
             <Select
+              options={TEST_BANK_OPTIONS}
               placeholder="은행 선택"
               value={chargeAccount.bank}
               onChange={(value) =>
                 setChargeAccount({ ...chargeAccount, bank: value })
               }
-              options={[
-                { label: "신한", value: "active" },
-                { label: "국민", value: "inactive" },
-              ]}
             />
           </DescriptionItem>
           <DescriptionItem
@@ -98,6 +130,7 @@ const InfoSection = ({
           >
             <NumberInput
               className="max-w-[500px]"
+              placeholder="숫자만 연속 입력"
               value={chargeAccount.accountNumber}
               onChange={(value) =>
                 setChargeAccount({ ...chargeAccount, accountNumber: value })
@@ -118,7 +151,7 @@ const InfoSection = ({
                   })
                 }
               />
-              <Button className="w-[100px]" onClick={handleCertification}>
+              <Button className="w-[100px]" onClick={handleChargeCertification}>
                 계좌 인증 하기
               </Button>
             </div>
@@ -142,15 +175,12 @@ const InfoSection = ({
             label={<span className="w-[200px]">매출 계좌 은행 *</span>}
           >
             <Select
+              options={TEST_BANK_OPTIONS}
               placeholder="은행 선택"
               value={salesAccount.bank}
               onChange={(value) =>
                 setSalesAccount({ ...salesAccount, bank: value })
               }
-              options={[
-                { label: "신한", value: "active" },
-                { label: "국민", value: "inactive" },
-              ]}
             />
           </DescriptionItem>
           <DescriptionItem
@@ -158,6 +188,7 @@ const InfoSection = ({
           >
             <NumberInput
               className="max-w-[500px]"
+              placeholder="숫자만 연속 입력"
               value={salesAccount.accountNumber}
               onChange={(value) =>
                 setSalesAccount({ ...salesAccount, accountNumber: value })
@@ -178,10 +209,7 @@ const InfoSection = ({
                   })
                 }
               />
-              <Button
-                className="w-[100px]"
-                onClick={() => setOpenDialog("certification")}
-              >
+              <Button className="w-[100px]" onClick={handleSalesCertification}>
                 계좌 인증 하기
               </Button>
             </div>
@@ -192,9 +220,10 @@ const InfoSection = ({
       <Button
         className="text-center mt-8 w-[400px] h-[50px] font-bold"
         variant="cancel"
-        onClick={handleCertification}
+        disabled={arsCertified}
+        onClick={handleARS}
       >
-        ARS 인증
+        {arsCertified ? "ARS 인증 완료" : "ARS 인증"}
       </Button>
     </section>
   );

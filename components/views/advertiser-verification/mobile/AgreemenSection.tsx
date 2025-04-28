@@ -2,54 +2,36 @@ import { Separator } from "@/components/ui/separator";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { AgreementInfo } from "@/types/vertification";
 
 type AgreemenSectionProps = {
-  agreed: boolean;
-  setAgreed: (value: boolean) => void;
-  agreePrivacy: boolean;
-  setAgreePrivacy: (value: boolean) => void;
-  agreeService: boolean;
-  setAgreeService: (value: boolean) => void;
+  agreement: AgreementInfo;
+  setAgreement: (value: AgreementInfo) => void;
 };
 
-const AgreemenSection = ({
-  agreed,
-  setAgreed,
-  agreePrivacy,
-  setAgreePrivacy,
-  agreeService,
-  setAgreeService,
-}: AgreemenSectionProps) => {
+const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
   const handleAllAgree = () => {
-    if (agreed) {
-      setAgreed(false);
-      setAgreePrivacy(false);
-      setAgreeService(false);
+    if (agreement.agreePrivacy && agreement.agreeService) {
+      setAgreement({
+        agreePrivacy: false,
+        agreeService: false,
+      });
     } else {
-      setAgreed(true);
-      setAgreePrivacy(true);
-      setAgreeService(true);
+      setAgreement({
+        agreePrivacy: true,
+        agreeService: true,
+      });
     }
-  };
-
-  const handleAgreePrivacy = () => {
-    if (agreed && agreePrivacy) {
-      setAgreed(false);
-    }
-    setAgreePrivacy(!agreePrivacy);
-  };
-
-  const handleAgreeService = () => {
-    if (agreed && agreeService) {
-      setAgreed(false);
-    }
-    setAgreeService(!agreeService);
   };
 
   return (
     <section className="mt-8 w-full px-4">
       <div className="flex items-center space-x-2">
-        <Switch size="sm" checked={agreed} onCheckedChange={handleAllAgree} />
+        <Switch
+          size="sm"
+          checked={agreement.agreePrivacy && agreement.agreeService}
+          onCheckedChange={handleAllAgree}
+        />
         <Label className="font-medium">전체 동의</Label>
       </div>
 
@@ -59,8 +41,13 @@ const AgreemenSection = ({
         <div className="flex items-center gap-2 pb-3 pt-5">
           <Switch
             size="sm"
-            checked={agreePrivacy}
-            onCheckedChange={handleAgreePrivacy}
+            checked={agreement.agreePrivacy}
+            onCheckedChange={() =>
+              setAgreement({
+                ...agreement,
+                agreePrivacy: !agreement.agreePrivacy,
+              })
+            }
           />
           <span className="text-[14px] font-medium">
             [필수] 개인 정보 수집 이용에 동의합니다.
@@ -72,8 +59,13 @@ const AgreemenSection = ({
         <div className="flex items-center gap-2 py-3">
           <Switch
             size="sm"
-            checked={agreeService}
-            onCheckedChange={handleAgreeService}
+            checked={agreement.agreeService}
+            onCheckedChange={() =>
+              setAgreement({
+                ...agreement,
+                agreeService: !agreement.agreeService,
+              })
+            }
           />
           <span className="text-[14px] font-medium">
             [필수] SM Pay 부가 서비스 이용에 동의합니다.
