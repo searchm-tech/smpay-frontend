@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { AdvertiserData } from "@/types/adveriser";
+import { mockAdvertiserData } from "@/services/mock/advertiser";
 
 interface AdvertiserState {
   advertiserList: AdvertiserData[];
@@ -10,7 +11,7 @@ interface AdvertiserState {
 export const useAdvertiserStore = create<AdvertiserState>()(
   persist(
     (set) => ({
-      advertiserList: [],
+      advertiserList: mockAdvertiserData,
       setAdvertiserList: (advertiserList) => set({ advertiserList }),
     }),
     {

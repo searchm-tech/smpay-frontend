@@ -3,27 +3,32 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { Label } from "@/components/ui/label";
+import type { AdvertiserData } from "@/types/adveriser";
 
-const AdvertiserDesc = () => {
+type AdvertiserDescProps = {
+  advertiserDetail?: AdvertiserData | null;
+};
+
+const AdvertiserDesc = ({ advertiserDetail }: AdvertiserDescProps) => {
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="사업자명">
-        <Label>주식회사 카타미</Label>
+        <Label>{advertiserDetail?.businessName}</Label>
       </DescriptionItem>
       <DescriptionItem label="광고주 닉네임">
-        <Label>carrot</Label>
+        <Label>{advertiserDetail?.loginId}</Label>
       </DescriptionItem>
       <DescriptionItem label="대표자명">
-        <Label>김카타</Label>
+        <Label>{advertiserDetail?.businessOwnerName}</Label>
       </DescriptionItem>
       <DescriptionItem label="사업자 등록 번호">
-        <Label>123-45-67890</Label>
+        <Label>{advertiserDetail?.businessNumber}</Label>
       </DescriptionItem>
       <DescriptionItem label="담당자 휴대폰 번호">
-        <Label>010-1234-5678</Label>
+        <Label>{advertiserDetail?.businessOwnerPhone}</Label>
       </DescriptionItem>
       <DescriptionItem label="담당자 이메일 주소">
-        <Label>carrot@gmail.com</Label>
+        <Label>{advertiserDetail?.businessOwnerEmail}</Label>
       </DescriptionItem>
     </Descriptions>
   );

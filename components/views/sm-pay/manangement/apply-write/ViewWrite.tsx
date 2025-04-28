@@ -1,50 +1,98 @@
-import { useState } from "react";
-
-import {
-  Descriptions,
-  DescriptionItem,
-} from "@/components/composite/description-components";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 
-import { LabelBullet } from "@/components/composite/label-bullet";
 import { dialogContent, hoverData } from "../../components/constants";
 
+import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
+import AdvertiserDesEdit from "../../components/AdvertiserDesEdit";
+
+import {
+  useAdvertiserDetail,
+  useMutateUpdateAdvertiser,
+} from "@/hooks/queries/advertiser";
 
 import type { ViewProps } from ".";
+import type { AdvertiserData } from "@/types/adveriser";
 
-const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
+import LoadingUI from "@/components/common/Loading";
+
+type ViewWrieProps = ViewProps & {
+  selectedAdNum: number | null;
+};
+
+const ViewWrite = ({
+  onSubmit,
+  onCancel,
+  display,
+  selectedAdNum,
+}: ViewWrieProps) => {
   const [isChanged, setIsChanged] = useState(false);
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [openDialogRequest, setOpenDialogRequest] = useState(false);
 
-  const handleSubmit = () => {
-    setOpenDialogConfirm(true);
-  };
+  const { data: response, refetch } = useAdvertiserDetail(
+    selectedAdNum as number
+  );
+  const { mutate: mutateUpdateAdvertiser, isPending: loadingEdit } =
+    useMutateUpdateAdvertiser({
+      onSuccess: (data) => {
+        console.log("data", data);
+        setOpenDialogConfirm(false);
+        setIsChanged(false);
+        refetch();
+      },
+    });
+
+  const [advertiserDetail, setAdvertiserDetail] =
+    useState<AdvertiserData | null>(null);
+
+  const [editAdvertiser, setEditAdvertiser] = useState<AdvertiserData | null>(
+    null
+  );
 
   const handleCancel = () => {
     setOpenDialogRequest(true);
   };
 
+  const handleAdvertiserEdit = (data: AdvertiserData) => {
+    setEditAdvertiser(data);
+  };
+
+  const handleSubmitAdvertiser = () => {
+    console.log("????");
+    if (editAdvertiser) {
+      mutateUpdateAdvertiser(editAdvertiser);
+    }
+  };
+
+  console.log(advertiserDetail);
+
+  const handleCancelAdvertiser = () => {
+    setIsChanged(false);
+  };
+
+  useEffect(() => {
+    if (response?.data) {
+      setAdvertiserDetail(response.data);
+    }
+  }, [response]);
+
   return (
     <section className={cn(!display && "hidden")}>
+      {loadingEdit && <LoadingUI title="... 정보 변경 중" />}
       {openDialogConfirm && (
         <ConfirmDialog
           open={openDialogConfirm}
-          onClose={() => {
-            onSubmit();
-            setOpenDialogConfirm(false);
-          }}
-          onConfirm={() => setOpenDialogConfirm(false)}
+          onClose={() => setOpenDialogConfirm(false)}
+          onConfirm={handleSubmitAdvertiser}
           content={dialogContent["confirm"].content}
         />
       )}
@@ -60,6 +108,7 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
           cancelDisabled={true}
         />
       )}
+
       <div className="mt-4">
         <div className="flex items-center gap-4 pb-4">
           <LabelBullet labelClassName="text-base font-bold">
@@ -67,46 +116,42 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
           </LabelBullet>
 
           {isChanged ? (
-            <Button variant="outline" onClick={() => setIsChanged(false)}>
-              취소하기
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                className="w-[100px]"
+                onClick={() => setOpenDialogConfirm(true)}
+              >
+                변경완료
+              </Button>
+              <Button
+                className="w-[100px]"
+                variant="cancel"
+                onClick={() => setIsChanged(false)}
+              >
+                취소
+              </Button>
+            </div>
           ) : (
-            <Button variant="outline" onClick={() => setIsChanged(true)}>
+            <Button
+              className="w-[100px]"
+              onClick={() => {
+                setEditAdvertiser(advertiserDetail);
+                setIsChanged(true);
+              }}
+            >
               변경하기
             </Button>
           )}
         </div>
 
-        {isChanged && (
-          <Descriptions columns={1}>
-            <DescriptionItem label="사업자명">
-              <Input className="max-w-[500px]" />
-            </DescriptionItem>
-            <DescriptionItem label="광고주 닉네임">
-              <Label>carrot</Label>
-            </DescriptionItem>
-
-            <DescriptionItem label="대표자명">
-              <Input className="max-w-[500px]" />
-            </DescriptionItem>
-            <DescriptionItem label="사업자 등록 번호">
-              <div className="flex gap-2">
-                <Input className="max-w-[400px]" />
-                <Button variant="outline" className="w-[100px]">
-                  중복 체크
-                </Button>
-              </div>
-            </DescriptionItem>
-            <DescriptionItem label="담당자 휴대폰 번호">
-              <Input className="max-w-[500px]" />
-            </DescriptionItem>
-            <DescriptionItem label="담당자 이메일 주소">
-              <Input className="max-w-[500px]" />
-            </DescriptionItem>
-          </Descriptions>
+        {isChanged && editAdvertiser && (
+          <AdvertiserDesEdit
+            advertiserDetail={editAdvertiser}
+            handleAdvertiserEdit={handleAdvertiserEdit}
+          />
         )}
 
-        {!isChanged && <AdvertiserDesc />}
+        {!isChanged && <AdvertiserDesc advertiserDetail={advertiserDetail} />}
       </div>
 
       <section>
@@ -138,7 +183,7 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
       </section>
 
       <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]" onClick={handleSubmit}>
+        <Button className="w-[150px]" onClick={() => {}}>
           신청
         </Button>
         <Button variant="cancel" className="w-[150px]" onClick={handleCancel}>
@@ -149,4 +194,4 @@ const ViewCreate = ({ onSubmit, onCancel, display }: ViewProps) => {
   );
 };
 
-export default ViewCreate;
+export default ViewWrite;
