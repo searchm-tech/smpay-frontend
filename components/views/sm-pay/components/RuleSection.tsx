@@ -11,10 +11,23 @@ import RuleDesc, {
 } from "@/components/views/sm-pay/components/RuleDesc";
 import { hoverData } from "@/components/views/sm-pay/components/constants";
 import HistoryModal from "./HistoryModal";
+import { RuleInfo } from "../manangement/apply-write/ViewWrite";
 
 const RuleSection = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isHistory, setIsHistory] = useState(false);
+  const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
+    roas: 0,
+    increase: 0,
+    increaseType: "flat",
+    decrease: 0,
+    decreaseType: "flat",
+  });
+
+  const handleRuleInfoChange = (ruleInfo: RuleInfo) => {
+    setRuleInfo(ruleInfo);
+  };
+
   return (
     <section>
       {isHistory && (
@@ -40,8 +53,13 @@ const RuleSection = () => {
           변경 이력 보기
         </Button>
       </div>
-      {!isEditing && <RuleDesc />}
-      {isEditing && <RuleEditDesc />}
+      {!isEditing && <RuleDesc ruleInfo={ruleInfo} />}
+      {isEditing && (
+        <RuleEditDesc
+          ruleInfo={ruleInfo}
+          handleRuleInfoChange={handleRuleInfoChange}
+        />
+      )}
     </section>
   );
 };

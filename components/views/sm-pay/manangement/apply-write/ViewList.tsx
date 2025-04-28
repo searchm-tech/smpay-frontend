@@ -23,9 +23,12 @@ import {
   type AdvertiserStatus,
 } from "@/types/adveriser";
 
-const ViewList = ({ onCancel, onSubmit, display }: ViewProps) => {
+type ViewListProps = ViewProps & {
+  onSubmit: (id: number) => void;
+};
+
+const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
   const { advertiserList, setAdvertiserList } = useAdvertiserStore();
-  console.log("advertiserList", advertiserList);
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [search, setSearch] = useState<string>("");
@@ -169,7 +172,7 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewProps) => {
       <div className="flex justify-center gap-4 pb-5">
         <Button
           className="w-[150px]"
-          onClick={() => onSubmit(selectedRowKey as number)}
+          onClick={() => onSubmit?.(selectedRowKey as number)}
           disabled={!selectedRowKey}
         >
           신청

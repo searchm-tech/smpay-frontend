@@ -32,7 +32,7 @@ const SMPayApplyWriteView = () => {
       />
 
       <ViewWrite
-        onSubmit={() => {}}
+        onSubmit={() => setViewType("guide")}
         onCancel={() => setViewType("guide")}
         display={viewType === "write"}
         selectedAdNum={selectedAdNum}
@@ -44,7 +44,6 @@ const SMPayApplyWriteView = () => {
 export default SMPayApplyWriteView;
 
 export type ViewProps = {
-  onSubmit: (value: number) => void;
   onCancel: () => void;
   display: boolean;
 };

@@ -8,6 +8,8 @@ import {
   fetchAdvertiserDetail,
   checkAdvertiser,
   updateAdvertiser,
+  SendAdvertiserAgreementParams,
+  sendAdvertiserAgreement,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
 import { AdvertiserData } from "@/types/adveriser";
@@ -64,6 +66,31 @@ export const useMutateUpdateAdvertiser = (
 ) => {
   return useMutation({
     mutationFn: (data: AdvertiserData) => updateAdvertiser(data.id, data),
+    ...options,
+  });
+};
+
+/**
+ * 광고주 동의 요청 발송
+ * @param options
+ * @returns
+ */
+
+interface SendAdvertiserAgreementResponse {
+  success: boolean;
+  message?: string;
+}
+
+export const useMutateSendAdvertiserAgreement = (
+  options?: UseMutationOptions<
+    SendAdvertiserAgreementResponse,
+    Error,
+    SendAdvertiserAgreementParams
+  >
+) => {
+  return useMutation({
+    mutationFn: (params: SendAdvertiserAgreementParams) =>
+      sendAdvertiserAgreement(params),
     ...options,
   });
 };

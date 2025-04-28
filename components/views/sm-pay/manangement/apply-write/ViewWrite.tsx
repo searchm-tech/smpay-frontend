@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import LoadingUI from "@/components/common/Loading";
 
 import { cn } from "@/lib/utils";
 
@@ -17,15 +18,28 @@ import AdvertiserDesEdit from "../../components/AdvertiserDesEdit";
 import {
   useAdvertiserDetail,
   useMutateUpdateAdvertiser,
+  useMutateSendAdvertiserAgreement,
 } from "@/hooks/queries/advertiser";
 
 import type { ViewProps } from ".";
 import type { AdvertiserData } from "@/types/adveriser";
 
-import LoadingUI from "@/components/common/Loading";
-
 type ViewWrieProps = ViewProps & {
   selectedAdNum: number | null;
+  onSubmit: () => void;
+};
+
+export type RuleInfo = {
+  roas: number;
+  increase: number;
+  increaseType: string;
+  decrease: number;
+  decreaseType: string;
+};
+
+export type ScheduleInfo = {
+  firstCharge: number;
+  maxCharge: number;
 };
 
 const ViewWrite = ({
@@ -38,9 +52,22 @@ const ViewWrite = ({
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [openDialogRequest, setOpenDialogRequest] = useState(false);
 
+  const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
+    roas: 0,
+    increase: 0,
+    increaseType: "flat", // flat, rate
+    decrease: 0,
+    decreaseType: "flat", // flat, rate
+  });
+  const [scheduleInfo, setScheduleInfo] = useState<ScheduleInfo>({
+    firstCharge: 0,
+    maxCharge: 0,
+  });
+
   const { data: response, refetch } = useAdvertiserDetail(
     selectedAdNum as number
   );
+
   const { mutate: mutateUpdateAdvertiser, isPending: loadingEdit } =
     useMutateUpdateAdvertiser({
       onSuccess: (data) => {
@@ -51,6 +78,13 @@ const ViewWrite = ({
       },
     });
 
+  const { mutate: mutateSendAdvertiserAgreement, isPending: loadingSend } =
+    useMutateSendAdvertiserAgreement({
+      onSuccess: (data) => {
+        onSubmit();
+      },
+    });
+
   const [advertiserDetail, setAdvertiserDetail] =
     useState<AdvertiserData | null>(null);
 
@@ -58,8 +92,12 @@ const ViewWrite = ({
     null
   );
 
-  const handleCancel = () => {
-    setOpenDialogRequest(true);
+  const handleRuleInfoChange = (value: RuleInfo) => {
+    setRuleInfo({ ...ruleInfo, ...value });
+  };
+
+  const handleScheduleInfoChange = (value: ScheduleInfo) => {
+    setScheduleInfo({ ...scheduleInfo, ...value });
   };
 
   const handleAdvertiserEdit = (data: AdvertiserData) => {
@@ -67,16 +105,9 @@ const ViewWrite = ({
   };
 
   const handleSubmitAdvertiser = () => {
-    console.log("????");
     if (editAdvertiser) {
       mutateUpdateAdvertiser(editAdvertiser);
     }
-  };
-
-  console.log(advertiserDetail);
-
-  const handleCancelAdvertiser = () => {
-    setIsChanged(false);
   };
 
   useEffect(() => {
@@ -88,6 +119,7 @@ const ViewWrite = ({
   return (
     <section className={cn(!display && "hidden")}>
       {loadingEdit && <LoadingUI title="... 정보 변경 중" />}
+      {loadingSend && <LoadingUI title="... 동의 요청 중" />}
       {openDialogConfirm && (
         <ConfirmDialog
           open={openDialogConfirm}
@@ -101,8 +133,12 @@ const ViewWrite = ({
         <ConfirmDialog
           open={openDialogRequest}
           onConfirm={() => {
-            onCancel();
             setOpenDialogRequest(false);
+            mutateSendAdvertiserAgreement({
+              id: selectedAdNum as number,
+              ruleInfo,
+              scheduleInfo,
+            });
           }}
           content={dialogContent["send"].content}
           cancelDisabled={true}
@@ -165,7 +201,10 @@ const ViewWrite = ({
             content={hoverData["rule"].content}
           />
         </div>
-        <RuleEditDesc />
+        <RuleEditDesc
+          ruleInfo={ruleInfo}
+          handleRuleInfoChange={handleRuleInfoChange}
+        />
       </section>
 
       <section>
@@ -179,14 +218,20 @@ const ViewWrite = ({
           />
         </div>
 
-        <ScheduleEditDesc />
+        <ScheduleEditDesc
+          scheduleInfo={scheduleInfo}
+          handleScheduleInfoChange={handleScheduleInfoChange}
+        />
       </section>
 
       <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]" onClick={() => {}}>
-          신청
+        <Button
+          className="w-[150px]"
+          onClick={() => setOpenDialogRequest(true)}
+        >
+          광고주 동의 요청 발송
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={handleCancel}>
+        <Button variant="cancel" className="w-[150px]" onClick={onCancel}>
           취소
         </Button>
       </div>
