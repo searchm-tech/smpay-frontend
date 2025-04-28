@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
 import HeaderSection from "@/components/views/advertiser-verification/mobile/HeaderSection";
@@ -9,33 +8,134 @@ import AccountCharge from "@/components/views/advertiser-verification/mobile/Acc
 import AccountSale from "@/components/views/advertiser-verification/mobile/AccountSale";
 import { MobileTitle } from "@/components/common/Title";
 
+import FinishView from "./FinishView";
+
+import type { AccountInfo } from "..";
+
 const MobilewView = () => {
-  const router = useRouter();
   const [step, setStep] = useState(1);
 
-  const handleNext = () => setStep(2);
+  const [agreed, setAgreed] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreeService, setAgreeService] = useState(false);
+
+  const [salesAccount, setSalesAccount] =
+    useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
+
+  const [chargeAccount, setChargeAccount] =
+    useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
+
+  const handleNext = () => {
+    if (!agreePrivacy || !agreeService) {
+      alert("필수 동의 항목을 체크해주세요.");
+      return;
+    }
+
+    if (
+      !chargeAccount.accountHolder ||
+      !chargeAccount.accountNumber ||
+      !chargeAccount.bank
+    ) {
+      alert("충전 계좌 정보를 입력해주세요.");
+      return;
+    }
+
+    setStep(2);
+  };
+
   const handlePrev = () => setStep(1);
-  const handleSubmit = () => router.push("/sm-pay/management");
+  const handleSubmit = () => {
+    if (!agreePrivacy || !agreeService) {
+      alert("필수 동의 항목을 체크해주세요.");
+      return;
+    }
+
+    if (
+      !chargeAccount.accountHolder ||
+      !salesAccount.accountHolder ||
+      !chargeAccount.accountNumber ||
+      !salesAccount.accountNumber ||
+      !chargeAccount.bank ||
+      !salesAccount.bank
+    ) {
+      alert("입력하지 않은 구간이 있습니다.");
+      return;
+    }
+    setStep(3);
+  };
+
+  const handleChargeReset = () => {
+    setChargeAccount(DEFAULT_ACCOUNT_INFO);
+    setAgreed(false);
+    setAgreePrivacy(false);
+    setAgreeService(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const handleSalesReset = () => {
+    setSalesAccount(DEFAULT_ACCOUNT_INFO);
+  };
+
+  const handleCertification = () => {
+    if (
+      !chargeAccount.accountHolder ||
+      !salesAccount.accountHolder ||
+      !chargeAccount.accountNumber ||
+      !salesAccount.accountNumber ||
+      !chargeAccount.bank ||
+      !salesAccount.bank
+    ) {
+      alert("입력하지 않은 구간이 있습니다.");
+      return;
+    }
+    alert("계좌 인증이 완료 되었습니다.");
+  };
 
   return (
     <div className="flex flex-col items-center justify-between h-full min-h-[100vh]">
-      <div className="w-full flex flex-col items-center justify-center">
-        <MobileTitle />
-        {step === 1 && (
-          <Fragment>
-            <HeaderSection />
-            <AgreemenSection />
-            <AccountCharge />
-          </Fragment>
-        )}
+      {step !== 3 && (
+        <div className="w-full flex flex-col items-center justify-center">
+          <MobileTitle />
+          {step === 1 && (
+            <Fragment>
+              <HeaderSection />
+              <AgreemenSection
+                agreed={agreed}
+                setAgreed={setAgreed}
+                agreePrivacy={agreePrivacy}
+                setAgreePrivacy={setAgreePrivacy}
+                agreeService={agreeService}
+                setAgreeService={setAgreeService}
+              />
+              <AccountCharge
+                chargeAccount={chargeAccount}
+                setChargeAccount={setChargeAccount}
+                handleReset={handleChargeReset}
+              />
+            </Fragment>
+          )}
 
-        {step === 2 && <AccountSale />}
-      </div>
+          {step === 2 && (
+            <AccountSale
+              salesAccount={salesAccount}
+              setSalesAccount={setSalesAccount}
+              handleReset={handleSalesReset}
+              handleCertification={handleCertification}
+            />
+          )}
+        </div>
+      )}
 
       {step === 1 && <NextButton onNext={handleNext} />}
       {step === 2 && (
         <PrevSumbitButton onPrev={handlePrev} onSubmit={handleSubmit} />
       )}
+
+      {step === 3 && <FinishView />}
     </div>
   );
 };
@@ -76,4 +176,10 @@ const PrevSumbitButton = ({
       </div>
     </div>
   );
+};
+
+const DEFAULT_ACCOUNT_INFO: AccountInfo = {
+  bank: "",
+  accountNumber: "",
+  accountHolder: "",
 };

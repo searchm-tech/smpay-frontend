@@ -1,8 +1,5 @@
-import { useState } from "react";
 import Copyright from "@/components/layout/Copyright";
-import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Button } from "@/components/ui/button";
-import { dialogContent, DialogStatus } from "./constants";
 
 type FooterSectionProps = {
   handleReset: () => void;

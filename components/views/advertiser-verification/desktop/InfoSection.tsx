@@ -2,10 +2,8 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { NumberInput } from "@/components/composite/input-components";
-
-import { dialogContent, DialogStatus, hoverData } from "./constants";
-
 import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -15,7 +13,9 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import type { AccountInfo } from ".";
+import { dialogContent, type DialogStatus, hoverData } from "./constants";
+
+import type { AccountInfo } from "..";
 
 type InfoSectionProps = {
   chargeAccount: AccountInfo;
