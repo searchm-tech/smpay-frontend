@@ -6,9 +6,9 @@ import Select from "@/components/composite/select-components";
 
 const bankOptions = [
   { label: "농협", value: "088" },
-  { label: "국민", value: "088" },
-  { label: "농협", value: "088" },
-  { label: "국민", value: "088" },
+  { label: "국민", value: "081" },
+  { label: "농협", value: "082" },
+  { label: "국민", value: "083" },
 ];
 
 const AccountCharge = () => {

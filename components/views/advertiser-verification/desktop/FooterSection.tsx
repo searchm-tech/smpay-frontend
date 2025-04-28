@@ -4,24 +4,19 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Button } from "@/components/ui/button";
 import { dialogContent, DialogStatus } from "./constants";
 
-const FooterSection = () => {
-  const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
+type FooterSectionProps = {
+  handleReset: () => void;
+  handleSubmit: () => void;
+};
 
+const FooterSection = ({ handleReset, handleSubmit }: FooterSectionProps) => {
   return (
     <section className="w-full pt-[20px] pb-[100px]">
-      {openDialog && (
-        <ConfirmDialog
-          open
-          onConfirm={() => setOpenDialog(null)}
-          content={dialogContent[openDialog].content}
-          cancelDisabled={true}
-        />
-      )}
       <div className="flex justify-center gap-4 pt-4">
-        <Button className="w-[150px]" onClick={() => setOpenDialog("submit")}>
+        <Button className="w-[150px]" onClick={handleSubmit}>
           제출
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
+        <Button variant="cancel" className="w-[150px]" onClick={handleReset}>
           초기화
         </Button>
       </div>
