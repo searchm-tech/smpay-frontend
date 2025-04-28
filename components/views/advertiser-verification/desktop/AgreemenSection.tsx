@@ -3,39 +3,32 @@ import { Separator } from "@/components/ui/separator";
 import { LinkTextButton } from "@/components/composite/button-components";
 import { Radio } from "@/components/composite/radio-component";
 
+import type { AgreementInfo } from "@/types/vertification";
+
 type AgreemenSectionProps = {
-  agreed: boolean;
-  setAgreed: (agreed: boolean) => void;
-  agreePrivacy: boolean;
-  setAgreePrivacy: (agreePrivacy: boolean) => void;
-  agreeService: boolean;
-  setAgreeService: (agreeService: boolean) => void;
+  agreement: AgreementInfo;
+  setAgreement: (agreement: AgreementInfo) => void;
 };
 
-const AgreemenSection = ({
-  agreed,
-  setAgreed,
-  agreePrivacy,
-  setAgreePrivacy,
-  agreeService,
-  setAgreeService,
-}: AgreemenSectionProps) => {
+const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
   const handleAllAgree = () => {
-    if (agreed) {
-      setAgreed(false);
-      setAgreePrivacy(false);
-      setAgreeService(false);
+    if (agreement.agreePrivacy && agreement.agreeService) {
+      setAgreement({
+        agreePrivacy: false,
+        agreeService: false,
+      });
     } else {
-      setAgreed(true);
-      setAgreePrivacy(true);
-      setAgreeService(true);
+      setAgreement({
+        agreePrivacy: true,
+        agreeService: true,
+      });
     }
   };
 
   return (
     <section className="mt-6 w-full inline-block">
       <Radio
-        checked={agreed}
+        checked={agreement.agreePrivacy && agreement.agreeService}
         onClick={handleAllAgree}
         label={<span className="text-base font-bold">전체 동의</span>}
       />
@@ -47,8 +40,13 @@ const AgreemenSection = ({
           <RadioGroupItem
             value="percent"
             id="above-percent"
-            checked={agreePrivacy}
-            onClick={() => setAgreePrivacy(!agreePrivacy)}
+            checked={agreement.agreePrivacy}
+            onClick={() =>
+              setAgreement({
+                ...agreement,
+                agreePrivacy: !agreement.agreePrivacy,
+              })
+            }
           />
           <span className="text-base">
             [필수] 개인 정보 수집 이용에 동의합니다.
@@ -59,8 +57,13 @@ const AgreemenSection = ({
           <RadioGroupItem
             value="fixed"
             id="above-fixed"
-            checked={agreeService}
-            onClick={() => setAgreeService(!agreeService)}
+            checked={agreement.agreeService}
+            onClick={() =>
+              setAgreement({
+                ...agreement,
+                agreeService: !agreement.agreeService,
+              })
+            }
           />
           <span className="text-base">
             [필수] SM Pay 부가 서비스 이용에 동의합니다.

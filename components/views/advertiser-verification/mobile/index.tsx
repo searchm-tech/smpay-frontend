@@ -6,28 +6,33 @@ import HeaderSection from "@/components/views/advertiser-verification/mobile/Hea
 import AgreemenSection from "@/components/views/advertiser-verification/mobile/AgreemenSection";
 import AccountCharge from "@/components/views/advertiser-verification/mobile/AccountCharge";
 import AccountSale from "@/components/views/advertiser-verification/mobile/AccountSale";
-import { MobileTitle } from "@/components/common/Title";
 
+import { MobileTitle } from "@/components/common/Title";
 import FinishView from "./FinishView";
 
-import type { AccountInfo } from "..";
+import { DEFAULT_AGREEMENT_INFO } from "../constants";
+import type { AccountInfo, AgreementInfo } from "@/types/vertification";
 
 const MobilewView = () => {
   const [step, setStep] = useState(1);
 
-  const [agreed, setAgreed] = useState(false);
-  const [agreePrivacy, setAgreePrivacy] = useState(false);
-  const [agreeService, setAgreeService] = useState(false);
-
+  const [arsCertified, setArsCertified] = useState(false);
+  const [agreement, setAgreement] = useState<AgreementInfo>(
+    DEFAULT_AGREEMENT_INFO
+  );
   const [salesAccount, setSalesAccount] =
     useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
-
   const [chargeAccount, setChargeAccount] =
     useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
 
   const handleNext = () => {
-    if (!agreePrivacy || !agreeService) {
+    if (!agreement.agreePrivacy || !agreement.agreeService) {
       alert("필수 동의 항목을 체크해주세요.");
+      return;
+    }
+
+    if (!chargeAccount.isCertified) {
+      alert("충전 계좌 인증을 진행해주세요.");
       return;
     }
 
@@ -43,9 +48,13 @@ const MobilewView = () => {
     setStep(2);
   };
 
-  const handlePrev = () => setStep(1);
   const handleSubmit = () => {
-    if (!agreePrivacy || !agreeService) {
+    if (!arsCertified) {
+      alert("ARS 인증을 진행해주세요.");
+      return;
+    }
+
+    if (!agreement.agreePrivacy || !agreement.agreeService) {
       alert("필수 동의 항목을 체크해주세요.");
       return;
     }
@@ -66,9 +75,7 @@ const MobilewView = () => {
 
   const handleChargeReset = () => {
     setChargeAccount(DEFAULT_ACCOUNT_INFO);
-    setAgreed(false);
-    setAgreePrivacy(false);
-    setAgreeService(false);
+    setAgreement(DEFAULT_AGREEMENT_INFO);
 
     window.scrollTo({
       top: 0,
@@ -76,23 +83,13 @@ const MobilewView = () => {
     });
   };
 
-  const handleSalesReset = () => {
-    setSalesAccount(DEFAULT_ACCOUNT_INFO);
-  };
-
-  const handleCertification = () => {
-    if (
-      !chargeAccount.accountHolder ||
-      !salesAccount.accountHolder ||
-      !chargeAccount.accountNumber ||
-      !salesAccount.accountNumber ||
-      !chargeAccount.bank ||
-      !salesAccount.bank
-    ) {
-      alert("입력하지 않은 구간이 있습니다.");
+  const handleARS = () => {
+    if (!chargeAccount.isCertified || !salesAccount.isCertified) {
+      alert("계좌 인증을 진행해주세요.");
       return;
     }
-    alert("계좌 인증이 완료 되었습니다.");
+
+    setArsCertified(true);
   };
 
   return (
@@ -104,12 +101,8 @@ const MobilewView = () => {
             <Fragment>
               <HeaderSection />
               <AgreemenSection
-                agreed={agreed}
-                setAgreed={setAgreed}
-                agreePrivacy={agreePrivacy}
-                setAgreePrivacy={setAgreePrivacy}
-                agreeService={agreeService}
-                setAgreeService={setAgreeService}
+                agreement={agreement}
+                setAgreement={setAgreement}
               />
               <AccountCharge
                 chargeAccount={chargeAccount}
@@ -123,8 +116,8 @@ const MobilewView = () => {
             <AccountSale
               salesAccount={salesAccount}
               setSalesAccount={setSalesAccount}
-              handleReset={handleSalesReset}
-              handleCertification={handleCertification}
+              handleReset={() => setSalesAccount(DEFAULT_ACCOUNT_INFO)}
+              handleARS={handleARS}
             />
           )}
         </div>
@@ -132,7 +125,7 @@ const MobilewView = () => {
 
       {step === 1 && <NextButton onNext={handleNext} />}
       {step === 2 && (
-        <PrevSumbitButton onPrev={handlePrev} onSubmit={handleSubmit} />
+        <PrevSumbitButton onPrev={() => setStep(1)} onSubmit={handleSubmit} />
       )}
 
       {step === 3 && <FinishView />}
@@ -182,4 +175,5 @@ const DEFAULT_ACCOUNT_INFO: AccountInfo = {
   bank: "",
   accountNumber: "",
   accountHolder: "",
+  isCertified: false,
 };

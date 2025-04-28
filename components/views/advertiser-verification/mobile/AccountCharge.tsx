@@ -4,14 +4,9 @@ import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { NumberInput } from "@/components/composite/input-components";
 
-import type { AccountInfo } from "..";
+import { TEST_BANK_OPTIONS } from "../constants";
 
-const bankOptions = [
-  { label: "농협", value: "088" },
-  { label: "국민", value: "081" },
-  { label: "농협", value: "082" },
-  { label: "국민", value: "083" },
-];
+import { type AccountInfo } from "@/types/vertification";
 
 type AccountChargeProps = {
   chargeAccount: AccountInfo;
@@ -24,6 +19,20 @@ const AccountCharge = ({
   setChargeAccount,
   handleReset,
 }: AccountChargeProps) => {
+  const handleChargeCertification = () => {
+    if (
+      !chargeAccount.accountHolder ||
+      !chargeAccount.accountNumber ||
+      !chargeAccount.bank
+    ) {
+      alert("입력하지 않은 구간이 있습니다.");
+      return;
+    }
+
+    setChargeAccount({ ...chargeAccount, isCertified: true });
+    alert("계좌 인증이 완료 되었습니다.");
+  };
+
   return (
     <section className="mt-8 w-full px-4">
       <div className="flex flex-col gap-4">
@@ -32,7 +41,7 @@ const AccountCharge = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
           <Select
-            options={bankOptions}
+            options={TEST_BANK_OPTIONS}
             placeholder="충전 계좌 은행을 선택해주세요."
             value={chargeAccount.bank}
             onChange={(value) =>
@@ -69,9 +78,7 @@ const AccountCharge = ({
         <div className="flex justify-center gap-2">
           <Button
             className="h-[35px] w-1/2 font-bold"
-            onClick={() => {
-              alert("계좌 인증이 완료 되었습니다.");
-            }}
+            onClick={handleChargeCertification}
           >
             계좌 인증하기
           </Button>

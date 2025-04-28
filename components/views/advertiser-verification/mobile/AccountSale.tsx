@@ -6,28 +6,37 @@ import { Separator } from "@/components/ui/separator";
 
 import { NumberInput } from "@/components/composite/input-components";
 
-import type { AccountInfo } from "..";
+import { type AccountInfo } from "@/types/vertification";
 
-const bankOptions = [
-  { label: "농협", value: "081" },
-  { label: "국민", value: "082" },
-  { label: "농협", value: "083" },
-  { label: "국민", value: "084" },
-];
+import { TEST_BANK_OPTIONS } from "../constants";
 
 type AccountSaleProps = {
   salesAccount: AccountInfo;
   setSalesAccount: (account: AccountInfo) => void;
   handleReset: () => void;
-  handleCertification: () => void;
+  handleARS: () => void;
 };
 
 const AccountSale = ({
   salesAccount,
   setSalesAccount,
   handleReset,
-  handleCertification,
+  handleARS,
 }: AccountSaleProps) => {
+  const handleSalesCertification = () => {
+    if (
+      !salesAccount.accountHolder ||
+      !salesAccount.accountNumber ||
+      !salesAccount.bank
+    ) {
+      alert("입력하지 않은 구간이 있습니다.");
+      return;
+    }
+
+    setSalesAccount({ ...salesAccount, isCertified: true });
+    alert("계좌 인증이 완료 되었습니다.");
+  };
+
   return (
     <section className="mt-4 w-full px-4">
       <div className="flex flex-col gap-4">
@@ -36,7 +45,7 @@ const AccountSale = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">매출 계좌 은행 *</Label>
           <Select
-            options={bankOptions}
+            options={TEST_BANK_OPTIONS}
             placeholder="충전 계좌 은행을 선택해주세요."
             value={salesAccount.bank}
             onChange={(value) =>
@@ -93,7 +102,7 @@ const AccountSale = ({
 
         <Button
           className="h-[40px] w-full bg-[#9BA5B7] font-bold text-lg"
-          onClick={handleCertification}
+          onClick={handleARS}
         >
           ARS 인증하기
         </Button>
