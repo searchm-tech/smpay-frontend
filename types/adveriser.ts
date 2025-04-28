@@ -6,6 +6,11 @@ export interface AdvertiserData {
   advertiserName: string;
   status: AdvertiserStatus;
   updatedAt: string;
+  businessName: string;
+  businessNumber: string;
+  businessOwnerName: string;
+  businessOwnerPhone: string;
+  businessOwnerEmail: string;
 }
 
 export type AdvertiserStatus =

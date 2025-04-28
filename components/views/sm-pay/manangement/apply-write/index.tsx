@@ -6,8 +6,10 @@ import ViewList from "./ViewList";
 import ViewWrite from "./ViewWrite";
 
 import GuidSection, { type ViewType } from "../../components/GuideSection";
+
 const SMPayApplyWriteView = () => {
   const router = useRouter();
+  const [selectedAdNum, setSelectedAdNum] = useState<number | null>(null);
   const [viewType, setViewType] = useState<ViewType>("guide");
 
   useEffect(() => {
@@ -21,7 +23,10 @@ const SMPayApplyWriteView = () => {
     <div>
       <GuidSection viewType={viewType} />
       <ViewList
-        onSubmit={() => setViewType("write")}
+        onSubmit={(value: number) => {
+          setSelectedAdNum(value);
+          setViewType("write");
+        }}
         onCancel={() => router.push("/sm-pay/management")}
         display={viewType === "guide"}
       />
@@ -30,6 +35,7 @@ const SMPayApplyWriteView = () => {
         onSubmit={() => {}}
         onCancel={() => setViewType("guide")}
         display={viewType === "write"}
+        selectedAdNum={selectedAdNum}
       />
     </div>
   );
@@ -38,7 +44,7 @@ const SMPayApplyWriteView = () => {
 export default SMPayApplyWriteView;
 
 export type ViewProps = {
-  onSubmit: () => void;
+  onSubmit: (value: number) => void;
   onCancel: () => void;
   display: boolean;
 };
