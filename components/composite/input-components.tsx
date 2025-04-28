@@ -176,7 +176,7 @@ interface NumberInputProps
     React.InputHTMLAttributes<HTMLInputElement>,
     "onChange" | "value"
   > {
-  value: string | number;
+  value?: string | number;
   onChange: (value: string) => void;
 }
 

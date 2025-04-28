@@ -6,10 +6,10 @@ import Select from "@/components/composite/select-components";
 import { Separator } from "@/components/ui/separator";
 
 const bankOptions = [
-  { label: "농협", value: "088" },
-  { label: "국민", value: "088" },
-  { label: "농협", value: "088" },
-  { label: "국민", value: "088" },
+  { label: "농협", value: "081" },
+  { label: "국민", value: "082" },
+  { label: "농협", value: "083" },
+  { label: "국민", value: "084" },
 ];
 
 const AccountSale = () => {
