@@ -64,7 +64,11 @@ const RuleSection = ({ id }: RuleSectionProps) => {
       {isUpdating && <LoadingUI title="변경 중..." />}
 
       {isHistory && (
-        <HistoryModal open={isHistory} onClose={() => setIsHistory(false)} />
+        <HistoryModal
+          open={isHistory}
+          onClose={() => setIsHistory(false)}
+          id={id}
+        />
       )}
       {isConfirm && (
         <ConfirmDialog

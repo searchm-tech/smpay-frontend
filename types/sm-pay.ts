@@ -70,6 +70,16 @@ export type RuleInfo = {
   decreaseType: string;
 };
 
+export type RuleHistory = {
+  id: number;
+  date: string;
+  roas: number;
+  increase: number;
+  increaseType: string;
+  decrease: number;
+  decreaseType: string;
+};
+
 export type ScheduleInfo = {
   id: number;
   firstCharge: number;
