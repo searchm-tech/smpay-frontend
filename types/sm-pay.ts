@@ -60,3 +60,12 @@ export type ActionButton =
   | "stop"
   | "terminate"
   | "resume";
+
+export type RuleInfo = {
+  id: number;
+  roas: number;
+  increase: number;
+  increaseType: string;
+  decrease: number;
+  decreaseType: string;
+};

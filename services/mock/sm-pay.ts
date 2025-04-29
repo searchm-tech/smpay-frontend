@@ -1,4 +1,4 @@
-import type { SmPayStatus, SmPayData } from "@/types/sm-pay";
+import type { SmPayStatus, SmPayData, RuleInfo } from "@/types/sm-pay";
 
 const statusList: SmPayStatus[] = [
   "ADVERTISER_AGREEMENT_REQUEST",
@@ -50,5 +50,16 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
     salesAccountBank: `우리은행`,
     salesAccountBankCode: `123-45-${(i + 1).toString().padStart(5, "0")}`,
     salesAccountBankName: `우리은행`,
+  })
+);
+
+export const mockRuleInfo: RuleInfo[] = Array.from({ length: 157 }).map(
+  (_, i) => ({
+    id: i + 1,
+    roas: Math.floor(100 + Math.random() * 50),
+    increase: Math.floor(10 + Math.random() * 10),
+    increaseType: "flat",
+    decrease: Math.floor(10 + Math.random() * 10),
+    decreaseType: "flat",
   })
 );

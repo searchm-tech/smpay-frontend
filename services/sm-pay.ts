@@ -1,9 +1,10 @@
-import { mockData } from "./mock/sm-pay";
+import { mockData, mockRuleInfo } from "./mock/sm-pay";
 import type {
   FetchSmPayParams,
   SmPayResponse,
+  SmPayRuleInfoResponse,
   SmPayStatusResponse,
-  AdvertiserListResponse,
+  // AdvertiserListResponse,
   SmPaySubmitDetailResponse,
 } from "./types";
 
@@ -194,6 +195,24 @@ export const getSmPaySubmitDetail = async (
 
   const numId = parseInt(id, 10);
   const data = mockData.find((item) => item.id === numId);
+
+  if (!data) {
+    return { data: null, success: false };
+  }
+
+  return {
+    data,
+    success: true,
+  };
+};
+
+export const getSmPayRuleInfo = async (
+  id: string
+): Promise<SmPayRuleInfoResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const numId = parseInt(id, 10);
+  const data = mockRuleInfo.find((item) => item.id === numId);
 
   if (!data) {
     return { data: null, success: false };

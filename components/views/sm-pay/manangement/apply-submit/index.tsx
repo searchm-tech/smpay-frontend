@@ -11,7 +11,7 @@ import ScheduleSection from "../../components/ScheduleSection";
 import RuleSection from "../../components/RuleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
-import { AdvertiserData } from "@/types/adveriser";
+import type { AdvertiserData } from "@/types/adveriser";
 
 interface ApplySubmitViewProps {
   id: string;
@@ -20,10 +20,6 @@ interface ApplySubmitViewProps {
 const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
   const router = useRouter();
   const { data, isPending } = useSmPaySubmitDetail(id);
-
-  if (isPending) {
-    return <LoadingUI title="SM Pay 정보를 불러오는 중..." />;
-  }
 
   const advertiserData: AdvertiserData = {
     id: data?.data?.id || 0,
@@ -48,7 +44,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
       <div className="mt-4 flex flex-col gap-2">
         <AdvertiserSection advertiserData={advertiserData} />
         <AccountDesc smPayData={data?.data} />
-        <RuleSection />
+        <RuleSection id={id} />
         <ScheduleSection />
       </div>
 
