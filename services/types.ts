@@ -1,5 +1,10 @@
 import type { AdvertiserData } from "@/types/adveriser";
-import type { RuleInfo, ScheduleInfo, SmPayData } from "@/types/sm-pay";
+import type {
+  RuleHistory,
+  RuleInfo,
+  ScheduleInfo,
+  SmPayData,
+} from "@/types/sm-pay";
 
 export interface PaginationParams {
   current: number;
@@ -64,5 +69,10 @@ export interface SmPayRuleInfoResponse {
 
 export interface SmPayScheduleInfoResponse {
   data: ScheduleInfo | null;
+  success: boolean;
+}
+
+export interface SmPayRuleHistoryResponse {
+  data: RuleHistory[];
   success: boolean;
 }

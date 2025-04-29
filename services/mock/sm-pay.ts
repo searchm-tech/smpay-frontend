@@ -3,6 +3,7 @@ import type {
   SmPayData,
   RuleInfo,
   ScheduleInfo,
+  RuleHistory,
 } from "@/types/sm-pay";
 
 const statusList: SmPayStatus[] = [
@@ -74,5 +75,19 @@ export const mockScheduleInfo: ScheduleInfo[] = Array.from({ length: 157 }).map(
     id: i + 1,
     firstCharge: Math.floor(100000 + Math.random() * 900000),
     maxCharge: Math.floor(300000 + Math.random() * 2000000),
+  })
+);
+
+export const mockRuleHistory: RuleHistory[] = Array.from({ length: 157 }).map(
+  (_, i) => ({
+    id: i + 1,
+    date: new Date(
+      Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000
+    ).toISOString(),
+    roas: Math.floor(100 + Math.random() * 50),
+    increase: Math.floor(10 + Math.random() * 10),
+    increaseType: "flat",
+    decrease: Math.floor(10 + Math.random() * 10),
+    decreaseType: "flat",
   })
 );

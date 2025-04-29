@@ -1,4 +1,9 @@
-import { mockData, mockRuleInfo, mockScheduleInfo } from "./mock/sm-pay";
+import {
+  mockData,
+  mockRuleHistory,
+  mockRuleInfo,
+  mockScheduleInfo,
+} from "./mock/sm-pay";
 import type {
   FetchSmPayParams,
   SmPayResponse,
@@ -6,6 +11,7 @@ import type {
   SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
+  SmPayRuleHistoryResponse,
 } from "./types";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
@@ -288,4 +294,15 @@ export const updateSmPayScheduleInfo = async (
   }
 
   return { data: findData, success: true };
+};
+
+export const getSmPayRuleHistory = async (
+  id: string
+): Promise<SmPayRuleHistoryResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    data: mockRuleHistory,
+    success: true,
+  };
 };
