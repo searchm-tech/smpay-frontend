@@ -42,7 +42,7 @@ const SmPayJudgementDetailView = () => {
       <AdvertiseStatusDesc />
       <AdvertiserSection advertiserData={null} />
       <RuleSection id={"1"} />
-      <ScheduleSection />
+      <ScheduleSection id={"1"} />
       <StandardSection />
 
       <div className="flex justify-center gap-4 py-5">
