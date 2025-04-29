@@ -41,7 +41,7 @@ const SmPayJudgementDetailView = () => {
 
       <AdvertiseStatusDesc />
       <AdvertiserSection advertiserData={null} />
-      <RuleSection />
+      <RuleSection id={"1"} />
       <ScheduleSection />
       <StandardSection />
 
