@@ -69,3 +69,8 @@ export type RuleInfo = {
   decrease: number;
   decreaseType: string;
 };
+
+export type ScheduleInfo = {
+  firstCharge: number;
+  maxCharge: number;
+};

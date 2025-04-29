@@ -23,16 +23,11 @@ import {
 
 import type { ViewProps } from ".";
 import type { AdvertiserData } from "@/types/adveriser";
-import type { RuleInfo } from "@/types/sm-pay";
+import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
 type ViewWrieProps = ViewProps & {
   selectedAdNum: number | null;
   onSubmit: () => void;
-};
-
-export type ScheduleInfo = {
-  firstCharge: number;
-  maxCharge: number;
 };
 
 const ViewWrite = ({
