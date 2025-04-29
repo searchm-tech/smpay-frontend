@@ -23,6 +23,11 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
     advertiserName: `광고주 ${i + 1}`,
     businessName: `사업자명 ${i + 1}`,
     businessNumber: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    businessOwnerName: `대표자명 ${i + 1}`,
+    businessOwnerPhone: `010-${Math.floor(
+      1000 + Math.random() * 9000
+    )}-${Math.floor(1000 + Math.random() * 9000)}`,
+    businessOwnerEmail: `owner${i + 1}@example.com`,
     status: statusList[i % statusList.length],
     createdAt: new Date(
       Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000
