@@ -6,17 +6,27 @@ import {
 } from "@/components/composite/description-components";
 import type { ScheduleInfo } from "@/types/sm-pay";
 
-const ScheduleDesc = () => {
+type ScheduleDescProps = {
+  scheduleInfo?: ScheduleInfo | null;
+};
+
+const ScheduleDesc = ({ scheduleInfo }: ScheduleDescProps) => {
+  if (!scheduleInfo) return <Fragment />;
+
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="일 최대 충전 한도">
         <span>1일 1회</span>
       </DescriptionItem>
       <DescriptionItem label="최초 충전 금액 설정">
-        <span className="text-blue-600">100,000원</span>
+        <span className="text-blue-600">
+          {scheduleInfo.firstCharge.toLocaleString()}원
+        </span>
       </DescriptionItem>
       <DescriptionItem label="일 최대 충전 한도">
-        <span className="text-blue-600">300,000원</span>
+        <span className="text-blue-600">
+          {scheduleInfo.maxCharge.toLocaleString()}원
+        </span>
       </DescriptionItem>
     </Descriptions>
   );

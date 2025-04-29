@@ -1,4 +1,9 @@
-import type { SmPayStatus, SmPayData, RuleInfo } from "@/types/sm-pay";
+import type {
+  SmPayStatus,
+  SmPayData,
+  RuleInfo,
+  ScheduleInfo,
+} from "@/types/sm-pay";
 
 const statusList: SmPayStatus[] = [
   "ADVERTISER_AGREEMENT_REQUEST",
@@ -61,5 +66,13 @@ export const mockRuleInfo: RuleInfo[] = Array.from({ length: 157 }).map(
     increaseType: "flat",
     decrease: Math.floor(10 + Math.random() * 10),
     decreaseType: "flat",
+  })
+);
+
+export const mockScheduleInfo: ScheduleInfo[] = Array.from({ length: 157 }).map(
+  (_, i) => ({
+    id: i + 1,
+    firstCharge: Math.floor(100000 + Math.random() * 900000),
+    maxCharge: Math.floor(300000 + Math.random() * 2000000),
   })
 );

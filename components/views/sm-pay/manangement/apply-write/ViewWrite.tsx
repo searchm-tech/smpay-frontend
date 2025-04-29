@@ -49,6 +49,7 @@ const ViewWrite = ({
     decreaseType: "flat", // flat, rate
   });
   const [scheduleInfo, setScheduleInfo] = useState<ScheduleInfo>({
+    id: 0,
     firstCharge: 0,
     maxCharge: 0,
   });

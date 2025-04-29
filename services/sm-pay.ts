@@ -1,12 +1,13 @@
-import { mockData, mockRuleInfo } from "./mock/sm-pay";
+import { mockData, mockRuleInfo, mockScheduleInfo } from "./mock/sm-pay";
 import type {
   FetchSmPayParams,
   SmPayResponse,
   SmPayRuleInfoResponse,
+  SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
 } from "./types";
-import type { RuleInfo } from "@/types/sm-pay";
+import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -249,4 +250,42 @@ export const updateSmPayRuleInfo = async (
     data: findData,
     success: true,
   };
+};
+
+export const getSmPayScheduleInfo = async (
+  id: string
+): Promise<SmPayScheduleInfoResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const numId = parseInt(id, 10);
+  const data = mockScheduleInfo.find((item) => item.id === numId);
+
+  if (!data) {
+    return { data: null, success: false };
+  }
+
+  return { data, success: true };
+};
+
+export const updateSmPayScheduleInfo = async (
+  id: string,
+  data: ScheduleInfo
+): Promise<SmPayScheduleInfoResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const numId = parseInt(id, 10);
+  const updatedData = mockScheduleInfo.map((item) => {
+    if (item.id === numId) {
+      return { ...item, ...data };
+    }
+    return item;
+  });
+
+  const findData = updatedData.find((item) => item.id === numId);
+
+  if (!findData) {
+    return { data: null, success: false };
+  }
+
+  return { data: findData, success: true };
 };
