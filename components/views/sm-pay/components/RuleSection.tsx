@@ -2,27 +2,44 @@
 
 import { useState, useEffect } from "react";
 
-import { TooltipHover } from "@/components/composite/tooltip-components";
 import { Button } from "@/components/ui/button";
+import { TooltipHover } from "@/components/composite/tooltip-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import RuleDesc, {
   RuleEditDesc,
 } from "@/components/views/sm-pay/components/RuleDesc";
-import { hoverData } from "@/components/views/sm-pay/components/constants";
 import HistoryModal from "./HistoryModal";
+import LoadingUI from "@/components/common/Loading";
 
+import { hoverData } from "@/components/views/sm-pay/components/constants";
+
+import {
+  useSmPayRuleInfo,
+  useSmPayRuleInfoUpdate,
+} from "@/hooks/queries/sm-pay";
 import type { RuleInfo } from "@/types/sm-pay";
-import { useSmPayRuleInfo } from "@/hooks/queries/sm-pay";
 
 type RuleSectionProps = {
   id: string;
 };
 const RuleSection = ({ id }: RuleSectionProps) => {
-  const { data: ruleData } = useSmPayRuleInfo(id);
+  const { data: ruleData, refetch } = useSmPayRuleInfo(id);
+
+  const { mutate: updateRuleInfo, isPending: isUpdating } =
+    useSmPayRuleInfoUpdate({
+      onSuccess: () => {
+        setIsConfirm(false);
+        setIsEditing(false);
+        refetch();
+      },
+    });
 
   const [isEditing, setIsEditing] = useState(false);
   const [isHistory, setIsHistory] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false);
+
   const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
     id: 0,
     roas: 0,
@@ -36,8 +53,6 @@ const RuleSection = ({ id }: RuleSectionProps) => {
     setRuleInfo(ruleInfo);
   };
 
-  console.log(ruleData);
-
   useEffect(() => {
     if (ruleData?.data) {
       setRuleInfo(ruleData.data);
@@ -46,8 +61,18 @@ const RuleSection = ({ id }: RuleSectionProps) => {
 
   return (
     <section>
+      {isUpdating && <LoadingUI title="변경 중..." />}
+
       {isHistory && (
         <HistoryModal open={isHistory} onClose={() => setIsHistory(false)} />
+      )}
+      {isConfirm && (
+        <ConfirmDialog
+          open={isConfirm}
+          content="변경하시겠습니까?"
+          onClose={() => setIsConfirm(false)}
+          onConfirm={() => updateRuleInfo({ id, params: ruleInfo })}
+        />
       )}
       <div className="flex items-center gap-4 py-2">
         <div className="flex items-center gap-2 py-2">
@@ -63,7 +88,7 @@ const RuleSection = ({ id }: RuleSectionProps) => {
 
         {isEditing ? (
           <div className="flex gap-2">
-            <Button className="w-[100px]" onClick={() => setIsEditing(false)}>
+            <Button className="w-[100px]" onClick={() => setIsConfirm(true)}>
               변경완료
             </Button>
             <Button
@@ -75,7 +100,7 @@ const RuleSection = ({ id }: RuleSectionProps) => {
             </Button>
           </div>
         ) : (
-          <Button variant="outline" onClick={() => setIsEditing(!isEditing)}>
+          <Button className="w-[100px]" onClick={() => setIsEditing(true)}>
             변경하기
           </Button>
         )}
