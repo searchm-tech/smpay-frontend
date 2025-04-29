@@ -43,6 +43,7 @@ const TableSection = ({
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
+  const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
   const [openStopModal, setOpenStopModal] = useState<boolean>(false);
 
@@ -176,7 +177,10 @@ const TableSection = ({
             {availableActions.includes("request") && (
               <Button
                 variant="blueOutline"
-                onClick={() => setOpenDialog("request")}
+                onClick={() => {
+                  setApplySubmitId(record.no);
+                  setOpenDialog("request");
+                }}
               >
                 심사 요청
               </Button>
@@ -229,8 +233,8 @@ const TableSection = ({
           onClose={() => setOpenDialog(null)}
           content={dialogContent[openDialog].content}
           onConfirm={() => {
-            if (openDialog === "request") {
-              router.push("/sm-pay/management/apply-submit/1");
+            if (openDialog === "request" && applySubmitId) {
+              router.push(`/sm-pay/management/apply-submit/${applySubmitId}`);
             }
           }}
         />

@@ -12,6 +12,7 @@ import type { TableParams } from "@/types/table";
 
 const SMPayManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
+
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
