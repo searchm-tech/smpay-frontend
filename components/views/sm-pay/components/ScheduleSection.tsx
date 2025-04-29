@@ -6,14 +6,19 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 
 import { Button } from "@/components/ui/button";
 
-// TODO: 스케쥴 설정 컴포넌트 추가 후 주석 해제
-// import ScheduleDesc, {
-//   ScheduleEditDesc,
-// } from "@/components/views/sm-pay/components/ScheduleDesc";
+import ScheduleDesc, {
+  ScheduleEditDesc,
+} from "@/components/views/sm-pay/components/ScheduleDesc";
 import { hoverData } from "@/components/views/sm-pay/components/constants";
+import { ScheduleInfo } from "../manangement/apply-write/ViewWrite";
 
 const ScheduleSection = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [scheduleInfo, setScheduleInfo] = useState<ScheduleInfo | null>(null);
+
+  const handleScheduleInfoChange = (data: ScheduleInfo) => {
+    setScheduleInfo(data);
+  };
 
   return (
     <section>
@@ -33,7 +38,14 @@ const ScheduleSection = () => {
         </Button>
       </div>
 
-      {/* {isEditing ? <ScheduleEditDesc  /> : <ScheduleDesc />} */}
+      {isEditing ? (
+        <ScheduleEditDesc
+          scheduleInfo={scheduleInfo}
+          handleScheduleInfoChange={handleScheduleInfoChange}
+        />
+      ) : (
+        <ScheduleDesc />
+      )}
     </section>
   );
 };

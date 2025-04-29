@@ -51,3 +51,8 @@ export interface AdvertiserListResponse {
   data: AdvertiserData[];
   success: boolean;
 }
+
+export interface SmPaySubmitDetailResponse {
+  data: SmPayData | null;
+  success: boolean;
+}

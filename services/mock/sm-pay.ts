@@ -21,7 +21,15 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
     customerId: `CUST_${(i + 1).toString().padStart(5, "0")}`,
     loginId: `user_${(i + 1).toString().padStart(3, "0")}`,
     advertiserName: `광고주 ${i + 1}`,
+    businessName: `사업자명 ${i + 1}`,
+    businessNumber: `123-45-${(i + 1).toString().padStart(5, "0")}`,
     status: statusList[i % statusList.length],
+    createdAt: new Date(
+      Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000
+    ).toISOString(),
+    updatedAt: new Date(
+      Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+    ).toISOString(),
     lastModifiedAt: new Date(
       Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
     ).toISOString(),
