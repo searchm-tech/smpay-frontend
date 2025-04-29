@@ -6,14 +6,15 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import type { RuleInfo } from "../manangement/apply-write/ViewWrite";
-import { Input } from "@/components/ui/input";
+import type { RuleInfo } from "@/types/sm-pay";
 
 type RuleDescProps = {
-  ruleInfo: RuleInfo;
+  ruleInfo?: RuleInfo | null;
 };
 
 const RuleDesc = ({ ruleInfo }: RuleDescProps) => {
+  if (!ruleInfo) return null;
+
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="충전 규칙 설정">

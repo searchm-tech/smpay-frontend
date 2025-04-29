@@ -5,44 +5,44 @@ import type { DashboardSubItem } from "@/constants/dasboard";
 import ContentHeader from "@/components/common/ContentHeader";
 import SmPayApplyDetailView from "@/components/views/sm-pay/manangement/apply-detail";
 
-type PageParams = Promise<{ slug: string }>;
+type PageParams = {
+  slug: string;
+};
 
 export async function generateMetadata({
   params,
 }: {
   params: PageParams;
 }): Promise<Metadata> {
-  const { slug } = await params;
-
   return {
-    title: `SM-Pay 상세내역 : ${slug}`,
+    title: `SM-Pay 상세내역 : ${params.slug}`,
   };
 }
 
-export default async function Page({ params }: { params: PageParams }) {
-  const { slug } = await params;
-
-  console.log("slug", slug);
+export default function SmPayApplyDetailPage({
+  params,
+}: {
+  params: PageParams;
+}) {
+  const breadcrumbItems: DashboardSubItem[] = [
+    {
+      title: "SM Pay",
+      url: "/sm-pay",
+    },
+    {
+      title: "SM Pay 관리",
+      url: "/sm-pay/management",
+    },
+    {
+      title: "신청 내역 상세",
+      url: `/sm-pay/management/apply-detail/${params.slug}`,
+    },
+  ];
 
   return (
     <div>
       <ContentHeader title="신청 내역 상세" items={breadcrumbItems} />
-      <SmPayApplyDetailView />
+      <SmPayApplyDetailView id={params.slug} />
     </div>
   );
 }
-
-const breadcrumbItems: DashboardSubItem[] = [
-  {
-    title: "SM Pay",
-    url: "/sm-pay",
-  },
-  {
-    title: "SM Pay 관리",
-    url: "/sm-pay/management",
-  },
-  {
-    title: "신청 내역 상세",
-    url: "/sm-pay/management/apply-detail/[slug]",
-  },
-];

@@ -23,18 +23,11 @@ import {
 
 import type { ViewProps } from ".";
 import type { AdvertiserData } from "@/types/adveriser";
+import type { RuleInfo } from "@/types/sm-pay";
 
 type ViewWrieProps = ViewProps & {
   selectedAdNum: number | null;
   onSubmit: () => void;
-};
-
-export type RuleInfo = {
-  roas: number;
-  increase: number;
-  increaseType: string;
-  decrease: number;
-  decreaseType: string;
 };
 
 export type ScheduleInfo = {
@@ -53,6 +46,7 @@ const ViewWrite = ({
   const [openDialogRequest, setOpenDialogRequest] = useState(false);
 
   const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
+    id: 0,
     roas: 0,
     increase: 0,
     increaseType: "flat", // flat, rate
