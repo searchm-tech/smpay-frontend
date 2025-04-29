@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import type { AdvertiserData } from "@/types/adveriser";
 
 type AdvertiserDescProps = {
-  advertiserDetail?: AdvertiserData | null;
+  advertiserDetail: AdvertiserData | null;
 };
 
 const AdvertiserDesc = ({ advertiserDetail }: AdvertiserDescProps) => {

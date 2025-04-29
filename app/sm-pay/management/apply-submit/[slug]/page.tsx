@@ -4,32 +4,31 @@ import ContentHeader from "@/components/common/ContentHeader";
 import ApplySubmitView from "@/components/views/sm-pay/manangement/apply-submit";
 import { type DashboardSubItem } from "@/constants/dasboard";
 
-type PageParams = Promise<{ slug: string }>;
+type PageParams = {
+  slug: string;
+};
 
 export async function generateMetadata({
   params,
 }: {
   params: PageParams;
 }): Promise<Metadata> {
-  const { slug } = await params;
-
   return {
-    title: `SM-Pay 상세내역 : ${slug}`,
+    title: `SM-Pay 신청 : ${params.slug}`,
   };
 }
 
-export default async function SmPayApplySubmitPage({
+export default function SmPayApplySubmitPage({
   params,
 }: {
   params: PageParams;
 }) {
-  const { slug } = await params;
-  console.log("slug", slug);
+  console.log("slug", params.slug);
 
   return (
     <div>
       <ContentHeader title="신청서 제출" items={breadcrumbItems} />
-      <ApplySubmitView />
+      <ApplySubmitView id={params.slug} />
     </div>
   );
 }

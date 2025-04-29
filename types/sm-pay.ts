@@ -5,7 +5,14 @@ export interface SmPayData {
   customerId: string; // CUSTOMER ID
   loginId: string; // 로그인 ID
   advertiserName: string; // 광고주명
+  businessName: string;
+  businessNumber: string;
+  businessOwnerName: string;
+  businessOwnerPhone: string;
+  businessOwnerEmail: string;
   status: SmPayStatus; // 상태
+  createdAt: string;
+  updatedAt: string;
   lastModifiedAt: string; // 최종 수정일시
 }
 

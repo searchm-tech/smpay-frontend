@@ -4,6 +4,7 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { ScheduleInfo } from "../manangement/apply-write/ViewWrite";
+import { Fragment } from "react";
 
 const ScheduleDesc = () => {
   return (
@@ -24,7 +25,7 @@ const ScheduleDesc = () => {
 export default ScheduleDesc;
 
 type ScheduleEditDescProps = {
-  scheduleInfo: ScheduleInfo;
+  scheduleInfo: ScheduleInfo | null;
   handleScheduleInfoChange: (value: ScheduleInfo) => void;
 };
 
@@ -32,6 +33,8 @@ export const ScheduleEditDesc = ({
   scheduleInfo,
   handleScheduleInfoChange,
 }: ScheduleEditDescProps) => {
+  if (!scheduleInfo) return <Fragment />;
+
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="일 최대 충전 한도">

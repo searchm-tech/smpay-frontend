@@ -4,6 +4,7 @@ import type {
   SmPayResponse,
   SmPayStatusResponse,
   AdvertiserListResponse,
+  SmPaySubmitDetailResponse,
 } from "./types";
 
 export const fetchSmPayData = async (
@@ -182,6 +183,24 @@ export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
         updatedAt: "",
       },
     ],
+    success: true,
+  };
+};
+
+export const getSmPaySubmitDetail = async (
+  id: string
+): Promise<SmPaySubmitDetailResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const numId = parseInt(id, 10);
+  const data = mockData.find((item) => item.id === numId);
+
+  if (!data) {
+    return { data: null, success: false };
+  }
+
+  return {
+    data,
     success: true,
   };
 };
