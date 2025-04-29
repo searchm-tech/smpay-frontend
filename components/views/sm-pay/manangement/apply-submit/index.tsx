@@ -45,7 +45,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
         <AdvertiserSection advertiserData={advertiserData} />
         <AccountDesc smPayData={data?.data} />
         <RuleSection id={id} />
-        <ScheduleSection />
+        <ScheduleSection id={id} />
       </div>
 
       <div className="flex justify-center gap-4 py-5">

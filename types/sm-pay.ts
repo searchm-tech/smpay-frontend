@@ -71,6 +71,7 @@ export type RuleInfo = {
 };
 
 export type ScheduleInfo = {
+  id: number;
   firstCharge: number;
   maxCharge: number;
 };

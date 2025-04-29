@@ -54,7 +54,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       <GuidSection viewType="guide" />
       <AdvertiserSection advertiserData={advertiserData} />
       <RuleSection id={id} />
-      <ScheduleSection />
+      <ScheduleSection id={id} />
 
       <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]">확인</Button>
