@@ -10,7 +10,8 @@ import ScheduleDesc, {
   ScheduleEditDesc,
 } from "@/components/views/sm-pay/components/ScheduleDesc";
 import { hoverData } from "@/components/views/sm-pay/components/constants";
-import { ScheduleInfo } from "../manangement/apply-write/ViewWrite";
+
+import type { ScheduleInfo } from "@/types/sm-pay";
 
 const ScheduleSection = () => {
   const [isEditing, setIsEditing] = useState(false);

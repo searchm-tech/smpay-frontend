@@ -1,10 +1,10 @@
+import { Fragment } from "react";
 import { NumberInput } from "@/components/composite/input-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
-import { ScheduleInfo } from "../manangement/apply-write/ViewWrite";
-import { Fragment } from "react";
+import type { ScheduleInfo } from "@/types/sm-pay";
 
 const ScheduleDesc = () => {
   return (
