@@ -47,7 +47,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
 
       <div className="mt-4 flex flex-col gap-2">
         <AdvertiserSection advertiserData={advertiserData} />
-        <AccountDesc />
+        <AccountDesc smPayData={data?.data} />
         <RuleSection />
         <ScheduleSection />
       </div>

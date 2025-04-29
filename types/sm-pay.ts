@@ -14,6 +14,18 @@ export interface SmPayData {
   createdAt: string;
   updatedAt: string;
   lastModifiedAt: string; // 최종 수정일시
+  chargeAccount: string;
+  chargeAccountNumber: string;
+  chargeAccountHolderName: string;
+  chargeAccountBank: string;
+  chargeAccountBankCode: string;
+  chargeAccountBankName: string;
+  salesAccount: string;
+  salesAccountNumber: string;
+  salesAccountHolderName: string;
+  salesAccountBank: string;
+  salesAccountBankCode: string;
+  salesAccountBankName: string;
 }
 
 export interface SmPayData2 {

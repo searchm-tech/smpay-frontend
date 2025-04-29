@@ -19,5 +19,9 @@ export const useSmPaySubmitDetail = (id: string) => {
     queryKey: ["/smpay/submit-detail", id],
     queryFn: () => getSmPaySubmitDetail(id),
     enabled: !!id,
+    initialData: {
+      data: null,
+      success: false,
+    },
   });
 };

@@ -38,5 +38,17 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
     lastModifiedAt: new Date(
       Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
     ).toISOString(),
+    chargeAccount: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    chargeAccountNumber: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    chargeAccountHolderName: `대표자명 ${i + 1}`,
+    chargeAccountBank: `우리은행`,
+    chargeAccountBankCode: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    chargeAccountBankName: `우리은행`,
+    salesAccount: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    salesAccountNumber: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    salesAccountHolderName: `대표자명 ${i + 1}`,
+    salesAccountBank: `우리은행`,
+    salesAccountBankCode: `123-45-${(i + 1).toString().padStart(5, "0")}`,
+    salesAccountBankName: `우리은행`,
   })
 );
