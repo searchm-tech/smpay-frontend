@@ -21,7 +21,7 @@ const GuidSection = ({ viewType }: GuidSectionProps) => {
         <IconBadge name="CircleAlert" bgColor="#1062FF" size="sm" />
 
         <div className="w-full flex items-center justify-between">
-          <div className="text-[#363C45] flex flex-col">
+          <div className="text-[#363C45]">
             <span>
               광고주의 광고 성과를 분석하여 자동 선결제의 기준 ROAS와 충전
               금액을 설정할 수 있습니다.

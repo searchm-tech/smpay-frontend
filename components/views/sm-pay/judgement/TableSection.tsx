@@ -17,7 +17,7 @@ const TableSection = () => {
   const router = useRouter();
 
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isStopModalOpen, setIsStopModalOpen] = useState(false);
+  const [isStopModalOpen, setIsStopModalOpen] = useState(true);
 
   const columns: ColumnsType<SmPaySubmitData & { id: number }> = [
     {

@@ -154,8 +154,8 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
               <span className="text-[#545F71] font-bold">
                 아직 SM Pay 회원이 아니신가요?
               </span>
-              <Button className="w-full h-12 mt-4">
-                <span className="text-base">대행사 등록 신청</span>
+              <Button className="w-full h-12 mt-4 text-base">
+                대행사 등록 신청
               </Button>
             </div>
           </form>

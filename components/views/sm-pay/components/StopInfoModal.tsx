@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import {
   Modal,
   type ModalProps,
@@ -6,6 +8,21 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
+
+export const TEMP_DATE = new Date().toISOString().slice(0, 10);
+
+const data = {
+  date: dayjs(TEMP_DATE).format("YYYY-MM-DD"),
+  reason: (
+    <div>
+      <p>ROAS 평균값은 심사 기준치를 충족하지만</p>
+      <p>
+        ROAS의 변동폭이 너무 커서 선충전으로 결제를 해도 제대로 된 효율을 내기
+        힘들 것 같습니다.
+      </p>
+    </div>
+  ),
+};
 
 const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
   return (
@@ -21,8 +38,10 @@ const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
         <p>다음과 같은 사유로 일시중지되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
           <Descriptions columns={1}>
-            <DescriptionItem label="사업자명">주식회사 써치엠</DescriptionItem>
-            <DescriptionItem label="대표자명1">홍길동</DescriptionItem>
+            <DescriptionItem label="심사 변려 일시">
+              {data.date}
+            </DescriptionItem>
+            <DescriptionItem label="반려 사유">{data.reason}</DescriptionItem>
           </Descriptions>
         </div>
       </div>

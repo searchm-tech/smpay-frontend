@@ -15,9 +15,9 @@ const FinishView = () => {
         />
       </div>
 
-      <div className="flex flex-col items-center justify-center text-base font-normal">
-        <span>제출이 완료되었습니다.</span>
-        <span>SM Pay 서비스를 신청해주셔서 감사합니다</span>
+      <div className="text-center text-base font-normal">
+        <p>제출이 완료되었습니다.</p>
+        <p>SM Pay 서비스를 신청해주셔서 감사합니다</p>
       </div>
     </div>
   );

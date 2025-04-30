@@ -5,6 +5,11 @@
 @tailwind utilities;
 
 @layer base {
+  body p {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
   /* Reset box-sizing */
   *,
   *::before,
