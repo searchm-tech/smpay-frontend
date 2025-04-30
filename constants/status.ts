@@ -1,7 +1,7 @@
-import type { SmPayStatus } from "@/types/sm-pay";
+import type { ActionButton, SmPayStatus } from "@/types/sm-pay";
 import type { AdvertiserStatus } from "@/types/adveriser";
 
-export const smPayStatusMap: Record<SmPayStatus, string> = {
+export const SM_PAY_STATUS_MAP: Record<SmPayStatus, string> = {
   ADVERTISER_AGREEMENT_REQUEST: "광고주 동의 요청",
   ADVERTISER_DISAGREED: "광고주 미동의",
   ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의기한 만료",
@@ -15,10 +15,10 @@ export const smPayStatusMap: Record<SmPayStatus, string> = {
 } as const;
 
 export const getSmPayStatusLabel = (status: SmPayStatus): string => {
-  return smPayStatusMap[status] || status;
+  return SM_PAY_STATUS_MAP[status] || status;
 };
 
-export const advertiserStatusMap: Record<AdvertiserStatus, string> = {
+export const ADVERTISER_STATUS_MAP: Record<AdvertiserStatus, string> = {
   AVAILABLE: "신청 가능",
   AGREEMENT_REQUEST: "광고주 동의 요청",
   AGREEMENT_REJECTED: "광고주 미동의",
@@ -31,5 +31,31 @@ export const advertiserStatusMap: Record<AdvertiserStatus, string> = {
 };
 
 export const getAdvertiserStatusLabel = (status: AdvertiserStatus): string => {
-  return advertiserStatusMap[status] || status;
+  return ADVERTISER_STATUS_MAP[status] || status;
+};
+
+export const STATUS_ACTIONS: Record<SmPayStatus, ActionButton[]> = {
+  ADVERTISER_AGREEMENT_REQUEST: ["view"],
+  ADVERTISER_DISAGREED: ["view", "cancel"],
+  ADVERTISER_AGREEMENT_EXPIRED: ["view", "cancel", "resend"],
+  ADVERTISER_AGREEMENT_COMPLETED: ["view", "cancel", "request"],
+  REVIEW_PENDING: ["view"],
+  REVIEW_APPROVED: ["view", "stop", "terminate"],
+  REJECTED: ["view"],
+  SUSPENDED: ["view", "terminate", "resume"],
+  TERMINATION_IN_PROGRESS: [],
+  TERMINATED: [],
+};
+
+export const STATUS_LABELS: Record<SmPayStatus, string> = {
+  ADVERTISER_AGREEMENT_REQUEST: "광고주 동의 요청",
+  ADVERTISER_DISAGREED: "광고주 미동의",
+  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의기한 만료",
+  ADVERTISER_AGREEMENT_COMPLETED: "광고주 동의 완료",
+  REVIEW_PENDING: "심사 대기",
+  REVIEW_APPROVED: "심사 승인",
+  REJECTED: "반려",
+  SUSPENDED: "일시중지",
+  TERMINATION_IN_PROGRESS: "해지 신청 진행",
+  TERMINATED: "해지",
 };

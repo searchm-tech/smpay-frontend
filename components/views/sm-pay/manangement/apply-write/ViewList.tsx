@@ -12,7 +12,7 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { useAdvertiserList } from "@/hooks/queries/advertiser";
 import { useAdvertiserStore } from "@/store/useAdvertiserStore";
 
-import { advertiserStatusMap } from "@/constants/status";
+import { ADVERTISER_STATUS_MAP } from "@/constants/status";
 
 import { cn } from "@/lib/utils";
 
@@ -75,10 +75,10 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
       title: "상태",
       dataIndex: "status",
       align: "center",
-      render: (status: AdvertiserStatus) => advertiserStatusMap[status],
+      render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
       sorter: (a, b) =>
-        advertiserStatusMap[a.status].localeCompare(
-          advertiserStatusMap[b.status]
+        ADVERTISER_STATUS_MAP[a.status].localeCompare(
+          ADVERTISER_STATUS_MAP[b.status]
         ),
     },
     {

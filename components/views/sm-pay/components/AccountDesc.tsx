@@ -2,9 +2,11 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
+import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { hoverData } from "./constants";
+
+import { HOVER_SMPAY } from "@/constants/hover";
 
 import type { SmPayData } from "@/types/sm-pay";
 
@@ -23,8 +25,8 @@ const AccountDesc = ({ smPayData }: AccountDescProps) => {
             충전 계좌 정보
           </LabelBullet>
           <TooltipHover
-            triggerContent={hoverData["prepayment"].triggerContent}
-            content={hoverData["prepayment"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_SMPAY["prepayment"]}
           />
         </div>
 
@@ -47,8 +49,8 @@ const AccountDesc = ({ smPayData }: AccountDescProps) => {
             매출 계좌 정보
           </LabelBullet>
           <TooltipHover
-            triggerContent={hoverData["prepayment"].triggerContent}
-            content={hoverData["prepayment"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_SMPAY["rule"]}
           />
         </div>
         <Descriptions columns={1}>

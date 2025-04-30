@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import LoadingUI from "@/components/common/Loading";
+import { HelpIcon } from "@/components/composite/icon-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+
+import LoadingUI from "@/components/common/Loading";
 import ScheduleDesc, {
   ScheduleEditDesc,
 } from "@/components/views/sm-pay/components/ScheduleDesc";
-
-import { hoverData } from "@/components/views/sm-pay/components/constants";
 
 import {
   useSmPayScheduleInfo,
@@ -18,6 +18,8 @@ import {
 } from "@/hooks/queries/sm-pay";
 
 import type { ScheduleInfo } from "@/types/sm-pay";
+
+import { HOVER_SMPAY } from "@/constants/hover";
 
 type ScheduleSectionProps = {
   id: string;
@@ -80,8 +82,8 @@ const ScheduleSection = ({ id }: ScheduleSectionProps) => {
             선결제 스케쥴 설정
           </LabelBullet>
           <TooltipHover
-            triggerContent={hoverData["prepayment"].triggerContent}
-            content={hoverData["prepayment"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_SMPAY["prepayment"]}
           />
         </div>
 

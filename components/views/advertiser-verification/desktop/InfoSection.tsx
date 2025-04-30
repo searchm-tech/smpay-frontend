@@ -8,14 +8,17 @@ import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
+import { HelpIcon } from "@/components/composite/icon-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import { dialogContent, hoverData, TEST_BANK_OPTIONS } from "../constants";
+import { TEST_BANK_OPTIONS } from "../constants";
+import { HOVER_ADVERIFY } from "@/constants/hover";
 
 import type { AccountInfo } from "@/types/vertification";
+import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
 
 type InfoSectionProps = {
   chargeAccount: AccountInfo;
@@ -96,7 +99,7 @@ const InfoSection = ({
 
             setCertifiedMessage(null);
           }}
-          content={dialogContent["certification"].content}
+          content={ADVERIFY_DIALOG_CONTENT["certification"]}
           cancelDisabled={true}
         />
       )}
@@ -107,8 +110,8 @@ const InfoSection = ({
           </LabelBullet>
 
           <TooltipHover
-            triggerContent={hoverData["charge"].triggerContent}
-            content={hoverData["charge"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_ADVERIFY["charge"]}
           />
         </div>
 
@@ -165,8 +168,8 @@ const InfoSection = ({
             매출 계좌 정보 입력
           </LabelBullet>
           <TooltipHover
-            triggerContent={hoverData["sales"].triggerContent}
-            content={hoverData["sales"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_ADVERIFY["sales"]}
           />
         </div>
 
