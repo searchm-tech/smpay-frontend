@@ -10,6 +10,7 @@ import {
   getSmPayRuleInfo,
   getSmPayScheduleInfo,
   getSmPaySubmitDetail,
+  updateSmPayApplySubmit,
   updateSmPayRuleInfo,
   updateSmPayScheduleInfo,
 } from "@/services/sm-pay";
@@ -22,7 +23,7 @@ import type {
   SmPayScheduleInfoResponse,
   SmPaySubmitDetailResponse,
 } from "@/services/types";
-import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 
 export const useSmPayList = (params: FetchSmPayParams) => {
   return useQuery<SmPayResponse>({
@@ -108,5 +109,14 @@ export const useSmPayRuleHistory = (id: string) => {
       data: [],
       success: false,
     },
+  });
+};
+
+export const useSmPayApplySubmit = (
+  options?: UseMutationOptions<BooleanResponse, Error, string>
+) => {
+  return useMutation<BooleanResponse, Error, string>({
+    mutationFn: (id) => updateSmPayApplySubmit(id),
+    ...options,
   });
 };

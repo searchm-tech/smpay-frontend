@@ -85,3 +85,8 @@ export type ScheduleInfo = {
   firstCharge: number;
   maxCharge: number;
 };
+
+export type BooleanResponse = {
+  data: boolean;
+  success: boolean;
+};
