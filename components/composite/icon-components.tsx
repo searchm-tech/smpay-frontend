@@ -46,4 +46,8 @@ const IconBadge = ({
   );
 };
 
-export { IconBadge };
+const HelpIcon = () => (
+  <IconBadge name="CircleHelp" bgColor="#F6BE2C" className="cursor-pointer" />
+);
+
+export { IconBadge, HelpIcon };

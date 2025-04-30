@@ -2,21 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  useSmPaySubmitDetail,
-  useSmPayApplySubmit,
-} from "@/hooks/queries/sm-pay";
 
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import AdvertiserSection from "../../components/AdvertiserSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import RuleSection from "../../components/RuleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
+
+import {
+  useSmPaySubmitDetail,
+  useSmPayApplySubmit,
+} from "@/hooks/queries/sm-pay";
+
+import { APPLY_SUBMIT_CONTENT } from "@/constants/dialog";
 import type { AdvertiserData } from "@/types/adveriser";
-import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 
 interface ApplySubmitViewProps {
   id: string;
@@ -26,12 +29,11 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
   const router = useRouter();
   const { data, isPending } = useSmPaySubmitDetail(id);
 
-  const { mutate: applySubmit, isPending: isApplySubmitPending } =
-    useSmPayApplySubmit({
-      onSuccess: () => {
-        router.push("/sm-pay/management");
-      },
-    });
+  const {
+    mutate: applySubmit,
+    isPending: isApplySubmitPending,
+    isSuccess,
+  } = useSmPayApplySubmit();
 
   const [isSubmit, setIsSubmit] = useState(false);
 
@@ -55,14 +57,24 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {isApplySubmitPending && <LoadingUI title="심사 요청 중..." />}
 
+      {isSuccess && (
+        <ConfirmDialog
+          open
+          onConfirm={() => router.push("/sm-pay/management")}
+          cancelDisabled
+          content={APPLY_SUBMIT_CONTENT["success-apply"]}
+        />
+      )}
+
       {isSubmit && (
         <ConfirmDialog
           open={isSubmit}
           onClose={() => setIsSubmit(false)}
           onConfirm={() => applySubmit(id)}
-          content="심사 요청을 진행하시겠습니까?"
+          content={APPLY_SUBMIT_CONTENT["req-apply"]}
         />
       )}
+
       <GuidSection viewType="submit" />
 
       <div className="mt-4 flex flex-col gap-2">

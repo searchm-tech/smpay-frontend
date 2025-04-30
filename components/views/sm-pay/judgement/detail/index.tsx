@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TriangleAlert } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +13,6 @@ import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
 import { GuideBox } from "@/components/common/Box";
-import { TriangleAlert } from "lucide-react";
 
 const SmPayJudgementDetailView = () => {
   const [isApproved, setIsApproved] = useState(false);

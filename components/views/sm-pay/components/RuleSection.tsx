@@ -13,13 +13,13 @@ import RuleDesc, {
 import HistoryModal from "./HistoryModal";
 import LoadingUI from "@/components/common/Loading";
 
-import { hoverData } from "@/components/views/sm-pay/components/constants";
-
 import {
   useSmPayRuleInfo,
   useSmPayRuleInfoUpdate,
 } from "@/hooks/queries/sm-pay";
 import type { RuleInfo } from "@/types/sm-pay";
+import { HOVER_SMPAY } from "@/constants/hover";
+import { HelpIcon } from "@/components/composite/icon-components";
 
 type RuleSectionProps = {
   id: string;
@@ -85,8 +85,8 @@ const RuleSection = ({ id }: RuleSectionProps) => {
           </LabelBullet>
 
           <TooltipHover
-            triggerContent={hoverData["rule"].triggerContent}
-            content={hoverData["rule"].content}
+            triggerContent={<HelpIcon />}
+            content={HOVER_SMPAY["rule"]}
           />
         </div>
 

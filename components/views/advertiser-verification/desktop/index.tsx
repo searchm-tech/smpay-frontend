@@ -10,12 +10,11 @@ import FooterSection from "./FooterSection";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
+import { DEFAULT_ACCOUNT_INFO, DEFAULT_AGREEMENT_INFO } from "../constants";
 import {
-  DEFAULT_ACCOUNT_INFO,
-  DEFAULT_AGREEMENT_INFO,
-  dialogContent,
-  type DialogStatus,
-} from "../constants";
+  ADVERIFY_DIALOG_CONTENT,
+  type AdVerifyDialogStatus,
+} from "@/constants/dialog";
 
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
 
@@ -32,7 +31,9 @@ const DesktopView = () => {
     useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
 
   const [error, setError] = useState<string | null>(null);
-  const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
+  const [openDialog, setOpenDialog] = useState<AdVerifyDialogStatus | null>(
+    null
+  );
 
   const handleReset = () => {
     setSalesAccount(DEFAULT_ACCOUNT_INFO);
@@ -98,7 +99,7 @@ const DesktopView = () => {
       {openDialog && (
         <ConfirmDialog
           open
-          content={dialogContent[openDialog].content}
+          content={ADVERIFY_DIALOG_CONTENT[openDialog]}
           cancelDisabled={true}
           onConfirm={() => {
             setOpenDialog(null);

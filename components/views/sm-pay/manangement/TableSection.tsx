@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 import { Button } from "@/components/ui/button";
+
 import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LinkTextButton } from "@/components/composite/button-components";
@@ -11,19 +13,13 @@ import { LinkTextButton } from "@/components/composite/button-components";
 import StopInfoModal from "../components/StopInfoModal";
 import RejectModal from "../components/RejectModal";
 
-import {
-  dialogContent,
-  statusActions,
-  statusLabels,
-  type DialogStatus,
-} from "./constants";
+import { MANAGEMENT_CONTENT, type SMPayManageStatus } from "@/constants/dialog";
+import { STATUS_ACTIONS, STATUS_LABELS } from "@/constants/status";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import type { SmPayStatus, SmPayData } from "@/types/sm-pay";
 import type { TableParams } from "@/types/table";
-
-import dayjs from "dayjs";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -42,7 +38,7 @@ const TableSection = ({
 }: TableSectionProps) => {
   const router = useRouter();
 
-  const [openDialog, setOpenDialog] = useState<DialogStatus | null>(null);
+  const [openDialog, setOpenDialog] = useState<SMPayManageStatus | null>(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
   const [openStopModal, setOpenStopModal] = useState<boolean>(false);
@@ -121,7 +117,7 @@ const TableSection = ({
         if (value === "REJECTED") {
           return (
             <LinkTextButton onClick={() => setOpenRejectModal(true)}>
-              {statusLabels[value]}
+              {STATUS_LABELS[value]}
             </LinkTextButton>
           );
         }
@@ -129,12 +125,12 @@ const TableSection = ({
         if (value === "SUSPENDED") {
           return (
             <LinkTextButton onClick={() => setOpenStopModal(true)}>
-              {statusLabels[value]}
+              {STATUS_LABELS[value]}
             </LinkTextButton>
           );
         }
 
-        return <span>{statusLabels[value]}</span>;
+        return <span>{STATUS_LABELS[value]}</span>;
       },
     },
 
@@ -143,7 +139,7 @@ const TableSection = ({
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
-        const availableActions = statusActions[record.status];
+        const availableActions = STATUS_ACTIONS[record.status];
 
         return (
           <div className="flex items-center gap-2">
@@ -231,7 +227,7 @@ const TableSection = ({
         <ConfirmDialog
           open
           onClose={() => setOpenDialog(null)}
-          content={dialogContent[openDialog].content}
+          content={MANAGEMENT_CONTENT[openDialog]}
           onConfirm={() => {
             if (openDialog === "request" && applySubmitId) {
               router.push(`/sm-pay/management/apply-submit/${applySubmitId}`);
