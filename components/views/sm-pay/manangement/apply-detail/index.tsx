@@ -2,15 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-import { useEffect } from "react";
 
 import AdvertiserSection from "../../components/AdvertiserSection";
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
+import AccountDesc from "../../components/AccountDesc";
 import LoadingUI from "@/components/common/Loading";
-import { AdvertiserData } from "@/types/adveriser";
+
+import { Label } from "@/components/ui/label";
+import { LabelBullet } from "@/components/composite/label-bullet";
+import { DescriptionItem } from "@/components/composite/description-components";
+import { Descriptions } from "@/components/composite/description-components";
+
+import { getSmPayStatusLabel } from "@/constants/status";
+
+import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
+
+import type { AdvertiserData } from "@/types/adveriser";
 
 interface SmPayApplyDetailViewProps {
   id: string;
@@ -20,39 +29,48 @@ interface SmPayApplyDetailViewProps {
 const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
   const router = useRouter();
 
-  useEffect(() => {
-    console.log("Component received id:", id);
-  }, [id]);
+  const { data: response, isPending } = useSmPaySubmitDetail(id);
 
-  const { data, isPending } = useSmPaySubmitDetail(id);
-
-  console.log("Component rendering with id:", id);
-
-  if (isPending) {
-    return <LoadingUI title="SM Pay 정보 조회 중..." />;
-  }
-
-  const advertiserData: AdvertiserData | null = data?.data
+  const advertiserData: AdvertiserData | null = response?.data
     ? {
-        id: data.data.id,
-        name: data.data.advertiserName,
-        customerId: data.data.customerId,
-        loginId: data.data.loginId,
-        advertiserName: data.data.advertiserName,
+        id: response.data.id,
+        name: response.data.advertiserName,
+        customerId: response.data.customerId,
+        loginId: response.data.loginId,
+        advertiserName: response.data.advertiserName,
         status: "AVAILABLE",
-        updatedAt: data.data.updatedAt,
-        businessName: data.data.businessName,
-        businessNumber: data.data.businessNumber,
-        businessOwnerName: data.data.businessOwnerName,
-        businessOwnerPhone: data.data.businessOwnerPhone,
-        businessOwnerEmail: data.data.businessOwnerEmail,
+        updatedAt: response.data.updatedAt,
+        businessName: response.data.businessName,
+        businessNumber: response.data.businessNumber,
+        businessOwnerName: response.data.businessOwnerName,
+        businessOwnerPhone: response.data.businessOwnerPhone,
+        businessOwnerEmail: response.data.businessOwnerEmail,
       }
     : null;
 
   return (
     <div>
-      <GuidSection viewType="guide" />
+      {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      <GuidSection viewType="submit" />
+
+      <section>
+        <div className="flex items-center gap-4 py-2">
+          <LabelBullet labelClassName="text-base font-bold">
+            광고주 심사 상태
+          </LabelBullet>
+        </div>
+
+        <Descriptions columns={1}>
+          <DescriptionItem label="심사 상태">
+            <Label>
+              {response.data && getSmPayStatusLabel(response.data.status || "")}
+            </Label>
+          </DescriptionItem>
+        </Descriptions>
+      </section>
+
       <AdvertiserSection advertiserData={advertiserData} />
+      <AccountDesc smPayData={response.data} />
       <RuleSection id={id} />
       <ScheduleSection id={id} />
 
