@@ -80,6 +80,7 @@ export const mockScheduleInfo: ScheduleInfo[] = Array.from({ length: 157 }).map(
 
 export const mockRuleHistory: RuleHistory[] = Array.from({ length: 157 }).map(
   (_, i) => ({
+    smPayId: i + 1,
     id: i + 1,
     date: new Date(
       Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000

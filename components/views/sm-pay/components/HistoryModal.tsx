@@ -56,7 +56,7 @@ const HistoryModal = ({
   onClose: () => void;
   id: string;
 }) => {
-  const { data } = useSmPayRuleHistory(id);
+  const { data, isPending } = useSmPayRuleHistory(id);
 
   return (
     <Modal
@@ -71,6 +71,7 @@ const HistoryModal = ({
           dataSource={data?.data}
           pagination={false}
           rowKey={(record) => record.id.toString()}
+          loading={isPending}
         />
       </div>
     </Modal>

@@ -1,7 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
+import { useState } from "react";
+import {
+  useSmPaySubmitDetail,
+  useSmPayApplySubmit,
+} from "@/hooks/queries/sm-pay";
 
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
@@ -12,6 +16,7 @@ import RuleSection from "../../components/RuleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
 import type { AdvertiserData } from "@/types/adveriser";
+import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 
 interface ApplySubmitViewProps {
   id: string;
@@ -20,6 +25,15 @@ interface ApplySubmitViewProps {
 const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
   const router = useRouter();
   const { data, isPending } = useSmPaySubmitDetail(id);
+
+  const { mutate: applySubmit, isPending: isApplySubmitPending } =
+    useSmPayApplySubmit({
+      onSuccess: () => {
+        router.push("/sm-pay/management");
+      },
+    });
+
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const advertiserData: AdvertiserData = {
     id: data?.data?.id || 0,
@@ -39,6 +53,16 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
   return (
     <div>
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {isApplySubmitPending && <LoadingUI title="심사 요청 중..." />}
+
+      {isSubmit && (
+        <ConfirmDialog
+          open={isSubmit}
+          onClose={() => setIsSubmit(false)}
+          onConfirm={() => applySubmit(id)}
+          content="심사 요청을 진행하시겠습니까?"
+        />
+      )}
       <GuidSection viewType="submit" />
 
       <div className="mt-4 flex flex-col gap-2">
@@ -49,7 +73,9 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
       </div>
 
       <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]">심사 요청</Button>
+        <Button className="w-[150px]" onClick={() => setIsSubmit(true)}>
+          심사 요청
+        </Button>
         <Button
           variant="cancel"
           className="w-[150px]"

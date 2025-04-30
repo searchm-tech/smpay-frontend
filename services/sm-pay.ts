@@ -13,7 +13,7 @@ import type {
   SmPaySubmitDetailResponse,
   SmPayRuleHistoryResponse,
 } from "./types";
-import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type { BooleanResponse, RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -303,6 +303,17 @@ export const getSmPayRuleHistory = async (
 
   return {
     data: mockRuleHistory,
+    success: true,
+  };
+};
+
+export const updateSmPayApplySubmit = async (
+  id: string
+): Promise<BooleanResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    data: true,
     success: true,
   };
 };
