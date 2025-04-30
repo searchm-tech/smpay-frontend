@@ -54,7 +54,7 @@ const GuideButton = ({
     <Button
       variant="outline"
       onClick={onClick}
-      className="w-[117px] h-[29px] border border-[#78A4E8] bg-white hover:bg-white/90 px-[10px] flex items-center justify-center"
+      className="mmin-w-[117px] h-[29px] border border-[#78A4E8] bg-white hover:bg-white/90 px-[10px] flex items-center justify-center"
     >
       <span className="text-[#1062FF]">{children}</span>
     </Button>
