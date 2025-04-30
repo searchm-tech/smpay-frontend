@@ -29,7 +29,7 @@ export default async function JudgementDetailPage({
   return (
     <div>
       <ContentHeader title="심사 요청 상세" items={breadcrumbItems} />
-      <SmPayJudgementDetailView />
+      <SmPayJudgementDetailView id={slug} />
     </div>
   );
 }

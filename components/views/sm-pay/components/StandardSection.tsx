@@ -31,7 +31,9 @@ const StandardSection = () => {
 
   return (
     <section>
-      <LabelBullet labelClassName="text-base font-bold">기준 설정</LabelBullet>
+      <LabelBullet labelClassName="text-base font-bold py-2">
+        기준 설정
+      </LabelBullet>
       <Descriptions bordered column={1} styles={{ label: { width: 200 } }}>
         <Descriptions.Item
           label={<span className="font-bold">매출 계좌 보유 잔액</span>}

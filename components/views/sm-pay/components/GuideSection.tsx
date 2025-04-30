@@ -2,17 +2,19 @@ import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
+import { TriangleAlert } from "lucide-react";
 
-export type ViewType = "guide" | "write" | "submit";
+export type ViewType = "guide" | "write" | "submit" | "reject";
 
 type GuidSectionProps = {
   viewType: ViewType;
+  className?: string;
 };
 
 const rounded =
   "inline-flex items-center h-[25px] px-2 bg-white border border-[#CDCDCD] rounded-[15px]";
 
-const GuidSection = ({ viewType }: GuidSectionProps) => {
+const GuidSection = ({ viewType, className }: GuidSectionProps) => {
   const { setIsOpen } = useGuideModalStore();
 
   const GUID_CONTENT: Record<ViewType, React.ReactNode> = {
@@ -21,7 +23,7 @@ const GuidSection = ({ viewType }: GuidSectionProps) => {
         <IconBadge name="CircleAlert" bgColor="#1062FF" size="sm" />
 
         <div className="w-full flex items-center justify-between">
-          <div className="text-[#363C45]">
+          <div className="text-[#363C45] flex flex-col">
             <span>
               광고주의 광고 성과를 분석하여 자동 선결제의 기준 ROAS와 충전
               금액을 설정할 수 있습니다.
@@ -110,9 +112,15 @@ const GuidSection = ({ viewType }: GuidSectionProps) => {
         </GuideButton>
       </div>
     ),
+    reject: (
+      <div className="flex items-center gap-2">
+        <TriangleAlert color="#FF0000" size={18} />
+        <span>광고주의 심사가 반려되었습니다. 반려 사유를 확인하세요.</span>
+      </div>
+    ),
   };
 
-  return <GuideBox>{GUID_CONTENT[viewType]}</GuideBox>;
+  return <GuideBox className={className}>{GUID_CONTENT[viewType]}</GuideBox>;
 };
 
 export default GuidSection;

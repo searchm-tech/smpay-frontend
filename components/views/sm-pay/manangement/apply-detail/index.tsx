@@ -20,6 +20,7 @@ import { getSmPayStatusLabel } from "@/constants/status";
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 interface SmPayApplyDetailViewProps {
   id: string;
@@ -52,23 +53,9 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
     <div>
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
       <GuidSection viewType="submit" />
-
-      <section>
-        <div className="flex items-center gap-4 py-2">
-          <LabelBullet labelClassName="text-base font-bold">
-            광고주 심사 상태
-          </LabelBullet>
-        </div>
-
-        <Descriptions columns={1}>
-          <DescriptionItem label="심사 상태">
-            <Label>
-              {response.data && getSmPayStatusLabel(response.data.status || "")}
-            </Label>
-          </DescriptionItem>
-        </Descriptions>
-      </section>
-
+      <AdvertiseStatusDesc
+        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+      />
       <AdvertiserSection advertiserData={advertiserData} />
       <AccountDesc smPayData={response.data} />
       <RuleSection id={id} />
