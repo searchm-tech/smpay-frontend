@@ -96,7 +96,7 @@ const FilterItem = ({
       onClick={onClick}
     >
       {title}
-      <Badge count={count} color={badgeColor} />
+      <Badge label={count} color={badgeColor} />
     </span>
   );
 };

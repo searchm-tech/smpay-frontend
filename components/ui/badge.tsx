@@ -3,12 +3,12 @@
 import { cn } from "@/lib/utils";
 
 interface BadgeProps {
-  count: number;
+  label: string | number;
   color?: string;
   className?: string;
 }
 
-export function Badge({ count, color, className }: BadgeProps) {
+export function Badge({ label, color, className }: BadgeProps) {
   return (
     <span
       className={cn(
@@ -19,7 +19,7 @@ export function Badge({ count, color, className }: BadgeProps) {
         backgroundColor: color || "#363C45",
       }}
     >
-      {count}
+      {label}
     </span>
   );
 }

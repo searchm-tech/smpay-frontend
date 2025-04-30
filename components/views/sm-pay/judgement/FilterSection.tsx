@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
 
 // default : #363C45
 // 값 있음 : #9BA5B7
@@ -6,13 +6,13 @@ import { Badge } from '@/components/ui/badge';
 
 const FilterSection = () => {
   const filters = [
-    { title: '전체', count: 10, fixedColor: '#363C45' },
-    { title: '승인', count: 10 },
-    { title: '심사 요청', count: 10 },
-    { title: '반려', count: 0 },
-    { title: '일시중지', count: 0 },
-    { title: '해지 신청 진행', count: 0 },
-    { title: '해지', count: 0 },
+    { title: "전체", count: 10, fixedColor: "#363C45" },
+    { title: "승인", count: 10 },
+    { title: "심사 요청", count: 10 },
+    { title: "반려", count: 0 },
+    { title: "일시중지", count: 0 },
+    { title: "해지 신청 진행", count: 0 },
+    { title: "해지", count: 0 },
   ];
 
   return (
@@ -40,13 +40,17 @@ const FilterItem = ({
   count: number;
   fixedColor?: string; // "전체"만 고정 색상
 }) => {
-  const badgeColor = fixedColor ?? (count > 0 ? '#9BA5B7' : '#EEF1F4');
-  const textColor = fixedColor ? 'text-black' : count > 0 ? 'text-black' : 'text-[#949494]';
+  const badgeColor = fixedColor ?? (count > 0 ? "#9BA5B7" : "#EEF1F4");
+  const textColor = fixedColor
+    ? "text-black"
+    : count > 0
+    ? "text-black"
+    : "text-[#949494]";
 
   return (
     <span className={`flex items-center gap-1 cursor-pointer ${textColor}`}>
       {title}
-      <Badge count={count} color={badgeColor} />
+      <Badge label={count} color={badgeColor} />
     </span>
   );
 };
