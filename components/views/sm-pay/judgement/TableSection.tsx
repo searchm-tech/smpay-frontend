@@ -12,6 +12,7 @@ import StopInfoModal from "../components/StopInfoModal";
 import { mockSmPayData, SmPaySubmitData } from "./constants";
 
 import type { ColumnsType } from "antd/es/table";
+import { Badge } from "@/components/ui/badge";
 
 const TableSection = () => {
   const router = useRouter();
@@ -54,7 +55,7 @@ const TableSection = () => {
       render: (text, record) => (
         <div className="flex items-center gap-2">
           <LinkTextButton>{text}</LinkTextButton>
-          {record.advertiserStatus === "new" && <Tag color="orange">new</Tag>}
+          {record.advertiserStatus === "new" && <Badge label="new" />}
         </div>
       ),
     },
