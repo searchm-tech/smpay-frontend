@@ -33,7 +33,7 @@ const GuidSection = ({ viewType }: GuidSectionProps) => {
           </div>
 
           <GuideButton onClick={() => setIsOpen(true)}>
-            신청 내역 보기
+            SM Pay 이용 가이드
           </GuideButton>
         </div>
       </div>

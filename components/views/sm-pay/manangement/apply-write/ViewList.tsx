@@ -12,16 +12,14 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { useAdvertiserList } from "@/hooks/queries/advertiser";
 import { useAdvertiserStore } from "@/store/useAdvertiserStore";
 
+import { advertiserStatusMap } from "@/constants/status";
+
 import { cn } from "@/lib/utils";
 
 import type { ViewProps } from ".";
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
-import {
-  advertiserStatusMap,
-  type AdvertiserData,
-  type AdvertiserStatus,
-} from "@/types/adveriser";
+import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
 
 type ViewListProps = ViewProps & {
   onSubmit: (id: number) => void;
