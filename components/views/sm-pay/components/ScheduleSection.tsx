@@ -62,6 +62,8 @@ const ScheduleSection = ({ id }: ScheduleSectionProps) => {
     mutateUpdate({ id, params: scheduleInfo });
   };
 
+  //
+
   return (
     <section>
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
