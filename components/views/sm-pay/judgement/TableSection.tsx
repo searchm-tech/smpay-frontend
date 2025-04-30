@@ -17,7 +17,7 @@ const TableSection = () => {
   const router = useRouter();
 
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [isStopModalOpen, setIsStopModalOpen] = useState(true);
+  const [isStopModalOpen, setIsStopModalOpen] = useState(false);
 
   const columns: ColumnsType<SmPaySubmitData & { id: number }> = [
     {
@@ -25,30 +25,35 @@ const TableSection = () => {
       dataIndex: "no",
       key: "no",
       width: 70,
+      sorter: true,
     },
     {
       title: "대행사명",
       dataIndex: "agencyName",
       key: "agencyName",
+      sorter: true,
     },
     {
       title: "담당자명",
       dataIndex: "departmentName",
       key: "departmentName",
+      sorter: true,
     },
     {
       title: "CUSTOMER ID",
       dataIndex: "customerId",
       key: "customerId",
+      sorter: true,
     },
     {
       title: "광고주 로그인 ID",
       dataIndex: "advertiserId",
       key: "advertiserId",
       align: "center",
+      sorter: true,
       render: (text, record) => (
         <div className="flex items-center gap-2">
-          <span>{text}</span>
+          <LinkTextButton>{text}</LinkTextButton>
           {record.advertiserStatus === "new" && <Tag color="orange">new</Tag>}
         </div>
       ),
@@ -57,17 +62,20 @@ const TableSection = () => {
       title: "사업자명",
       dataIndex: "userName",
       key: "userName",
+      sorter: true,
     },
     {
       title: "광고주 닉네임",
       dataIndex: "nickname",
       key: "nickname",
+      sorter: true,
     },
     {
       title: "상태",
       dataIndex: "status",
       key: "status",
       align: "center",
+      sorter: true,
       render: (status: string) => {
         // const colorMap: Record<string, string> = {
         //   '심사 요청': 'processing',
@@ -102,6 +110,7 @@ const TableSection = () => {
       dataIndex: "updatedAt",
       key: "updatedAt",
       align: "center",
+      sorter: true,
     },
   ];
 

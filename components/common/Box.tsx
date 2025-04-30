@@ -19,7 +19,7 @@ const GuideBox = ({ children, className }: Props) => {
   return (
     <section
       className={cn(
-        "mt-4 border border-[#CDE0FF] bg-[#E8F1FF] flex items-center justify-between p-4",
+        "min-h-[80px] mt-4 border border-[#CDE0FF] bg-[#E8F1FF] flex items-center justify-between p-4",
         className
       )}
     >
