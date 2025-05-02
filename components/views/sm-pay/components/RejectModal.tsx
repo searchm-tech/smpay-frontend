@@ -37,8 +37,6 @@ const RejectModal = ({
 }: RejectModalProps) => {
   const { data: rejectReason } = useSmPayRejectReason(id);
 
-  console.log("rejectReason", rejectReason);
-
   return (
     <Modal
       open={open}

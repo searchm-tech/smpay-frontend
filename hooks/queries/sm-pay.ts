@@ -14,6 +14,7 @@ import {
   updateSmPayApplySubmit,
   updateSmPayRuleInfo,
   updateSmPayScheduleInfo,
+  updateSmPayStatus,
 } from "@/services/sm-pay";
 
 import type {
@@ -132,5 +133,19 @@ export const useSmPayRejectReason = (id: string) => {
       data: "",
       success: false,
     },
+  });
+};
+
+type StatusParams = {
+  id: string;
+  status: string;
+};
+
+export const useSmPayStatusUpdate = (
+  options?: UseMutationOptions<BooleanResponse, Error, StatusParams>
+) => {
+  return useMutation<BooleanResponse, Error, StatusParams>({
+    mutationFn: ({ id, status }) => updateSmPayStatus(id, status),
+    ...options,
   });
 };
