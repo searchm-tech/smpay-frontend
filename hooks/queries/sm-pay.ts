@@ -6,6 +6,7 @@ import {
 
 import {
   fetchSmPayData,
+  getSmPayRejectReason,
   getSmPayRuleHistory,
   getSmPayRuleInfo,
   getSmPayScheduleInfo,
@@ -16,6 +17,7 @@ import {
 } from "@/services/sm-pay";
 
 import type {
+  SmPayRejectReasonResponse,
   FetchSmPayParams,
   SmPayResponse,
   SmPayRuleHistoryResponse,
@@ -118,5 +120,17 @@ export const useSmPayApplySubmit = (
   return useMutation<BooleanResponse, Error, string>({
     mutationFn: (id) => updateSmPayApplySubmit(id),
     ...options,
+  });
+};
+
+export const useSmPayRejectReason = (id: string) => {
+  return useQuery<SmPayRejectReasonResponse>({
+    queryKey: ["/smpay/reject-reason", id],
+    queryFn: () => getSmPayRejectReason(id),
+    enabled: !!id,
+    initialData: {
+      data: "",
+      success: false,
+    },
   });
 };

@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import parse from "html-react-parser";
 
 import {
   Modal,
@@ -8,6 +9,8 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
+
+import { useSmPayRejectReason } from "@/hooks/queries/sm-pay";
 
 const data = {
   date: dayjs(new Date().toISOString().slice(0, 10)).format("YYYY-MM-DD"),
@@ -22,12 +25,20 @@ const data = {
   ),
 };
 
+interface RejectModalProps extends ModalProps {
+  id: string;
+}
 const RejectModal = ({
   open = false,
   onClose,
   onConfirm,
   confirmDisabled = false,
-}: ModalProps) => {
+  id,
+}: RejectModalProps) => {
+  const { data: rejectReason } = useSmPayRejectReason(id);
+
+  console.log("rejectReason", rejectReason);
+
   return (
     <Modal
       open={open}
@@ -45,7 +56,9 @@ const RejectModal = ({
             <DescriptionItem label="심사 변리 일시">
               {data.date}
             </DescriptionItem>
-            <DescriptionItem label="반려 사유">{data.reason}</DescriptionItem>
+            <DescriptionItem label="반려 사유">
+              {parse(rejectReason.data)}
+            </DescriptionItem>
           </Descriptions>
         </div>
       </div>
