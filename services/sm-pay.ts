@@ -14,7 +14,12 @@ import type {
   SmPayRuleHistoryResponse,
   SmPayRejectReasonResponse,
 } from "./types";
-import type { BooleanResponse, RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type {
+  BooleanResponse,
+  RuleInfo,
+  ScheduleInfo,
+  SmPayStatus,
+} from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -333,6 +338,20 @@ export const getSmPayRejectReason = async (
         힘들 것 같습니다.
       </p>
     </div>`,
+    success: true,
+  };
+};
+
+export const updateSmPayStatus = async (
+  id: string,
+  status: string
+): Promise<BooleanResponse> => {
+  console.log(id, status);
+
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    data: true,
     success: true,
   };
 };

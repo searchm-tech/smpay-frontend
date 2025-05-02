@@ -1,36 +1,49 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
+import ApproveModal from "./ApproveModal";
+import LoadingUI from "@/components/common/Loading";
 import AdvertiserSection from "../../components/AdvertiserSection";
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import StandardSection from "../../components/StandardSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import GuidSection from "../../components/GuideSection";
-import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
+import AccountDesc from "../../components/AccountDesc";
+import RejectModal from "../../components/RejectModal";
+import {
+  useSmPaySubmitDetail,
+  useSmPayStatusUpdate,
+} from "@/hooks/queries/sm-pay";
 import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
-import AccountDesc from "../../components/AccountDesc";
-import LoadingUI from "@/components/common/Loading";
-import RejectModal from "../../components/RejectModal";
-
 type SmPayJudgementDetailViewProps = {
   id: string;
 };
 
+const status = "reject";
+
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
+  const router = useRouter();
+
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
-
+  const [isRestart, setIsRestart] = useState(false);
   const { data: response, isPending } = useSmPaySubmitDetail(id);
+
+  const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
+    onSuccess: () => {
+      setIsRestart(false);
+    },
+  });
 
   const advertiserData: AdvertiserData | null = response?.data
     ? {
@@ -55,33 +68,44 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
   return (
     <div>
-      {isPending && <LoadingUI />}
+      {(isPending || isUpdating) && <LoadingUI />}
       <ApproveModal
         open={isApproved}
         onClose={() => setIsApproved(false)}
         onConfirm={() => setIsApproved(false)}
       />
-
       <RejectSendModal
         open={isRejectSend}
         onClose={() => setIsRejectSend(false)}
         onConfirm={() => setIsRejectSend(false)}
       />
 
-      <RejectModal
-        id={id}
-        open={isReject}
-        onClose={() => setIsReject(false)}
-        onConfirm={() => setIsReject(false)}
-        confirmDisabled={true}
-      />
+      {isReject && (
+        <RejectModal
+          id={id}
+          open
+          onClose={() => setIsReject(false)}
+          onConfirm={() => setIsReject(false)}
+          confirmDisabled={true}
+        />
+      )}
+      {isRestart && (
+        <ConfirmDialog
+          open
+          title="광고주 심사 재개"
+          onClose={() => setIsRestart(false)}
+          onConfirm={() => {
+            updateStatus({ id, status: "REVIEW_APPROVED" });
+          }}
+          content="광고주 상태를 다시 활성화 하시겠습니까?"
+        />
+      )}
 
       <GuidSection
         viewType="reject"
         className="bg-[#FCECEC]"
         onClick={handleOpenRejectModal}
       />
-
       <AdvertiseStatusDesc
         status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
       />
@@ -91,7 +115,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <ScheduleSection id={"1"} />
       <StandardSection />
 
-      <div className="flex justify-center gap-4 py-5">
+      {/* <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
           승인
         </Button>
@@ -102,7 +126,23 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         >
           반려
         </Button>
-      </div>
+      </div> */}
+
+      {status === "reject" && (
+        <div className="flex justify-center gap-4 py-5">
+          <Button className="w-[150px]" onClick={() => setIsRestart(true)}>
+            재개
+          </Button>
+
+          <Button
+            variant="cancel"
+            className="w-[150px]"
+            onClick={() => router.push("/sm-pay/judgement")}
+          >
+            뒤로
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
