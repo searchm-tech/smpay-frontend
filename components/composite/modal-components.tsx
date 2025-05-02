@@ -23,6 +23,7 @@ export interface ModalProps {
   onConfirm?: () => void;
   title?: string | React.ReactNode;
   cancelDisabled?: boolean;
+  confirmDisabled?: boolean;
 }
 
 // 피그마 디자인 기준으로 봤을 땐, content 없이 title만 있는 경우가 많아서 이렇게 구현
@@ -69,6 +70,8 @@ interface ContentModalProps extends ModalProps {
   confirmText?: string;
   cancelText?: string;
   contentClassName?: string;
+  cancelDisabled?: boolean;
+  confirmDisabled?: boolean;
 }
 export const Modal = ({
   open = false,
@@ -80,6 +83,8 @@ export const Modal = ({
   confirmText = "확인",
   cancelText = "취소",
   contentClassName,
+  cancelDisabled,
+  confirmDisabled,
 }: ContentModalProps) => {
   return (
     <AlertDialog open={open}>
@@ -100,18 +105,23 @@ export const Modal = ({
         <div className={cn("px-8 py-4", contentClassName)}>{children}</div>
 
         <AlertDialogFooter className="py-4 bg-[#E2E2E2] rounded-b-lg">
-          <AlertDialogAction
-            className="min-w-[150px] min-h-[35px]"
-            onClick={onConfirm}
-          >
-            {confirmText}
-          </AlertDialogAction>
-          <AlertDialogCancel
-            className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
-            onClick={onClose}
-          >
-            {cancelText}
-          </AlertDialogCancel>
+          {!confirmDisabled && (
+            <AlertDialogAction
+              className="min-w-[150px] min-h-[35px]"
+              onClick={onConfirm}
+            >
+              {confirmText}
+            </AlertDialogAction>
+          )}
+
+          {!cancelDisabled && (
+            <AlertDialogCancel
+              className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
+              onClick={onClose}
+            >
+              {cancelText}
+            </AlertDialogCancel>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

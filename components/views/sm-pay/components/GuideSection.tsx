@@ -9,12 +9,13 @@ export type ViewType = "guide" | "write" | "submit" | "reject";
 type GuidSectionProps = {
   viewType: ViewType;
   className?: string;
+  onClick?: () => void;
 };
 
 const rounded =
   "inline-flex items-center h-[25px] px-2 bg-white border border-[#CDCDCD] rounded-[15px]";
 
-const GuidSection = ({ viewType, className }: GuidSectionProps) => {
+const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
   const { setIsOpen } = useGuideModalStore();
 
   const GUID_CONTENT: Record<ViewType, React.ReactNode> = {
@@ -113,9 +114,15 @@ const GuidSection = ({ viewType, className }: GuidSectionProps) => {
       </div>
     ),
     reject: (
-      <div className="flex items-center gap-2">
-        <TriangleAlert color="#FF0000" size={18} />
-        <span>광고주의 심사가 반려되었습니다. 반려 사유를 확인하세요.</span>
+      <div className="w-full flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <TriangleAlert color="#FF0000" size={18} />
+          <span>광고주의 심사가 반려되었습니다. 반려 사유를 확인하세요.</span>
+        </div>
+
+        <GuideButton color="#F57272" onClick={onClick || (() => {})}>
+          심사 반려 사유 확인
+        </GuideButton>
       </div>
     ),
   };
