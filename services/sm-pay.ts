@@ -3,6 +3,7 @@ import {
   mockRuleHistory,
   mockRuleInfo,
   mockScheduleInfo,
+  mockSmPayJudgementData,
 } from "./mock/sm-pay";
 import type {
   FetchSmPayParams,
@@ -13,13 +14,10 @@ import type {
   SmPaySubmitDetailResponse,
   SmPayRuleHistoryResponse,
   SmPayRejectReasonResponse,
+  SmPayJudgementDataResponse,
+  SmPayStopInfoResponse,
 } from "./types";
-import type {
-  BooleanResponse,
-  RuleInfo,
-  ScheduleInfo,
-  SmPayStatus,
-} from "@/types/sm-pay";
+import type { BooleanResponse, RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -342,6 +340,20 @@ export const getSmPayRejectReason = async (
   };
 };
 
+export const getSmPayStopInfo = async (
+  id: string
+): Promise<SmPayStopInfoResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    data: {
+      date: "2025-05-02",
+      reason: "관리 권한 해제  / 관리자 중단",
+    },
+    success: true,
+  };
+};
+
 export const updateSmPayStatus = async (
   id: string,
   status: string
@@ -355,3 +367,13 @@ export const updateSmPayStatus = async (
     success: true,
   };
 };
+
+export const getSmPayJudgementData =
+  async (): Promise<SmPayJudgementDataResponse> => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    return {
+      data: mockSmPayJudgementData,
+      success: true,
+    };
+  };

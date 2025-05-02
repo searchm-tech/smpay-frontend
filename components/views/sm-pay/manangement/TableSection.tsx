@@ -41,7 +41,7 @@ const TableSection = ({
   const [openDialog, setOpenDialog] = useState<SMPayManageStatus | null>(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
-  const [openStopModal, setOpenStopModal] = useState<boolean>(false);
+  const [stopModalId, setStopModalId] = useState<number | null>(null);
 
   const handleMoveDetailPage = (id: number) => {
     router.push(`/sm-pay/management/apply-detail/${id}`);
@@ -124,7 +124,7 @@ const TableSection = ({
 
         if (value === "SUSPENDED") {
           return (
-            <LinkTextButton onClick={() => setOpenStopModal(true)}>
+            <LinkTextButton onClick={() => setStopModalId(record.no)}>
               {STATUS_LABELS[value]}
             </LinkTextButton>
           );
@@ -247,13 +247,16 @@ const TableSection = ({
         />
       )}
 
-      <StopInfoModal
-        open={openStopModal}
-        onClose={() => setOpenStopModal(false)}
-        onConfirm={() => {
-          router.push("/sm-pay/management/apply-detail/1");
-        }}
-      />
+      {stopModalId && (
+        <StopInfoModal
+          open
+          id={stopModalId?.toString() || ""}
+          onClose={() => setStopModalId(null)}
+          onConfirm={() => {
+            router.push("/sm-pay/management/apply-detail/1");
+          }}
+        />
+      )}
 
       <Table<SmPayData>
         columns={columns}

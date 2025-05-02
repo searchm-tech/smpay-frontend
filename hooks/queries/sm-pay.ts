@@ -6,10 +6,12 @@ import {
 
 import {
   fetchSmPayData,
+  getSmPayJudgementData,
   getSmPayRejectReason,
   getSmPayRuleHistory,
   getSmPayRuleInfo,
   getSmPayScheduleInfo,
+  getSmPayStopInfo,
   getSmPaySubmitDetail,
   updateSmPayApplySubmit,
   updateSmPayRuleInfo,
@@ -25,6 +27,8 @@ import type {
   SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
   SmPaySubmitDetailResponse,
+  SmPayJudgementDataResponse,
+  SmPayStopInfoResponse,
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 
@@ -136,6 +140,21 @@ export const useSmPayRejectReason = (id: string) => {
   });
 };
 
+export const useSmPayStopInfo = (id: string) => {
+  return useQuery<SmPayStopInfoResponse>({
+    queryKey: ["/smpay/stop-info", id],
+    queryFn: () => getSmPayStopInfo(id),
+    enabled: !!id,
+    initialData: {
+      data: {
+        date: "",
+        reason: "",
+      },
+      success: false,
+    },
+  });
+};
+
 type StatusParams = {
   id: string;
   status: string;
@@ -147,5 +166,12 @@ export const useSmPayStatusUpdate = (
   return useMutation<BooleanResponse, Error, StatusParams>({
     mutationFn: ({ id, status }) => updateSmPayStatus(id, status),
     ...options,
+  });
+};
+
+export const useSmPayJudgementData = () => {
+  return useQuery<SmPayJudgementDataResponse>({
+    queryKey: ["/smpay/judgement-data"],
+    queryFn: () => getSmPayJudgementData(),
   });
 };

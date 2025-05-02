@@ -8,6 +8,7 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
+import { useSmPayStopInfo } from "@/hooks/queries/sm-pay";
 
 export const TEMP_DATE = new Date().toISOString().slice(0, 10);
 
@@ -16,7 +17,18 @@ const data = {
   reason: "관리 권한 해제  / 관리자 중단",
 };
 
-const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
+interface StopInfoModalProps extends ModalProps {
+  id: string;
+}
+
+const StopInfoModal = ({
+  open = false,
+  onClose,
+  onConfirm,
+  id,
+}: StopInfoModalProps) => {
+  const { data: stopInfo } = useSmPayStopInfo(id);
+
   return (
     <Modal
       open={open}
@@ -30,9 +42,11 @@ const StopInfoModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
         <p>다음과 같은 사유로 일시중지되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
           <Descriptions columns={1}>
-            <DescriptionItem label="일시중지 일시">{data.date}</DescriptionItem>
+            <DescriptionItem label="일시중지 일시">
+              {stopInfo.data.date}
+            </DescriptionItem>
             <DescriptionItem label="일시중지 사유">
-              {data.reason}
+              {stopInfo.data.reason}
             </DescriptionItem>
           </Descriptions>
         </div>
