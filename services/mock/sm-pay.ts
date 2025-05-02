@@ -4,6 +4,7 @@ import type {
   RuleInfo,
   ScheduleInfo,
   RuleHistory,
+  SmPayJudgementData,
 } from "@/types/sm-pay";
 
 const statusList: SmPayStatus[] = [
@@ -92,3 +93,22 @@ export const mockRuleHistory: RuleHistory[] = Array.from({ length: 157 }).map(
     decreaseType: "flat",
   })
 );
+
+export const mockSmPayJudgementData: SmPayJudgementData[] = Array.from({
+  length: 157,
+}).map((_, i) => ({
+  id: i + 1,
+  key: i + 1,
+  no: i + 1,
+  agencyName: `대행사 ${i + 1}`,
+  departmentName: `담당자 ${i + 1}`,
+  customerId: `CID${String(i + 1).padStart(5, "0")}`,
+  advertiserId: `AID${String(i + 1).padStart(5, "0")}`,
+  advertiserStatus: i % 5 === 0 ? "new" : undefined,
+  userName: `사업자${i + 1}`,
+  nickname: `광고주${i + 1}`,
+  status: ["심사 요청", "승인", "반려", "일시중지", "해지", "해지 신청 진행"][
+    i % 6
+  ] as SmPayJudgementData["status"],
+  updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // 하루씩 이전 날짜
+}));

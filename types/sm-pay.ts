@@ -90,3 +90,24 @@ export type BooleanResponse = {
   data: boolean;
   success: boolean;
 };
+
+export type SmPayJudgementData = {
+  id: number;
+  key: number;
+  no: number;
+  agencyName: string; // 대행사명
+  departmentName: string; // 담당자명
+  customerId: string; // CUSTOMER ID
+  advertiserId: string; // 광고주 로그인 ID
+  advertiserStatus: "new" | undefined; // 광고주 상태 (new 태그)
+  userName: string; // 사업자명
+  nickname: string; // 광고주 닉네임
+  status:
+    | "심사 요청"
+    | "승인"
+    | "반려"
+    | "일시중지"
+    | "해지"
+    | "해지 신청 진행"; // 상태
+  updatedAt: string; // 최종 수정 일시
+};

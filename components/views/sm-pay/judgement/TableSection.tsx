@@ -1,28 +1,31 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Tag } from "antd";
 
+import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
+
 import Table from "@/components/composite/table";
+import LoadingUI from "@/components/common/Loading";
 
 import RejectModal from "../components/RejectModal";
 import StopInfoModal from "../components/StopInfoModal";
 
-import { mockSmPayData, SmPaySubmitData } from "./constants";
+import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 
 import type { ColumnsType } from "antd/es/table";
-import { Badge } from "@/components/ui/badge";
+import type { SmPayJudgementData } from "@/types/sm-pay";
 
 const TableSection = () => {
   const router = useRouter();
 
   const [rejectModalId, setRejectModalId] = useState<string>("");
-  const [isStopModalOpen, setIsStopModalOpen] = useState(false);
+  const [stopModalId, setStopModalId] = useState<string>("");
 
-  console.log("rejectModalId", rejectModalId);
+  const { data: judgementData, isPending } = useSmPayJudgementData();
 
-  const columns: ColumnsType<SmPaySubmitData & { id: number }> = [
+  const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
     {
       title: "No",
       dataIndex: "no",
@@ -85,15 +88,7 @@ const TableSection = () => {
       key: "status",
       align: "center",
       sorter: true,
-      render: (status: string, record: SmPaySubmitData) => {
-        // const colorMap: Record<string, string> = {
-        //   '심사 요청': 'processing',
-        //   승인: 'success',
-        //   반려: 'error',
-        //   일시중지: 'warning',
-        //   해지: 'default',
-        // };
-
+      render: (status: string, record: SmPayJudgementData) => {
         if (status === "심사 요청" || status === "승인" || status === "해지") {
           return <span>{status}</span>;
         }
@@ -109,7 +104,9 @@ const TableSection = () => {
         }
         if (status === "일시중지") {
           return (
-            <LinkTextButton onClick={() => setIsStopModalOpen(true)}>
+            <LinkTextButton
+              onClick={() => setStopModalId(record.id.toString())}
+            >
               {status}
             </LinkTextButton>
           );
@@ -127,25 +124,27 @@ const TableSection = () => {
 
   return (
     <section>
+      {isPending && <LoadingUI />}
       {rejectModalId && (
         <RejectModal
           open
           id={rejectModalId}
           onClose={() => setRejectModalId("")}
-          onConfirm={() => router.push("/sm-pay/judgement/1")}
+          onConfirm={() => router.push(`/sm-pay/judgement/${rejectModalId}`)}
         />
       )}
-      {isStopModalOpen && (
+      {stopModalId && (
         <StopInfoModal
-          open={isStopModalOpen}
-          onClose={() => setIsStopModalOpen(false)}
-          onConfirm={() => router.push("/sm-pay/judgement/1")}
+          open
+          id={stopModalId}
+          onClose={() => setStopModalId("")}
+          onConfirm={() => router.push(`/sm-pay/judgement/${stopModalId}`)}
         />
       )}
-      <Table<SmPaySubmitData & { id: number }>
+      <Table<SmPayJudgementData & { id: number }>
         columns={columns}
-        dataSource={mockSmPayData.map((item) => ({ ...item, id: item.key }))}
-        total={mockSmPayData.length}
+        dataSource={judgementData?.data || []}
+        total={judgementData?.data.length || 0}
       />
     </section>
   );

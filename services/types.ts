@@ -4,6 +4,7 @@ import type {
   RuleInfo,
   ScheduleInfo,
   SmPayData,
+  SmPayJudgementData,
 } from "@/types/sm-pay";
 
 export interface PaginationParams {
@@ -79,5 +80,18 @@ export interface SmPayRuleHistoryResponse {
 
 export interface SmPayRejectReasonResponse {
   data: string;
+  success: boolean;
+}
+
+export interface SmPayStopInfoResponse {
+  data: {
+    date: string;
+    reason: string;
+  };
+  success: boolean;
+}
+
+export interface SmPayJudgementDataResponse {
+  data: SmPayJudgementData[];
   success: boolean;
 }
