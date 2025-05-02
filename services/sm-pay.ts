@@ -12,6 +12,7 @@ import type {
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
   SmPayRuleHistoryResponse,
+  SmPayRejectReasonResponse,
 } from "./types";
 import type { BooleanResponse, RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
@@ -314,6 +315,24 @@ export const updateSmPayApplySubmit = async (
 
   return {
     data: true,
+    success: true,
+  };
+};
+
+export const getSmPayRejectReason = async (
+  id: string
+): Promise<SmPayRejectReasonResponse> => {
+  console.log("id", id);
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    data: `<div>
+      <p>ROAS 평균값은 심사 기준치를 충족하지만</p>
+      <p>
+        ROAS의 변동폭이 너무 커서 선충전으로 결제를 해도 제대로 된 효율을 내기
+        힘들 것 같습니다.
+      </p>
+    </div>`,
     success: true,
   };
 };

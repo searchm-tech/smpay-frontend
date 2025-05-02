@@ -17,8 +17,10 @@ import { Badge } from "@/components/ui/badge";
 const TableSection = () => {
   const router = useRouter();
 
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectModalId, setRejectModalId] = useState<string>("");
   const [isStopModalOpen, setIsStopModalOpen] = useState(false);
+
+  console.log("rejectModalId", rejectModalId);
 
   const columns: ColumnsType<SmPaySubmitData & { id: number }> = [
     {
@@ -83,7 +85,7 @@ const TableSection = () => {
       key: "status",
       align: "center",
       sorter: true,
-      render: (status: string) => {
+      render: (status: string, record: SmPaySubmitData) => {
         // const colorMap: Record<string, string> = {
         //   '심사 요청': 'processing',
         //   승인: 'success',
@@ -98,7 +100,9 @@ const TableSection = () => {
 
         if (status === "반려") {
           return (
-            <LinkTextButton onClick={() => setIsRejectModalOpen(true)}>
+            <LinkTextButton
+              onClick={() => setRejectModalId(record.id.toString())}
+            >
               {status}
             </LinkTextButton>
           );
@@ -123,10 +127,11 @@ const TableSection = () => {
 
   return (
     <section>
-      {isRejectModalOpen && (
+      {rejectModalId && (
         <RejectModal
-          open={isRejectModalOpen}
-          onClose={() => setIsRejectModalOpen(false)}
+          open
+          id={rejectModalId}
+          onClose={() => setRejectModalId("")}
           onConfirm={() => router.push("/sm-pay/judgement/1")}
         />
       )}

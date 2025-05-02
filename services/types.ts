@@ -76,3 +76,8 @@ export interface SmPayRuleHistoryResponse {
   data: RuleHistory[];
   success: boolean;
 }
+
+export interface SmPayRejectReasonResponse {
+  data: string;
+  success: boolean;
+}

@@ -69,6 +69,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       />
 
       <RejectModal
+        id={id}
         open={isReject}
         onClose={() => setIsReject(false)}
         onConfirm={() => setIsReject(false)}

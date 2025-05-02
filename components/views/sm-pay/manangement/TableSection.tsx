@@ -40,7 +40,7 @@ const TableSection = ({
 
   const [openDialog, setOpenDialog] = useState<SMPayManageStatus | null>(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
-  const [openRejectModal, setOpenRejectModal] = useState<boolean>(false);
+  const [rejectModalId, setRejectModalId] = useState<number | null>(null);
   const [openStopModal, setOpenStopModal] = useState<boolean>(false);
 
   const handleMoveDetailPage = (id: number) => {
@@ -113,10 +113,10 @@ const TableSection = ({
       title: "상태",
       dataIndex: "status",
       align: "center",
-      render: (value: SmPayStatus) => {
+      render: (value: SmPayStatus, record: SmPayData) => {
         if (value === "REJECTED") {
           return (
-            <LinkTextButton onClick={() => setOpenRejectModal(true)}>
+            <LinkTextButton onClick={() => setRejectModalId(record.no)}>
               {STATUS_LABELS[value]}
             </LinkTextButton>
           );
@@ -236,13 +236,17 @@ const TableSection = ({
         />
       )}
 
-      <RejectModal
-        open={openRejectModal}
-        onClose={() => setOpenRejectModal(false)}
-        onConfirm={() => {
-          router.push("/sm-pay/management/apply-detail/1");
-        }}
-      />
+      {rejectModalId && (
+        <RejectModal
+          open
+          id={rejectModalId?.toString() || ""}
+          onClose={() => setRejectModalId(null)}
+          onConfirm={() => {
+            router.push("/sm-pay/management/apply-detail/1");
+          }}
+        />
+      )}
+
       <StopInfoModal
         open={openStopModal}
         onClose={() => setOpenStopModal(false)}
