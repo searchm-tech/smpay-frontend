@@ -18,6 +18,8 @@ import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
 import AccountDesc from "../../components/AccountDesc";
+import LoadingUI from "@/components/common/Loading";
+import RejectModal from "../../components/RejectModal";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -25,7 +27,8 @@ type SmPayJudgementDetailViewProps = {
 
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const [isApproved, setIsApproved] = useState(false);
-  const [isRejected, setIsRejected] = useState(false);
+  const [isRejectSend, setIsRejectSend] = useState(false);
+  const [isReject, setIsReject] = useState(false);
 
   const { data: response, isPending } = useSmPaySubmitDetail(id);
 
@@ -46,8 +49,13 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       }
     : null;
 
+  const handleOpenRejectModal = () => {
+    setIsReject(true);
+  };
+
   return (
     <div>
+      {isPending && <LoadingUI />}
       <ApproveModal
         open={isApproved}
         onClose={() => setIsApproved(false)}
@@ -55,12 +63,23 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       />
 
       <RejectSendModal
-        open={isRejected}
-        onClose={() => setIsRejected(false)}
-        onConfirm={() => setIsRejected(false)}
+        open={isRejectSend}
+        onClose={() => setIsRejectSend(false)}
+        onConfirm={() => setIsRejectSend(false)}
       />
 
-      <GuidSection viewType="reject" className="bg-[#FCECEC]" />
+      <RejectModal
+        open={isReject}
+        onClose={() => setIsReject(false)}
+        onConfirm={() => setIsReject(false)}
+        confirmDisabled={true}
+      />
+
+      <GuidSection
+        viewType="reject"
+        className="bg-[#FCECEC]"
+        onClick={handleOpenRejectModal}
+      />
 
       <AdvertiseStatusDesc
         status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
@@ -78,7 +97,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => setIsRejected(true)}
+          onClick={() => setIsRejectSend(true)}
         >
           반려
         </Button>

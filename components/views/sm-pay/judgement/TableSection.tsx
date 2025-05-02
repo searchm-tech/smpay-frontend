@@ -54,7 +54,13 @@ const TableSection = () => {
       sorter: true,
       render: (text, record) => (
         <div className="flex items-center gap-2">
-          <LinkTextButton>{text}</LinkTextButton>
+          <LinkTextButton
+            onClick={() =>
+              router.push(`/sm-pay/management/apply-detail/${record.id}`)
+            }
+          >
+            {text}
+          </LinkTextButton>
           {record.advertiserStatus === "new" && <Badge label="new" />}
         </div>
       ),

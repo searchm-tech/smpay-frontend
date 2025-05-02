@@ -22,7 +22,12 @@ const data = {
   ),
 };
 
-const RejectModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
+const RejectModal = ({
+  open = false,
+  onClose,
+  onConfirm,
+  confirmDisabled = false,
+}: ModalProps) => {
   return (
     <Modal
       open={open}
@@ -31,6 +36,7 @@ const RejectModal = ({ open = false, onClose, onConfirm }: ModalProps) => {
       title="광고주 심사 반려"
       confirmText="상세보기"
       cancelText="닫기"
+      confirmDisabled={confirmDisabled}
     >
       <div className="min-w-[900px]">
         <p>다음과 같은 사유로 SM Pay 서비스 심사를 반려되었습니다.</p>
