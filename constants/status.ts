@@ -1,4 +1,8 @@
-import type { ActionButton, SmPayStatus } from "@/types/sm-pay";
+import type {
+  ActionButton,
+  SmPayJudgementStatus,
+  SmPayStatus,
+} from "@/types/sm-pay";
 import type { AdvertiserStatus } from "@/types/adveriser";
 
 export const SM_PAY_STATUS_MAP: Record<SmPayStatus, string> = {
@@ -58,4 +62,13 @@ export const STATUS_LABELS: Record<SmPayStatus, string> = {
   SUSPENDED: "일시중지",
   TERMINATION_IN_PROGRESS: "해지 신청 진행",
   TERMINATED: "해지",
+};
+
+export const JUDGEMENT_STATUS_MAP: Record<SmPayJudgementStatus, string> = {
+  REVIEW_REQUEST: "심사 요청",
+  APPROVED: "승인",
+  REJECTED: "반려",
+  SUSPENDED: "일시중지",
+  TERMINATED: "해지",
+  TERMINATION_IN_PROGRESS: "해지 신청 진행",
 };

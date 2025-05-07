@@ -9,7 +9,7 @@
 
 ### state
 
-- React-query [-]
+- React-query
 - Zustand
 
 ### styles & ui
@@ -67,33 +67,39 @@ npm run start
 
 ```bash
 root
-├── app/                    # Next.js 14 app directory
+├── app/                   # Next.js 14 app directory
+│   ├── */                 # 각 페이지 폴더
+│   │   └── [slug]/.       # 각 페이지의 상세 페이지
+│   ├── globals.css        # 전역 스타일
+│   ├── loading.tsx        # 각 페이지 초기 로딩
+│   ├── page.tsx           # 각 페이지 서버사이드 페이지
 │   └── layout.tsx         # 루트 레이아웃
 │
 ├── components/           # 컴포넌트 디렉토리
-│   ├── ui/               # 순수 shadcn-ui 컴포넌트
-│   ├── layout/           # 전체 레이아웃 구성 컴포넌트
+│   ├── common/           # 공통 컴포넌트
 │   ├── composite/        # 조합형 UI (shadcn, antd 기반)
-│   ├── common/           # 기타 공통 컴포넌트
+│   ├── layout/           # 전체 레이아웃 구성 컴포넌트
+│   ├── ui/               # 순수 shadcn-ui 컴포넌트
 │   └── views/            # 클라이언트 view 컴포넌트
 │
-├── constants/            # 공통 값
-│
-├── lib/                  # 유틸리티 함수 및 설정
-│   ├── utils.ts
-│   ├── providers         # react-query provier
-│   └── constants.ts
-│
-├── service/              # api service
-│
 ├── hooks/               # 커스텀 훅
+│   ├── queries         # react-query api hook
 │   └── use-*.ts
 │
-├── store/              # Zustand 스토어
-│   └── *.store.ts
+├── lib/                  # 유틸리티 함수 및 설정
+│   ├── provider/         # react-query provider
+│   └── utils.ts
 │
-├── types/              # TypeScript 타입 정의 - 추가 예정
-    └── *..ts
+├── public/              # 유틸리티 함수 및 설정
+│
+├── store/               # zustand store
+│   └── use-*-Store.ts
+│
+├── types/               # 타입
+│   └── *.ts
+│
+├── utils/              # utils
+
 
 ```
 
@@ -106,7 +112,7 @@ root
 2. sm-pay
    - charge # 충전 회수 관리
      ├──
-   - judement # SM Pay 심사
+   - judgement # SM Pay 심사
      ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
      ├── [slug] : # SM Pay 심사 요청 상세
    - management # SM Pay 관리

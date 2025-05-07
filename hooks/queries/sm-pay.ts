@@ -12,6 +12,7 @@ import {
   getSmPayRuleHistory,
   getSmPayRuleInfo,
   getSmPayScheduleInfo,
+  getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
   updateSmPayApplySubmit,
@@ -30,6 +31,7 @@ import type {
   SmPaySubmitDetailResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
+  SmPayStatusResponse,
   SmPayJudgementStatusResponse,
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
@@ -39,6 +41,13 @@ export const useSmPayList = (params: FetchSmPayParams) => {
     queryKey: ["/smpay/list", params],
     queryFn: () => fetchSmPayData(params),
     staleTime: 1000 * 60,
+  });
+};
+
+export const useSmPayStatus = () => {
+  return useQuery<SmPayStatusResponse>({
+    queryKey: ["/smpay/status"],
+    queryFn: () => getSmPayStatus(),
   });
 };
 

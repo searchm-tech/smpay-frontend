@@ -5,6 +5,7 @@ import type {
   ScheduleInfo,
   RuleHistory,
   SmPayJudgementData,
+  SmPayJudgementStatus,
 } from "@/types/sm-pay";
 
 const statusList: SmPayStatus[] = [
@@ -17,6 +18,14 @@ const statusList: SmPayStatus[] = [
   "REJECTED",
   "SUSPENDED",
   "TERMINATION_IN_PROGRESS",
+  "TERMINATED",
+];
+
+const judgementStatusList: SmPayJudgementStatus[] = [
+  "REVIEW_REQUEST",
+  "APPROVED",
+  "REJECTED",
+  "SUSPENDED",
   "TERMINATED",
 ];
 
@@ -107,9 +116,8 @@ export const mockSmPayJudgementData: SmPayJudgementData[] = Array.from({
   advertiserStatus: i % 5 === 0 ? "new" : undefined,
   userName: `사업자${i + 1}`,
   nickname: `광고주${i + 1}`,
-  status: ["심사 요청", "승인", "반려", "일시중지", "해지", "해지 신청 진행"][
-    i % 6
+  status: judgementStatusList[
+    i % judgementStatusList.length
   ] as SmPayJudgementData["status"],
   updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // 하루씩 이전 날짜
 }));
-

@@ -8,10 +8,10 @@ import TableSection from "./TableSection";
 
 import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "antd";
-import type { SmPayJudgementData } from "@/types/sm-pay";
+import type { SmPayJudgementData, SmPayJudgementStatus } from "@/types/sm-pay";
 
 const SmPayJudgementView = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("전체");
+  const [selectedFilter, setSelectedFilter] = useState<string>("ALL");
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -45,11 +45,11 @@ const SmPayJudgementView = () => {
           : undefined,
       filters: {
         search: search ? [search] : [""],
-        status: selectedFilter ? [selectedFilter] : ["전체"],
+        status: selectedFilter ? [selectedFilter] : ["ALL"],
       },
     });
 
-  console.log("judgementData", judgementData);
+  console.log("selectedFilter", selectedFilter);
 
   return (
     <div>
