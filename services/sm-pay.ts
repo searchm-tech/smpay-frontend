@@ -368,12 +368,58 @@ export const updateSmPayStatus = async (
   };
 };
 
-export const getSmPayJudgementData =
-  async (): Promise<SmPayJudgementDataResponse> => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+export const getSmPayJudgementData = async (
+  status?: string,
+  searchText?: string
+): Promise<SmPayJudgementDataResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    return {
-      data: mockSmPayJudgementData,
-      success: true,
-    };
+  let filtered = mockSmPayJudgementData;
+  if (status && status !== "전체") {
+    filtered = filtered.filter((item) => item.status === status);
+  }
+
+  if (searchText) {
+    const lower = searchText.toLowerCase();
+    filtered = filtered.filter(
+      (item) =>
+        item.agencyName.toLowerCase().includes(lower) ||
+        item.departmentName.toLowerCase().includes(lower) ||
+        item.customerId.toLowerCase().includes(lower) ||
+        item.advertiserId.toLowerCase().includes(lower) ||
+        item.userName.toLowerCase().includes(lower) ||
+        item.nickname.toLowerCase().includes(lower)
+    );
+  }
+
+  return {
+    data: filtered,
+    success: true,
   };
+};
+
+export const getSmPayJudgementStatus = async () => {
+  // 상태별 카운트 계산
+  const statusCounts = mockSmPayJudgementData.reduce((acc, item) => {
+    const status = item.status || "";
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // 전체 카운트
+  const totalCount = mockSmPayJudgementData.length;
+
+  // 결과 배열 생성
+  const data = [
+    { status: "전체", count: totalCount },
+    ...Object.entries(statusCounts).map(([status, count]) => ({
+      status,
+      count,
+    })),
+  ];
+
+  return {
+    data,
+    success: true,
+  };
+};

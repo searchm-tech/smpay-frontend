@@ -112,3 +112,4 @@ export const mockSmPayJudgementData: SmPayJudgementData[] = Array.from({
   ] as SmPayJudgementData["status"],
   updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // 하루씩 이전 날짜
 }));
+
