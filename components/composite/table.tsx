@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Table as AntdTable,
@@ -42,15 +42,15 @@ function Table<T extends { id: string | number }>({
     return <Skeleton />;
   }
 
-  // [&_.ant-pagination-options]:!right-10  -> 페이지 크기 위치 맨 외른쪽
   return (
     <div className="flex flex-col">
       <AntdTable<T>
         loading={loading}
+        className={classNames}
         columns={columns}
         dataSource={dataSource}
         rowKey={(record) => record.id}
-        className="[&_.ant-pagination-options]:!absolute [&_.ant-pagination-options]:!right-10 [&_.ant-table-pagination]:!flex [&_.ant-table-pagination]:!items-center [&_.ant-table-pagination]:!justify-center [&_.ant-table-pagination]:!relative"
+        showSorterTooltip={false}
         pagination={{
           pageSize,
           current: currentPage,
@@ -88,3 +88,7 @@ function Table<T extends { id: string | number }>({
 }
 
 export default Table;
+
+// [&_.ant-pagination-options]:!right-10  -> 페이지 크기 위치 맨 외른쪽
+const classNames =
+  "[&_.ant-pagination-options]:!absolute [&_.ant-pagination-options]:!right-10 [&_.ant-table-pagination]:!flex [&_.ant-table-pagination]:!items-center [&_.ant-table-pagination]:!justify-center [&_.ant-table-pagination]:!relative";

@@ -79,21 +79,25 @@ const TableSection = ({
       title: "No",
       dataIndex: "no",
       align: "center",
+      sorter: true,
     },
     {
       title: "담당자",
       dataIndex: "manager",
       align: "center",
+      sorter: true,
     },
     {
       title: "CUSTOMER ID",
       dataIndex: "customerId",
       align: "center",
+      sorter: true,
     },
     {
       title: "로그인 ID",
       dataIndex: "loginId",
       align: "center",
+      sorter: true,
       render: (text: string, record: SmPayData) => (
         <LinkTextButton
           onClick={() => {
@@ -108,11 +112,13 @@ const TableSection = ({
       title: "광고주명",
       dataIndex: "advertiserName",
       align: "center",
+      sorter: true,
     },
     {
       title: "상태",
       dataIndex: "status",
       align: "center",
+      sorter: true,
       render: (value: SmPayStatus, record: SmPayData) => {
         if (value === "REJECTED") {
           return (
@@ -217,6 +223,7 @@ const TableSection = ({
       dataIndex: "lastModifiedAt",
       width: 200,
       align: "center",
+      sorter: true,
       render: (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     },
   ];
