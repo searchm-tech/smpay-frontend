@@ -394,6 +394,88 @@ export const getSmPayJudgementData = async (
 
   return {
     data: filtered,
+    total: filtered.length,
+    success: true,
+  };
+};
+
+export const getSmPayJudgementData2 = async (
+  params: FetchSmPayParams
+): Promise<SmPayJudgementDataResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  let filteredData = [...mockSmPayJudgementData];
+  const { pagination, sort, filters } = params;
+
+  // 필터링 적용
+  if (filters) {
+    Object.entries(filters).forEach(([key, values]) => {
+      if (
+        !values ||
+        values.length === 0 ||
+        (values.length === 1 && values[0] === "")
+      ) {
+        return; // 필터링 건너뜀
+      }
+      if (key === "search" && values[0] !== "") {
+        const searchTerm = String(values[0]).toLowerCase();
+        filteredData = filteredData.filter(
+          (item) =>
+            item.agencyName.toLowerCase().includes(searchTerm) ||
+            item.departmentName.toLowerCase().includes(searchTerm) ||
+            item.customerId.toLowerCase().includes(searchTerm) ||
+            item.advertiserId.toLowerCase().includes(searchTerm) ||
+            item.userName.toLowerCase().includes(searchTerm) ||
+            item.nickname.toLowerCase().includes(searchTerm)
+        );
+      } else if (
+        key === "status" &&
+        !(values.length === 1 && values[0] === "전체")
+      ) {
+        filteredData = filteredData.filter((item) => {
+          const itemValue = String((item as any)[key]);
+          return values.includes(itemValue);
+        });
+      } else if (key !== "search" && key !== "status") {
+        filteredData = filteredData.filter((item) => {
+          const itemValue = String((item as any)[key]);
+          return values.includes(itemValue);
+        });
+      }
+    });
+  }
+
+  // 정렬 적용
+  if (sort?.field && sort.order) {
+    filteredData.sort((a, b) => {
+      const aValue = (a as any)[sort.field!];
+      const bValue = (b as any)[sort.field!];
+      if (typeof aValue === "string") {
+        return sort.order === "ascend"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      if (typeof aValue === "number") {
+        return sort.order === "ascend" ? aValue - bValue : bValue - aValue;
+      }
+      if (aValue instanceof Date) {
+        return sort.order === "ascend"
+          ? new Date(aValue).getTime() - new Date(bValue).getTime()
+          : new Date(bValue).getTime() - new Date(aValue).getTime();
+      }
+      return 0;
+    });
+  }
+
+  // 페이지네이션 적용
+  const { current = 1, pageSize = 10 } = pagination || {};
+  const startIndex = (current - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+
+  return {
+    data: paginatedData,
+    total: filteredData.length,
     success: true,
   };
 };

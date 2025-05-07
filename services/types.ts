@@ -93,6 +93,7 @@ export interface SmPayStopInfoResponse {
 
 export interface SmPayJudgementDataResponse {
   data: SmPayJudgementData[];
+  total: number;
   success: boolean;
 }
 

@@ -6,7 +6,10 @@ import SearchSection from "./SearchSection";
 import FilterSection from "./FilterSection";
 import TableSection from "./TableSection";
 
-import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
+import {
+  useSmPayJudgementData,
+  useSmPayJudgementData2,
+} from "@/hooks/queries/sm-pay";
 
 const SmPayJudgementView = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("전체");
@@ -19,7 +22,18 @@ const SmPayJudgementView = () => {
   const handleSearch = (text: string) => setSearch(text);
 
   const { data: judgementData, isPending: loadingTable } =
-    useSmPayJudgementData(selectedFilter, search);
+    useSmPayJudgementData2({
+      pagination: {
+        current: 1,
+        pageSize: 10,
+      },
+      filters: {
+        status: [selectedFilter],
+        search: [search],
+      },
+    });
+
+  console.log("judgementData", judgementData);
 
   return (
     <div>
