@@ -369,37 +369,6 @@ export const updateSmPayStatus = async (
 };
 
 export const getSmPayJudgementData = async (
-  status?: string,
-  searchText?: string
-): Promise<SmPayJudgementDataResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  let filtered = mockSmPayJudgementData;
-  if (status && status !== "전체") {
-    filtered = filtered.filter((item) => item.status === status);
-  }
-
-  if (searchText) {
-    const lower = searchText.toLowerCase();
-    filtered = filtered.filter(
-      (item) =>
-        item.agencyName.toLowerCase().includes(lower) ||
-        item.departmentName.toLowerCase().includes(lower) ||
-        item.customerId.toLowerCase().includes(lower) ||
-        item.advertiserId.toLowerCase().includes(lower) ||
-        item.userName.toLowerCase().includes(lower) ||
-        item.nickname.toLowerCase().includes(lower)
-    );
-  }
-
-  return {
-    data: filtered,
-    total: filtered.length,
-    success: true,
-  };
-};
-
-export const getSmPayJudgementData2 = async (
   params: FetchSmPayParams
 ): Promise<SmPayJudgementDataResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
