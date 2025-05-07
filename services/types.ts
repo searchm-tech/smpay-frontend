@@ -5,6 +5,7 @@ import type {
   ScheduleInfo,
   SmPayData,
   SmPayJudgementData,
+  SmPayJudgementStatus,
 } from "@/types/sm-pay";
 
 export interface PaginationParams {
@@ -38,8 +39,6 @@ export interface SmPayStatusData {
   name: string;
   status: string;
   count: number;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface SmPayStatusResponse {
@@ -99,8 +98,24 @@ export interface SmPayJudgementDataResponse {
 
 export interface SmPayJudgementStatusResponse {
   data: {
-    status: string;
+    status: SmPayJudgementStatus;
+    label: string;
     count: number;
   }[];
   success: boolean;
+}
+
+/**
+ * api Response Type
+ */
+
+export interface ApiResponse<T> {
+  data: ApiResponseData<T>;
+  success: boolean;
+}
+
+export interface ApiResponseData<T> {
+  result: T;
+  code: number;
+  message: string;
 }

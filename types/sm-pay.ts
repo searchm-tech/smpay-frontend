@@ -51,6 +51,14 @@ export type SmPayStatus =
   | "TERMINATION_IN_PROGRESS" // 해지 신청 진행
   | "TERMINATED"; // 해지
 
+export type SmPayJudgementStatus =
+  | "REVIEW_REQUEST" // 심사 요청
+  | "APPROVED" // 승인
+  | "REJECTED" // 반려
+  | "SUSPENDED" // 일시중지
+  | "TERMINATED" // 해지
+  | "TERMINATION_IN_PROGRESS"; // 해지 신청 진행
+
 // sm-pay 관리 > 테이블 상태 버튼
 export type ActionButton =
   | "view"

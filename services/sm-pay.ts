@@ -1,3 +1,4 @@
+import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
 import {
   mockData,
   mockRuleHistory,
@@ -16,8 +17,14 @@ import type {
   SmPayRejectReasonResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
+  SmPayJudgementStatusResponse,
 } from "./types";
-import type { BooleanResponse, RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type {
+  BooleanResponse,
+  RuleInfo,
+  ScheduleInfo,
+  SmPayJudgementStatus,
+} from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: FetchSmPayParams
@@ -111,88 +118,66 @@ export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
         name: "전체",
         status: "ALL",
         count: totalCount,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 1,
         name: "광고주 동의 요청",
         status: "ADVERTISER_AGREEMENT_REQUEST",
         count: statusCounts["ADVERTISER_AGREEMENT_REQUEST"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 2,
         name: "광고주 미동의",
         status: "ADVERTISER_DISAGREED",
         count: statusCounts["ADVERTISER_DISAGREED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 3,
         name: "광고주 동의기한 만료",
         status: "ADVERTISER_AGREEMENT_EXPIRED",
         count: statusCounts["ADVERTISER_AGREEMENT_EXPIRED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 4,
         name: "광고주 동의 완료",
         status: "ADVERTISER_AGREEMENT_COMPLETED",
         count: statusCounts["ADVERTISER_AGREEMENT_COMPLETED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 5,
         name: "심사 대기",
         status: "REVIEW_PENDING",
         count: statusCounts["REVIEW_PENDING"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 6,
         name: "심사 승인",
         status: "REVIEW_APPROVED",
         count: statusCounts["REVIEW_APPROVED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 7,
         name: "반려",
         status: "REJECTED",
         count: statusCounts["REJECTED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 8,
         name: "일시중지",
         status: "SUSPENDED",
         count: statusCounts["SUSPENDED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 9,
         name: "해지 신청 진행",
         status: "TERMINATION_IN_PROGRESS",
         count: statusCounts["TERMINATION_IN_PROGRESS"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
       {
         id: 10,
         name: "해지",
         status: "TERMINATED",
         count: statusCounts["TERMINATED"] || 0,
-        createdAt: "",
-        updatedAt: "",
       },
     ],
     success: true,
@@ -371,6 +356,7 @@ export const updateSmPayStatus = async (
 export const getSmPayJudgementData = async (
   params: FetchSmPayParams
 ): Promise<SmPayJudgementDataResponse> => {
+  console.log("params", params);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   let filteredData = [...mockSmPayJudgementData];
@@ -399,7 +385,7 @@ export const getSmPayJudgementData = async (
         );
       } else if (
         key === "status" &&
-        !(values.length === 1 && values[0] === "전체")
+        !(values.length === 1 && values[0] === "ALL")
       ) {
         filteredData = filteredData.filter((item) => {
           const itemValue = String((item as any)[key]);
@@ -449,28 +435,35 @@ export const getSmPayJudgementData = async (
   };
 };
 
-export const getSmPayJudgementStatus = async () => {
-  // 상태별 카운트 계산
-  const statusCounts = mockSmPayJudgementData.reduce((acc, item) => {
-    const status = item.status || "";
-    acc[status] = (acc[status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+export const getSmPayJudgementStatus =
+  async (): Promise<SmPayJudgementStatusResponse> => {
+    // 상태별 카운트 계산 (영문 기준)
+    const statusCounts = mockSmPayJudgementData.reduce((acc, item) => {
+      const statusEng = item.status as SmPayJudgementStatus;
+      if (statusEng) {
+        acc[statusEng] = (acc[statusEng] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<SmPayJudgementStatus, number>);
 
-  // 전체 카운트
-  const totalCount = mockSmPayJudgementData.length;
+    // 전체 카운트
+    const totalCount = mockSmPayJudgementData.length;
 
-  // 결과 배열 생성
-  const data = [
-    { status: "전체", count: totalCount },
-    ...Object.entries(statusCounts).map(([status, count]) => ({
-      status,
-      count,
-    })),
-  ];
+    // 결과 배열 생성
+    const data = [
+      { status: "ALL" as SmPayJudgementStatus, count: totalCount },
+      ...Object.entries(statusCounts).map(([status, count]) => ({
+        status: status as SmPayJudgementStatus,
+        count,
+      })),
+    ];
 
-  return {
-    data,
-    success: true,
+    return {
+      data: data.map((item) => ({
+        ...item,
+        label:
+          JUDGEMENT_STATUS_MAP[item.status as SmPayJudgementStatus] || "전체",
+      })),
+      success: true,
+    };
   };
-};

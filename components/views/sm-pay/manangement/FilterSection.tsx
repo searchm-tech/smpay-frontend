@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { getSmPayStatus } from "@/services/sm-pay";
+import FilterItem from "@/components/common/FilterItem";
+
+import { useSmPayStatus } from "@/hooks/queries/sm-pay";
 
 // default : #363C45
 // 값 있음 : #9BA5B7
 // 값 없음 : #EEF1F4
-
-type FilterItem = {
-  title: string;
-  count: number;
-  status: string;
-  fixedColor?: string;
-};
 
 interface FilterSectionProps {
   selectedStatus: string;
@@ -22,24 +15,7 @@ const FilterSection = ({
   selectedStatus,
   onStatusChange,
 }: FilterSectionProps) => {
-  const [filters, setFilters] = useState<FilterItem[]>([]);
-
-  useEffect(() => {
-    const fetchStatusCounts = async () => {
-      const response = await getSmPayStatus();
-      if (response.success) {
-        const filterItems = response.data.map((item) => ({
-          title: item.name,
-          count: item.count,
-          status: item.status,
-          fixedColor: item.status === "ALL" ? "#363C45" : undefined,
-        }));
-        setFilters(filterItems);
-      }
-    };
-
-    fetchStatusCounts();
-  }, []);
+  const { data: statusData } = useSmPayStatus();
 
   const handleFilterClick = (status: string) => {
     onStatusChange(status);
@@ -47,15 +23,15 @@ const FilterSection = ({
 
   return (
     <section className="p-4 flex flex-wrap items-center gap-x-6 gap-y-4">
-      {filters.map((filter) => (
+      {statusData?.data.map((filter) => (
         <FilterItem
-          key={filter.title}
-          title={filter.title}
+          key={filter.name}
+          value={filter.status}
+          label={filter.name}
           count={filter.count}
-          status={filter.status}
-          fixedColor={filter.fixedColor}
-          isSelected={selectedStatus === filter.status}
-          onClick={() => handleFilterClick(filter.status)}
+          fixedColor={filter.status === "ALL" ? "#363C45" : undefined}
+          selectedFilter={selectedStatus}
+          handleFilterChange={handleFilterClick}
         />
       ))}
     </section>
@@ -63,40 +39,3 @@ const FilterSection = ({
 };
 
 export default FilterSection;
-
-interface FilterItemProps {
-  title: string;
-  count: number;
-  status: string;
-  fixedColor?: string;
-  isSelected: boolean;
-  onClick: () => void;
-}
-
-const FilterItem = ({
-  title,
-  count,
-  status,
-  fixedColor,
-  isSelected,
-  onClick,
-}: FilterItemProps) => {
-  const badgeColor = fixedColor ?? (count > 0 ? "#9BA5B7" : "#EEF1F4");
-  const textColor = isSelected
-    ? "text-black font-bold"
-    : fixedColor
-    ? "text-black"
-    : count > 0
-    ? "text-black"
-    : "text-[#949494]";
-
-  return (
-    <span
-      className={`flex items-center gap-1 cursor-pointer ${textColor}`}
-      onClick={onClick}
-    >
-      {title}
-      <Badge label={count} color={badgeColor} />
-    </span>
-  );
-};
