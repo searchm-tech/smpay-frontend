@@ -7,6 +7,7 @@ import {
 import {
   fetchSmPayData,
   getSmPayJudgementData,
+  getSmPayJudgementStatus,
   getSmPayRejectReason,
   getSmPayRuleHistory,
   getSmPayRuleInfo,
@@ -29,6 +30,7 @@ import type {
   SmPaySubmitDetailResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
+  SmPayJudgementStatusResponse,
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 
@@ -169,9 +171,16 @@ export const useSmPayStatusUpdate = (
   });
 };
 
-export const useSmPayJudgementData = () => {
+export const useSmPayJudgementData = (status?: string, searchText?: string) => {
   return useQuery<SmPayJudgementDataResponse>({
-    queryKey: ["/smpay/judgement-data"],
-    queryFn: () => getSmPayJudgementData(),
+    queryKey: ["/smpay/judgement-data", status, searchText],
+    queryFn: () => getSmPayJudgementData(status, searchText),
+  });
+};
+
+export const useSmPayJudgementStatus = () => {
+  return useQuery<SmPayJudgementStatusResponse>({
+    queryKey: ["/smpay/judgement-status"],
+    queryFn: () => getSmPayJudgementStatus(),
   });
 };

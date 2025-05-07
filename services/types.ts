@@ -95,3 +95,11 @@ export interface SmPayJudgementDataResponse {
   data: SmPayJudgementData[];
   success: boolean;
 }
+
+export interface SmPayJudgementStatusResponse {
+  data: {
+    status: string;
+    count: number;
+  }[];
+  success: boolean;
+}

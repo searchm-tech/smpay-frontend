@@ -2,28 +2,28 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import dayjs from "dayjs";
 
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
-
 import Table from "@/components/composite/table";
-import LoadingUI from "@/components/common/Loading";
 
 import RejectModal from "../components/RejectModal";
 import StopInfoModal from "../components/StopInfoModal";
 
-import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
-
 import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 
-const TableSection = () => {
+type PropsTableSection = {
+  dataSource: SmPayJudgementData[];
+  loading: boolean;
+};
+
+const TableSection = ({ dataSource, loading }: PropsTableSection) => {
   const router = useRouter();
 
   const [rejectModalId, setRejectModalId] = useState<string>("");
   const [stopModalId, setStopModalId] = useState<string>("");
-
-  const { data: judgementData, isPending } = useSmPayJudgementData();
 
   const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
     {
@@ -38,18 +38,21 @@ const TableSection = () => {
       dataIndex: "agencyName",
       key: "agencyName",
       sorter: true,
+      align: "center",
     },
     {
       title: "담당자명",
       dataIndex: "departmentName",
       key: "departmentName",
       sorter: true,
+      align: "center",
     },
     {
       title: "CUSTOMER ID",
       dataIndex: "customerId",
       key: "customerId",
       sorter: true,
+      align: "center",
     },
     {
       title: "광고주 로그인 ID",
@@ -74,12 +77,14 @@ const TableSection = () => {
       title: "사업자명",
       dataIndex: "userName",
       key: "userName",
+      align: "center",
       sorter: true,
     },
     {
       title: "광고주 닉네임",
       dataIndex: "nickname",
       key: "nickname",
+      align: "center",
       sorter: true,
     },
     {
@@ -89,10 +94,6 @@ const TableSection = () => {
       align: "center",
       sorter: true,
       render: (status: string, record: SmPayJudgementData) => {
-        if (status === "심사 요청" || status === "승인" || status === "해지") {
-          return <span>{status}</span>;
-        }
-
         if (status === "반려") {
           return (
             <LinkTextButton
@@ -111,6 +112,8 @@ const TableSection = () => {
             </LinkTextButton>
           );
         }
+
+        return <span>{status}</span>;
       },
     },
     {
@@ -119,12 +122,14 @@ const TableSection = () => {
       key: "updatedAt",
       align: "center",
       sorter: true,
+      render: (date) => {
+        return <span>{dayjs(date).format("YYYY-MM-DD HH:mm:ss")}</span>;
+      },
     },
   ];
 
   return (
     <section>
-      {isPending && <LoadingUI />}
       {rejectModalId && (
         <RejectModal
           open
@@ -143,8 +148,9 @@ const TableSection = () => {
       )}
       <Table<SmPayJudgementData & { id: number }>
         columns={columns}
-        dataSource={judgementData?.data || []}
-        total={judgementData?.data.length || 0}
+        dataSource={dataSource}
+        total={dataSource.length}
+        loading={loading}
       />
     </section>
   );
