@@ -13,13 +13,25 @@ import StopInfoModal from "../components/StopInfoModal";
 
 import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";
+import type { TableProps } from "antd";
 
 type PropsTableSection = {
   dataSource: SmPayJudgementData[];
   loading: boolean;
+  pagination: {
+    current: number;
+    pageSize: number;
+    total: number;
+  };
+  onTableChange: TableProps<SmPayJudgementData & { id: number }>["onChange"];
 };
 
-const TableSection = ({ dataSource, loading }: PropsTableSection) => {
+const TableSection = ({
+  dataSource,
+  loading,
+  pagination,
+  onTableChange,
+}: PropsTableSection) => {
   const router = useRouter();
 
   const [rejectModalId, setRejectModalId] = useState<string>("");
@@ -149,8 +161,9 @@ const TableSection = ({ dataSource, loading }: PropsTableSection) => {
       <Table<SmPayJudgementData & { id: number }>
         columns={columns}
         dataSource={dataSource}
-        total={dataSource.length}
         loading={loading}
+        pagination={pagination}
+        onChange={onTableChange}
       />
     </section>
   );

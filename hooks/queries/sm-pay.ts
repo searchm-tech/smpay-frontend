@@ -171,10 +171,10 @@ export const useSmPayStatusUpdate = (
   });
 };
 
-export const useSmPayJudgementData = (status?: string, searchText?: string) => {
+export const useSmPayJudgementData = (params: FetchSmPayParams) => {
   return useQuery<SmPayJudgementDataResponse>({
-    queryKey: ["/smpay/judgement-data", status, searchText],
-    queryFn: () => getSmPayJudgementData(status, searchText),
+    queryKey: ["/smpay/judgement-data", params],
+    queryFn: () => getSmPayJudgementData(params),
   });
 };
 
