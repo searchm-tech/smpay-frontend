@@ -54,3 +54,11 @@ export const fetchMembers = async (params: TableParams) => {
     success: true,
   };
 };
+
+export const deleteMember = async (id: number) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    success: true,
+  };
+};

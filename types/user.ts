@@ -15,7 +15,7 @@ export interface MemberData {
   companyName: string; // 대행사명
   name: string; // 이름
   email: string; // 이메일(ID)
-  infoStatus: string; // 정보 수정
+  // infoStatus: string; // 정보 수정
   status: ActiveStatus; // 상태
   createdAt: string; // 기입일
 }
