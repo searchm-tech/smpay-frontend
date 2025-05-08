@@ -1,11 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Trash2, SquarePen } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+
+import DialogDelete from "./DialogDelete";
 
 import { ACTIVE_STATUS } from "@/constants/table";
 
@@ -30,7 +33,10 @@ const TableSection = ({
   isLoading,
   setTableParams,
 }: TableSectionProps) => {
-  const [activeData, setActiveData] = useState<MemberData | null>(null);
+  const router = useRouter();
+
+  const [statusModal, setStatusModal] = useState<MemberData | null>(null);
+  const [deleteModal, setDeleteModal] = useState<MemberData | null>(null);
 
   const companyNameColumn = {
     title: "대행사명",
@@ -66,19 +72,28 @@ const TableSection = ({
       align: "center",
     },
     {
-      title: "정보 수정",
+      title: "관리",
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
         return (
-          <Button variant="cancel" onClick={() => {}}>
-            정보 수정
-          </Button>
+          <div className="flex items-end justify-center gap-4">
+            <SquarePen
+              className="text-[#007AFF] cursor-pointer"
+              size={20}
+              onClick={() => router.push(`/user/info?id=${record.id}`)}
+            />
+            <Trash2
+              className="text-[#FF0000] cursor-pointer"
+              size={20}
+              onClick={() => setDeleteModal(record)}
+            />
+          </div>
         );
       },
     },
     {
-      title: "활성여부",
+      title: "상태",
       dataIndex: "status",
       sorter: true,
       align: "center",
@@ -89,7 +104,7 @@ const TableSection = ({
           <Select
             options={ACTIVE_STATUS}
             value={selectedValue}
-            onChange={() => setActiveData(record)}
+            onChange={() => setStatusModal(record)}
           />
         );
       },
@@ -123,8 +138,8 @@ const TableSection = ({
   };
 
   const handleActiveChange = () => {
-    if (!activeData) return;
-    setActiveData(null);
+    if (!statusModal) return;
+    setStatusModal(null);
   };
 
   return (
@@ -138,21 +153,29 @@ const TableSection = ({
         loading={isLoading}
       />
 
-      {activeData && (
+      {statusModal && (
         <ConfirmDialog
           open
-          onClose={() => setActiveData(null)}
+          onClose={() => setStatusModal(null)}
           onConfirm={handleActiveChange}
           content={
             <div className="text-center">
               <p>
-                {activeData.status === "active"
+                {statusModal?.status === "active"
                   ? "회원을 비활성화하면 로그인 및 서비스 이용이 제한됩니다."
                   : "회원을 활성화하면 다시 서비스 이용이 가능해집니다."}
               </p>
               <p>진행하시겠습니까?</p>
             </div>
           }
+        />
+      )}
+
+      {deleteModal && (
+        <DialogDelete
+          id={deleteModal.id}
+          onClose={() => setDeleteModal(null)}
+          onConfirm={() => setDeleteModal(null)}
         />
       )}
     </section>

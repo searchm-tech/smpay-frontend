@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,10 @@ import { useUserStore } from "@/store/useUserStore";
 
 const UserInfoView = () => {
   const router = useRouter();
+  const param = useSearchParams();
   const { user } = useUserStore();
+
+  const userId = param.get("id") || user?.id;
 
   const [phone, setPhone] = useState("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
