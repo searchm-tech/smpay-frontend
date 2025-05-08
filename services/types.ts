@@ -55,6 +55,7 @@ export interface FetchAdvertiserParams {
 export interface AdvertiserListResponse {
   data: AdvertiserData[];
   success: boolean;
+  hasNextPage: boolean;
 }
 
 export interface SmPaySubmitDetailResponse {
