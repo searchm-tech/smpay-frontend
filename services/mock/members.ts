@@ -1,4 +1,6 @@
-import type { TRole } from "@/store/useRoleStore";
+import { MemberData, ActiveStatus } from "@/types/user";
+
+export type TRole = "admin" | "agency";
 
 export interface Member {
   id: string;
@@ -10,7 +12,8 @@ export interface Member {
   department?: string;
 }
 
-export const members: Member[] = [
+export const members = [
+  // 고정 멤버 1
   {
     id: "1",
     email: "admin@smpay.com",
@@ -20,6 +23,7 @@ export const members: Member[] = [
     status: "active",
     department: "IT",
   },
+  // 고정 멤버 2
   {
     id: "2",
     email: "agency@example.com",
@@ -29,76 +33,28 @@ export const members: Member[] = [
     status: "active",
     department: "Marketing",
   },
-  {
-    id: "3",
-    email: "user1@example.com",
+  // 나머지 목데이터는 동적으로 생성
+  ...Array.from({ length: 50 }).map((_, i) => ({
+    id: String(i + 3),
+    email: `user${i + 1}@example.com`,
     password: "user123",
-    name: "홍길동",
+    name: `사용자${i + 1}`,
     role: "agency",
-    status: "active",
-    department: "Sales",
-  },
-  {
-    id: "4",
-    email: "user2@example.com",
-    password: "user123",
-    name: "김철수",
-    role: "agency",
-    status: "inactive",
-    department: "HR",
-  },
-  {
-    id: "5",
-    email: "user3@example.com",
-    password: "user123",
-    name: "이영희",
-    role: "agency",
-    status: "pending",
-    department: "Finance",
-  },
-  {
-    id: "6",
-    email: "manager2@example.com",
-    password: "manager123",
-    name: "박지성",
-    role: "agency",
-    status: "active",
-    department: "Operations",
-  },
-  {
-    id: "7",
-    email: "admin2@example.com",
-    password: "admin123",
-    name: "최고관리자",
-    role: "admin",
-    status: "active",
-    department: "Management",
-  },
-  {
-    id: "8",
-    email: "user4@example.com",
-    password: "user123",
-    name: "정다은",
-    role: "agency",
-    status: "active",
-    department: "Customer Service",
-  },
-  {
-    id: "9",
-    email: "user5@example.com",
-    password: "user123",
-    name: "송민준",
-    role: "agency",
-    status: "inactive",
-    department: "R&D",
-  },
-  {
-    id: "10",
-    email: "manager3@example.com",
-    password: "manager123",
-    name: "한지민",
-    role: "agency",
-    status: "active",
-    department: "Product",
-  },
+    status: i % 2 === 0 ? "active" : "inactive",
+    department: ["Sales", "HR", "Finance", "Operations"][i % 4],
+  })),
+];
+
+export const mockMemberData: MemberData[] = [
+  ...Array.from({ length: 50 }).map((_, i) => ({
+    id: i + 1,
+    no: i + 1,
+    accountType: i % 2 === 0 ? "agency" : "admin",
+    companyName: `대행사${i + 1}`,
+    name: `이름${i + 1}`,
+    email: `user${i + 1}@example.com`,
+    infoStatus: i % 3 === 0 ? "수정 필요" : "정상",
+    status: (i % 2 === 0 ? "active" : "inactive") as ActiveStatus,
+    createdAt: new Date(Date.now() - i * 86400000).toISOString().slice(0, 10),
+  })),
 ];
