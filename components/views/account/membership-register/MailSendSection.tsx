@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 
 const MailSendSection = () => {
   return (
-    <div className="py-4">
+    <section className="py-4">
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>
@@ -41,7 +41,7 @@ const MailSendSection = () => {
           취소
         </Button>
       </div>
-    </div>
+    </section>
   );
 };
 

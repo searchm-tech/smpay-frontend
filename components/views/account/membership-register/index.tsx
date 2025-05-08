@@ -9,6 +9,7 @@ import { TabSwitch } from "@/components/composite/tab-switch";
 
 const MemberRegisterView = () => {
   const [isDirectRegist, setIsDirectRegist] = useState(true);
+
   return (
     <div>
       <LabelBullet labelClassName="text-base font-bold">
@@ -21,8 +22,8 @@ const MemberRegisterView = () => {
         leftLabel="초대 메일 발송"
         rightLabel="직접 등록"
       />
-      {isDirectRegist && <MailSendSection />}
-      {!isDirectRegist && <DirectRegistSection />}
+      {!isDirectRegist && <MailSendSection />}
+      {isDirectRegist && <DirectRegistSection />}
     </div>
   );
 };

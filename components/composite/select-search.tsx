@@ -27,8 +27,11 @@ interface SelectSearchProps {
   className?: string;
 }
 
-// TODO : 용도에 따라 select-components에 넣을 예정
-
+/**
+ * select-search-server.tsx 와 동일한 기능을 하는 컴포넌트
+ * - 서버사이드 무한스크롤 기능이 필요하다면 select-search-server.tsx 를 사용
+ * - TODO : 프로젝트 완료시 삭제 예정 [지금은 참고용]
+ */
 export function SelectSearch({
   options,
   value,

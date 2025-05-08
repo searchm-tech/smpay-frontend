@@ -13,7 +13,7 @@ const statusList = [
 ] as const;
 
 export const mockAdvertiserData: AdvertiserData[] = Array.from({
-  length: 20,
+  length: 100,
 }).map((_, i) => ({
   id: i + 1,
   name: `광고주 ${i + 1}`,

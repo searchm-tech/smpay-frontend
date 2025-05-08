@@ -1,5 +1,5 @@
 import { mockAdvertiserData } from "./mock/advertiser";
-import type { FetchAdvertiserParams, AdvertiserListResponse } from "./types";
+import type { AdvertiserListResponse, TableParams } from "./types";
 import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 /**
@@ -8,7 +8,7 @@ import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
  * @returns
  */
 export const fetchAdvertisers = async (
-  params: FetchAdvertiserParams
+  params: TableParams
 ): Promise<AdvertiserListResponse & { total: number }> => {
   // 서버 응답을 시뮬레이션하기 위한 지연
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -68,6 +68,7 @@ export const fetchAdvertisers = async (
     data: paginatedData,
     success: true,
     total: filteredData.length,
+    hasNextPage: filteredData.length > pageSize,
   };
 };
 
