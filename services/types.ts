@@ -22,7 +22,7 @@ export interface FilterParams {
   [key: string]: string[];
 }
 
-export interface FetchSmPayParams {
+export interface TableParams {
   pagination: PaginationParams;
   sort?: SortParams;
   filters?: FilterParams;

@@ -12,6 +12,7 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import Table from "@/components/composite/table";
 
 import { AdvertiserData, mockAdvertiserData } from "./constants";
+import { defaultTableParams } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { SortOrder, FilterValue } from "antd/es/table/interface";
@@ -28,12 +29,8 @@ interface TableParams {
 }
 
 const AdvertiserSection = () => {
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
+  const [tableParams, setTableParams] =
+    useState<TableParams>(defaultTableParams);
 
   // 선택된 row keys 관리
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);

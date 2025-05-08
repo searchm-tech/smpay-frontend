@@ -7,7 +7,7 @@ import {
   mockSmPayJudgementData,
 } from "./mock/sm-pay";
 import type {
-  FetchSmPayParams,
+  TableParams,
   SmPayResponse,
   SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
@@ -27,7 +27,7 @@ import type {
 } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
-  params: FetchSmPayParams
+  params: TableParams
 ): Promise<SmPayResponse> => {
   // 서버 응답을 시뮬레이션하기 위한 지연
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -354,7 +354,7 @@ export const updateSmPayStatus = async (
 };
 
 export const getSmPayJudgementData = async (
-  params: FetchSmPayParams
+  params: TableParams
 ): Promise<SmPayJudgementDataResponse> => {
   console.log("params", params);
   await new Promise((resolve) => setTimeout(resolve, 1000));

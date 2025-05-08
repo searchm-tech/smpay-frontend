@@ -12,6 +12,7 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { useAdvertiserList } from "@/hooks/queries/advertiser";
 import { useAdvertiserStore } from "@/store/useAdvertiserStore";
 
+import { defaultTableParams } from "@/constants/table";
 import { ADVERTISER_STATUS_MAP } from "@/constants/status";
 
 import { cn } from "@/lib/utils";
@@ -30,14 +31,8 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [search, setSearch] = useState<string>("");
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    },
-    filters: {},
-  });
+  const [tableParams, setTableParams] =
+    useState<TableParams>(defaultTableParams);
 
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
     null

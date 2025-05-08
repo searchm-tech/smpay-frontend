@@ -1,15 +1,4 @@
-// mocks/accountData.ts
-export interface MemberData {
-  id: number;
-  no: number;
-  accountType: string; // 계정유형
-  companyName: string; // 대행사명
-  name: string; // 이름
-  email: string; // 이메일(ID)
-  infoStatus: string; // 정보 수정
-  status: "정상" | "비활성"; // 상태
-  createdAt: string; // 기입일
-}
+import type { MemberData } from "@/types/user";
 
 export const mockMemberData: MemberData[] = [
   {
@@ -20,7 +9,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -31,7 +20,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "비활성",
+    status: "inactive",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -42,7 +31,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -53,7 +42,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -64,7 +53,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -75,7 +64,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "비활성",
+    status: "inactive",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -86,7 +75,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -97,7 +86,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -108,7 +97,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
   {
@@ -119,7 +108,7 @@ export const mockMemberData: MemberData[] = [
     name: "홍길동",
     email: "12@1212.com",
     infoStatus: "정보 수정",
-    status: "정상",
+    status: "active",
     createdAt: "2025-10-22 15:37:19",
   },
 ];

@@ -23,7 +23,7 @@ import {
 
 import type {
   SmPayRejectReasonResponse,
-  FetchSmPayParams,
+  TableParams,
   SmPayResponse,
   SmPayRuleHistoryResponse,
   SmPayRuleInfoResponse,
@@ -36,7 +36,7 @@ import type {
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 
-export const useSmPayList = (params: FetchSmPayParams) => {
+export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
     queryKey: ["/smpay/list", params],
     queryFn: () => fetchSmPayData(params),
@@ -180,7 +180,7 @@ export const useSmPayStatusUpdate = (
   });
 };
 
-export const useSmPayJudgementData = (params: FetchSmPayParams) => {
+export const useSmPayJudgementData = (params: TableParams) => {
   return useQuery<SmPayJudgementDataResponse>({
     queryKey: ["/smpay/judgement-data", params],
     queryFn: () => getSmPayJudgementData(params),

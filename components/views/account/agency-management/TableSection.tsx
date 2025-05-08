@@ -5,7 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import Select from "@/components/composite/select-components";
 import Table from "@/components/composite/table";
+
 import { getAgencies, type AgencyData } from "@/services/agency";
+import { ACTIVE_STATUS, defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
 import type { TableProps } from "antd";
@@ -51,10 +53,7 @@ const columns: TableProps<AgencyData>["columns"] = [
 
       return (
         <Select
-          options={[
-            { label: "활성", value: "active" },
-            { label: "비활성", value: "inactive" },
-          ]}
+          options={ACTIVE_STATUS}
           value={selectedValue}
           onChange={(newValue) => {
             console.log(`id: ${record.id}, 변경된 값: ${newValue}`);
@@ -72,12 +71,8 @@ const columns: TableProps<AgencyData>["columns"] = [
 ];
 
 const TableSection = () => {
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
+  const [tableParams, setTableParams] =
+    useState<TableParams>(defaultTableParams);
 
   const { data, isLoading, error } = useQuery<{
     data: AgencyData[];

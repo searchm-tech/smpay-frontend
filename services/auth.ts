@@ -1,5 +1,5 @@
 import { TUser } from "@/types/user";
-import { members } from "./mock/members";
+import { members, TRole } from "./mock/members";
 
 interface LoginCredentials {
   email: string;
@@ -35,7 +35,7 @@ export const login = async (
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
+      role: user.role as TRole,
       token: "mock-jwt-token-" + Math.random(),
     },
   };
