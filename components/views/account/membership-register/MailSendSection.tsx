@@ -1,30 +1,141 @@
+import { type ChangeEvent, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
+import { SelectSearchServer } from "@/components/composite/select-search-server";
+import { RadioGroup } from "@/components/composite/radio-component";
+import { InputWithSuffix } from "@/components/composite/input-components";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { fetchAdvertisers } from "@/services/advertiser";
 
-const MailSendSection = () => {
+import { MEMBER_TYPE_OPTS } from "@/constants/status";
+import { EMAIL_ID_REGEX } from "@/constants/reg";
+
+import type { TRole } from "@/services/mock/members";
+import type { TableParams } from "@/services/types";
+import { useCreateMember } from "@/hooks/queries/member";
+import LoadingUI from "@/components/common/Loading";
+
+type MailSendSectionProps = {
+  role?: TRole;
+};
+
+const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
+  const [department, setDepartment] = useState("");
+  const [selectedValue, setSelectedValue] = useState("");
+  const [selected, setSelected] = useState("leader");
+  const [emailId, setEmailId] = useState("");
+
+  const [errModal, setErrModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+
+  const { mutate: createMember, isPending } = useCreateMember({
+    onSuccess: () => setSuccessModal(true),
+  });
+
+  const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!EMAIL_ID_REGEX.test(e.target.value)) {
+      setErrModal(true);
+      return;
+    }
+    setEmailId(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!emailId || !department || !selected) {
+      setErrModal(true);
+      return;
+    }
+
+    const data = {
+      emailId,
+      department,
+      selected,
+    };
+
+    createMember(data);
+  };
+
   return (
     <section className="py-4">
+      {isPending && <LoadingUI />}
+
+      {errModal && (
+        <ConfirmDialog
+          open={errModal}
+          onClose={() => setErrModal(false)}
+          onConfirm={() => setErrModal(false)}
+          title="오류"
+          content="모든 필수 항목을 입력해주세요."
+        />
+      )}
+
+      {successModal && (
+        <ConfirmDialog
+          open={successModal}
+          onClose={() => setSuccessModal(false)}
+          onConfirm={() => setSuccessModal(false)}
+          title="성공"
+          content="회원 정보가 성공적으로 저장되었습니다."
+        />
+      )}
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>
       <Descriptions columns={1} bordered>
-        <DescriptionItem label="대행사 선택 *">
-          <Input className="max-w-[500px]" />
+        <DescriptionItem
+          label={`${role === "agency" ? "부서 선택 *" : "대행사 선택 *"}`}
+        >
+          {role === "agency" ? (
+            // TODO : 버튼과 모달로 변경이 필요
+            <Input
+              className="max-w-[500px]"
+              placeholder="부서를 선택하시오."
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+            />
+          ) : (
+            <SelectSearchServer
+              className="max-w-[500px]"
+              fetchOptions={fetchAdvertiserOptions}
+              value={selectedValue}
+              onValueChange={setSelectedValue}
+              placeholder="광고주를 선택하세요"
+              searchPlaceholder="광고주명 또는 ID 검색..."
+            />
+          )}
         </DescriptionItem>
         <DescriptionItem label="회원 구분 *">
-          최상위 그룹 그룹장
+          {role === "agency" ? (
+            <RadioGroup
+              options={MEMBER_TYPE_OPTS}
+              value={selected}
+              onChange={setSelected}
+            />
+          ) : (
+            "최상위 그룹장"
+          )}
         </DescriptionItem>
-        <DescriptionItem label="성명 *">
-          <Input className="max-w-[500px]" />
-        </DescriptionItem>
+        {role === "admin" && (
+          <DescriptionItem label="성명 *">
+            <Input className="max-w-[500px]" />
+          </DescriptionItem>
+        )}
+
         <DescriptionItem label="발송될 이메일 주소 *">
-          <Input className="max-w-[500px]" />
+          <InputWithSuffix
+            className="max-w-[500px]"
+            suffix="@smpay.com"
+            containerClassName="max-w-[500px]"
+            value={emailId}
+            onChange={handleEmailIdChange}
+          />
         </DescriptionItem>
       </Descriptions>
 
@@ -36,8 +147,10 @@ const MailSendSection = () => {
       </div>
 
       <div className="w-full flex justify-center gap-6 py-6">
-        <Button className="w-[150px]">확인</Button>
-        <Button variant="cancel" className="w-[150px]">
+        <Button className="w-[150px]" onClick={handleSubmit}>
+          확인
+        </Button>
+        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
           취소
         </Button>
       </div>
@@ -47,4 +160,16 @@ const MailSendSection = () => {
 
 export default MailSendSection;
 
-const descLabelClassName = "w-[200px] font-bold";
+async function fetchAdvertiserOptions(params: TableParams) {
+  const response = await fetchAdvertisers(params);
+
+  return {
+    items: response.data.map((advertiser) => ({
+      label: `${advertiser.advertiserName} | ${advertiser.name}`,
+      value: advertiser.customerId,
+    })),
+    hasNextPage:
+      response.total >
+      (params.pagination?.current || 1) * (params.pagination?.pageSize || 10),
+  };
+}

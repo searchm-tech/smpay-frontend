@@ -1,5 +1,6 @@
-import { deleteMember, fetchMembers } from "@/services/member";
+import { createMember, deleteMember, fetchMembers } from "@/services/member";
 import { TableParams } from "@/services/types";
+import { MemberData } from "@/types/user";
 
 import {
   useQuery,
@@ -19,6 +20,15 @@ export const useDeleteMember = (
 ) => {
   return useMutation({
     mutationFn: (id: number) => deleteMember(id),
+    ...options,
+  });
+};
+
+export const useCreateMember = (
+  options?: UseMutationOptions<{ success: boolean }, Error, any>
+) => {
+  return useMutation({
+    mutationFn: (data: any) => createMember(data),
     ...options,
   });
 };

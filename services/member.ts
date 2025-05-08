@@ -62,3 +62,11 @@ export const deleteMember = async (id: number) => {
     success: true,
   };
 };
+
+export const createMember = async (data: MemberData) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    success: true,
+  };
+};
