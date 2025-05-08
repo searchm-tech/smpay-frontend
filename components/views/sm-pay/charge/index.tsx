@@ -1,6 +1,6 @@
 "use client";
 
-import { useRoleStore } from "@/store/useRoleStore";
+import { useUserStore } from "@/store/useUserStore";
 import SMPayChargeAdminView from "./admin";
 import SMPayChargeAgencyView from "./agency";
 
@@ -8,12 +8,12 @@ import SMPayChargeAgencyView from "./agency";
 // 페이지를 따로 분리를 해야하는지 고민 필요
 
 const SMPayChargeView = () => {
-  const { role } = useRoleStore();
+  const { user } = useUserStore();
 
   return (
     <div>
-      {role === "admin" && <SMPayChargeAdminView />}
-      {role === "agency" && <SMPayChargeAgencyView />}
+      {user?.role === "admin" && <SMPayChargeAdminView />}
+      {user?.role === "agency" && <SMPayChargeAgencyView />}
     </div>
   );
 };

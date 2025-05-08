@@ -7,6 +7,7 @@ import TableSection from "./TableSection";
 
 import { useSmpayDataStore } from "@/store/useSmpayDataStore";
 import { useSmPayList } from "@/hooks/queries/sm-pay";
+import { defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
 
@@ -14,15 +15,10 @@ const SMPayManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
 
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
 
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-      total: 0,
-    },
-  });
+  const [tableParams, setTableParams] =
+    useState<TableParams>(defaultTableParams);
 
   const { data: response, isFetching: loadingData } = useSmPayList({
     pagination: {
@@ -36,7 +32,7 @@ const SMPayManagementView = () => {
     filters: {
       ...(tableParams.filters as Record<string, string[]>),
       ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
-      ...(searchKeyword ? { search: [searchKeyword] } : {}),
+      ...(search ? { search: [search] } : {}),
     },
   });
 
@@ -57,8 +53,8 @@ const SMPayManagementView = () => {
     }));
   };
 
-  const handleSearch = (keyword: string) => {
-    setSearchKeyword(keyword);
+  const onSearch = (keyword: string) => {
+    setSearch(keyword);
     setSelectedStatus("ALL");
     setTableParams((prev) => ({
       ...prev,
@@ -71,7 +67,7 @@ const SMPayManagementView = () => {
 
   return (
     <div>
-      <SearchSection onSearch={handleSearch} />
+      <SearchSection onSearch={onSearch} />
       <FilterSection
         selectedStatus={selectedStatus}
         onStatusChange={handleStatusChange}

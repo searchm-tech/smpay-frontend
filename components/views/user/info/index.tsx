@@ -11,13 +11,13 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
-
-import { useRoleStore } from "@/store/useRoleStore";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+
+import { useUserStore } from "@/store/useUserStore";
 
 const UserInfoView = () => {
   const router = useRouter();
-  const { role } = useRoleStore();
+  const { user } = useUserStore();
 
   const [phone, setPhone] = useState("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -29,7 +29,7 @@ const UserInfoView = () => {
           기본 정보 변경
         </LabelBullet>
 
-        {role === "agency" && (
+        {user?.role === "agency" && (
           <Fragment>
             <Descriptions bordered columns={1}>
               <DescriptionItem label="대행사명 *">
