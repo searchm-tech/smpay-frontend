@@ -1,7 +1,13 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { Dispatch, ChangeEvent, useState, SetStateAction } from "react";
+import {
+  Dispatch,
+  ChangeEvent,
+  useState,
+  SetStateAction,
+  forwardRef,
+} from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 
 import {
@@ -14,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+// Form Input
 interface InputFormProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
@@ -171,6 +178,7 @@ const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
   );
 };
 
+// 숫자 입력 input
 interface NumberInputProps
   extends Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
@@ -193,4 +201,29 @@ function NumberInput({ value, onChange, ...rest }: NumberInputProps) {
   );
 }
 
-export { InputForm, SearchInput, PhoneInput, NumberInput };
+// TODO : displayName 형식으로 모두 변경?
+// suffix 있는 input
+interface InputWithSuffixProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  suffix?: string;
+  containerClassName?: string;
+}
+
+const InputWithSuffix = forwardRef<HTMLInputElement, InputWithSuffixProps>(
+  ({ className, suffix, containerClassName, ...props }, ref) => {
+    return (
+      <div className={cn("relative", containerClassName)}>
+        <Input className={cn("pr-32", className)} ref={ref} {...props} />
+        {suffix && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            {suffix}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+InputWithSuffix.displayName = "InputWithSuffix";
+
+export { InputForm, SearchInput, PhoneInput, NumberInput, InputWithSuffix };

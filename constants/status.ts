@@ -72,3 +72,8 @@ export const JUDGEMENT_STATUS_MAP: Record<SmPayJudgementStatus, string> = {
   TERMINATED: "해지",
   TERMINATION_IN_PROGRESS: "해지 신청 진행",
 };
+
+export const MEMBER_TYPE_OPTS = [
+  { label: "그룹장", value: "leader" },
+  { label: "그룹원", value: "member" },
+];

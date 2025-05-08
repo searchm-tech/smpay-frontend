@@ -15,19 +15,20 @@ import { RadioGroup } from "@/components/composite/radio-component";
 
 import { fetchAdvertisers } from "@/services/advertiser";
 import type { TableParams } from "@/services/types";
+import { TRole } from "@/services/mock/members";
+import { InputWithSuffix } from "@/components/composite/input-components";
 
 const optsRadio = [
   { label: "그룹장", value: "leader" },
   { label: "그룹원", value: "member" },
 ];
 
-const optionAgency = [
-  { label: "주식회사 써치엠 | 홍길동", value: "1" },
-  { label: "주식회사 써치엠 | 김철수", value: "2" },
-  { label: "주식회사 써치엠 | 이영희", value: "3" },
-];
+type DirectRegistSectionProps = {
+  role?: TRole;
+};
 
-const DirectRegistSection = () => {
+// 1. 대행사 기준
+const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
   const [phone, setPhone] = useState("");
   const [selected, setSelected] = useState("leader");
   const [selectedValue, setSelectedValue] = useState("");
@@ -59,7 +60,11 @@ const DirectRegistSection = () => {
           <Input className="max-w-[500px]" />
         </DescriptionItem>
         <DescriptionItem label="이메일 주소 *">
-          <Input className="max-w-[500px]" />
+          <InputWithSuffix
+            className="max-w-[500px]"
+            suffix="@"
+            containerClassName="max-w-[500px]"
+          />
         </DescriptionItem>
       </Descriptions>
 

@@ -62,7 +62,6 @@ export function SelectSearchServer<T extends { value: string; label: string }>({
   } = useInfiniteQuery({
     queryKey: ["search", debouncedSearch] as const,
     queryFn: async ({ pageParam }) => {
-      console.log("pageParam", pageParam);
       return fetchOptions({
         pagination: {
           current: pageParam as number,

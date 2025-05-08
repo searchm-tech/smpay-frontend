@@ -7,8 +7,13 @@ import DirectRegistSection from "./DirectRegistSection";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 
+import { useUserStore } from "@/store/useUserStore";
+
 const MemberRegisterView = () => {
-  const [isDirectRegist, setIsDirectRegist] = useState(true);
+  const { user } = useUserStore();
+  const [isDirectRegist, setIsDirectRegist] = useState(false);
+
+  console.log("user", user);
 
   return (
     <div>
@@ -22,8 +27,8 @@ const MemberRegisterView = () => {
         leftLabel="초대 메일 발송"
         rightLabel="직접 등록"
       />
-      {!isDirectRegist && <MailSendSection />}
-      {isDirectRegist && <DirectRegistSection />}
+      {!isDirectRegist && <MailSendSection role={user?.role} />}
+      {isDirectRegist && <DirectRegistSection role={user?.role} />}
     </div>
   );
 };
