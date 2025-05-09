@@ -185,6 +185,14 @@ const hasUserInChildren = (node: TreeNode): boolean => {
   return node.children.some((child) => hasUserInChildren(child));
 };
 
+// 폴더 내의 전체 user 수를 계산하는 함수
+const countUsersInNode = (node: TreeNode): number => {
+  if (node.type === "user") return 1;
+  if (!node.children) return 0;
+
+  return node.children.reduce((sum, child) => sum + countUsersInNode(child), 0);
+};
+
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
   level,
@@ -200,7 +208,9 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: node.id,
-      disabled: node.type !== "user",
+      data: {
+        type: node.type,
+      },
     });
 
   const handleToggle = () => {
@@ -241,11 +251,10 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 
   const content = (
     <div
-      ref={node.type === "user" ? setNodeRef : undefined}
-      {...(node.type === "user" ? attributes : {})}
+      ref={setNodeRef}
       className={`flex items-center gap-2 py-2 px-2 rounded-md ${
         node.type === "folder" ? "hover:bg-gray-50" : "cursor-default"
-      }`}
+      } ${isDragging ? "opacity-50" : ""}`}
       style={{
         paddingLeft: `${level * 24}px`,
         ...(isDragging ? { border: "2px solid #4A90E2" } : {}),
@@ -261,18 +270,33 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <User className={classNameLeft} />
       )}
-      {isEditing ? (
-        <input
-          type="text"
-          value={editName}
-          onChange={(e) => setEditName(e.target.value)}
-          onKeyDown={handleNameSubmit}
-          className="flex-1 bg-white border rounded px-2 py-1 text-sm"
-          autoFocus
-        />
-      ) : (
-        <span className="flex-1">{node.name}</span>
-      )}
+      <div
+        {...attributes}
+        {...listeners}
+        className="flex-1 flex items-center gap-2 cursor-move"
+      >
+        {isEditing ? (
+          <input
+            type="text"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            onKeyDown={handleNameSubmit}
+            className="flex-1 bg-white border rounded px-2 py-1 text-sm"
+            autoFocus
+          />
+        ) : (
+          <>
+            <span>{node.name}</span>
+            {node.type === "folder" && (
+              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <User className="w-3 h-3" />
+                {countUsersInNode(node)}명
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
           <Move className={classNameObject} />
@@ -289,6 +313,9 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
                 onAddFolder(node.id);
               }}
             />
+            <div {...listeners} className="touch-none cursor-move">
+              <Move className={classNameObject} />
+            </div>
             <FilePenLine
               className={classNameObject}
               onClick={(e) => {
@@ -409,17 +436,39 @@ const OrganizationSection: React.FC = () => {
 
       if (!draggedNode || !overNode || !draggedParent) return prevData;
 
-      // 드래그된 노드가 사용자이고, 대상이 폴더인 경우에만 이동
+      // 드래그된 노드가 사용자일 때
       if (draggedNode.type === "user" && overNode.type === "folder") {
-        // 먼저 현재 위치에서 노드 제거
         removeNode(newData, draggedId);
-
-        // 새로운 위치에 노드 추가
         if (!overNode.children) {
           overNode.children = [];
         }
         overNode.children.unshift(draggedNode);
+        return newData;
+      }
 
+      // 드래그된 노드가 폴더일 때
+      if (draggedNode.type === "folder" && overNode.type === "folder") {
+        // 자기 자신을 자신의 하위로 이동하는 것을 방지
+        const hasCircularDependency = (
+          parent: TreeNode,
+          child: TreeNode
+        ): boolean => {
+          if (parent.id === child.id) return true;
+          if (!parent.children) return false;
+          return parent.children.some((node) =>
+            hasCircularDependency(node, child)
+          );
+        };
+
+        if (hasCircularDependency(draggedNode, overNode)) {
+          return prevData;
+        }
+
+        removeNode(newData, draggedId);
+        if (!overNode.children) {
+          overNode.children = [];
+        }
+        overNode.children.unshift(draggedNode);
         return newData;
       }
 
