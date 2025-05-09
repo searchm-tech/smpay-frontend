@@ -25,10 +25,10 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import LoadingUI from "./Loading";
-import { ConfirmDialog } from "../composite/modal-components";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import LoadingUI from "@/components/common/Loading";
+import { ConfirmDialog } from "@/components/composite/modal-components";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface UserData {
   email: string;
@@ -154,10 +154,11 @@ interface TreeNodeProps {
   onDeleteFolder: (nodeId: string) => void;
 }
 
-const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
-  id,
-  children,
-}) => {
+const DroppableFolder: React.FC<{
+  id: string;
+  children: React.ReactNode;
+  isOpen: boolean;
+}> = ({ id, children, isOpen }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: id,
   });
@@ -165,9 +166,11 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`${
-        isOver ? "bg-blue-50" : ""
-      } transition-colors duration-200 border-5 border-black`}
+      className={cn(
+        "transition-colors duration-200",
+        isOver && "bg-blue-50",
+        isOpen && "pb-2 rounded-md"
+      )}
     >
       {children}
     </div>
@@ -339,35 +342,40 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         />
       )}
       {node.type === "folder" ? (
-        <DroppableFolder id={node.id}>{content}</DroppableFolder>
+        <DroppableFolder id={node.id} isOpen={isOpen}>
+          {content}
+          {isOpen && node.children && (
+            <div className="w-full">
+              {node.children.map((child) => (
+                <TreeNodeComponent
+                  key={child.id}
+                  node={child}
+                  level={level + 1}
+                  onAddFolder={onAddFolder}
+                  onUpdateName={onUpdateName}
+                  onDeleteFolder={onDeleteFolder}
+                />
+              ))}
+            </div>
+          )}
+        </DroppableFolder>
       ) : (
         <div>{content}</div>
-      )}
-      {node.type === "folder" && isOpen && node.children && (
-        <div className="w-full">
-          {node.children.map((child) => (
-            <TreeNodeComponent
-              key={child.id}
-              node={child}
-              level={level + 1}
-              onAddFolder={onAddFolder}
-              onUpdateName={onUpdateName}
-              onDeleteFolder={onDeleteFolder}
-            />
-          ))}
-        </div>
       )}
     </div>
   );
 };
 
-const OrganizationTree: React.FC = () => {
+const OrganizationSection: React.FC = () => {
   const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
   // const [activeId, setActiveId] = useState<string | null>(null);
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
   const [loadingUpdateName, setLoadingUpdateName] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [errorNewFolder, setErrorNewFolder] = useState(false);
+
+  const [newFolderName, setNewFolderName] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -494,10 +502,37 @@ const OrganizationTree: React.FC = () => {
     }
   };
 
+  const handleAddTopFolder = () => {
+    if (newFolderName === "") {
+      setErrorNewFolder(true);
+      return;
+    }
+
+    setTreeData((prevData) => {
+      const newData = JSON.parse(JSON.stringify(prevData));
+      newData.push({
+        id: `folder-${Date.now()}`,
+        name: newFolderName,
+        type: "folder",
+        children: [],
+      });
+      return newData;
+    });
+
+    setNewFolderName("");
+  };
+
   return (
     <Fragment>
       {(loadingAddFolder || loadingUpdateName || loadingDelete) && (
         <LoadingUI />
+      )}
+      {errorNewFolder && (
+        <ConfirmDialog
+          open
+          content={<div>부서 이름을 입력해주세요.</div>}
+          onConfirm={() => setErrorNewFolder(false)}
+        />
       )}
       <DndContext
         sensors={sensors}
@@ -510,34 +545,41 @@ const OrganizationTree: React.FC = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="w-full mx-auto p-4 border rounded-lg bg-white">
-          {treeData.map((node) => (
-            <TreeNodeComponent
-              key={node.id}
-              node={node}
-              level={0}
-              onAddFolder={handleAddFolder}
-              onUpdateName={handleUpdateName}
-              onDeleteFolder={handleDeleteFolder}
-            />
-          ))}
+        <div className="flex flex-col h-[calc(100vh-20rem)]">
+          <div className="flex-1 w-full mx-auto p-4 border rounded-lg bg-white overflow-y-auto">
+            {treeData.map((node) => (
+              <TreeNodeComponent
+                key={node.id}
+                node={node}
+                level={0}
+                onAddFolder={handleAddFolder}
+                onUpdateName={handleUpdateName}
+                onDeleteFolder={handleDeleteFolder}
+              />
+            ))}
+          </div>
         </div>
       </DndContext>
 
-      <div className="w-full mt-4 px-4 py-2 border rounded-lg bg-white flex gap-4 items-center">
+      <div className="w-full my-4 px-4 py-2 border rounded-lg bg-white flex gap-4 items-center">
         <div className="flex gap-2 items-center">
           +<span className="text-[#148AFF]">최상위 부서</span>{" "}
           <span>부서 추가</span>
         </div>
 
-        <Input placeholder="부서 이름" className="max-w-xs" />
-        <Button>부서 추가</Button>
+        <Input
+          placeholder="부서 이름"
+          className="max-w-xs"
+          value={newFolderName}
+          onChange={(e) => setNewFolderName(e.target.value)}
+        />
+        <Button onClick={handleAddTopFolder}>부서 추가</Button>
       </div>
     </Fragment>
   );
 };
 
-export default OrganizationTree;
+export default OrganizationSection;
 
 const classNameObject =
   "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
