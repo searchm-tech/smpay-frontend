@@ -208,7 +208,9 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: node.id,
-      disabled: node.type !== "user",
+      data: {
+        type: node.type,
+      },
     });
 
   const handleToggle = () => {
@@ -249,11 +251,10 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 
   const content = (
     <div
-      ref={node.type === "user" ? setNodeRef : undefined}
-      {...(node.type === "user" ? attributes : {})}
+      ref={setNodeRef}
       className={`flex items-center gap-2 py-2 px-2 rounded-md ${
         node.type === "folder" ? "hover:bg-gray-50" : "cursor-default"
-      }`}
+      } ${isDragging ? "opacity-50" : ""}`}
       style={{
         paddingLeft: `${level * 24}px`,
         ...(isDragging ? { border: "2px solid #4A90E2" } : {}),
@@ -269,7 +270,11 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <User className={classNameLeft} />
       )}
-      <div className="flex-1 flex items-center gap-2">
+      <div
+        {...attributes}
+        {...listeners}
+        className="flex-1 flex items-center gap-2 cursor-move"
+      >
         {isEditing ? (
           <input
             type="text"
@@ -291,6 +296,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
           </>
         )}
       </div>
+
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
           <Move className={classNameObject} />
@@ -307,6 +313,9 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
                 onAddFolder(node.id);
               }}
             />
+            <div {...listeners} className="touch-none cursor-move">
+              <Move className={classNameObject} />
+            </div>
             <FilePenLine
               className={classNameObject}
               onClick={(e) => {
@@ -427,17 +436,39 @@ const OrganizationSection: React.FC = () => {
 
       if (!draggedNode || !overNode || !draggedParent) return prevData;
 
-      // 드래그된 노드가 사용자이고, 대상이 폴더인 경우에만 이동
+      // 드래그된 노드가 사용자일 때
       if (draggedNode.type === "user" && overNode.type === "folder") {
-        // 먼저 현재 위치에서 노드 제거
         removeNode(newData, draggedId);
-
-        // 새로운 위치에 노드 추가
         if (!overNode.children) {
           overNode.children = [];
         }
         overNode.children.unshift(draggedNode);
+        return newData;
+      }
 
+      // 드래그된 노드가 폴더일 때
+      if (draggedNode.type === "folder" && overNode.type === "folder") {
+        // 자기 자신을 자신의 하위로 이동하는 것을 방지
+        const hasCircularDependency = (
+          parent: TreeNode,
+          child: TreeNode
+        ): boolean => {
+          if (parent.id === child.id) return true;
+          if (!parent.children) return false;
+          return parent.children.some((node) =>
+            hasCircularDependency(node, child)
+          );
+        };
+
+        if (hasCircularDependency(draggedNode, overNode)) {
+          return prevData;
+        }
+
+        removeNode(newData, draggedId);
+        if (!overNode.children) {
+          overNode.children = [];
+        }
+        overNode.children.unshift(draggedNode);
         return newData;
       }
 
