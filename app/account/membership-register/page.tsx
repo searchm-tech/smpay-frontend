@@ -17,6 +17,10 @@ const breadcrumbItems: DashboardSubItem[] = [
     url: "/account",
   },
   {
+    title: "회원 관리",
+    url: "/account/membership-management",
+  },
+  {
     title: "회원 등록",
     url: "/account/membership-register",
   },

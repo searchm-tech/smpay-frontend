@@ -63,7 +63,23 @@ export const deleteMember = async (id: number) => {
   };
 };
 
+/**
+ * 회원 등록 - [대행사 기준]
+ * @param data
+ * @returns
+ */
 export const createMember = async (data: MemberData) => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return {
+    success: true,
+  };
+};
+
+/**
+ * 회원 등록 - [대행사 기준]
+ */
+export const createMemberByAgency = async (data: MemberData) => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return {

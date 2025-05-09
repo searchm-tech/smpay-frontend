@@ -153,7 +153,7 @@ const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
         value={part1}
         onChange={handleChange(setPart1, 0)}
         className="w-[80px] text-center"
-        placeholder="010"
+        // placeholder="010"
         inputMode="numeric"
       />
       <span>-</span>
@@ -162,7 +162,7 @@ const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
         value={part2}
         onChange={handleChange(setPart2, 1)}
         className="w-[80px] text-center"
-        placeholder="1234"
+        // placeholder="1234"
         inputMode="numeric"
       />
       <span>-</span>
@@ -171,7 +171,7 @@ const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
         value={part3}
         onChange={handleChange(setPart3, 2)}
         className="w-[80px] text-center"
-        placeholder="5678"
+        // placeholder="5678"
         inputMode="numeric"
       />
     </div>

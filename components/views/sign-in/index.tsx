@@ -119,7 +119,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
               name="password"
               type="password"
               label="비밀번호"
-              placeholder="비밀번호를 입력해주세요"
+              placeholder="영문, 숫자, 특수문자가 모두 들어간 8-16자"
             />
 
             <div>

@@ -1,4 +1,9 @@
-import { createMember, deleteMember, fetchMembers } from "@/services/member";
+import {
+  createMember,
+  createMemberByAgency,
+  deleteMember,
+  fetchMembers,
+} from "@/services/member";
 import { TableParams } from "@/services/types";
 import { MemberData } from "@/types/user";
 
@@ -24,11 +29,22 @@ export const useDeleteMember = (
   });
 };
 
+// 회원 등록 - [대행사 기준]
 export const useCreateMember = (
   options?: UseMutationOptions<{ success: boolean }, Error, any>
 ) => {
   return useMutation({
     mutationFn: (data: any) => createMember(data),
+    ...options,
+  });
+};
+
+// 회원 등록 - [대행사 기준]
+export const useCreateMemberByAgency = (
+  options?: UseMutationOptions<{ success: boolean }, Error, any>
+) => {
+  return useMutation({
+    mutationFn: (data: any) => createMemberByAgency(data),
     ...options,
   });
 };
