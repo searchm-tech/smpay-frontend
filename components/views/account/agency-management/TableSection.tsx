@@ -12,6 +12,7 @@ import { ACTIVE_STATUS, defaultTableParams } from "@/constants/table";
 import type { TableParams } from "@/types/table";
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
+import { SquarePen } from "lucide-react";
 
 const columns: TableProps<AgencyData>["columns"] = [
   {
@@ -41,13 +42,19 @@ const columns: TableProps<AgencyData>["columns"] = [
     title: "관리",
     dataIndex: "action",
     align: "center",
-    render: () => <Button variant="cancel">정보 수정</Button>,
+    width: 100,
+    render: () => (
+      <div className="flex justify-center items-center w-full">
+        <SquarePen className="w-4 h-4 text-blue-500 cursor-pointer text-center" />
+      </div>
+    ),
   },
   {
     title: "활성여부",
     dataIndex: "status",
     sorter: true,
     align: "center",
+    width: 150,
     render: (value: boolean, record) => {
       const selectedValue = value ? "active" : "inactive";
 
