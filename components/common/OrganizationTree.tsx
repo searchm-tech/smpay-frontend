@@ -1,11 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  FolderIcon,
-  UserIcon,
-  ArrowsPointingOutIcon,
-} from "@heroicons/react/24/outline"; // TODO : 기존 아이콘 만 사용할 것
+import { useState } from "react";
 
 import {
   DndContext,
@@ -18,6 +13,7 @@ import {
   MeasuringStrategy,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { Folder, FolderOpen, Move, User } from "lucide-react";
 
 interface UserData {
   email: string;
@@ -151,7 +147,9 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`${isOver ? "bg-blue-50" : ""} transition-colors duration-200`}
+      className={`${
+        isOver ? "bg-blue-50" : ""
+      } transition-colors duration-200 border-5 border-black`}
     >
       {children}
     </div>
@@ -159,7 +157,7 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
 };
 
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: node.id,
@@ -172,6 +170,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
     }
   };
 
+  // 이동하는 트리
   const style: React.CSSProperties | undefined = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -186,7 +185,9 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
       ref={node.type === "user" ? setNodeRef : undefined}
       {...(node.type === "user" ? attributes : {})}
       className={`flex items-center gap-2 py-2 px-2 rounded-md ${
-        node.type === "folder" ? "hover:bg-gray-50" : ""
+        node.type === "folder"
+          ? "hover:bg-gray-50 cursor-pointer"
+          : "cursor-default"
       }`}
       style={{
         paddingLeft: `${level * 24}px`,
@@ -196,14 +197,18 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
       onClick={handleToggle}
     >
       {node.type === "folder" ? (
-        <FolderIcon className="w-5 h-5 text-gray-400" />
+        isOpen ? (
+          <FolderOpen className="w-5 h-5 text-gray-400" />
+        ) : (
+          <Folder className="w-5 h-5 text-gray-400" />
+        )
       ) : (
-        <UserIcon className="w-5 h-5 text-gray-400" />
+        <User className="w-5 h-5 text-gray-400" />
       )}
       <span className="flex-1">{node.name}</span>
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
-          <ArrowsPointingOutIcon className="h-4 w-4 text-blue-500 hover:text-blue-700" />
+          <Move className="h-4 w-4 text-blue-500 hover:text-blue-700" />
         </div>
       )}
     </div>
@@ -272,7 +277,7 @@ const OrganizationTree: React.FC = () => {
         if (!overNode.children) {
           overNode.children = [];
         }
-        overNode.children.push(draggedNode);
+        overNode.children.unshift(draggedNode);
 
         return newData;
       }
@@ -280,6 +285,8 @@ const OrganizationTree: React.FC = () => {
       return prevData;
     });
   };
+
+  console.log(treeData);
 
   return (
     <DndContext
