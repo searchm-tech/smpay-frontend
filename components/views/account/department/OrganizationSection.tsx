@@ -154,10 +154,11 @@ interface TreeNodeProps {
   onDeleteFolder: (nodeId: string) => void;
 }
 
-const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
-  id,
-  children,
-}) => {
+const DroppableFolder: React.FC<{
+  id: string;
+  children: React.ReactNode;
+  isOpen: boolean;
+}> = ({ id, children, isOpen }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: id,
   });
@@ -165,9 +166,11 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
   return (
     <div
       ref={setNodeRef}
-      className={`${
-        isOver ? "bg-blue-50" : ""
-      } transition-colors duration-200 border-5 border-black`}
+      className={cn(
+        "transition-colors duration-200",
+        isOver && "bg-blue-50",
+        isOpen && "pb-2 rounded-md"
+      )}
     >
       {children}
     </div>
@@ -339,23 +342,25 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         />
       )}
       {node.type === "folder" ? (
-        <DroppableFolder id={node.id}>{content}</DroppableFolder>
+        <DroppableFolder id={node.id} isOpen={isOpen}>
+          {content}
+          {isOpen && node.children && (
+            <div className="w-full">
+              {node.children.map((child) => (
+                <TreeNodeComponent
+                  key={child.id}
+                  node={child}
+                  level={level + 1}
+                  onAddFolder={onAddFolder}
+                  onUpdateName={onUpdateName}
+                  onDeleteFolder={onDeleteFolder}
+                />
+              ))}
+            </div>
+          )}
+        </DroppableFolder>
       ) : (
         <div>{content}</div>
-      )}
-      {node.type === "folder" && isOpen && node.children && (
-        <div className="w-full">
-          {node.children.map((child) => (
-            <TreeNodeComponent
-              key={child.id}
-              node={child}
-              level={level + 1}
-              onAddFolder={onAddFolder}
-              onUpdateName={onUpdateName}
-              onDeleteFolder={onDeleteFolder}
-            />
-          ))}
-        </div>
       )}
     </div>
   );
