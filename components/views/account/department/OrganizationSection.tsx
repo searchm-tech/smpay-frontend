@@ -185,6 +185,14 @@ const hasUserInChildren = (node: TreeNode): boolean => {
   return node.children.some((child) => hasUserInChildren(child));
 };
 
+// 폴더 내의 전체 user 수를 계산하는 함수
+const countUsersInNode = (node: TreeNode): number => {
+  if (node.type === "user") return 1;
+  if (!node.children) return 0;
+
+  return node.children.reduce((sum, child) => sum + countUsersInNode(child), 0);
+};
+
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
   level,
@@ -261,18 +269,28 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <User className={classNameLeft} />
       )}
-      {isEditing ? (
-        <input
-          type="text"
-          value={editName}
-          onChange={(e) => setEditName(e.target.value)}
-          onKeyDown={handleNameSubmit}
-          className="flex-1 bg-white border rounded px-2 py-1 text-sm"
-          autoFocus
-        />
-      ) : (
-        <span className="flex-1">{node.name}</span>
-      )}
+      <div className="flex-1 flex items-center gap-2">
+        {isEditing ? (
+          <input
+            type="text"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            onKeyDown={handleNameSubmit}
+            className="flex-1 bg-white border rounded px-2 py-1 text-sm"
+            autoFocus
+          />
+        ) : (
+          <>
+            <span>{node.name}</span>
+            {node.type === "folder" && (
+              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <User className="w-3 h-3" />
+                {countUsersInNode(node)}명
+              </div>
+            )}
+          </>
+        )}
+      </div>
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
           <Move className={classNameObject} />
