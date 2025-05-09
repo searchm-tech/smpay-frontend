@@ -28,4 +28,16 @@ const GuideBox = ({ children, className }: Props) => {
   );
 };
 
-export { SearchBox, GuideBox };
+const DescriptionBox = ({ children, className }: Props) => {
+  return (
+    <section
+      className={cn(
+        "bg-[rgba(0,0,0,0.02)] h-[70px] flex items-center px-4 my-2",
+        className
+      )}
+    >
+      <span className="text-[#656C7B] text-base font-medium">{children}</span>
+    </section>
+  );
+};
+export { SearchBox, GuideBox, DescriptionBox };

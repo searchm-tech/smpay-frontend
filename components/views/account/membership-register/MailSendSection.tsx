@@ -12,6 +12,8 @@ import { RadioGroup } from "@/components/composite/radio-component";
 import { InputWithSuffix } from "@/components/composite/input-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
+import LoadingUI from "@/components/common/Loading";
+
 import { fetchAdvertisers } from "@/services/advertiser";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
@@ -19,8 +21,10 @@ import { EMAIL_ID_REGEX } from "@/constants/reg";
 
 import type { TRole } from "@/services/mock/members";
 import type { TableParams } from "@/services/types";
-import { useCreateMember } from "@/hooks/queries/member";
-import LoadingUI from "@/components/common/Loading";
+import {
+  useCreateMember,
+  useCreateMemberByAgency,
+} from "@/hooks/queries/member";
 
 type MailSendSectionProps = {
   role?: TRole;
@@ -31,40 +35,66 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
   const [selectedValue, setSelectedValue] = useState("");
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
+  const [name, setName] = useState("");
 
   const [errModal, setErrModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
 
+  // 메일 발송 api 신규 필요 + 모달창 다시 확인
   const { mutate: createMember, isPending } = useCreateMember({
     onSuccess: () => setSuccessModal(true),
   });
 
+  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
+    useCreateMemberByAgency({
+      onSuccess: () => setSuccessModal(true),
+    });
+
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!EMAIL_ID_REGEX.test(e.target.value)) {
-      setErrModal(true);
       return;
     }
     setEmailId(e.target.value);
   };
 
   const handleSubmit = () => {
-    if (!emailId || !department || !selected) {
-      setErrModal(true);
-      return;
+    if (role === "agency") {
+      // 대행사 기준
+      if (!emailId || !department || !selected || !name) {
+        setErrModal(true);
+        return;
+      }
+
+      const data = {
+        emailId,
+        department,
+        selected,
+        name,
+      };
+
+      createMember(data);
+    } else {
+      // 광고주 기준
+      if (!emailId || !selectedValue || !name) {
+        setErrModal(true);
+        return;
+      }
+
+      const data = {
+        emailId,
+        selectedValue,
+        name,
+      };
+
+      createMemberByAgency(data);
     }
-
-    const data = {
-      emailId,
-      department,
-      selected,
-    };
-
-    createMember(data);
   };
 
   return (
     <section className="py-4">
-      {isPending && <LoadingUI />}
+      {(isPending || isPendingByAgency) && (
+        <LoadingUI title="초대 메일 전송 중..." />
+      )}
 
       {errModal && (
         <ConfirmDialog
@@ -82,7 +112,12 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
           onClose={() => setSuccessModal(false)}
           onConfirm={() => setSuccessModal(false)}
           title="성공"
-          content="회원 정보가 성공적으로 저장되었습니다."
+          content={
+            <div className="text-center">
+              <p>메일 발송이 완료되었습니다.</p>
+              <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
+            </div>
+          }
         />
       )}
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
@@ -124,7 +159,11 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
         </DescriptionItem>
         {role === "admin" && (
           <DescriptionItem label="성명 *">
-            <Input className="max-w-[500px]" />
+            <Input
+              className="max-w-[500px]"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </DescriptionItem>
         )}
 
