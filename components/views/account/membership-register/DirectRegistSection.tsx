@@ -17,20 +17,22 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionBox } from "@/components/common/Box";
 
+import {
+  useCreateMember,
+  useCreateMemberByAgency,
+} from "@/hooks/queries/member";
 import { fetchAdvertisers } from "@/services/advertiser";
+
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_ID_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 
 import type { TableParams } from "@/services/types";
 import type { TRole } from "@/services/mock/members";
 
-import { useCreateMember } from "@/hooks/queries/member";
-
 type DirectRegistSectionProps = {
   role?: TRole;
 };
 
-// 1. 대행사 기준
 const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
   const [department, setDepartment] = useState("");
   const [phone, setPhone] = useState("");
@@ -38,8 +40,8 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [selected, setSelected] = useState("leader");
-  const [selectedValue, setSelectedValue] = useState("");
+  const [memberType, setMemberType] = useState("leader");
+  const [agency, setAgency] = useState("");
 
   const [errModal, setErrModal] = useState("");
   const [successModal, setSuccessModal] = useState(false);
@@ -48,6 +50,11 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
   const { mutate: createMember, isPending } = useCreateMember({
     onSuccess: () => setSuccessModal(true),
   });
+
+  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
+    useCreateMemberByAgency({
+      onSuccess: () => setSuccessModal(true),
+    });
 
   const handlePasswordChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -68,22 +75,22 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
   };
 
   const handleSubmit = () => {
-    if (
-      !emailId ||
-      !department ||
-      !selected ||
-      !name ||
-      !phone ||
-      !password ||
-      !passwordConfirm
-    ) {
+    // 공통 필수 항목 체크
+    if (!emailId || !name || !phone || !password || !passwordConfirm) {
       setErrModal("모든 필수 항목을 입력해주세요.");
       return;
     }
 
-    if (password !== passwordConfirm) {
-      setErrModal("비밀번호가 일치하지 않습니다.");
-      return;
+    if (role === "agency") {
+      if (!memberType || !department) {
+        setErrModal("모든 필수 항목을 입력해주세요.");
+        return;
+      }
+    } else {
+      if (!agency) {
+        setErrModal("모든 필수 항목을 입력해주세요.");
+        return;
+      }
     }
 
     if (
@@ -96,16 +103,38 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
       return;
     }
 
-    const data = {
-      emailId,
-      department,
-      selected,
-      name,
-      phone,
-      password,
-      passwordConfirm,
-    };
-    createMember(data);
+    if (password !== passwordConfirm) {
+      setErrModal("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (phone.length !== 11) {
+      setErrModal("전화번호가 올바르지 않습니다.");
+      return;
+    }
+
+    if (role === "agency") {
+      const data = {
+        emailId,
+        department,
+        memberType,
+        name,
+        phone,
+        password,
+        passwordConfirm,
+      };
+      createMember(data);
+    } else {
+      const data = {
+        emailId,
+        agency,
+        name,
+        phone,
+        password,
+        passwordConfirm,
+      };
+      createMemberByAgency(data);
+    }
   };
 
   return (
@@ -127,7 +156,12 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
           onClose={() => setSuccessModal(false)}
           onConfirm={() => setSuccessModal(false)}
           title="성공"
-          content="회원 정보가 성공적으로 저장되었습니다."
+          content={
+            <div className="text-center">
+              <p>메일 발송이 완료되었습니다.</p>
+              <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
+            </div>
+          }
         />
       )}
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
@@ -147,10 +181,10 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
             <SelectSearchServer
               className="max-w-[500px]"
               fetchOptions={fetchAdvertiserOptions}
-              value={selectedValue}
-              onValueChange={setSelectedValue}
-              placeholder="광고주를 선택하세요"
-              searchPlaceholder="광고주명 또는 ID 검색..."
+              value={agency}
+              onValueChange={setAgency}
+              placeholder="대행사를 선택하세요"
+              searchPlaceholder="대행사명, 대표자를 검색하세요."
             />
           )}
         </DescriptionItem>
@@ -158,8 +192,8 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
           {role === "agency" ? (
             <RadioGroup
               options={MEMBER_TYPE_OPTS}
-              value={selected}
-              onChange={setSelected}
+              value={memberType}
+              onChange={setMemberType}
             />
           ) : (
             "최상위 그룹장"

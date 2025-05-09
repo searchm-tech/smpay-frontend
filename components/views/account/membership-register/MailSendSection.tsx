@@ -14,6 +14,10 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
 
+import {
+  useCreateMember,
+  useCreateMemberByAgency,
+} from "@/hooks/queries/member";
 import { fetchAdvertisers } from "@/services/advertiser";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
@@ -21,10 +25,6 @@ import { EMAIL_ID_REGEX } from "@/constants/reg";
 
 import type { TRole } from "@/services/mock/members";
 import type { TableParams } from "@/services/types";
-import {
-  useCreateMember,
-  useCreateMemberByAgency,
-} from "@/hooks/queries/member";
 
 type MailSendSectionProps = {
   role?: TRole;
@@ -32,7 +32,7 @@ type MailSendSectionProps = {
 
 const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
   const [department, setDepartment] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
+  const [agency, setAgency] = useState("");
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
@@ -58,9 +58,13 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
   };
 
   const handleSubmit = () => {
+    if (!emailId || !name) {
+      setErrModal(true);
+      return;
+    }
+
     if (role === "agency") {
-      // 대행사 기준
-      if (!emailId || !department || !selected || !name) {
+      if (!department || !selected) {
         setErrModal(true);
         return;
       }
@@ -74,15 +78,14 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
 
       createMember(data);
     } else {
-      // 광고주 기준
-      if (!emailId || !selectedValue || !name) {
+      if (!agency) {
         setErrModal(true);
         return;
       }
 
       const data = {
         emailId,
-        selectedValue,
+        agency,
         name,
       };
 
@@ -139,10 +142,10 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
             <SelectSearchServer
               className="max-w-[500px]"
               fetchOptions={fetchAdvertiserOptions}
-              value={selectedValue}
-              onValueChange={setSelectedValue}
-              placeholder="광고주를 선택하세요"
-              searchPlaceholder="광고주명 또는 ID 검색..."
+              value={agency}
+              onValueChange={setAgency}
+              placeholder="대행사를 선택하세요"
+              searchPlaceholder="대행사명, 대표자를 검색하세요."
             />
           )}
         </DescriptionItem>
