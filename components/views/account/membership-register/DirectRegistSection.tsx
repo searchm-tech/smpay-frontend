@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,8 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionBox } from "@/components/common/Box";
 
+import ModalDepartment from "./ModalDepartment";
+
 import {
   useCreateMember,
   useCreateMemberByAgency,
@@ -28,13 +30,14 @@ import { EMAIL_ID_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 
 import type { TableParams } from "@/services/types";
 import type { TRole } from "@/services/mock/members";
+import type { TreeNode } from "@/components/common/DepartmentSelect";
 
 type DirectRegistSectionProps = {
   role?: TRole;
 };
 
 const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
-  const [department, setDepartment] = useState("");
+  const [departmentNode, setDepartmentNode] = useState<TreeNode | null>(null);
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -45,6 +48,7 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
 
   const [errModal, setErrModal] = useState("");
   const [successModal, setSuccessModal] = useState(false);
+  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
   // 직접등록
   const { mutate: createMember, isPending } = useCreateMember({
@@ -82,7 +86,7 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
     }
 
     if (role === "agency") {
-      if (!memberType || !department) {
+      if (!memberType || !departmentNode) {
         setErrModal("모든 필수 항목을 입력해주세요.");
         return;
       }
@@ -116,7 +120,7 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
     if (role === "agency") {
       const data = {
         emailId,
-        department,
+        department: departmentNode?.id,
         memberType,
         name,
         phone,
@@ -137,9 +141,20 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
     }
   };
 
+  const handleDepartmentSelect = (node: TreeNode) => {
+    setDepartmentNode(node);
+  };
+
   return (
     <section className="py-4">
       {isPending && <LoadingUI />}
+
+      {isOpenDepartmentModal && (
+        <ModalDepartment
+          setIsOpen={setIsOpenDepartmentModal}
+          onSelect={handleDepartmentSelect}
+        />
+      )}
 
       {errModal && (
         <ConfirmDialog
@@ -170,13 +185,15 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
       <Descriptions columns={1} bordered>
         <DescriptionItem label="대행사 선택 *">
           {role === "agency" ? (
-            // TODO : 버튼과 모달로 변경이 필요
-            <Input
-              className="max-w-[500px]"
-              placeholder="부서를 선택하시오."
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsOpenDepartmentModal(true)}
+              >
+                부서 선택
+              </Button>
+              <span>{departmentNode?.name || ""}</span>
+            </div>
           ) : (
             <SelectSearchServer
               className="max-w-[500px]"

@@ -14,6 +14,8 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
 
+import ModalDepartment from "./ModalDepartment";
+
 import {
   useCreateMember,
   useCreateMemberByAgency,
@@ -25,13 +27,14 @@ import { EMAIL_ID_REGEX } from "@/constants/reg";
 
 import type { TRole } from "@/services/mock/members";
 import type { TableParams } from "@/services/types";
+import type { TreeNode } from "@/components/common/DepartmentSelect";
 
 type MailSendSectionProps = {
   role?: TRole;
 };
 
 const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
-  const [department, setDepartment] = useState("");
+  const [departmentNode, setDepartmentNode] = useState<TreeNode | null>(null);
   const [agency, setAgency] = useState("");
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
@@ -39,7 +42,7 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
 
   const [errModal, setErrModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-
+  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
   // 메일 발송 api 신규 필요 + 모달창 다시 확인
   const { mutate: createMember, isPending } = useCreateMember({
     onSuccess: () => setSuccessModal(true),
@@ -64,14 +67,14 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
     }
 
     if (role === "agency") {
-      if (!department || !selected) {
+      if (!departmentNode || !selected) {
         setErrModal(true);
         return;
       }
 
       const data = {
         emailId,
-        department,
+        department: departmentNode.id,
         selected,
         name,
       };
@@ -93,10 +96,21 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
     }
   };
 
+  const handleDepartmentSelect = (node: TreeNode) => {
+    setDepartmentNode(node);
+  };
+
   return (
     <section className="py-4">
       {(isPending || isPendingByAgency) && (
         <LoadingUI title="초대 메일 전송 중..." />
+      )}
+
+      {isOpenDepartmentModal && (
+        <ModalDepartment
+          setIsOpen={setIsOpenDepartmentModal}
+          onSelect={handleDepartmentSelect}
+        />
       )}
 
       {errModal && (
@@ -126,18 +140,21 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>
+
       <Descriptions columns={1} bordered>
         <DescriptionItem
           label={`${role === "agency" ? "부서 선택 *" : "대행사 선택 *"}`}
         >
           {role === "agency" ? (
-            // TODO : 버튼과 모달로 변경이 필요
-            <Input
-              className="max-w-[500px]"
-              placeholder="부서를 선택하시오."
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsOpenDepartmentModal(true)}
+              >
+                부서 선택
+              </Button>
+              <span>{departmentNode?.name || ""}</span>
+            </div>
           ) : (
             <SelectSearchServer
               className="max-w-[500px]"
