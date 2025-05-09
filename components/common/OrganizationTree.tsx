@@ -144,6 +144,7 @@ interface TreeNodeProps {
   node: TreeNode;
   level: number;
   onAddFolder: (parentId: string) => void;
+  onUpdateName: (nodeId: string, newName: string) => void;
 }
 
 const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
@@ -170,8 +171,12 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
   level,
   onAddFolder,
+  onUpdateName,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(node.name);
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: node.id,
@@ -182,6 +187,21 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     if (node.type === "folder") {
       setIsOpen(!isOpen);
     }
+  };
+
+  const handleNameSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onUpdateName(node.id, editName);
+      setIsEditing(false);
+    } else if (e.key === "Escape") {
+      setEditName(node.name);
+      setIsEditing(false);
+    }
+  };
+
+  const handleNameBlur = () => {
+    onUpdateName(node.id, editName);
+    setIsEditing(false);
   };
 
   // 이동하는 트리
@@ -216,7 +236,19 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <User className={classNameLeft} />
       )}
-      <span className="flex-1">{node.name}</span>
+      {isEditing ? (
+        <input
+          type="text"
+          value={editName}
+          onChange={(e) => setEditName(e.target.value)}
+          onKeyDown={handleNameSubmit}
+          onBlur={handleNameBlur}
+          className="flex-1 bg-white border rounded px-2 py-1 text-sm"
+          autoFocus
+        />
+      ) : (
+        <span className="flex-1">{node.name}</span>
+      )}
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
           <Move className={classNameObject} />
@@ -232,7 +264,13 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
               onAddFolder(node.id);
             }}
           />
-          <FilePenLine className={classNameObject} />
+          <FilePenLine
+            className={classNameObject}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
+          />
         </div>
       )}
     </div>
@@ -253,6 +291,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
               node={child}
               level={level + 1}
               onAddFolder={onAddFolder}
+              onUpdateName={onUpdateName}
             />
           ))}
         </div>
@@ -266,6 +305,7 @@ const OrganizationTree: React.FC = () => {
   // const [activeId, setActiveId] = useState<string | null>(null);
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
+  const [loadingUpdateName, setLoadingUpdateName] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -351,9 +391,31 @@ const OrganizationTree: React.FC = () => {
     }
   };
 
+  const handleUpdateName = async (nodeId: string, newName: string) => {
+    if (loadingUpdateName) return;
+    setLoadingUpdateName(true);
+    try {
+      const { result } = await fetchUpdateName(nodeId, newName);
+      if (!result) return;
+
+      setTreeData((prevData) => {
+        const newData = JSON.parse(JSON.stringify(prevData));
+        const [node] = findNode(newData, nodeId);
+        if (node) {
+          node.name = newName;
+        }
+        return newData;
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingUpdateName(false);
+    }
+  };
+
   return (
     <Fragment>
-      {loadingAddFolder && <LoadingUI />}
+      {(loadingAddFolder || loadingUpdateName) && <LoadingUI />}
       <DndContext
         sensors={sensors}
         measuring={{
@@ -372,6 +434,7 @@ const OrganizationTree: React.FC = () => {
               node={node}
               level={0}
               onAddFolder={handleAddFolder}
+              onUpdateName={handleUpdateName}
             />
           ))}
         </div>
@@ -386,9 +449,18 @@ const classNameObject =
   "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
 const classNameLeft = "w-5 h-5 text-gray-400 cursor-pointer";
 
+// api 자식 폴더 추가
 const fetchAddFolder = async (parentId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
+  return {
+    result: true,
+  };
+};
+
+// api 이름 수정
+const fetchUpdateName = async (nodeId: string, newName: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
     result: true,
   };
