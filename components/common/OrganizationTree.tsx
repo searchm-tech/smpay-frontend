@@ -14,12 +14,14 @@ import {
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import {
+  CircleCheckBig,
   FilePenLine,
   Folder,
   FolderOpen,
   FolderPlus,
   Move,
   User,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingUI from "./Loading";
@@ -199,11 +201,6 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     }
   };
 
-  const handleNameBlur = () => {
-    onUpdateName(node.id, editName);
-    setIsEditing(false);
-  };
-
   // 이동하는 트리
   const style: React.CSSProperties | undefined = transform
     ? {
@@ -242,7 +239,6 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
           value={editName}
           onChange={(e) => setEditName(e.target.value)}
           onKeyDown={handleNameSubmit}
-          onBlur={handleNameBlur}
           className="flex-1 bg-white border rounded px-2 py-1 text-sm"
           autoFocus
         />
@@ -255,24 +251,42 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         </div>
       )}
 
-      {node.type === "folder" && (
-        <div className="flex items-center gap-2">
-          <FolderPlus
-            className={classNameObject}
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddFolder(node.id);
-            }}
-          />
-          <FilePenLine
-            className={classNameObject}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsEditing(true);
-            }}
-          />
-        </div>
-      )}
+      {node.type === "folder" &&
+        (!isEditing ? (
+          <div className="flex items-center gap-2">
+            <FolderPlus
+              className={classNameObject}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddFolder(node.id);
+              }}
+            />
+            <FilePenLine
+              className={classNameObject}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <CircleCheckBig
+              className={cn(classNameObject, "text-green-500")}
+              onClick={() => {
+                onUpdateName(node.id, editName);
+                setIsEditing(false);
+              }}
+            />
+            <X
+              className={cn(classNameObject, "text-red-500")}
+              onClick={() => {
+                setEditName(node.name);
+                setIsEditing(false);
+              }}
+            />
+          </div>
+        ))}
     </div>
   );
 
