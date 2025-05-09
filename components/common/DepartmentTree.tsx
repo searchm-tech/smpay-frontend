@@ -4,19 +4,16 @@ import { useState } from "react";
 import { ChevronDown, ChevronRight, Folder } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export interface TreeNode {
-  id: string;
-  name: string;
-  children?: TreeNode[];
-}
+import type { DepartmentTreeNode } from "@/types/tree";
 
 interface TreeNodeProps {
-  node: TreeNode;
+  node: DepartmentTreeNode;
   level: number;
   selectedId?: string;
-  onSelect?: (node: TreeNode) => void;
+  onSelect?: (node: DepartmentTreeNode) => void;
 }
 
+// 부서 선택 트리 뷰
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
   level,
@@ -79,13 +76,13 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   );
 };
 
-interface DepartmentSelectProps {
-  data: TreeNode[];
+interface DepartmentTreeProps {
+  data: DepartmentTreeNode[];
   selectedId?: string;
-  onSelect?: (node: TreeNode) => void;
+  onSelect?: (node: DepartmentTreeNode) => void;
 }
 
-const DepartmentSelect: React.FC<DepartmentSelectProps> = ({
+const DepartmentTree: React.FC<DepartmentTreeProps> = ({
   data,
   selectedId,
   onSelect,
@@ -105,4 +102,4 @@ const DepartmentSelect: React.FC<DepartmentSelectProps> = ({
   );
 };
 
-export default DepartmentSelect;
+export default DepartmentTree;

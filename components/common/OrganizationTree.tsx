@@ -30,23 +30,16 @@ import { ConfirmDialog } from "../composite/modal-components";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-interface UserData {
-  email: string;
-  position: string;
-}
-
-interface TreeNode {
-  id: string;
-  name: string;
-  type: "folder" | "user";
-  userData?: UserData;
-  children?: TreeNode[];
-}
+import type { OrganizationTreeNode } from "@/types/tree";
 
 const findNode = (
-  nodes: TreeNode[],
+  nodes: OrganizationTreeNode[],
   id: string
-): [TreeNode | null, TreeNode[] | null, TreeNode | null] => {
+): [
+  OrganizationTreeNode | null,
+  OrganizationTreeNode[] | null,
+  OrganizationTreeNode | null
+] => {
   for (const node of nodes) {
     if (node.id === id) {
       return [node, nodes, null];
@@ -61,7 +54,7 @@ const findNode = (
   return [null, null, null];
 };
 
-const removeNode = (nodes: TreeNode[], id: string): boolean => {
+const removeNode = (nodes: OrganizationTreeNode[], id: string): boolean => {
   const index = nodes.findIndex((node) => node.id === id);
   if (index !== -1) {
     nodes.splice(index, 1);
@@ -77,7 +70,7 @@ const removeNode = (nodes: TreeNode[], id: string): boolean => {
   return false;
 };
 
-const initialTreeData: TreeNode[] = [
+const initialTreeData: OrganizationTreeNode[] = [
   {
     id: "dev-hq",
     name: "개발본부",
@@ -147,7 +140,7 @@ const initialTreeData: TreeNode[] = [
 ];
 
 interface TreeNodeProps {
-  node: TreeNode;
+  node: OrganizationTreeNode;
   level: number;
   onAddFolder: (parentId: string) => void;
   onUpdateName: (nodeId: string, newName: string) => void;
@@ -175,7 +168,7 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
 };
 
 // 폴더 내에 user가 있는지 확인하는 함수
-const hasUserInChildren = (node: TreeNode): boolean => {
+const hasUserInChildren = (node: OrganizationTreeNode): boolean => {
   if (node.type === "user") return true;
   if (!node.children) return false;
 
@@ -216,7 +209,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     }
   };
 
-  const handleDelete = (node: TreeNode) => {
+  const handleDelete = (node: OrganizationTreeNode) => {
     if (node.type === "folder") {
       if (hasUserInChildren(node)) {
         setShowDeleteError(true);
@@ -362,7 +355,8 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 };
 
 const OrganizationTree: React.FC = () => {
-  const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
+  const [treeData, setTreeData] =
+    useState<OrganizationTreeNode[]>(initialTreeData);
   // const [activeId, setActiveId] = useState<string | null>(null);
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
@@ -434,7 +428,7 @@ const OrganizationTree: React.FC = () => {
             parentNode.children = [];
           }
 
-          const newFolder: TreeNode = {
+          const newFolder: OrganizationTreeNode = {
             id: `folder-${Date.now()}`,
             name: "새 폴더",
             type: "folder",

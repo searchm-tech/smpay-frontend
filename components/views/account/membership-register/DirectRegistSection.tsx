@@ -30,14 +30,14 @@ import { EMAIL_ID_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 
 import type { TableParams } from "@/services/types";
 import type { TRole } from "@/services/mock/members";
-import type { TreeNode } from "@/components/common/DepartmentSelect";
-
+import type { DepartmentTreeNode } from "@/types/tree";
 type DirectRegistSectionProps = {
   role?: TRole;
 };
 
 const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
-  const [departmentNode, setDepartmentNode] = useState<TreeNode | null>(null);
+  const [departmentNode, setDepartmentNode] =
+    useState<DepartmentTreeNode | null>(null);
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -141,7 +141,7 @@ const DirectRegistSection = ({ role = "agency" }: DirectRegistSectionProps) => {
     }
   };
 
-  const handleDepartmentSelect = (node: TreeNode) => {
+  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
     setDepartmentNode(node);
   };
 

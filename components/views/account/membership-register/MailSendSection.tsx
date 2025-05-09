@@ -27,14 +27,16 @@ import { EMAIL_ID_REGEX } from "@/constants/reg";
 
 import type { TRole } from "@/services/mock/members";
 import type { TableParams } from "@/services/types";
-import type { TreeNode } from "@/components/common/DepartmentSelect";
+import type { DepartmentTreeNode } from "@/types/tree";
+``;
 
 type MailSendSectionProps = {
   role?: TRole;
 };
 
 const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
-  const [departmentNode, setDepartmentNode] = useState<TreeNode | null>(null);
+  const [departmentNode, setDepartmentNode] =
+    useState<DepartmentTreeNode | null>(null);
   const [agency, setAgency] = useState("");
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
@@ -96,7 +98,7 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
     }
   };
 
-  const handleDepartmentSelect = (node: TreeNode) => {
+  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
     setDepartmentNode(node);
   };
 
