@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import {
   DndContext,
@@ -13,7 +13,16 @@ import {
   MeasuringStrategy,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { Folder, FolderOpen, Move, User } from "lucide-react";
+import {
+  FilePenLine,
+  Folder,
+  FolderOpen,
+  FolderPlus,
+  Move,
+  User,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import LoadingUI from "./Loading";
 
 interface UserData {
   email: string;
@@ -134,6 +143,7 @@ const initialTreeData: TreeNode[] = [
 interface TreeNodeProps {
   node: TreeNode;
   level: number;
+  onAddFolder: (parentId: string) => void;
 }
 
 const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
@@ -156,7 +166,11 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
   );
 };
 
-const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
+const TreeNodeComponent: React.FC<TreeNodeProps> = ({
+  node,
+  level,
+  onAddFolder,
+}) => {
   const [isOpen, setIsOpen] = useState(true);
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -185,30 +199,40 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
       ref={node.type === "user" ? setNodeRef : undefined}
       {...(node.type === "user" ? attributes : {})}
       className={`flex items-center gap-2 py-2 px-2 rounded-md ${
-        node.type === "folder"
-          ? "hover:bg-gray-50 cursor-pointer"
-          : "cursor-default"
+        node.type === "folder" ? "hover:bg-gray-50" : "cursor-default"
       }`}
       style={{
         paddingLeft: `${level * 24}px`,
         ...(isDragging ? { border: "2px solid #4A90E2" } : {}),
         ...style,
       }}
-      onClick={handleToggle}
     >
       {node.type === "folder" ? (
         isOpen ? (
-          <FolderOpen className="w-5 h-5 text-gray-400" />
+          <FolderOpen className={classNameLeft} onClick={handleToggle} />
         ) : (
-          <Folder className="w-5 h-5 text-gray-400" />
+          <Folder className={classNameLeft} onClick={handleToggle} />
         )
       ) : (
-        <User className="w-5 h-5 text-gray-400" />
+        <User className={classNameLeft} />
       )}
       <span className="flex-1">{node.name}</span>
       {node.type === "user" && (
         <div {...listeners} className="touch-none cursor-move">
-          <Move className="h-4 w-4 text-blue-500 hover:text-blue-700" />
+          <Move className={classNameObject} />
+        </div>
+      )}
+
+      {node.type === "folder" && (
+        <div className="flex items-center gap-2">
+          <FolderPlus
+            className={classNameObject}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddFolder(node.id);
+            }}
+          />
+          <FilePenLine className={classNameObject} />
         </div>
       )}
     </div>
@@ -224,7 +248,12 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
       {node.type === "folder" && isOpen && node.children && (
         <div className="w-full">
           {node.children.map((child) => (
-            <TreeNodeComponent key={child.id} node={child} level={level + 1} />
+            <TreeNodeComponent
+              key={child.id}
+              node={child}
+              level={level + 1}
+              onAddFolder={onAddFolder}
+            />
           ))}
         </div>
       )}
@@ -235,6 +264,8 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, level }) => {
 const OrganizationTree: React.FC = () => {
   const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
   // const [activeId, setActiveId] = useState<string | null>(null);
+
+  const [loadingAddFolder, setLoadingAddFolder] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -286,27 +317,79 @@ const OrganizationTree: React.FC = () => {
     });
   };
 
-  console.log(treeData);
+  const handleAddFolder = async (parentId: string) => {
+    if (loadingAddFolder) return;
+    setLoadingAddFolder(true);
+    try {
+      const { result } = await fetchAddFolder(parentId);
+      if (!result) return;
+      setTreeData((prevData) => {
+        const newData = JSON.parse(JSON.stringify(prevData));
+        const [parentNode] = findNode(newData, parentId);
+
+        if (parentNode) {
+          if (!parentNode.children) {
+            parentNode.children = [];
+          }
+
+          const newFolder: TreeNode = {
+            id: `folder-${Date.now()}`,
+            name: "새 폴더",
+            type: "folder",
+            children: [],
+          };
+
+          parentNode.children.push(newFolder);
+        }
+
+        return newData;
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingAddFolder(false);
+    }
+  };
 
   return (
-    <DndContext
-      sensors={sensors}
-      measuring={{
-        droppable: {
-          strategy: MeasuringStrategy.Always,
-        },
-      }}
-      modifiers={[restrictToWindowEdges]}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="w-full mx-auto p-4 border rounded-lg bg-white">
-        {treeData.map((node) => (
-          <TreeNodeComponent key={node.id} node={node} level={0} />
-        ))}
-      </div>
-    </DndContext>
+    <Fragment>
+      {loadingAddFolder && <LoadingUI />}
+      <DndContext
+        sensors={sensors}
+        measuring={{
+          droppable: {
+            strategy: MeasuringStrategy.Always,
+          },
+        }}
+        modifiers={[restrictToWindowEdges]}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="w-full mx-auto p-4 border rounded-lg bg-white">
+          {treeData.map((node) => (
+            <TreeNodeComponent
+              key={node.id}
+              node={node}
+              level={0}
+              onAddFolder={handleAddFolder}
+            />
+          ))}
+        </div>
+      </DndContext>
+    </Fragment>
   );
 };
 
 export default OrganizationTree;
+
+const classNameObject =
+  "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
+const classNameLeft = "w-5 h-5 text-gray-400 cursor-pointer";
+
+const fetchAddFolder = async (parentId: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  return {
+    result: true,
+  };
+};
