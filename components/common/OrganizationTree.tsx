@@ -20,11 +20,13 @@ import {
   FolderOpen,
   FolderPlus,
   Move,
+  Trash2,
   User,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LoadingUI from "./Loading";
+import { ConfirmDialog } from "../composite/modal-components";
 
 interface UserData {
   email: string;
@@ -147,6 +149,7 @@ interface TreeNodeProps {
   level: number;
   onAddFolder: (parentId: string) => void;
   onUpdateName: (nodeId: string, newName: string) => void;
+  onDeleteFolder: (nodeId: string) => void;
 }
 
 const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
@@ -169,15 +172,25 @@ const DroppableFolder: React.FC<{ id: string; children: React.ReactNode }> = ({
   );
 };
 
+// 폴더 내에 user가 있는지 확인하는 함수
+const hasUserInChildren = (node: TreeNode): boolean => {
+  if (node.type === "user") return true;
+  if (!node.children) return false;
+
+  return node.children.some((child) => hasUserInChildren(child));
+};
+
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
   level,
   onAddFolder,
   onUpdateName,
+  onDeleteFolder,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(node.name);
+  const [showDeleteError, setShowDeleteError] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -198,6 +211,16 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     } else if (e.key === "Escape") {
       setEditName(node.name);
       setIsEditing(false);
+    }
+  };
+
+  const handleDelete = (node: TreeNode) => {
+    if (node.type === "folder") {
+      if (hasUserInChildren(node)) {
+        setShowDeleteError(true);
+      } else {
+        onDeleteFolder(node.id);
+      }
     }
   };
 
@@ -268,19 +291,28 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
                 setIsEditing(true);
               }}
             />
+            <Trash2
+              className={classNameObject}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(node);
+              }}
+            />
           </div>
         ) : (
           <div className="flex items-center gap-2">
             <CircleCheckBig
               className={cn(classNameObject, "text-green-500")}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onUpdateName(node.id, editName);
                 setIsEditing(false);
               }}
             />
             <X
               className={cn(classNameObject, "text-red-500")}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setEditName(node.name);
                 setIsEditing(false);
               }}
@@ -292,6 +324,18 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 
   return (
     <div className="w-full">
+      {showDeleteError && (
+        <ConfirmDialog
+          open
+          content={
+            <div className="text-center">
+              <p>하위 그릅원이 있으면 그룹을 삭제할 수 없습니다.</p>
+              <p>그룹원을 이동한 후 다시 시도해주세요.</p>
+            </div>
+          }
+          onConfirm={() => setShowDeleteError(false)}
+        />
+      )}
       {node.type === "folder" ? (
         <DroppableFolder id={node.id}>{content}</DroppableFolder>
       ) : (
@@ -306,6 +350,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
               level={level + 1}
               onAddFolder={onAddFolder}
               onUpdateName={onUpdateName}
+              onDeleteFolder={onDeleteFolder}
             />
           ))}
         </div>
@@ -320,6 +365,7 @@ const OrganizationTree: React.FC = () => {
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
   const [loadingUpdateName, setLoadingUpdateName] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -427,9 +473,30 @@ const OrganizationTree: React.FC = () => {
     }
   };
 
+  const handleDeleteFolder = async (nodeId: string) => {
+    if (loadingDelete) return;
+    setLoadingDelete(true);
+    try {
+      const { result } = await fetchDeleteFolder(nodeId);
+      if (!result) return;
+
+      setTreeData((prevData) => {
+        const newData = JSON.parse(JSON.stringify(prevData));
+        removeNode(newData, nodeId);
+        return newData;
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingDelete(false);
+    }
+  };
+
   return (
     <Fragment>
-      {(loadingAddFolder || loadingUpdateName) && <LoadingUI />}
+      {(loadingAddFolder || loadingUpdateName || loadingDelete) && (
+        <LoadingUI />
+      )}
       <DndContext
         sensors={sensors}
         measuring={{
@@ -449,6 +516,7 @@ const OrganizationTree: React.FC = () => {
               level={0}
               onAddFolder={handleAddFolder}
               onUpdateName={handleUpdateName}
+              onDeleteFolder={handleDeleteFolder}
             />
           ))}
         </div>
@@ -474,6 +542,14 @@ const fetchAddFolder = async (parentId: string) => {
 
 // api 이름 수정
 const fetchUpdateName = async (nodeId: string, newName: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return {
+    result: true,
+  };
+};
+
+// api 폴더 삭제
+const fetchDeleteFolder = async (nodeId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
     result: true,
