@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { SquarePen } from "lucide-react";
+
 import Select from "@/components/composite/select-components";
 import Table from "@/components/composite/table";
 
 import { getAgencies, type AgencyData } from "@/services/agency";
 import { ACTIVE_STATUS, defaultTableParams } from "@/constants/table";
 
-import type { TableParams } from "@/types/table";
+import type { FilterParams, TableParams } from "@/services/types";
 import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
-import { SquarePen } from "lucide-react";
 
 const columns: TableProps<AgencyData>["columns"] = [
   {
@@ -102,9 +101,13 @@ const TableSection = () => {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
-      filters: filters as Record<string, FilterValue>,
-      sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
-      sortOrder: !Array.isArray(sorter) ? sorter.order : undefined,
+      filters: filters as FilterParams,
+      sort: !Array.isArray(sorter)
+        ? {
+            field: String(sorter.field),
+            order: sorter.order as "ascend" | "descend" | undefined,
+          }
+        : undefined,
     });
   };
 
