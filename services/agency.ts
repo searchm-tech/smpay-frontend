@@ -1,5 +1,5 @@
-import { TableParams } from "@/services/types";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
+import type { TableParams } from "@/types/table";
 
 export interface AgencyData {
   id: string;
@@ -28,24 +28,30 @@ export async function getAgencies(params: TableParams): Promise<{
   // 필터링
   if (params.filters) {
     Object.entries(params.filters).forEach(([key, values]) => {
-      if (values && values.length > 0) {
+      if (values && Array.isArray(values) && values.length > 0) {
         if (key === "search") {
           filtered = filtered.filter((item) =>
             Object.values(item).some((value) => {
               if (typeof value === "string") {
-                return value.toLowerCase().includes(values[0].toLowerCase());
+                return value
+                  .toLowerCase()
+                  .includes(String(values[0]).toLowerCase());
               }
               if (typeof value === "number" || typeof value === "boolean") {
                 return String(value)
                   .toLowerCase()
-                  .includes(values[0].toLowerCase());
+                  .includes(String(values[0]).toLowerCase());
               }
               return false;
             })
           );
         } else {
           filtered = filtered.filter((item) =>
-            values.includes(String(item[key as keyof AgencyData]))
+            Array.isArray(values)
+              ? values
+                  .map(String)
+                  .includes(String(item[key as keyof AgencyData]))
+              : String(item[key as keyof AgencyData]) === String(values)
           );
         }
       }
@@ -53,17 +59,17 @@ export async function getAgencies(params: TableParams): Promise<{
   }
 
   // 정렬
-  if (params.sort?.field && params.sort?.order) {
+  if (params.sortField && params.sortOrder) {
     filtered.sort((a, b) => {
-      const aValue = a[params.sort!.field as keyof AgencyData];
-      const bValue = b[params.sort!.field as keyof AgencyData];
+      const aValue = a[params.sortField as keyof AgencyData];
+      const bValue = b[params.sortField as keyof AgencyData];
       if (typeof aValue === "string" && typeof bValue === "string") {
-        return params.sort!.order === "ascend"
+        return params.sortOrder === "ascend"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
       if (typeof aValue === "number" && typeof bValue === "number") {
-        return params.sort!.order === "ascend"
+        return params.sortOrder === "ascend"
           ? aValue - bValue
           : bValue - aValue;
       }

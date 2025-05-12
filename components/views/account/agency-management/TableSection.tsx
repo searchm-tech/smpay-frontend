@@ -1,34 +1,36 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+
 import { SquarePen } from "lucide-react";
 
 import Select from "@/components/composite/select-components";
 import Table from "@/components/composite/table";
-
-import { getAgencies, type AgencyData } from "@/services/agency";
-import { ACTIVE_STATUS, defaultTableParams } from "@/constants/table";
-
-import type { FilterParams, TableParams } from "@/services/types";
-import type { TableProps } from "antd";
 import { ConfirmDialog } from "@/components/composite/modal-components";
-import { useRouter } from "next/navigation";
 
-const TableSection = () => {
+import { ACTIVE_STATUS } from "@/constants/table";
+
+import type { TableProps } from "antd";
+import type { TableParams } from "@/types/table";
+import type { FilterValue } from "antd/es/table/interface";
+import type { AgencyData } from "@/services/agency";
+
+const TableSection = ({
+  dataSource,
+  isLoading,
+  tableParams,
+  setTableParams,
+  total,
+}: {
+  dataSource: AgencyData[];
+  isLoading: boolean;
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
+  total: number;
+}) => {
   const router = useRouter();
   const [statusModal, setStatusModal] = useState<AgencyData | null>(null);
-  const [tableParams, setTableParams] =
-    useState<TableParams>(defaultTableParams);
-
-  const { data, isLoading, error } = useQuery<{
-    data: AgencyData[];
-    total: number;
-  }>({
-    queryKey: ["agencies", tableParams],
-    queryFn: () => getAgencies(tableParams),
-    placeholderData: (previousData) => previousData,
-  });
 
   const handleTableChange: TableProps<AgencyData>["onChange"] = (
     pagination,
@@ -40,12 +42,10 @@ const TableSection = () => {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
-      filters: filters as FilterParams,
-      sort: !Array.isArray(sorter)
-        ? {
-            field: String(sorter.field),
-            order: sorter.order as "ascend" | "descend" | undefined,
-          }
+      filters: filters as Record<string, FilterValue>,
+      sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
+      sortOrder: !Array.isArray(sorter)
+        ? (sorter.order as "ascend" | "descend" | undefined)
         : undefined,
     });
   };
@@ -145,10 +145,10 @@ const TableSection = () => {
       <Table<AgencyData>
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={data?.data ?? []}
+        dataSource={dataSource ?? []}
         pagination={{
           ...tableParams.pagination,
-          total: data?.total,
+          total,
         }}
         loading={isLoading}
         onChange={handleTableChange}
