@@ -19,8 +19,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/advertiser-verification" ||
     pathname === "/sign-in" ||
     pathname === "/membership/password-reset" ||
-    pathname === "/sign-out" ||
-    pathname === "/not-found";
+    pathname === "/sign-out";
+
+  const isErrorPage =
+    pathname === "/not-found" ||
+    pathname === "/expiration-mail" ||
+    pathname === "/expiration-login";
 
   useEffect(() => {
     if (!isNoNavPage && pathname.includes("/sm-pay/management")) {
@@ -40,12 +44,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <SidebarProvider>
-        <AppSidebar />
+        {!isErrorPage && <AppSidebar />}
+
         <div className="flex flex-col flex-1">
           {isGuideOpen && (
             <SmPayGuideModal onClose={() => setGuideOpen(false)} />
           )}
-          <Header />
+          {!isErrorPage && <Header />}
           <main className="flex-1 overflow-y-auto px-4">{children}</main>
           <Footer />
         </div>
