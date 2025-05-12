@@ -10,7 +10,7 @@ import {
   updateAgency,
 } from "@/services/agency";
 
-import { TableParams } from "@/services/types";
+import type { TableParams } from "@/types/table";
 
 export const useAgencyList = (params: TableParams) => {
   return useQuery({

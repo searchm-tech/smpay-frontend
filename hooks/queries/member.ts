@@ -5,7 +5,6 @@ import {
   fetchMembers,
 } from "@/services/member";
 import { TableParams } from "@/services/types";
-import { MemberData } from "@/types/user";
 
 import {
   useQuery,
