@@ -3,9 +3,14 @@ import { agencyData as mockAgencyData } from "@/services/mock/agency";
 
 export interface AgencyData {
   id: string;
-  agency: string;
-  owner: string;
-  bussiness_num: number;
+  agency: string; // 대행사명
+  code: string; // 대행사 고유코드
+  owner: string; // 대표자명
+  bussiness_num: string; // 사업자 등록 번호
+  company_email_domain: string; // 회사 메일 도메인
+  invoice_manager: string; // 계산서 발행 담당자명
+  invoice_manager_contact: string; // 계산서 발행 담당자 연락처
+  invoice_manager_email: string; // 계산서 발행 담당자 이메일
   status: boolean;
   date: string;
 }
@@ -77,4 +82,8 @@ export async function getAgencies(params: TableParams): Promise<{
     total: filtered.length,
     success: true,
   };
+}
+
+export async function getAgency(id: string): Promise<AgencyData | null> {
+  return mockAgencyData.find((item) => item.id === id) ?? null;
 }

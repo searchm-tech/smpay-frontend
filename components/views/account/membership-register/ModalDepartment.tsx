@@ -100,30 +100,10 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
           />
         </div>
 
-        <div className="flex justify-end items-center gap-2 pt-4 border-t">
-          <button
-            type="button"
-            onClick={() => router.push("/account/department")}
-            className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
-          >
-            부서 관리
-          </button>
-          <div className="w-px h-4 bg-gray-300" />
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            취소
-          </button>
-          <button
-            type="button"
-            onClick={onSubmit}
-            className="px-4 py-2 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!selected}
-          >
-            선택
-          </button>
+        <div className="flex justify-end">
+          <LinkTextButton onClick={() => router.push("/account/department")}>
+            부서 관리 페이지로 이동
+          </LinkTextButton>
         </div>
       </div>
     </Modal>
