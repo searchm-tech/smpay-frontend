@@ -85,5 +85,23 @@ export async function getAgencies(params: TableParams): Promise<{
 }
 
 export async function getAgency(id: string): Promise<AgencyData | null> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
   return mockAgencyData.find((item) => item.id === id) ?? null;
+}
+
+export async function updateAgency(
+  id: string,
+  data: AgencyData
+): Promise<AgencyData | null> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const index = mockAgencyData.findIndex((item) => item.id === id);
+  if (index !== -1) {
+    mockAgencyData[index] = data;
+
+    return data;
+  }
+
+  return null;
 }
