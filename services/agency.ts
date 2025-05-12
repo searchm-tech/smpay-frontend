@@ -1,4 +1,5 @@
-import { TableParams } from "@/types/table";
+import { TableParams } from "@/services/types";
+import { agencyData as mockAgencyData } from "@/services/mock/agency";
 
 export interface AgencyData {
   id: string;
@@ -9,51 +10,71 @@ export interface AgencyData {
   date: string;
 }
 
-function toSearchParams(params: Record<string, unknown>) {
-  const searchParams = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== null && value !== "") {
-      searchParams.append(key, String(value));
-    }
-  }
-  return searchParams;
-}
-
-function getApiParams(params: TableParams) {
-  const { pagination, sortField, sortOrder } = params;
-  return {
-    page: pagination?.current,
-    limit: pagination?.pageSize,
-    sortBy: sortField,
-    order:
-      sortOrder === "ascend"
-        ? "asc"
-        : sortOrder === "descend"
-        ? "desc"
-        : undefined,
-  };
-}
-
 // TODO : 무료 목 api 테스트 용
 export async function getAgencies(params: TableParams): Promise<{
   data: AgencyData[];
   total: number;
+  success: boolean;
 }> {
-  const apiParams = getApiParams(params);
-  const searchParams = toSearchParams(apiParams);
-  const url = `https://67ecd18d4387d9117bbb1051.mockapi.io/api/v1/agency?${searchParams.toString()}`;
+  await new Promise((resolve) => setTimeout(resolve, 500));
 
-  const res = await fetch(url);
+  let filtered = [...mockAgencyData];
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch agencies");
+  // 필터링
+  if (params.filters) {
+    Object.entries(params.filters).forEach(([key, values]) => {
+      if (values && values.length > 0) {
+        if (key === "search") {
+          filtered = filtered.filter((item) =>
+            Object.values(item).some((value) => {
+              if (typeof value === "string") {
+                return value.toLowerCase().includes(values[0].toLowerCase());
+              }
+              if (typeof value === "number" || typeof value === "boolean") {
+                return String(value)
+                  .toLowerCase()
+                  .includes(values[0].toLowerCase());
+              }
+              return false;
+            })
+          );
+        } else {
+          filtered = filtered.filter((item) =>
+            values.includes(String(item[key as keyof AgencyData]))
+          );
+        }
+      }
+    });
   }
 
-  const data = await res.json();
+  // 정렬
+  if (params.sort?.field && params.sort?.order) {
+    filtered.sort((a, b) => {
+      const aValue = a[params.sort!.field as keyof AgencyData];
+      const bValue = b[params.sort!.field as keyof AgencyData];
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return params.sort!.order === "ascend"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return params.sort!.order === "ascend"
+          ? aValue - bValue
+          : bValue - aValue;
+      }
+      return 0;
+    });
+  }
+
+  // 페이지네이션
+  const { current = 1, pageSize = 10 } = params.pagination || {};
+  const startIndex = (current - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginated = filtered.slice(startIndex, endIndex);
 
   return {
-    data,
-    // MockAPI에서는 total count를 헤더에서 제공하지 않음 → 대략 50으로 고정
-    total: 50,
+    data: paginated,
+    total: filtered.length,
+    success: true,
   };
 }
