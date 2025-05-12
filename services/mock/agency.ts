@@ -48,11 +48,35 @@ function randomDate() {
   return date.toISOString().slice(0, 10);
 }
 
-export const agencyData: AgencyData[] = Array.from({ length: 100 }, (_, i) => ({
-  id: (i + 1).toString(),
-  agency: `에이전시${randomString(2)}`,
-  owner: randomOwner(),
-  bussiness_num: Math.floor(1000000000 + Math.random() * 9000000000),
-  status: Math.random() > 0.5,
-  date: randomDate(),
-}));
+function randomEmailDomain() {
+  const domains = ["company.com", "agency.co.kr", "bizmail.net", "corp.com"];
+  return domains[Math.floor(Math.random() * domains.length)];
+}
+
+function randomPhone() {
+  return `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(
+    1000 + Math.random() * 9000
+  )}`;
+}
+
+function randomEmail(name: string, domain: string) {
+  return `${name.toLowerCase()}@${domain}`;
+}
+
+export const agencyData: AgencyData[] = Array.from({ length: 100 }, (_, i) => {
+  const owner = randomOwner();
+  const domain = randomEmailDomain();
+  return {
+    id: (i + 1).toString(),
+    agency: `에이전시${randomString(2)}`,
+    code: `AG${1000 + i}`,
+    owner,
+    bussiness_num: `${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+    company_email_domain: domain,
+    invoice_manager: randomOwner(),
+    invoice_manager_contact: randomPhone(),
+    invoice_manager_email: randomEmail(owner, domain),
+    status: Math.random() > 0.5,
+    date: randomDate(),
+  };
+});
