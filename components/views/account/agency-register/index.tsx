@@ -12,24 +12,9 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import { PhoneInput } from "@/components/composite/input-components";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { AgencyCodeTooltip } from "../components/ToolTips";
-import {
-  AgencyNameMessage,
-  BusinessNumberMessage,
-  CompanyEmailDomainMessage,
-  EmailIdMessage,
-} from "../components/Message";
-import {
-  ErrorCheckAgencyCodeModal,
-  SuccessCheckAgencyCodeModal,
-  ErrorCheckBusinessNumberModal,
-  SuccessCheckBusinessNumberModal,
-  SuccessCheckCompanyEmailDomainModal,
-  ErrorCheckCompanyEmailDomainModal,
-  SuccessRegisterAgencyModal,
-  ErrorRegisterAgencyModal,
-} from "../components/Modal";
+import LoadingUI from "@/components/common/Loading";
 
 import {
   EMAIL_REGEX,
@@ -43,9 +28,11 @@ import {
   useRegisterAgency,
 } from "@/hooks/queries/agency";
 
+import { ModalInfo, ValidMessage, type ModalInfoType } from "./constants";
 import type { AgencyData } from "@/services/agency";
-
-type ModalStatus = "success" | "error";
+import { TooltipHover } from "@/components/composite/tooltip-components";
+import { TOOLTIP_AGENCY_CODE } from "@/constants/hover";
+import { HelpIcon } from "@/components/composite/icon-components";
 
 const AgencyRegisterView = () => {
   const router = useRouter();
@@ -64,55 +51,33 @@ const AgencyRegisterView = () => {
     date: "",
   });
 
-  const [modalCode, setModalCode] = useState<ModalStatus | null>(null);
-  const [modalBusinessNumber, setModalBusinessNumber] =
-    useState<ModalStatus | null>(null);
-  const [modalCompanyEmailDomain, setModalCompanyEmailDomain] =
-    useState<ModalStatus | null>(null);
-  const [isSuccessRegisterAgency, setIsSuccessRegisterAgency] =
-    useState<boolean>(false);
-  const [errorRegisterAgency, setErrorRegisterAgency] =
-    useState<boolean>(false);
+  const [modalInfo, setModalInfo] = useState<ModalInfoType | null>(null);
 
-  const checkAgencyCode = useCheckAgencyCode({
-    onSuccess: (data) => {
-      if (data) {
-        setModalCode("success");
-      } else {
-        setModalCode("error");
-      }
-    },
-    onError: () => setModalCode("error"),
+  const { mutate: mutateCheckAgencyCode, isPending: loadingCheckAgencyCode } =
+    useCheckAgencyCode({
+      onSuccess: () => setModalInfo("check_agency_code"),
+      onError: () => setModalInfo("error_check_agency_code"),
+    });
+
+  const {
+    mutate: mutateCheckBusinessNumber,
+    isPending: loadingCheckBusinessNumber,
+  } = useCheckBusinessNumber({
+    onSuccess: () => setModalInfo("check_business_number"),
+    onError: () => setModalInfo("error_check_business_number"),
   });
 
-  const checkBusinessNumber = useCheckBusinessNumber({
-    onSuccess: (data) => {
-      if (data) {
-        setModalBusinessNumber("success");
-      } else {
-        setModalBusinessNumber("error");
-      }
-    },
-    onError: () => setModalBusinessNumber("error"),
-  });
+  const { mutate: mutateCheckEmailDomain, isPending: loadingCheckEmailDomain } =
+    useCheckCompanyEmailDomain({
+      onSuccess: () => setModalInfo("check_company_email_domain"),
+      onError: () => setModalInfo("error_check_company_email_domain"),
+    });
 
-  const checkCompanyEmailDomain = useCheckCompanyEmailDomain({
-    onSuccess: (data) => {
-      if (data) {
-        setModalCompanyEmailDomain("success");
-      } else {
-        setModalCompanyEmailDomain("error");
-      }
-    },
-    onError: () => setModalCompanyEmailDomain("error"),
-  });
-
-  const registerAgency = useRegisterAgency({
-    onSuccess: () => setIsSuccessRegisterAgency(true),
-    onError: () => {
-      console.log("error");
-    },
-  });
+  const { mutate: mutateRegisterAgency, isPending: loadingRegisterAgency } =
+    useRegisterAgency({
+      onSuccess: () => setModalInfo("register_agency"),
+      onError: () => setModalInfo("error_register_agency"),
+    });
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -132,11 +97,20 @@ const AgencyRegisterView = () => {
       isBusinessNumberError ||
       isCompanyEmailDomainError
     ) {
-      setErrorRegisterAgency(true);
       return;
     }
 
-    registerAgency.mutate(form);
+    mutateRegisterAgency(form);
+  };
+
+  const handleModal = () => {
+    if (!modalInfo) return;
+
+    if (modalInfo === "register_agency") {
+      router.push("/account/agency-management");
+    }
+
+    setModalInfo(null);
   };
 
   const isEmailError =
@@ -152,59 +126,18 @@ const AgencyRegisterView = () => {
 
   return (
     <div className="py-4">
-      {modalCode === "success" && (
-        <SuccessCheckAgencyCodeModal
-          onClose={() => setModalCode(null)}
-          onConfirm={() => setModalCode(null)}
-        />
-      )}
+      {(loadingCheckAgencyCode ||
+        loadingCheckBusinessNumber ||
+        loadingCheckEmailDomain ||
+        loadingRegisterAgency) && <LoadingUI />}
 
-      {modalCode === "error" && (
-        <ErrorCheckAgencyCodeModal
-          onClose={() => setModalCode(null)}
-          onConfirm={() => setModalCode(null)}
-        />
-      )}
-
-      {modalBusinessNumber === "success" && (
-        <SuccessCheckBusinessNumberModal
-          onClose={() => setModalBusinessNumber(null)}
-          onConfirm={() => setModalBusinessNumber(null)}
-        />
-      )}
-
-      {modalBusinessNumber === "error" && (
-        <ErrorCheckBusinessNumberModal
-          onClose={() => setModalBusinessNumber(null)}
-          onConfirm={() => setModalBusinessNumber(null)}
-        />
-      )}
-
-      {modalCompanyEmailDomain === "success" && (
-        <SuccessCheckCompanyEmailDomainModal
-          onClose={() => setModalCompanyEmailDomain(null)}
-          onConfirm={() => setModalCompanyEmailDomain(null)}
-        />
-      )}
-
-      {modalCompanyEmailDomain === "error" && (
-        <ErrorCheckCompanyEmailDomainModal
-          onClose={() => setModalCompanyEmailDomain(null)}
-          onConfirm={() => setModalCompanyEmailDomain(null)}
-        />
-      )}
-
-      {isSuccessRegisterAgency && (
-        <SuccessRegisterAgencyModal
-          onConfirm={() => {
-            setIsSuccessRegisterAgency(false);
-            router.push("/account");
-          }}
-        />
-      )}
-      {errorRegisterAgency && (
-        <ErrorRegisterAgencyModal
-          onConfirm={() => setErrorRegisterAgency(false)}
+      {modalInfo && (
+        <ConfirmDialog
+          open
+          title={ModalInfo[modalInfo].title}
+          content={ModalInfo[modalInfo].content}
+          onConfirm={handleModal}
+          onClose={() => setModalInfo(null)}
         />
       )}
 
@@ -220,7 +153,7 @@ const AgencyRegisterView = () => {
               name="agency"
               value={form.agency}
             />
-            {!form.agency && <AgencyNameMessage />}
+            {!form.agency && <ValidMessage message="agency_name" />}
           </div>
         </DescriptionItem>
 
@@ -228,7 +161,10 @@ const AgencyRegisterView = () => {
           label={
             <div className="flex items-center gap-2">
               <span>대행사 고유코드 *</span>
-              <AgencyCodeTooltip />
+              <TooltipHover
+                triggerContent={<HelpIcon />}
+                content={TOOLTIP_AGENCY_CODE}
+              />
             </div>
           }
         >
@@ -241,7 +177,7 @@ const AgencyRegisterView = () => {
             />
             <Button
               variant="outline"
-              onClick={() => checkAgencyCode.mutate(form.code)}
+              onClick={() => mutateCheckAgencyCode(form.code)}
               disabled={!form.code}
             >
               중복 체크
@@ -266,12 +202,14 @@ const AgencyRegisterView = () => {
             />
             <Button
               variant="outline"
-              onClick={() => checkBusinessNumber.mutate(form.bussiness_num)}
+              onClick={() => mutateCheckBusinessNumber(form.bussiness_num)}
               disabled={isBusinessNumberError || !form.bussiness_num}
             >
               중복 체크
             </Button>
-            {isBusinessNumberError && <BusinessNumberMessage />}
+            {isBusinessNumberError && (
+              <ValidMessage message="business_number" />
+            )}
           </div>
         </DescriptionItem>
         <DescriptionItem label="회사 메일 도메인 *">
@@ -285,14 +223,14 @@ const AgencyRegisterView = () => {
             />
             <Button
               variant="outline"
-              onClick={() =>
-                checkCompanyEmailDomain.mutate(form.company_email_domain)
-              }
+              onClick={() => mutateCheckEmailDomain(form.company_email_domain)}
               disabled={isCompanyEmailDomainError || !form.company_email_domain}
             >
               중복 체크
             </Button>
-            {isCompanyEmailDomainError && <CompanyEmailDomainMessage />}
+            {isCompanyEmailDomainError && (
+              <ValidMessage message="company_email_domain" />
+            )}
           </div>
         </DescriptionItem>
         <DescriptionItem label="계산서 발행 당담자명">
@@ -323,7 +261,7 @@ const AgencyRegisterView = () => {
               name="invoice_manager_email"
               value={form.invoice_manager_email}
             />
-            {isEmailError && <EmailIdMessage />}
+            {isEmailError && <ValidMessage message="email_id" />}
           </div>
         </DescriptionItem>
       </Descriptions>

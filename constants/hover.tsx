@@ -1,4 +1,4 @@
-import { HelpIcon } from "@/components/composite/icon-components";
+import { HelpIcon, IconBadge } from "@/components/composite/icon-components";
 
 export type HoverSMPayKey = "rule" | "prepayment";
 
@@ -46,3 +46,18 @@ export const HOVER_ADVERIFY: Record<
     </div>
   ),
 };
+
+// 대행사 > 등록, 상세 - 대행사 고유코드 툴팁 아이콘
+export const TOOLTIP_AGENCY_CODE = (
+  <div className="flex items-start gap-2 bg-white">
+    <IconBadge
+      name="CircleHelp"
+      bgColor="#F6BE2C"
+      className="cursor-pointer shrink-0 mt-0.5"
+    />
+    <span className="text-sm text-gray-700">
+      대행사 전용 URL에 사용되는 고유값으로, 4~16자의 영문으로 이루어진 식별
+      가능한 값을 입력해주세요.
+    </span>
+  </div>
+);

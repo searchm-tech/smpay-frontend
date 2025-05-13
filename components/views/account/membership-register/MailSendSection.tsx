@@ -34,6 +34,19 @@ type MailSendSectionProps = {
   role?: TRole;
 };
 
+const Dialog = {
+  err: "모든 필수 항목을 입력해주세요.",
+  success: (
+    <div className="text-center">
+      <p>메일 발송이 완료되었습니다.</p>
+      <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
+    </div>
+  ),
+  department: "부서 선택을 해주세요.",
+};
+
+type DialogType = keyof typeof Dialog;
+
 const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
@@ -42,17 +55,17 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
 
-  const [errModal, setErrModal] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
+  const [dialog, setDialog] = useState<DialogType | null>(null);
+
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
   // 메일 발송 api 신규 필요 + 모달창 다시 확인
   const { mutate: createMember, isPending } = useCreateMember({
-    onSuccess: () => setSuccessModal(true),
+    onSuccess: () => setDialog("success"),
   });
 
   const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
     useCreateMemberByAgency({
-      onSuccess: () => setSuccessModal(true),
+      onSuccess: () => setDialog("success"),
     });
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -64,13 +77,13 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
 
   const handleSubmit = () => {
     if (!emailId || !name) {
-      setErrModal(true);
+      setDialog("err");
       return;
     }
 
     if (role === "agency") {
       if (!departmentNode || !selected) {
-        setErrModal(true);
+        setDialog("err");
         return;
       }
 
@@ -84,7 +97,7 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
       createMember(data);
     } else {
       if (!agency) {
-        setErrModal(true);
+        setDialog("err");
         return;
       }
 
@@ -115,30 +128,16 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
         />
       )}
 
-      {errModal && (
+      {dialog && (
         <ConfirmDialog
-          open={errModal}
-          onClose={() => setErrModal(false)}
-          onConfirm={() => setErrModal(false)}
+          open
+          onClose={() => setDialog(null)}
+          onConfirm={() => setDialog(null)}
           title="오류"
-          content="모든 필수 항목을 입력해주세요."
+          content={Dialog[dialog]}
         />
       )}
 
-      {successModal && (
-        <ConfirmDialog
-          open={successModal}
-          onClose={() => setSuccessModal(false)}
-          onConfirm={() => setSuccessModal(false)}
-          title="성공"
-          content={
-            <div className="text-center">
-              <p>메일 발송이 완료되었습니다.</p>
-              <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
-            </div>
-          }
-        />
-      )}
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>

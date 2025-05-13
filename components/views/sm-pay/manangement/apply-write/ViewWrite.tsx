@@ -22,7 +22,10 @@ import {
 } from "@/hooks/queries/advertiser";
 
 import { HOVER_SMPAY } from "@/constants/hover";
-import { APPLY_WRITE_CONTENT } from "@/constants/dialog";
+import {
+  ApplyWriteModal,
+  type ApplyWriteModalStatus,
+} from "@/constants/dialog";
 
 import type { ViewProps } from ".";
 import type { AdvertiserData } from "@/types/adveriser";
@@ -41,8 +44,9 @@ const ViewWrite = ({
 }: ViewWrieProps) => {
   const [isChanged, setIsChanged] = useState(false);
 
-  const [openReqUpdate, setOpenReqUdpate] = useState(false);
-  const [openSendSuccess, setOpenSendSuccess] = useState(false);
+  const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
+    null
+  );
 
   const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
     id: 0,
@@ -65,7 +69,7 @@ const ViewWrite = ({
   const { mutate: mutateUpdateAdvertiser, isPending: loadingEdit } =
     useMutateUpdateAdvertiser({
       onSuccess: (data) => {
-        setOpenReqUdpate(false);
+        setWriteModal(null);
         setIsChanged(false);
         refetch();
       },
@@ -73,7 +77,7 @@ const ViewWrite = ({
 
   const { mutate: mutateSendAdAgree, isPending: loadingSend } =
     useMutateSendAdvertiserAgreement({
-      onSuccess: () => setOpenSendSuccess(true),
+      onSuccess: () => setWriteModal("send-success"),
     });
 
   const [advertiserDetail, setAdvertiserDetail] =
@@ -95,13 +99,19 @@ const ViewWrite = ({
     setEditAdvertiser(data);
   };
 
-  const handleSubmitAdvertiser = () => {
-    if (editAdvertiser) mutateUpdateAdvertiser(editAdvertiser);
-  };
+  const handleConfrimModal = () => {
+    // 수정 요청
+    if (writeModal === "req-update") {
+      if (editAdvertiser) mutateUpdateAdvertiser(editAdvertiser);
+      return;
+    }
 
-  const handleSendSuccess = () => {
-    setOpenSendSuccess(false);
-    onSubmit();
+    // 동의 요청 완료
+    if (writeModal === "send-success") {
+      setWriteModal(null);
+      onSubmit();
+      return;
+    }
   };
 
   const handleSendAdAgree = () => {
@@ -123,21 +133,12 @@ const ViewWrite = ({
       {loadingEdit && <LoadingUI title="... 정보 변경 중" />}
       {loadingSend && <LoadingUI title="... 동의 요청 중" />}
 
-      {openReqUpdate && (
+      {writeModal && (
         <ConfirmDialog
           open
-          onClose={() => setOpenReqUdpate(false)}
-          onConfirm={handleSubmitAdvertiser}
-          content={APPLY_WRITE_CONTENT["req-update"]}
-        />
-      )}
-
-      {openSendSuccess && (
-        <ConfirmDialog
-          open
-          onConfirm={handleSendSuccess}
-          content={APPLY_WRITE_CONTENT["send-success"]}
-          cancelDisabled
+          onClose={() => setWriteModal(null)}
+          onConfirm={handleConfrimModal}
+          content={ApplyWriteModal[writeModal]}
         />
       )}
 
@@ -151,7 +152,7 @@ const ViewWrite = ({
             <div className="flex gap-2">
               <Button
                 className="w-[100px]"
-                onClick={() => setOpenReqUdpate(true)}
+                onClick={() => setWriteModal("req-update")}
               >
                 변경완료
               </Button>
