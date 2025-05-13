@@ -7,3 +7,6 @@ export const EMAIL_DOMAIN_REGEX = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // 이메일
 // 비밀번호 정규식
 export const PASSWORD_REGEX =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[a-zA-Z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,16}$/;
+
+// 대행사 고유코드 정규식 4~16자의 영문으로 이루어진 식별 가능한 값
+export const AGENCY_CODE_REGEX = /^[a-zA-Z]{4,16}$/;
