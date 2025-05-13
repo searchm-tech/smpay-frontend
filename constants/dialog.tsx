@@ -58,12 +58,7 @@ export const MANAGEMENT_CONTENT: Record<
 };
 
 // sm-pay/apply-write
-export type ApplyWriteDialogStatus = "req-update" | "send-success";
-
-export const APPLY_WRITE_CONTENT: Record<
-  ApplyWriteDialogStatus,
-  React.ReactNode | string
-> = {
+export const ApplyWriteModal = {
   "req-update": (
     <div className="flex flex-col items-center pb-4 font-medium">
       <span>입력하신 정보로 광고주의 기본 정보가 업데이트 됩니다.</span>
@@ -76,6 +71,8 @@ export const APPLY_WRITE_CONTENT: Record<
     </div>
   ),
 };
+
+export type ApplyWriteModalStatus = "req-update" | "send-success";
 
 // sm-pay/apply-submit
 export type ApplySubmitDialogStatus = "req-apply" | "success-apply";

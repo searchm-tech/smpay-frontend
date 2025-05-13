@@ -13,7 +13,10 @@ import {
 } from "@/components/composite/description-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
-import { AgencyCodeTooltip } from "../components/ToolTips";
+import { TooltipHover } from "@/components/composite/tooltip-components";
+import { HelpIcon } from "@/components/composite/icon-components";
+
+import { TOOLTIP_AGENCY_CODE } from "@/constants/hover";
 
 import { useAgencyUpdate, useAgencyDetail } from "@/hooks/queries/agency";
 import type { AgencyData } from "@/services/agency";
@@ -59,7 +62,10 @@ const AgencyEditView = ({ id }: { id: string }) => {
           label={
             <div className="flex items-center gap-2">
               <span>대행사 고유코드</span>
-              <AgencyCodeTooltip />
+              <TooltipHover
+                triggerContent={<HelpIcon />}
+                content={TOOLTIP_AGENCY_CODE}
+              />
             </div>
           }
         >
