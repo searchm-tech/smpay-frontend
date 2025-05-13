@@ -11,13 +11,12 @@ import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
-import { TooltipHover } from "@/components/composite/tooltip-components";
-import { IconBadge } from "@/components/composite/icon-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
+import { AgencyCodeTooltip } from "../components/ToolTips";
 
 import { useAgencyUpdate, useAgencyDetail } from "@/hooks/queries/agency";
-import { type AgencyData } from "@/services/agency";
+import type { AgencyData } from "@/services/agency";
 
 const AgencyEditView = ({ id }: { id: string }) => {
   const router = useRouter();
@@ -55,33 +54,12 @@ const AgencyEditView = ({ id }: { id: string }) => {
       </LabelBullet>
       <Descriptions columns={1} bordered>
         <DescriptionItem label="대행사명">{agencyData?.agency}</DescriptionItem>
-        {/* TODO : 툴크 피그마에 맞춰 변경 필요 */}
+
         <DescriptionItem
           label={
             <div className="flex items-center gap-2">
               <span>대행사 고유코드</span>
-              <TooltipHover
-                triggerContent={
-                  <IconBadge
-                    name="CircleHelp"
-                    bgColor="#F6BE2C"
-                    className="cursor-pointer"
-                  />
-                }
-                content={
-                  <div className="flex items-start gap-2 bg-white">
-                    <IconBadge
-                      name="CircleHelp"
-                      bgColor="#F6BE2C"
-                      className="cursor-pointer shrink-0 mt-0.5"
-                    />
-                    <span className="text-sm text-gray-700">
-                      대행사 전용 URL에 사용되는 고유값으로, 4~16자의 영문으로
-                      이루어진 식별 가능한 값을 입력해주세요.
-                    </span>
-                  </div>
-                }
-              />
+              <AgencyCodeTooltip />
             </div>
           }
         >
