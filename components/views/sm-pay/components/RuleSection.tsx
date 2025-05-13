@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+import { HelpIcon } from "@/components/composite/icon-components";
 
 import RuleDesc, {
   RuleEditDesc,
@@ -13,13 +14,13 @@ import RuleDesc, {
 import HistoryModal from "./HistoryModal";
 import LoadingUI from "@/components/common/Loading";
 
+import { HOVER_SMPAY } from "@/constants/hover";
+
 import {
   useSmPayRuleInfo,
   useSmPayRuleInfoUpdate,
 } from "@/hooks/queries/sm-pay";
 import type { RuleInfo } from "@/types/sm-pay";
-import { HOVER_SMPAY } from "@/constants/hover";
-import { HelpIcon } from "@/components/composite/icon-components";
 
 type RuleSectionProps = {
   id: string;

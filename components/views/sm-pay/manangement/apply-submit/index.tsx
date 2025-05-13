@@ -68,7 +68,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
 
       {isSubmit && (
         <ConfirmDialog
-          open={isSubmit}
+          open
           onClose={() => setIsSubmit(false)}
           onConfirm={() => applySubmit(id)}
           content={APPLY_SUBMIT_CONTENT["req-apply"]}
