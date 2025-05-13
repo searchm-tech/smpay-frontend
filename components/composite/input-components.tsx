@@ -1,13 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import {
-  Dispatch,
-  ChangeEvent,
-  useState,
-  SetStateAction,
-  forwardRef,
-} from "react";
+import { type ChangeEvent, useState, forwardRef, useEffect } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 
 import {
@@ -120,63 +114,72 @@ interface PhoneInputProps {
   className?: string;
 }
 
-const PhoneInput = ({ value = "", onChange, className }: PhoneInputProps) => {
-  const [part1, setPart1] = useState(value.slice(0, 3));
-  const [part2, setPart2] = useState(value.slice(3, 7));
-  const [part3, setPart3] = useState(value.slice(7, 11));
+const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
+  ({ value = "", onChange, className }, ref) => {
+    const [part1, setPart1] = useState(value.slice(0, 3));
+    const [part2, setPart2] = useState(value.slice(3, 7));
+    const [part3, setPart3] = useState(value.slice(7, 11));
 
-  const handleChange =
-    (setter: Dispatch<SetStateAction<string>>, nextIndex?: number) =>
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const onlyNumber = e.target.value.replace(/\D/g, "");
-      setter(onlyNumber);
+    useEffect(() => {
+      setPart1(value.slice(0, 3));
+      setPart2(value.slice(3, 7));
+      setPart3(value.slice(7, 11));
+    }, [value]);
 
-      // 최종 value를 합쳐서 외부 onChange로 전달
-      const newValue = [
-        nextIndex === 0 ? onlyNumber : part1,
-        nextIndex === 1 ? onlyNumber : part2,
-        nextIndex === 2 ? onlyNumber : part3,
-      ].join("");
+    const handleChange =
+      (
+        setter: React.Dispatch<React.SetStateAction<string>>,
+        nextIndex?: number
+      ) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const onlyNumber = e.target.value.replace(/\D/g, "");
+        setter(onlyNumber);
 
-      if (onChange) {
-        onChange({
-          ...e,
-          target: { ...e.target, value: newValue },
-        });
-      }
-    };
+        const newValue = [
+          nextIndex === 0 ? onlyNumber : part1,
+          nextIndex === 1 ? onlyNumber : part2,
+          nextIndex === 2 ? onlyNumber : part3,
+        ].join("");
 
-  return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Input
-        maxLength={3}
-        value={part1}
-        onChange={handleChange(setPart1, 0)}
-        className="w-[80px] text-center"
-        // placeholder="010"
-        inputMode="numeric"
-      />
-      <span>-</span>
-      <Input
-        maxLength={4}
-        value={part2}
-        onChange={handleChange(setPart2, 1)}
-        className="w-[80px] text-center"
-        // placeholder="1234"
-        inputMode="numeric"
-      />
-      <span>-</span>
-      <Input
-        maxLength={4}
-        value={part3}
-        onChange={handleChange(setPart3, 2)}
-        className="w-[80px] text-center"
-        // placeholder="5678"
-        inputMode="numeric"
-      />
-    </div>
-  );
-};
+        if (onChange) {
+          onChange({
+            ...e,
+            target: { ...e.target, value: newValue },
+          });
+        }
+      };
+
+    return (
+      <div className={cn("flex items-center gap-2", className)}>
+        <Input
+          maxLength={3}
+          value={part1}
+          onChange={handleChange(setPart1, 0)}
+          className="w-[80px] text-center"
+          inputMode="numeric"
+          ref={ref} // ref를 첫 번째 input에 연결
+        />
+        <span>-</span>
+        <Input
+          maxLength={4}
+          value={part2}
+          onChange={handleChange(setPart2, 1)}
+          className="w-[80px] text-center"
+          inputMode="numeric"
+        />
+        <span>-</span>
+        <Input
+          maxLength={4}
+          value={part3}
+          onChange={handleChange(setPart3, 2)}
+          className="w-[80px] text-center"
+          inputMode="numeric"
+        />
+      </div>
+    );
+  }
+);
+PhoneInput.displayName = "PhoneInput";
 
 // 숫자 입력 input
 interface NumberInputProps
