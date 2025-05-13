@@ -108,7 +108,6 @@ const InfoSection = ({
           <LabelBullet labelClassName="text-base ">
             충전 계좌 정보 입력
           </LabelBullet>
-
           <TooltipHover
             triggerContent={<HelpIcon />}
             content={HOVER_ADVERIFY["charge"]}
