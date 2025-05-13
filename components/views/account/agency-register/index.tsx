@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 import * as z from "zod";
 import { useForm as useHookForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
@@ -45,7 +46,6 @@ import {
 import { ModalInfo, ValidMessage, type ModalInfoType } from "./constants";
 
 import type { AgencyData } from "@/services/agency";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
   id: z.string(),
@@ -342,7 +342,7 @@ const AgencyRegisterView = () => {
             <Button
               variant="cancel"
               className="w-[150px]"
-              onClick={() => router.push("/account")}
+              onClick={() => router.push("/account/agency-management")}
             >
               취소
             </Button>
