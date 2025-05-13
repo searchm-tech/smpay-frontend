@@ -90,12 +90,14 @@ export async function getAgencies(params: TableParams): Promise<{
   };
 }
 
+// 대행사 상세
 export async function getAgency(id: string): Promise<AgencyData | null> {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return mockAgencyData.find((item) => item.id === id) ?? null;
 }
 
+// 대행사 정보 수정
 export async function updateAgency(
   id: string,
   data: AgencyData
@@ -110,4 +112,36 @@ export async function updateAgency(
   }
 
   return null;
+}
+
+// 대행사 등록 > 대행사 고유코드 중복 확인
+export async function checkAgencyCode(code: string): Promise<boolean> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return !mockAgencyData.some((item) => item.code === code);
+}
+
+// 대행사 등록 > 사업자 등록 번호 중복 확인
+export async function checkBusinessNumber(number: string): Promise<boolean> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return !mockAgencyData.some((item) => item.bussiness_num === number);
+}
+
+// 대행사 등록 > 회사 메일 도메인 중복 확인
+export async function checkCompanyEmailDomain(
+  domain: string
+): Promise<boolean> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return !mockAgencyData.some((item) => item.company_email_domain === domain);
+}
+
+// 대행사 등록
+export async function registerAgency(
+  data: AgencyData
+): Promise<AgencyData | null> {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  return data;
 }
