@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import AdvertiserSection from "../../components/AdvertiserSection";
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
@@ -16,6 +15,7 @@ import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
+import AdvertiserDesc from "../../components/AdvertiserDesc";
 
 interface SmPayApplyDetailViewProps {
   id: string;
@@ -51,7 +51,8 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       <AdvertiseStatusDesc
         status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
       />
-      <AdvertiserSection advertiserData={advertiserData} />
+      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
+
       <AccountDesc smPayData={response.data} />
       <RuleSection id={id} />
       <ScheduleSection id={id} />

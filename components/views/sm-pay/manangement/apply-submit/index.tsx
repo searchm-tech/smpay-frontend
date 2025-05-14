@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import AdvertiserSection from "../../components/AdvertiserSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import RuleSection from "../../components/RuleSection";
 import GuidSection from "../../components/GuideSection";
@@ -20,7 +19,7 @@ import {
 
 import { APPLY_SUBMIT_CONTENT } from "@/constants/dialog";
 import { type AdvertiserData } from "@/types/adveriser";
-
+import AdvertiserDesc from "../../components/AdvertiserDesc";
 interface ApplySubmitViewProps {
   id: string;
 }
@@ -78,7 +77,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
       <GuidSection viewType="submit" />
 
       <div className="mt-4 flex flex-col gap-2">
-        <AdvertiserSection advertiserData={advertiserData} />
+        <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
         <AccountDesc smPayData={data?.data} />
         <RuleSection id={id} />
         <ScheduleSection id={id} />

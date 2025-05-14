@@ -8,7 +8,7 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import ApproveModal from "./ApproveModal";
 import LoadingUI from "@/components/common/Loading";
-import AdvertiserSection from "../../components/AdvertiserSection";
+// import AdvertiserSection from "../../components/AdvertiserSection";
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import StandardSection from "../../components/StandardSection";
@@ -24,7 +24,7 @@ import {
 import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
-
+import AdvertiserDesc from "../../components/AdvertiserDesc";
 type SmPayJudgementDetailViewProps = {
   id: string;
 };
@@ -110,7 +110,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <AdvertiseStatusDesc
         status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
       />
-      <AdvertiserSection advertiserData={advertiserData} />
+      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
       <AccountDesc smPayData={response.data} />
       <RuleSection id={"1"} />
       <ScheduleSection id={"1"} />

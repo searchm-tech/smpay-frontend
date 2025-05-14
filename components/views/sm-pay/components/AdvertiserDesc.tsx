@@ -9,20 +9,26 @@ import type { AdvertiserData } from "@/types/adveriser";
 
 type AdvertiserDescProps = {
   advertiserDetail: AdvertiserData | null;
-  onEdit: () => void;
+  onEdit?: () => void;
+  isReadonly?: boolean;
 };
 
-const AdvertiserDesc = ({ advertiserDetail, onEdit }: AdvertiserDescProps) => {
+const AdvertiserDesc = ({
+  advertiserDetail,
+  onEdit,
+  isReadonly = false,
+}: AdvertiserDescProps) => {
   return (
     <section>
       <div className="flex items-center gap-4 pb-4">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 기본 정보
         </LabelBullet>
-
-        <Button className="w-[100px]" onClick={onEdit}>
-          변경하기
-        </Button>
+        {!isReadonly && (
+          <Button className="w-[100px]" onClick={onEdit}>
+            변경하기
+          </Button>
+        )}
       </div>
       <Descriptions columns={1}>
         <DescriptionItem label="사업자명">

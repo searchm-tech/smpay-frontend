@@ -75,9 +75,7 @@ const TableSection = ({
       render: (text, record) => (
         <div className="flex items-center gap-2">
           <LinkTextButton
-            onClick={() =>
-              router.push(`/sm-pay/management/apply-detail/${record.id}`)
-            }
+            onClick={() => router.push(`/sm-pay/judgement/${record.id}`)}
           >
             {text}
           </LinkTextButton>

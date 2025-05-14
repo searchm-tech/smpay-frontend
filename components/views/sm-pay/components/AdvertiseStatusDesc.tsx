@@ -11,7 +11,7 @@ type AdvertiseStatusDescProps = {
 
 const AdvertiseStatusDesc = ({ status }: AdvertiseStatusDescProps) => {
   return (
-    <section>
+    <section className="mb-4">
       <div className="flex items-center gap-4 py-2">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 심사 상태
