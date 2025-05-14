@@ -49,7 +49,7 @@ import type { AgencyData } from "@/services/agency";
 
 const formSchema = z.object({
   id: z.string(),
-  agency: z.string(),
+  agency: z.string().min(1, "대행사명을 입력해주세요."),
   code: z
     .string()
     .min(1, "대행사 고유코드를 입력해주세요")
@@ -188,10 +188,9 @@ const AgencyRegisterView = () => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <Input className="max-w-[500px]" {...field} />
-                        {!field.value && <ValidMessage message="agency_name" />}
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -223,7 +222,7 @@ const AgencyRegisterView = () => {
                         >
                           중복 체크
                         </Button>
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
@@ -259,7 +258,7 @@ const AgencyRegisterView = () => {
                         >
                           중복 체크
                         </Button>
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
@@ -285,7 +284,7 @@ const AgencyRegisterView = () => {
                         >
                           중복 체크
                         </Button>
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
@@ -328,7 +327,7 @@ const AgencyRegisterView = () => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <Input className="max-w-[500px]" {...field} />
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
