@@ -157,7 +157,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <Input className="max-w-[500px]" {...field} />
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
@@ -174,7 +174,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <PhoneInput className="max-w-[500px]" {...field} />
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>
@@ -191,7 +191,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <Input className="max-w-[500px]" {...field} />
-                        <FormMessage />
+                        <FormMessage variant="error" />
                       </div>
                     </FormControl>
                   </FormItem>

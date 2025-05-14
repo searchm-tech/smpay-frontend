@@ -11,7 +11,7 @@ import {
   type FieldPath,
   type FieldValues,
 } from "react-hook-form";
-
+import { CircleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
@@ -143,28 +143,44 @@ const FormDescription = React.forwardRef<
 });
 FormDescription.displayName = "FormDescription";
 
-const FormMessage = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message ?? "") : children;
+interface FormMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  variant?: "default" | "error"; // 아이콘 컴포넌트
+  colorClass?: string; // 텍스트 색상 클래스
+}
 
-  if (!body) {
-    return null;
+const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
+  ({ className, children, variant, colorClass, ...props }, ref) => {
+    const { error, formMessageId } = useFormField();
+    const body = error ? String(error?.message ?? "") : children;
+
+    if (!body) {
+      return null;
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        {variant === "error" && (
+          <span>
+            <CircleAlert className="w-4 h-4 text-[#D20319]" />
+          </span>
+        )}
+        <p
+          ref={ref}
+          id={formMessageId}
+          className={cn(
+            "text-[0.8rem] font-medium",
+            colorClass ?? "text-destructive",
+            className,
+            variant === "error" && "text-[#D20319]"
+          )}
+          {...props}
+        >
+          {body}
+        </p>
+      </div>
+    );
   }
-
-  return (
-    <p
-      ref={ref}
-      id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
-      {...props}
-    >
-      {body}
-    </p>
-  );
-});
+);
 FormMessage.displayName = "FormMessage";
 
 export {
