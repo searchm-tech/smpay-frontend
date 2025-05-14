@@ -1,8 +1,9 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
+import type { ApiResponse, ApiResponseError } from "@/types/api";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.example.com",
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -25,7 +26,10 @@ apiClient.interceptors.request.use(
 
 // 응답 인터셉터 (예: 에러 처리)
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log("response", response);
+    return response;
+  },
   (error) => {
     // 예: 401 에러 처리
     if (error.response && error.response.status === 401) {
@@ -35,22 +39,58 @@ apiClient.interceptors.response.use(
   }
 );
 
-export const get = <T = any>(url: string, config?: AxiosRequestConfig) =>
-  apiClient.get<T>(url, config).then((res) => res.data);
+export const get = async <T = any>(
+  url: string,
+  config?: AxiosRequestConfig
+): Promise<ApiResponse<T>> => {
+  try {
+    const res = await apiClient.get<ApiResponse<T>>(url, config);
+    return res.data;
+  } catch (error: any) {
+    const err: ApiResponseError = error.response?.data;
+    throw err;
+  }
+};
 
-export const post = <T = any>(
+export const post = async <T = any>(
   url: string,
   data?: any,
   config?: AxiosRequestConfig
-) => apiClient.post<T>(url, data, config).then((res) => res.data);
+): Promise<ApiResponse<T>> => {
+  try {
+    const res = await apiClient.post<ApiResponse<T>>(url, data, config);
+    return res.data;
+  } catch (error: any) {
+    const err: ApiResponseError = error.response?.data;
+    throw err;
+  }
+};
 
-export const patch = <T = any>(
+export const patch = async <T = any>(
   url: string,
   data?: any,
   config?: AxiosRequestConfig
-) => apiClient.patch<T>(url, data, config).then((res) => res.data);
+): Promise<ApiResponse<T>> => {
+  try {
+    const res = await apiClient.patch<ApiResponse<T>>(url, data, config);
+    return res.data;
+  } catch (error: any) {
+    const err: ApiResponseError = error.response?.data;
+    throw err;
+  }
+};
 
-export const del = <T = any>(url: string, config?: AxiosRequestConfig) =>
-  apiClient.delete<T>(url, config).then((res) => res.data);
+export const del = async <T = any>(
+  url: string,
+  config?: AxiosRequestConfig
+): Promise<ApiResponse<T>> => {
+  try {
+    const res = await apiClient.delete<ApiResponse<T>>(url, config);
+    return res.data;
+  } catch (error: any) {
+    const err: ApiResponseError = error.response?.data;
+    throw err;
+  }
+};
 
 export default apiClient;

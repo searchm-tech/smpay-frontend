@@ -1,40 +1,115 @@
 "use client";
 import { useState } from "react";
+import * as z from "zod";
+import { useForm as useHookForm } from "react-hook-form";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
-
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/composite/input-components";
 
 import LoadingUI from "@/components/common/Loading";
 
-import { useMutateCheckAdvertiser } from "@/hooks/queries/advertiser";
-import { BUSINESS_NUMBER_REGEX } from "@/constants/reg";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useMutateCheckAdvertiser,
+  useMutateUpdateAdvertiser,
+} from "@/hooks/queries/advertiser";
+
+import { BUSINESS_NUMBER_REGEX, EMAIL_REGEX } from "@/constants/reg";
+import { formatBusinessNumber } from "@/utils/format";
 
 import type { AdvertiserData } from "@/types/adveriser";
 
+import { LabelBullet } from "@/components/composite/label-bullet";
+import { ApplyWriteModal, ApplyWriteModalStatus } from "@/constants/dialog";
+
+const formSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  customerId: z.string(),
+  loginId: z.string(),
+  advertiserName: z.string(),
+  status: z.string(),
+  updatedAt: z.string(),
+  businessName: z.string(),
+  businessNumber: z
+    .string()
+    .regex(
+      BUSINESS_NUMBER_REGEX,
+      "사업자등록번호 형식이 올바르지 않습니다. (예: 123-45-67890)"
+    ),
+  businessOwnerName: z.string(),
+  businessOwnerPhone: z.string(),
+  businessOwnerEmail: z
+    .string()
+    .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 type AdvertiserDesEditProps = {
   advertiserDetail: AdvertiserData;
-  handleAdvertiserEdit: (data: AdvertiserData) => void;
+  onFinishEdit: () => void;
+  onCancel: () => void;
 };
 
 const AdvertiserDesEdit = ({
   advertiserDetail,
-  handleAdvertiserEdit,
+  onFinishEdit,
+  onCancel,
 }: AdvertiserDesEditProps) => {
-  const [duplicatedMessage, setDuplicatedMessage] = useState("");
+  const form = useHookForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      id: advertiserDetail.id,
+      name: advertiserDetail.name,
+      customerId: advertiserDetail.customerId,
+      loginId: advertiserDetail.loginId,
+      advertiserName: advertiserDetail.advertiserName,
+      status: advertiserDetail.status,
+      updatedAt: advertiserDetail.updatedAt,
+      businessName: advertiserDetail.businessName,
+      businessNumber: advertiserDetail.businessNumber,
+      businessOwnerName: advertiserDetail.businessOwnerName,
+      businessOwnerPhone: advertiserDetail.businessOwnerPhone.replaceAll(
+        "-",
+        ""
+      ),
+      businessOwnerEmail: advertiserDetail.businessOwnerEmail,
+    },
+    mode: "onChange",
+  });
+
+  const { mutate: mutateUpdate, isPending: loadingEdit } =
+    useMutateUpdateAdvertiser({
+      onSuccess: () => setModalInfo("res-update"),
+      onError: (error) => console.error(error),
+    });
+
+  const [modalInfo, setModalInfo] = useState<ApplyWriteModalStatus | null>(
+    null
+  );
 
   const { mutate: mutateCheck, isPending } = useMutateCheckAdvertiser({
     onSuccess: (data) => {
       if (data.data) {
-        setDuplicatedMessage("중복된 사업자등록번호입니다.");
+        setModalInfo("disable-business-number");
       } else {
-        setDuplicatedMessage("사용가능한 사업자등록번호입니다.");
+        setModalInfo("able-business-number");
       }
     },
   });
@@ -46,124 +121,149 @@ const AdvertiserDesEdit = ({
     mutateCheck(businessNumber);
   };
 
-  const isValidBusinessNumber = BUSINESS_NUMBER_REGEX.test(
-    advertiserDetail?.businessNumber
-  );
+  const handleConfirmModal = () => {
+    // 1. 변경 수정 요청
+    if (modalInfo === "req-update") {
+      const params: AdvertiserData = {
+        ...form.getValues(),
+        status: "AGREEMENT_REQUEST",
+      };
+      mutateUpdate(params);
+    }
+
+    // 2. 변경 수정 완료
+    if (modalInfo === "res-update") {
+      onFinishEdit();
+    }
+
+    // 3. 사업자등록번호 중복 체크 결과
+    if (
+      modalInfo === "able-business-number" ||
+      modalInfo === "disable-business-number"
+    ) {
+      setModalInfo(null);
+    }
+  };
 
   return (
     <section>
-      {duplicatedMessage && (
+      {modalInfo && (
         <ConfirmDialog
-          open={!!duplicatedMessage}
-          onClose={() => setDuplicatedMessage("")}
-          onConfirm={() => setDuplicatedMessage("")}
-          content={duplicatedMessage}
+          open
+          onClose={() => setModalInfo(null)}
+          content={ApplyWriteModal[modalInfo]}
+          onConfirm={handleConfirmModal}
         />
       )}
-      {isPending && <LoadingUI title="중복 체크 중..." />}
-      <Descriptions columns={1}>
-        <DescriptionItem label="사업자명">
-          <Input
-            className="max-w-[500px]"
-            value={advertiserDetail?.businessName}
-            onChange={(e) =>
-              handleAdvertiserEdit({
-                ...advertiserDetail,
-                businessName: e.target.value,
-              })
-            }
-          />
-        </DescriptionItem>
-        <DescriptionItem label="광고주 닉네임">
-          <Label>{advertiserDetail?.loginId}</Label>
-        </DescriptionItem>
+      {(isPending || loadingEdit) && <LoadingUI />}
 
-        <DescriptionItem label="대표자명">
-          <Input
-            className="max-w-[500px]"
-            value={advertiserDetail?.businessOwnerName}
-            onChange={(e) =>
-              handleAdvertiserEdit({
-                ...advertiserDetail,
-                businessOwnerName: e.target.value,
-              })
-            }
-          />
-        </DescriptionItem>
-        <DescriptionItem label="사업자 등록 번호">
+      <Form {...form}>
+        <div className="flex items-center gap-4 pb-4">
+          <LabelBullet labelClassName="text-base font-bold">
+            광고주 기본 정보
+          </LabelBullet>
+
           <div className="flex gap-2">
-            <Input
-              className="max-w-[400px]"
-              value={advertiserDetail?.businessNumber}
-              onChange={(e) => {
-                const formattedValue = formatBusinessNumber(e.target.value);
-                handleAdvertiserEdit({
-                  ...advertiserDetail,
-                  businessNumber: formattedValue,
-                });
-              }}
-              maxLength={12} // 123-45-67890 형식의 최대 길이
-            />
             <Button
-              variant="outline"
               className="w-[100px]"
-              onClick={() =>
-                handleCheckAdvertiser(advertiserDetail?.businessNumber)
-              }
+              onClick={() => setModalInfo("req-update")}
             >
-              중복 체크
+              변경완료
+            </Button>
+            <Button className="w-[100px]" variant="cancel" onClick={onCancel}>
+              취소
             </Button>
           </div>
-          {!isValidBusinessNumber && advertiserDetail?.businessNumber && (
-            <span className="text-red-500 text-sm block p-2">
-              사업자등록번호 형식이 올바르지 않습니다. (예: 123-45-67890)
-            </span>
-          )}
-        </DescriptionItem>
-        <DescriptionItem label="담당자 휴대폰 번호">
-          <Input
-            className="max-w-[500px]"
-            value={advertiserDetail?.businessOwnerPhone}
-            onChange={(e) =>
-              handleAdvertiserEdit({
-                ...advertiserDetail,
-                businessOwnerPhone: e.target.value,
-              })
-            }
-          />
-        </DescriptionItem>
-        <DescriptionItem label="담당자 이메일 주소">
-          <Input
-            className="max-w-[500px]"
-            value={advertiserDetail?.businessOwnerEmail}
-            onChange={(e) =>
-              handleAdvertiserEdit({
-                ...advertiserDetail,
-                businessOwnerEmail: e.target.value,
-              })
-            }
-          />
-        </DescriptionItem>
-      </Descriptions>
+        </div>
+
+        <Descriptions columns={1}>
+          <DescriptionItem label="사업자명">
+            <FormField
+              control={form.control}
+              name="businessName"
+              render={({ field }) => (
+                <Input {...field} className="max-w-[500px]" />
+              )}
+            />
+          </DescriptionItem>
+
+          <DescriptionItem label="광고주 닉네임">
+            <Label>{advertiserDetail?.loginId}</Label>
+          </DescriptionItem>
+
+          <DescriptionItem label="대표자명">
+            <FormField
+              control={form.control}
+              name="businessOwnerName"
+              render={({ field }) => (
+                <Input {...field} className="max-w-[500px]" />
+              )}
+            />
+          </DescriptionItem>
+          <DescriptionItem label="사업자 등록 번호">
+            <FormField
+              control={form.control}
+              name="businessNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex gap-2">
+                      <Input
+                        className="max-w-[400px]"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const formattedValue = formatBusinessNumber(value);
+                          field.onChange(formattedValue);
+                        }}
+                        maxLength={12}
+                      />
+                      <Button
+                        variant="outline"
+                        className="w-[100px]"
+                        onClick={() => {
+                          const businessNumber = field.value;
+                          handleCheckAdvertiser(businessNumber);
+                        }}
+                      >
+                        중복 체크
+                      </Button>
+                      <FormMessage />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </DescriptionItem>
+          <DescriptionItem label="담당자 휴대폰 번호">
+            <FormField
+              control={form.control}
+              name="businessOwnerPhone"
+              render={({ field }) => (
+                <PhoneInput className="max-w-[500px]" {...field} />
+              )}
+            />
+          </DescriptionItem>
+          <DescriptionItem label="담당자 이메일 주소">
+            <FormField
+              control={form.control}
+              name="businessOwnerEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex gap-2">
+                      <Input className="max-w-[500px]" {...field} />
+                      <FormMessage />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </DescriptionItem>
+        </Descriptions>
+      </Form>
     </section>
   );
 };
 
 export default AdvertiserDesEdit;
-
-const formatBusinessNumber = (value: string) => {
-  // 숫자만 추출
-  const numbers = value.replace(/\D/g, "");
-
-  // 길이에 따라 하이픈 추가
-  if (numbers.length <= 3) {
-    return numbers;
-  } else if (numbers.length <= 5) {
-    return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-  } else {
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 5)}-${numbers.slice(
-      5,
-      10
-    )}`;
-  }
-};

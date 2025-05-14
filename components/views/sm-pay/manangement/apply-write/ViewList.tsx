@@ -17,16 +17,16 @@ import { ADVERTISER_STATUS_MAP } from "@/constants/status";
 
 import { cn } from "@/lib/utils";
 
-import type { ViewProps } from ".";
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
 
-type ViewListProps = ViewProps & {
+type ViewListProps = {
+  onCancel: () => void;
   onSubmit: (id: number) => void;
 };
 
-const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
+const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const { advertiserList, setAdvertiserList } = useAdvertiserStore();
 
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -110,7 +110,7 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
   }, [response?.data]);
 
   return (
-    <section className={cn(!display && "hidden")}>
+    <section className="mt-4">
       <div>
         <LabelBullet labelClassName="text-base font-bold">
           광고주 검색
@@ -127,7 +127,7 @@ const ViewList = ({ onCancel, onSubmit, display }: ViewListProps) => {
         </SearchBox>
       </div>
 
-      <div>
+      <div className="mt-4">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 등록 내역
         </LabelBullet>

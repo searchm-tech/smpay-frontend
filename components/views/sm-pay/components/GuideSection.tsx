@@ -62,7 +62,8 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
             <span>→</span>
             <span className={rounded}>
               <span className="text-[#4A90E2]">심사</span>
-            </span>
+            </span>{" "}
+            순으로 진행됩니다.
           </div>
           <div className="space-y-1.5 flex flex-col">
             <span>
@@ -109,7 +110,7 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         </div>
 
         <GuideButton onClick={() => setIsOpen(true)}>
-          신청 내역 보기
+          SM Pay 이용 가이드
         </GuideButton>
       </div>
     ),

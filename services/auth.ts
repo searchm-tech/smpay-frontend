@@ -1,5 +1,7 @@
-import { TUser } from "@/types/user";
 import { members, TRole } from "./mock/members";
+import { post } from "@/lib/api";
+import type { ApiResponse } from "@/types/api";
+import type { TAuthUser, TUser } from "@/types/user";
 
 interface LoginCredentials {
   email: string;
@@ -42,4 +44,20 @@ export const login = async (
 
   // 로그인 성공 시 토큰과 사용자 정보 반환
   return result;
+};
+
+// 로그인 api
+type LoginParams = {
+  email: string;
+  password: string;
+};
+
+export const getUser = async (params: LoginParams): Promise<TAuthUser> => {
+  console.log("3. params", params);
+  const response: ApiResponse<TAuthUser> = await post<TAuthUser>(
+    "/users/login",
+    params
+  );
+
+  return response.result;
 };

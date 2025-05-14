@@ -58,6 +58,14 @@ export const MANAGEMENT_CONTENT: Record<
 };
 
 // sm-pay/apply-write
+
+export type ApplyWriteModalStatus =
+  | "req-update"
+  | "res-update"
+  | "send-success"
+  | "disable-business-number"
+  | "able-business-number";
+
 export const ApplyWriteModal = {
   "req-update": (
     <div className="flex flex-col items-center pb-4 font-medium">
@@ -65,14 +73,27 @@ export const ApplyWriteModal = {
       <span>변경하시겠습니까?</span>
     </div>
   ),
+  "res-update": (
+    <div className="flex flex-col items-center pb-4 font-medium">
+      <span>광고주의 동의 요청이 완료되었습니다.</span>
+    </div>
+  ),
   "send-success": (
     <div className="flex flex-col items-center pb-4 font-medium">
       <span>광고주의 이메일과 SMS 동의요청이 발송되었습니다.</span>
     </div>
   ),
+  "disable-business-number": (
+    <div className="flex flex-col items-center pb-4 font-medium">
+      <span>중복된 사업자등록번호입니다.</span>
+    </div>
+  ),
+  "able-business-number": (
+    <div className="flex flex-col items-center pb-4 font-medium">
+      <span>사용가능한 사업자등록번호입니다.</span>
+    </div>
+  ),
 };
-
-export type ApplyWriteModalStatus = "req-update" | "send-success";
 
 // sm-pay/apply-submit
 export type ApplySubmitDialogStatus = "req-apply" | "success-apply";

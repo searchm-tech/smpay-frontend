@@ -59,7 +59,7 @@ const GuideButton = ({
       variant="outline"
       onClick={onClick}
       className={cn(
-        "min-w-[117px] h-[35px] border bg-white hover:bg-white/90 px-[10px] flex items-center justify-center"
+        "min-w-[117px] h-[35px] border bg-white hover:bg-white/90 px-[10px] flex items-center justify-center rounded-none"
       )}
       style={{ borderColor: color }}
     >

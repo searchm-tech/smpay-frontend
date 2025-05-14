@@ -3,17 +3,15 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
-import { cn } from "@/lib/utils";
-
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
+import { HelpIcon } from "@/components/composite/icon-components";
+
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
 import AdvertiserDesEdit from "../../components/AdvertiserDesEdit";
-
-import { HelpIcon } from "@/components/composite/icon-components";
 
 import {
   useAdvertiserDetail,
@@ -27,21 +25,15 @@ import {
   type ApplyWriteModalStatus,
 } from "@/constants/dialog";
 
-import type { ViewProps } from ".";
-import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
-type ViewWrieProps = ViewProps & {
+type ViewWrieProps = {
   selectedAdNum: number | null;
   onSubmit: () => void;
+  onCancel: () => void;
 };
 
-const ViewWrite = ({
-  onSubmit,
-  onCancel,
-  display,
-  selectedAdNum,
-}: ViewWrieProps) => {
+const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
   const [isChanged, setIsChanged] = useState(false);
 
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
@@ -66,26 +58,10 @@ const ViewWrite = ({
     selectedAdNum as number
   );
 
-  const { mutate: mutateUpdateAdvertiser, isPending: loadingEdit } =
-    useMutateUpdateAdvertiser({
-      onSuccess: (data) => {
-        setWriteModal(null);
-        setIsChanged(false);
-        refetch();
-      },
-    });
-
   const { mutate: mutateSendAdAgree, isPending: loadingSend } =
     useMutateSendAdvertiserAgreement({
       onSuccess: () => setWriteModal("send-success"),
     });
-
-  const [advertiserDetail, setAdvertiserDetail] =
-    useState<AdvertiserData | null>(null);
-
-  const [editAdvertiser, setEditAdvertiser] = useState<AdvertiserData | null>(
-    null
-  );
 
   const handleRuleInfoChange = (value: RuleInfo) => {
     setRuleInfo({ ...ruleInfo, ...value });
@@ -95,17 +71,12 @@ const ViewWrite = ({
     setScheduleInfo({ ...scheduleInfo, ...value });
   };
 
-  const handleAdvertiserEdit = (data: AdvertiserData) => {
-    setEditAdvertiser(data);
+  const onFinishEditAdvertiser = () => {
+    refetch();
+    setIsChanged(false);
   };
 
   const handleConfrimModal = () => {
-    // 수정 요청
-    if (writeModal === "req-update") {
-      if (editAdvertiser) mutateUpdateAdvertiser(editAdvertiser);
-      return;
-    }
-
     // 동의 요청 완료
     if (writeModal === "send-success") {
       setWriteModal(null);
@@ -122,15 +93,8 @@ const ViewWrite = ({
     });
   };
 
-  useEffect(() => {
-    if (response?.data) {
-      setAdvertiserDetail(response.data);
-    }
-  }, [response]);
-
   return (
-    <section className={cn(!display && "hidden")}>
-      {loadingEdit && <LoadingUI title="... 정보 변경 중" />}
+    <section className="mt-4">
       {loadingSend && <LoadingUI title="... 동의 요청 중" />}
 
       {writeModal && (
@@ -143,48 +107,20 @@ const ViewWrite = ({
       )}
 
       <div className="mt-4">
-        <div className="flex items-center gap-4 pb-4">
-          <LabelBullet labelClassName="text-base font-bold">
-            광고주 기본 정보
-          </LabelBullet>
-
-          {isChanged ? (
-            <div className="flex gap-2">
-              <Button
-                className="w-[100px]"
-                onClick={() => setWriteModal("req-update")}
-              >
-                변경완료
-              </Button>
-              <Button
-                className="w-[100px]"
-                variant="cancel"
-                onClick={() => setIsChanged(false)}
-              >
-                취소
-              </Button>
-            </div>
-          ) : (
-            <Button
-              className="w-[100px]"
-              onClick={() => {
-                setEditAdvertiser(advertiserDetail);
-                setIsChanged(true);
-              }}
-            >
-              변경하기
-            </Button>
-          )}
-        </div>
-
-        {isChanged && editAdvertiser && (
+        {isChanged && response?.data && (
           <AdvertiserDesEdit
-            advertiserDetail={editAdvertiser}
-            handleAdvertiserEdit={handleAdvertiserEdit}
+            advertiserDetail={response.data}
+            onFinishEdit={onFinishEditAdvertiser}
+            onCancel={() => setIsChanged(false)}
           />
         )}
 
-        {!isChanged && <AdvertiserDesc advertiserDetail={advertiserDetail} />}
+        {!isChanged && response?.data && (
+          <AdvertiserDesc
+            advertiserDetail={response.data}
+            onEdit={() => setIsChanged(true)}
+          />
+        )}
       </div>
 
       <section>
