@@ -10,11 +10,6 @@ import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
 import LoadingUI from "@/components/common/Loading";
 
-import { Label } from "@/components/ui/label";
-import { LabelBullet } from "@/components/composite/label-bullet";
-import { DescriptionItem } from "@/components/composite/description-components";
-import { Descriptions } from "@/components/composite/description-components";
-
 import { getSmPayStatusLabel } from "@/constants/status";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";

@@ -22,21 +22,24 @@ const SMPayApplyWriteView = () => {
   return (
     <div>
       <GuidSection viewType={viewType} />
-      <ViewList
-        onSubmit={(value: number) => {
-          setSelectedAdNum(value);
-          setViewType("write");
-        }}
-        onCancel={() => router.push("/sm-pay/management")}
-        display={viewType === "guide"}
-      />
 
-      <ViewWrite
-        onSubmit={() => setViewType("guide")}
-        onCancel={() => setViewType("guide")}
-        display={viewType === "write"}
-        selectedAdNum={selectedAdNum}
-      />
+      {viewType === "guide" && (
+        <ViewList
+          onSubmit={(value: number) => {
+            setSelectedAdNum(value);
+            setViewType("write");
+          }}
+          onCancel={() => router.push("/sm-pay/management")}
+        />
+      )}
+
+      {viewType === "write" && (
+        <ViewWrite
+          onSubmit={() => setViewType("guide")}
+          onCancel={() => setViewType("guide")}
+          selectedAdNum={selectedAdNum}
+        />
+      )}
     </div>
   );
 };
@@ -45,5 +48,4 @@ export default SMPayApplyWriteView;
 
 export type ViewProps = {
   onCancel: () => void;
-  display: boolean;
 };

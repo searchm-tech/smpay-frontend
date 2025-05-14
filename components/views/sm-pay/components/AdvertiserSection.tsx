@@ -15,7 +15,7 @@ const AdvertiserSection = ({ advertiserData }: AdvertiserSectionProps) => {
         </LabelBullet>
       </div>
 
-      <AdvertiserDesc advertiserDetail={advertiserData} />
+      <AdvertiserDesc advertiserDetail={advertiserData} onEdit={() => {}} />
     </section>
   );
 };

@@ -24,6 +24,7 @@ import {
 import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
+
 type SmPayJudgementDetailViewProps = {
   id: string;
 };

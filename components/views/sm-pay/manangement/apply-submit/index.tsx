@@ -19,7 +19,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 
 import { APPLY_SUBMIT_CONTENT } from "@/constants/dialog";
-import type { AdvertiserData } from "@/types/adveriser";
+import { type AdvertiserData } from "@/types/adveriser";
 
 interface ApplySubmitViewProps {
   id: string;

@@ -43,7 +43,9 @@ import {
   useRegisterAgency,
 } from "@/hooks/queries/agency";
 
-import { ModalInfo, ValidMessage, type ModalInfoType } from "./constants";
+import { formatBusinessNumber } from "@/utils/format";
+
+import { ModalInfo, type ModalInfoType } from "./constants";
 
 import type { AgencyData } from "@/services/agency";
 
@@ -250,7 +252,16 @@ const AgencyRegisterView = () => {
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
+                        <Input
+                          className="max-w-[500px]"
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const formattedValue = formatBusinessNumber(value);
+                            field.onChange(formattedValue);
+                          }}
+                          maxLength={12}
+                        />
                         <Button
                           variant="outline"
                           disabled={!field.value}
