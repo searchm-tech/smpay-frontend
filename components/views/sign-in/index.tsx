@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,28 +50,36 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
   };
 
   // TODO : 그냥 상관없이 처리하기
-  function onSubmit(values: FormValues) {
-    const email =
-      loginType === "agency" ? `${values.email}@${company}` : values.email;
+  async function onSubmit(values: FormValues) {
+    // setLoadingSignIn(true);
 
-    if (isRememberUsername) {
-      localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
-    }
+    console.log("1. values", values);
 
-    mutateSignIn(
-      { email, password: values.password },
-      {
-        onSuccess: (data) => {
-          if (!!data) {
-            router.push("/sm-pay/management");
-          }
-        },
-        onError: (error) => {
-          console.log("error", { error });
-          setErrMessage(error.message);
-        },
+    try {
+      const email =
+        loginType === "agency" ? `${values.email}@${company}` : values.email;
+
+      if (isRememberUsername) {
+        localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
       }
-    );
+
+      console.log("1. values", values);
+
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: email,
+        password: values.password,
+      });
+
+      if (res?.error) {
+        setErrMessage("로그인 실패: " + res.error);
+      } else {
+        // 로그인 성공 시 원하는 경로로 이동
+        window.location.href = "/sm-pay/management";
+      }
+    } catch (error) {
+      console.log("error", { error });
+    }
   }
 
   useEffect(() => {
