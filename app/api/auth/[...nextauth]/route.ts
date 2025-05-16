@@ -1,6 +1,27 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { testLogin } from "@/services/auth";
+import type { TSMPayUser } from "@/types/user";
+
+declare module "next-auth" {
+  interface Session {
+    user: TSMPayUser;
+    accessToken: string;
+    refreshToken: string;
+  }
+
+  // 평평하게!
+  interface User extends TSMPayUser {
+    accessToken: string;
+    refreshToken: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends TSMPayUser {
+    accessToken: string;
+    refreshToken: string;
+  }
+}
 
 const handler = NextAuth({
   providers: [
@@ -11,60 +32,69 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-
-        console.log("authorize", credentials);
-
-        try {
-          const resData = await testLogin({
-            email: credentials.email,
-            password: credentials.password,
-          });
-
-          if (resData?.user) {
-            return {
-              id: resData.user.id,
-              email: resData.user.email,
-              name: resData.user.name,
-              accessToken: resData.accessToken,
-              refreshToken: resData.refreshToken,
-            };
-          }
-          return null;
-        } catch (error) {
-          console.error("Auth error:", error);
-          return null;
-        }
+        const c = credentials as any;
+        if (!c?.email) return null;
+        return {
+          id: c.id,
+          userId: c.userId,
+          agentId: c.agentId,
+          loginId: c.loginId,
+          password: c.password,
+          status: c.status,
+          isDeleted: c.isDeleted,
+          type: c.type,
+          name: c.name,
+          phoneNumber: c.phoneNumber,
+          regDate: c.regDate,
+          updateDate: c.updateDate,
+          accessToken: c.accessToken,
+          refreshToken: c.refreshToken,
+        };
       },
     }),
   ],
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user }) {
-      console.log("jwt", token, user);
       if (user) {
         token.id = user.id;
-        token.email = user.email;
+        token.userId = user.userId;
+        token.agentId = user.agentId;
+        token.loginId = user.loginId;
+        token.password = user.password;
+        token.status = user.status;
+        token.isDeleted = user.isDeleted;
+        token.type = user.type;
         token.name = user.name;
+        token.phoneNumber = user.phoneNumber;
+        token.regDate = user.regDate;
+        token.updateDate = user.updateDate;
         token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("session", session, token);
-      if (token) {
-        session.user = {
-          id: token.id,
-          email: token.email,
-          name: token.name,
-          accessToken: token.accessToken,
-        };
-      }
+      session.user = {
+        userId: token.userId,
+        agentId: token.agentId,
+        loginId: token.loginId,
+        password: token.password,
+        status: token.status,
+        isDeleted: token.isDeleted,
+        type: token.type,
+        name: token.name || "",
+        phoneNumber: token.phoneNumber,
+        regDate: token.regDate,
+        updateDate: token.updateDate,
+      };
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
       return session;
     },
   },
+
   pages: {
-    // signIn: "/auth/signin",
     signIn: "/sign-in",
   },
 });

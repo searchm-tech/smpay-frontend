@@ -25,13 +25,11 @@ import { fetchAdvertisers } from "@/services/advertiser";
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_ID_REGEX } from "@/constants/reg";
 
-import type { TRole } from "@/services/mock/members";
 import type { TableParams } from "@/services/types";
 import type { DepartmentTreeNode } from "@/types/tree";
-``;
 
 type MailSendSectionProps = {
-  role?: TRole;
+  isAdmin: boolean;
 };
 
 const Dialog = {
@@ -47,7 +45,7 @@ const Dialog = {
 
 type DialogType = keyof typeof Dialog;
 
-const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
+const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
   const [agency, setAgency] = useState("");
@@ -81,7 +79,7 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
       return;
     }
 
-    if (role === "agency") {
+    if (!isAdmin) {
       if (!departmentNode || !selected) {
         setDialog("err");
         return;
@@ -141,12 +139,18 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>
-
       <Descriptions columns={1} bordered>
-        <DescriptionItem
-          label={`${role === "agency" ? "부서 선택 *" : "대행사 선택 *"}`}
-        >
-          {role === "agency" ? (
+        <DescriptionItem label={`${isAdmin ? "대행사 선택 *" : "부서 선택 *"}`}>
+          {isAdmin ? (
+            <SelectSearchServer
+              className="max-w-[500px]"
+              fetchOptions={fetchAdvertiserOptions}
+              value={agency}
+              onValueChange={setAgency}
+              placeholder="대행사를 선택하세요"
+              searchPlaceholder="대행사명, 대표자를 검색하세요."
+            />
+          ) : (
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -156,29 +160,20 @@ const MailSendSection = ({ role = "agency" }: MailSendSectionProps) => {
               </Button>
               <span>{departmentNode?.name || ""}</span>
             </div>
-          ) : (
-            <SelectSearchServer
-              className="max-w-[500px]"
-              fetchOptions={fetchAdvertiserOptions}
-              value={agency}
-              onValueChange={setAgency}
-              placeholder="대행사를 선택하세요"
-              searchPlaceholder="대행사명, 대표자를 검색하세요."
-            />
           )}
         </DescriptionItem>
         <DescriptionItem label="회원 구분 *">
-          {role === "agency" ? (
+          {isAdmin ? (
+            "최상위 그룹장"
+          ) : (
             <RadioGroup
               options={MEMBER_TYPE_OPTS}
               value={selected}
               onChange={setSelected}
             />
-          ) : (
-            "최상위 그룹장"
           )}
         </DescriptionItem>
-        {role === "admin" && (
+        {!isAdmin && (
           <DescriptionItem label="성명 *">
             <Input
               className="max-w-[500px]"

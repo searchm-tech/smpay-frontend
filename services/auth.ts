@@ -1,4 +1,4 @@
-import { members, TRole } from "./mock/members";
+import { mockUserList } from "./mock/members";
 import { post } from "@/lib/api";
 import type { ApiResponse } from "@/types/api";
 
@@ -7,54 +7,8 @@ import type { TAuthUser, TUser } from "@/types/user";
 // 실제 API 타입
 import type {
   LoginRequest,
-  TUser as TUserResult,
   LoginResponse as LoginResponseResult,
 } from "@/types/auth";
-
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: TUser;
-}
-
-export const login = async (
-  credentials: LoginCredentials
-): Promise<LoginResponse> => {
-  // 3초 지연
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  // members에서 이메일로 사용자 찾기
-  const user = members.find((member) => member.email === credentials.email);
-
-  if (!user) {
-    throw new Error("존재하지 않는 이메일입니다.");
-  }
-
-  // 비밀번호 확인
-  if (user.password !== credentials.password) {
-    throw new Error("비밀번호가 일치하지 않습니다.");
-  }
-
-  const result: LoginResponse = {
-    accessToken: "mock-jwt-token-" + Math.random(),
-    refreshToken: "mock-jwt-token-" + Math.random(),
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role as TRole,
-      token: "mock-jwt-token-" + Math.random(),
-    },
-  };
-
-  // 로그인 성공 시 토큰과 사용자 정보 반환
-  return result;
-};
 
 // 로그인 api
 type LoginParams = {
@@ -72,27 +26,41 @@ export const getUser = async (params: LoginParams): Promise<TAuthUser> => {
   return response.result;
 };
 
+// -------------- 실제 api -------------
+
+// TODO : axios 변경할 예정
 export const testLogin = async (
   params: LoginRequest
 ): Promise<LoginResponseResult> => {
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  const response = TEST_USER;
-  return response;
-};
+  console.log("testLogin", params);
 
-const TEST_USER: LoginResponseResult = {
-  user: {
-    userId: 1,
-    agentId: 1,
-    id: "아이디",
-    email: "이메일",
-    password: "비밀번호",
-    status: "NORMAL",
-    type: "ADVERTISER",
-    name: "이름",
-    phoneNumber: "전화번호",
-  },
-  accessToken: "토큰 값",
-  refreshToken: "토큰 값",
+  const data = mockUserList.find(
+    (user) => user.loginId === params.email && user.password === params.password
+  );
+
+  if (!data) {
+    console.log("존재하지 않는 이메일입니다.");
+    throw new Error("존재하지 않는 이메일입니다.");
+  }
+
+  const response: LoginResponseResult = {
+    user: {
+      userId: data.userId,
+      agentId: data.agentId,
+      loginId: data.loginId,
+      password: data.password,
+      status: data.status,
+      isDeleted: data.isDeleted,
+      type: data.type,
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      regDate: data.regDate,
+      updateDate: data.updateDate,
+    },
+    accessToken: "mock-jwt-token-" + Math.random(),
+    refreshToken: "mock-jwt-token-" + Math.random(),
+  };
+  return response;
 };

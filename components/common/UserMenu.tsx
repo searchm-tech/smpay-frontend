@@ -15,12 +15,12 @@ import {
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 
-import type { TUser } from "@/types/user";
-import { useUserStore } from "@/store/useUserStore";
+import type { TSMPayUser } from "@/types/user";
 
-export function UserMenu({ user }: { user: TUser }) {
+export function UserMenu({ user }: { user: TSMPayUser }) {
   const [open, setOpen] = useState(false);
-  const { setUser } = useUserStore();
+
+  console.log("user", user);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -38,13 +38,13 @@ export function UserMenu({ user }: { user: TUser }) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setUser({ ...user, role: "admin" })}
+            // onClick={() => setUser({ ...user, role: "admin" })}
             className="cursor-pointer"
           >
             <LabelBullet>관리자</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setUser({ ...user, role: "agency" })}
+            // onClick={() => setUser({ ...user, role: "agency" })}
             className="cursor-pointer"
           >
             <LabelBullet>대행사</LabelBullet>

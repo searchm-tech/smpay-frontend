@@ -1,6 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 
 import {
@@ -22,13 +24,12 @@ import {
 import { cn } from "@/lib/utils";
 import { dashboardItems } from "@/constants/dasboard";
 
-import { useUserStore } from "@/store/useUserStore";
-
 export function NavDashboard() {
   const pathname = usePathname();
   const router = useRouter();
   const { state, toggleSidebar } = useSidebar();
-  const { user } = useUserStore();
+
+  const { data: session } = useSession();
 
   const handleClick = (url: string, isHasSubMenu: boolean) => {
     if (state === "collapsed") {
@@ -43,11 +44,22 @@ export function NavDashboard() {
     router.push(url);
   };
 
+  const menuType = useMemo(() => {
+    if (!session) return "agency";
+    if (!session.user) return "agency";
+    if (
+      ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(session.user.type)
+    ) {
+      return "admin";
+    }
+    return "agency";
+  }, [session]);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
       <SidebarMenu>
-        {dashboardItems[user?.role || "agency"].map((item) =>
+        {dashboardItems[menuType].map((item) =>
           item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}

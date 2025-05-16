@@ -8,11 +8,11 @@ import { SearchBox } from "@/components/common/Box";
 
 // TODO : 타입 모듈화 필요
 type SearchSectionProps = {
-  role?: "admin" | "agency";
   onSearch: (keyword: string) => void;
+  isAdmin: boolean;
 };
 
-const SearchSection = ({ role = "agency", onSearch }: SearchSectionProps) => {
+const SearchSection = ({ onSearch, isAdmin = false }: SearchSectionProps) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState<string>("");
 
@@ -42,9 +42,7 @@ const SearchSection = ({ role = "agency", onSearch }: SearchSectionProps) => {
           회원 등록
         </LinkButton>
 
-        {role === "agency" && (
-          <LinkButton onClick={() => {}}>회원 삭제</LinkButton>
-        )}
+        {!isAdmin && <LinkButton onClick={() => {}}>회원 삭제</LinkButton>}
       </div>
     </SearchBox>
   );
