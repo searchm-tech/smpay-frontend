@@ -1,7 +1,15 @@
 import { members, TRole } from "./mock/members";
 import { post } from "@/lib/api";
 import type { ApiResponse } from "@/types/api";
+
 import type { TAuthUser, TUser } from "@/types/user";
+
+// 실제 API 타입
+import type {
+  LoginRequest,
+  TUser as TUserResult,
+  LoginResponse as LoginResponseResult,
+} from "@/types/auth";
 
 interface LoginCredentials {
   email: string;
@@ -9,7 +17,8 @@ interface LoginCredentials {
 }
 
 interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: TUser;
 }
 
@@ -32,7 +41,8 @@ export const login = async (
   }
 
   const result: LoginResponse = {
-    token: "mock-jwt-token-" + Math.random(),
+    accessToken: "mock-jwt-token-" + Math.random(),
+    refreshToken: "mock-jwt-token-" + Math.random(),
     user: {
       id: user.id,
       email: user.email,
@@ -60,4 +70,29 @@ export const getUser = async (params: LoginParams): Promise<TAuthUser> => {
   );
 
   return response.result;
+};
+
+export const testLogin = async (
+  params: LoginRequest
+): Promise<LoginResponseResult> => {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  const response = TEST_USER;
+  return response;
+};
+
+const TEST_USER: LoginResponseResult = {
+  user: {
+    userId: 1,
+    agentId: 1,
+    id: "아이디",
+    email: "이메일",
+    password: "비밀번호",
+    status: "NORMAL",
+    type: "ADVERTISER",
+    name: "이름",
+    phoneNumber: "전화번호",
+  },
+  accessToken: "토큰 값",
+  refreshToken: "토큰 값",
 };
