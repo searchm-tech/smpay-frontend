@@ -1,10 +1,8 @@
-import type { TRole } from "@/services/mock/members";
-
 export type TUser = {
   id: string;
   email: string;
   name: string;
-  role: TRole;
+  role: UserType;
   token: string;
 };
 
@@ -42,3 +40,28 @@ export type TAuthType =
   | "OPERATIONS_MANAGER"
   | "SYSTEM_ADMINISTRATOR ";
 // 	ASSOCIATE_ADVERTISER : 준광고주 ADVERTISER : 광고주 AGENCY_GROUP_MEMBER : 대행사 그룹원 AGENCY_GROUP_MANAGER : 대행사 그룹장 AGENCY_GROUP_MASTER : 대행사 최상위 그룹장 OPERATIONS_MANAGER : 운영관리자 SYSTEM_ADMINISTRATOR : 시스템 관리자
+
+// ------------------------실제 타입------------------------
+
+export type TSMPayUser = {
+  userId: number;
+  agentId: number;
+  loginId: string;
+  password: string;
+  status: boolean;
+  isDeleted: boolean;
+  type: UserType;
+  name: string;
+  phoneNumber: string;
+  regDate: string;
+  updateDate: string | null;
+};
+
+export type UserType =
+  | "ASSOCIATE_ADVERTISER" // 준광고주
+  | "ADVERTISER" // 광고주
+  | "AGENCY_GROUP_MEMBER" // 대행사 그룹원
+  | "AGENCY_GROUP_MANAGER" // 대행사 그룹장
+  | "AGENCY_GROUP_MASTER" // 대행사 최상위 그룹장
+  | "OPERATIONS_MANAGER" // 운영관리자
+  | "SYSTEM_ADMINISTRATOR"; // 시스템 관리자

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -11,25 +10,24 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { InputForm } from "@/components/composite/input-components";
 import CheckboxLabel from "@/components/composite/checkbox-label";
+
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
-import { userSignIn } from "@/hooks/queries/auth";
 import { STORAGE_KEYS, createFormSchema } from "./constants";
-
+import { testLogin } from "@/services/auth";
 interface SignInViewProps {
   loginType: "admin" | "agency";
   company?: string;
 }
 
 const SignInView = ({ loginType, company }: SignInViewProps) => {
-  const router = useRouter();
   const formSchema = createFormSchema(loginType === "agency");
   type FormValues = z.infer<typeof formSchema>;
 
-  const { mutate: mutateSignIn, isPending: loadingSignIn } = userSignIn();
   const [isRememberUsername, setIsRememberUsername] = useState(false);
   const [errMessage, setErrMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -49,13 +47,11 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     }
   };
 
-  // TODO : 그냥 상관없이 처리하기
   async function onSubmit(values: FormValues) {
-    // setLoadingSignIn(true);
-
-    console.log("1. values", values);
+    if (loading) return;
 
     try {
+      setLoading(true);
       const email =
         loginType === "agency" ? `${values.email}@${company}` : values.email;
 
@@ -63,22 +59,28 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
         localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
       }
 
-      console.log("1. values", values);
-
-      const res = await signIn("credentials", {
-        redirect: false,
+      const response = await testLogin({
         email: email,
         password: values.password,
       });
 
-      if (res?.error) {
-        setErrMessage("로그인 실패: " + res.error);
-      } else {
-        // 로그인 성공 시 원하는 경로로 이동
-        window.location.href = "/sm-pay/management";
+      if (response?.user) {
+        await signIn("credentials", {
+          email,
+          accessToken: response.accessToken, // 추가!
+          refreshToken: response.refreshToken, // 추가!
+          name: response.user.name, // 필요시
+          callbackUrl: "/sm-pay/management",
+        });
       }
     } catch (error) {
-      console.log("error", { error });
+      let message = "로그인 실패";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      setErrMessage("로그인 실패: " + message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -99,7 +101,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      {loadingSignIn && <LoadingUI title="로그인 중..." />}
+      {loading && <LoadingUI title="로그인 중..." />}
 
       <div className="max-w-md w-full space-y-8">
         <div className="w-full flex justify-center">
@@ -155,17 +157,6 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
               >
                 비밀번호 찾기
               </span>
-            </div>
-
-            <div className="mx-auto border-dotted border-gray-400 border-b w-full" />
-
-            <div className="flex flex-col gap-2 justify-center">
-              <span className="text-[#545F71] font-bold">
-                아직 SM Pay 회원이 아니신가요?
-              </span>
-              <Button className="w-full h-12 mt-4 text-base">
-                대행사 등록 신청
-              </Button>
             </div>
           </form>
         </Form>

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 
-import { useUserStore } from "@/store/useUserStore";
 import { useMembers } from "@/hooks/queries/member";
 
 import { defaultTableParams } from "@/constants/table";
@@ -13,7 +13,7 @@ import { defaultTableParams } from "@/constants/table";
 import type { TableParams } from "@/types/table";
 
 const MembershipManagementView = () => {
-  const { user } = useUserStore();
+  const { data: session } = useSession();
 
   const [search, setSearch] = useState<string>("");
   const [tableParams, setTableParams] =
@@ -45,11 +45,14 @@ const MembershipManagementView = () => {
     }));
   };
 
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    session?.user.type || ""
+  );
   return (
     <div className="flex flex-col gap-4">
-      <SearchSection role={user?.role} onSearch={onSearch} />
+      <SearchSection onSearch={onSearch} isAdmin={isAdmin} />
       <TableSection
-        role={user?.role}
+        isAdmin={isAdmin}
         dataSource={members?.data || []}
         isLoading={isLoading}
         setTableParams={setTableParams}

@@ -13,17 +13,21 @@ import {
 } from "@/components/composite/description-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { useUserStore } from "@/store/useUserStore";
+import { useSession } from "next-auth/react";
 
 const UserInfoView = () => {
   const router = useRouter();
   const param = useSearchParams();
-  const { user } = useUserStore();
+  const { data: session } = useSession();
 
-  const userId = param.get("id") || user?.id;
+  const userId = param.get("id") || session?.user.loginId;
 
   const [phone, setPhone] = useState("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    session?.user.type || ""
+  );
 
   return (
     <div className="my-5">
@@ -32,7 +36,7 @@ const UserInfoView = () => {
           기본 정보 변경
         </LabelBullet>
 
-        {user?.role === "agency" && (
+        {!isAdmin && (
           <Fragment>
             <Descriptions bordered columns={1}>
               <DescriptionItem label="대행사명 *">

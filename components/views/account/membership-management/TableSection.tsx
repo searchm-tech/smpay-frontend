@@ -21,14 +21,14 @@ import type { MemberData } from "@/types/user";
  *  관리자 일 경우 테이블
  */
 type TableSectionProps = {
-  role?: "admin" | "agency";
+  isAdmin: boolean;
   dataSource: MemberData[];
   isLoading: boolean;
   setTableParams: (params: TableParams) => void;
 };
 
 const TableSection = ({
-  role = "agency",
+  isAdmin,
   dataSource,
   isLoading,
   setTableParams,
@@ -52,7 +52,7 @@ const TableSection = ({
       align: "center",
       sorter: true,
     },
-    ...(role === "admin" ? [companyNameColumn] : []), // role === "admin" 일 경우 대행사명 컬럼 추가
+    ...(isAdmin ? [companyNameColumn] : []), // "admin" 일 경우 대행사명 컬럼 추가
     {
       title: "계정유형",
       dataIndex: "accountType",

@@ -7,13 +7,16 @@ import DirectRegistSection from "./DirectRegistSection";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 
-import { useUserStore } from "@/store/useUserStore";
+import { useSession } from "next-auth/react";
 
 const MemberRegisterView = () => {
-  const { user } = useUserStore();
+  const { data: session } = useSession();
   const [isDirectRegist, setIsDirectRegist] = useState(false);
 
-  console.log("user", user);
+  console.log("session", session);
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    session?.user.type || ""
+  );
 
   return (
     <div>
@@ -27,8 +30,8 @@ const MemberRegisterView = () => {
         leftLabel="초대 메일 발송"
         rightLabel="직접 등록"
       />
-      {!isDirectRegist && <MailSendSection role={user?.role} />}
-      {isDirectRegist && <DirectRegistSection role={user?.role} />}
+      {!isDirectRegist && <MailSendSection isAdmin={isAdmin} />}
+      {isDirectRegist && <DirectRegistSection isAdmin={isAdmin} />}
     </div>
   );
 };
