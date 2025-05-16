@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { getUser } from "@/services/auth";
+import { testLogin } from "@/services/auth";
 
 const handler = NextAuth({
   providers: [
@@ -11,17 +11,28 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
+        if (!credentials?.email || !credentials?.password) return null;
+
+        console.log("authorize", credentials);
 
         try {
-          console.log("2. credentials", credentials);
-          const resData = await getUser({
-            email: credentials?.email,
-            password: credentials?.password,
+          const resData = await testLogin({
+            email: credentials.email,
+            password: credentials.password,
           });
-          console.log("4. resData", resData);
-          return resData;
+
+          if (resData?.user) {
+            return {
+              id: resData.user.id,
+              email: resData.user.email,
+              name: resData.user.name,
+              accessToken: resData.accessToken,
+              refreshToken: resData.refreshToken,
+            };
+          }
+          return null;
         } catch (error) {
+          console.error("Auth error:", error);
           return null;
         }
       },
@@ -30,25 +41,23 @@ const handler = NextAuth({
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user }) {
+      console.log("jwt", token, user);
       if (user) {
-        console.log("token", token);
-        console.log("user", user);
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        // token.role = user.role;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
     async session({ session, token }) {
+      console.log("session", session, token);
       if (token) {
-        console.log("session", session);
-        console.log("token", token);
         session.user = {
-          //   id: token.id,
-          //   email: token.email,
-          //   name: token.name,
-          //   role: token.role,
+          id: token.id,
+          email: token.email,
+          name: token.name,
+          accessToken: token.accessToken,
         };
       }
       return session;

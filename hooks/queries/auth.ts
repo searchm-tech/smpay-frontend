@@ -23,7 +23,7 @@ export const userSignIn = () => {
     mutationFn: login,
     onSuccess: (data) => {
       setUser(data.user);
-      setToken(data.token);
+      setToken(data.accessToken);
 
       router.push("/sm-pay/management");
     },

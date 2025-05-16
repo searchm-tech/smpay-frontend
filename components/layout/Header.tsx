@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 import { Separator } from "@/components/ui/separator";
 import UserMenu from "@/components/common/UserMenu";
 import { useUserStore } from "@/store/useUserStore";
-interface User {
-  name: string;
-  email: string;
-}
 
 const Header = () => {
   const { user: currentUser } = useUserStore();
+
+  const session = useSession();
+  console.log("session", session);
+  console.log(session.data?.user);
 
   return (
     <header className="flex justify-end items-center space-x-4 text-sm py-3 px-4">

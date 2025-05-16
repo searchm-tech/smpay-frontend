@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
+import { SessionProvider } from "@/lib/providers/SessionProvider";
 import Layout from "@/components/layout/Layout";
 
 import "./globals.css";
@@ -23,9 +24,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <QueryProvider>
-          <Layout>{children}</Layout>
-        </QueryProvider>
+        <SessionProvider>
+          <QueryProvider>
+            <Layout>{children}</Layout>
+          </QueryProvider>
+        </SessionProvider>
       </body>
     </html>
   );
