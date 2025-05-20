@@ -23,6 +23,7 @@ declare module "next-auth/jwt" {
   }
 }
 
+console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // ✅ 추가
