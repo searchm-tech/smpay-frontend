@@ -1,9 +1,22 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
-import type { ApiResponse, ApiResponseError } from "@/types/api";
+import type { ApiResponse } from "@/types/api";
+
+// 커스텀 에러 클래스
+export class ApiError extends Error {
+  code: string;
+  result: any;
+
+  constructor(code: string, message: string, result?: any) {
+    super(message);
+    this.name = "ApiError";
+    this.code = code;
+    this.result = result;
+  }
+}
 
 const apiClient = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/core/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -28,13 +41,29 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     console.log("response", response);
-    return response;
+
+    // code 0이 아닐 경우 > 정상적인 API 호출이 아님
+    if (response.data && response.data.code !== "0") {
+      throw new ApiError(
+        response.data.code,
+        response.data.message,
+        response.data.result
+      );
+    }
+
+    return response.data; // 전체 response.data 반환 (code, message, result)
   },
   (error) => {
     // 예: 401 에러 처리
     if (error.response && error.response.status === 401) {
       // 로그아웃 처리 등
     }
+    // 서버에서 온 에러 응답이 있으면 ApiError로 throw
+    if (error.response && error.response.data) {
+      const { code, message, result } = error.response.data;
+      throw new ApiError(code, message, result);
+    }
+    // 그 외 네트워크 에러 등
     return Promise.reject(error);
   }
 );
@@ -42,13 +71,13 @@ apiClient.interceptors.response.use(
 export const get = async <T = any>(
   url: string,
   config?: AxiosRequestConfig
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   try {
-    const res = await apiClient.get<ApiResponse<T>>(url, config);
-    return res.data;
+    const res = (await apiClient.get(url, config)) as ApiResponse<T>;
+    return res.result;
   } catch (error: any) {
-    const err: ApiResponseError = error.response?.data;
-    throw err;
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("UNKNOWN", error.message);
   }
 };
 
@@ -56,13 +85,13 @@ export const post = async <T = any>(
   url: string,
   data?: any,
   config?: AxiosRequestConfig
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   try {
-    const res = await apiClient.post<ApiResponse<T>>(url, data, config);
-    return res.data;
+    const res = (await apiClient.post(url, data, config)) as ApiResponse<T>;
+    return res.result;
   } catch (error: any) {
-    const err: ApiResponseError = error.response?.data;
-    throw err;
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("UNKNOWN", error.message);
   }
 };
 
@@ -70,26 +99,26 @@ export const patch = async <T = any>(
   url: string,
   data?: any,
   config?: AxiosRequestConfig
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   try {
-    const res = await apiClient.patch<ApiResponse<T>>(url, data, config);
-    return res.data;
+    const res = (await apiClient.patch(url, data, config)) as ApiResponse<T>;
+    return res.result;
   } catch (error: any) {
-    const err: ApiResponseError = error.response?.data;
-    throw err;
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("UNKNOWN", error.message);
   }
 };
 
 export const del = async <T = any>(
   url: string,
   config?: AxiosRequestConfig
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   try {
-    const res = await apiClient.delete<ApiResponse<T>>(url, config);
-    return res.data;
+    const res = (await apiClient.delete(url, config)) as ApiResponse<T>;
+    return res.result;
   } catch (error: any) {
-    const err: ApiResponseError = error.response?.data;
-    throw err;
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("UNKNOWN", error.message);
   }
 };
 
