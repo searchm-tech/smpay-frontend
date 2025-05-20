@@ -1,3 +1,5 @@
+"use client";
+
 import SignInView from "@/components/views/sign-in";
 
 interface PageProps {

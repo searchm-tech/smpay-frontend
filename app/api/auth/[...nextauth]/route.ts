@@ -28,25 +28,21 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        id: { label: "Login ID", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         const c = credentials as any;
-        if (!c?.email) return null;
+        if (!c?.id) return null;
         return {
           id: c.id,
           userId: c.userId,
           agentId: c.agentId,
           loginId: c.loginId,
-          password: c.password,
           status: c.status,
-          isDeleted: c.isDeleted,
           type: c.type,
           name: c.name,
           phoneNumber: c.phoneNumber,
-          regDate: c.regDate,
-          updateDate: c.updateDate,
           accessToken: c.accessToken,
           refreshToken: c.refreshToken,
         };
@@ -57,18 +53,13 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = Number(user.id);
         token.userId = user.userId;
         token.agentId = user.agentId;
-        token.loginId = user.loginId;
-        token.password = user.password;
         token.status = user.status;
-        token.isDeleted = user.isDeleted;
         token.type = user.type;
         token.name = user.name;
         token.phoneNumber = user.phoneNumber;
-        token.regDate = user.regDate;
-        token.updateDate = user.updateDate;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
       }
@@ -76,17 +67,13 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       session.user = {
-        userId: token.userId,
+        id: token.id,
         agentId: token.agentId,
-        loginId: token.loginId,
-        password: token.password,
+        userId: token.userId,
         status: token.status,
-        isDeleted: token.isDeleted,
         type: token.type,
         name: token.name || "",
         phoneNumber: token.phoneNumber,
-        regDate: token.regDate,
-        updateDate: token.updateDate,
       };
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
