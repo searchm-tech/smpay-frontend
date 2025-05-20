@@ -1,27 +1,18 @@
 "use client";
-import { useEffect } from "react";
 
-import { useRouter } from "next/navigation";
-import { useUserStore } from "@/store/useUserStore";
+import { useEffect } from "react";
+import { signOut } from "next-auth/react";
+import { signOutApi } from "@/services/auth";
 
 const SignOutView = () => {
-  const router = useRouter();
-  const { clearStore } = useUserStore();
-
   useEffect(() => {
-    const signOut = async () => {
-      // 3초 대기
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // 스토어 초기화 (로컬스토리지도 함께 초기화됨)
-      clearStore();
-
-      // 로그인 페이지로 이동
-      router.push("/sign-in");
-    };
-
-    signOut();
-  }, [router, clearStore]);
+    signOutApi()
+      .then()
+      .catch((error) => {
+        console.error("error", error);
+      })
+      .finally(() => signOut({ callbackUrl: "/sign-in" }));
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
