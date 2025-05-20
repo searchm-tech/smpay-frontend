@@ -54,12 +54,14 @@ npm run build
 ### 로컬 실행
 
 ```bash
+# port : 8081 - 백엔드 측에서 다른 외부 접근으로 인하여 포트 지정
 npm run dev
 ```
 
 ### 운영 실행
 
 ```bash
+# port : 8081 - 백엔드 측에서 다른 외부 접근으로 인하여 포트 지정
 npm run start
 ```
 

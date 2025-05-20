@@ -1,3 +1,4 @@
+// TODO : 삭제 예정
 export type TUser = {
   id: string;
   email: string;
@@ -20,16 +21,6 @@ export interface MemberData {
 
 export type ActiveStatus = "active" | "inactive";
 
-export type TAuthUser = {
-  userId: number;
-  agentId: number;
-  id: string;
-  password: string;
-  name: string;
-  status: string;
-  tpye: string;
-};
-
 export type TAuthStatus = "NORMAL" | "STOP"; // NORMAL : 활성화 STOP : 비활성화
 export type TAuthType =
   | "ASSOCIATE_ADVERTISER"
@@ -44,17 +35,13 @@ export type TAuthType =
 // ------------------------실제 타입------------------------
 
 export type TSMPayUser = {
-  userId: number;
+  id: number;
   agentId: number;
-  loginId: string;
-  password: string;
-  status: boolean;
-  isDeleted: boolean;
+  userId: number;
+  status: UserStatus;
   type: UserType;
   name: string;
   phoneNumber: string;
-  regDate: string;
-  updateDate: string | null;
 };
 
 export type UserType =
@@ -65,3 +52,5 @@ export type UserType =
   | "AGENCY_GROUP_MASTER" // 대행사 최상위 그룹장
   | "OPERATIONS_MANAGER" // 운영관리자
   | "SYSTEM_ADMINISTRATOR"; // 시스템 관리자
+
+export type UserStatus = "NORMAL" | "STOP" | "TEMP"; // NORMAL : 활성화 STOP : 비활성화 TEMP : 임시
