@@ -1,5 +1,6 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
+import { getSession } from "next-auth/react";
 import type { ApiResponse } from "@/types/api";
 
 // 커스텀 에러 클래스
@@ -25,12 +26,11 @@ const apiClient = axios.create({
 
 // 요청 인터셉터 (예: 토큰 자동 추가)
 apiClient.interceptors.request.use(
-  (config) => {
-    // 예시: localStorage에서 토큰 가져와서 헤더에 추가
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  async (config) => {
+    const session = await getSession();
+
+    if (session?.accessToken) {
+      config.headers.Authorization = `Bearer ${session.accessToken}`;
     }
     return config;
   },
@@ -40,8 +40,6 @@ apiClient.interceptors.request.use(
 // 응답 인터셉터 (예: 에러 처리)
 apiClient.interceptors.response.use(
   (response) => {
-    console.log("response", response);
-
     // code 0이 아닐 경우 > 정상적인 API 호출이 아님
     if (response.data && response.data.code !== "0") {
       throw new ApiError(
@@ -102,6 +100,20 @@ export const patch = async <T = any>(
 ): Promise<T> => {
   try {
     const res = (await apiClient.patch(url, data, config)) as ApiResponse<T>;
+    return res.result;
+  } catch (error: any) {
+    if (error instanceof ApiError) throw error;
+    throw new ApiError("UNKNOWN", error.message);
+  }
+};
+
+export const put = async <T = any>(
+  url: string,
+  data?: any,
+  config?: AxiosRequestConfig
+): Promise<T> => {
+  try {
+    const res = (await apiClient.put(url, data, config)) as ApiResponse<T>;
     return res.result;
   } catch (error: any) {
     if (error instanceof ApiError) throw error;
