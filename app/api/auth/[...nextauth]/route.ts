@@ -34,6 +34,8 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("credentials", credentials);
+        console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
         const c = credentials as any;
         if (!c?.id) return null;
         return {
