@@ -15,7 +15,11 @@ import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
 import { STORAGE_KEYS, createFormSchema } from "./constants";
-import { testLogin } from "@/services/auth";
+import { signInApi } from "@/services/auth";
+import { ApiError } from "@/lib/api";
+
+import type { TSMPayUser } from "@/types/user";
+
 interface SignInViewProps {
   loginType: "admin" | "agency";
   company?: string;
@@ -59,26 +63,36 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
         localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
       }
 
-      const response = await testLogin({
-        email: email,
+      const response = await signInApi({
+        id: email,
         password: values.password,
       });
+      console.log("response 1", response);
 
       if (response?.user) {
+        const user: TSMPayUser = {
+          id: response.user.userId,
+          userId: response.user.userId,
+          agentId: response.user.agentId,
+          status: response.user.status,
+          type: response.user.type,
+          name: response.user.name,
+          phoneNumber: response.user.phoneNumber,
+        };
         await signIn("credentials", {
-          email,
-          accessToken: response.accessToken, // 추가!
-          refreshToken: response.refreshToken, // 추가!
-          name: response.user.name, // 필요시
+          ...user,
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
           callbackUrl: "/sm-pay/management",
         });
       }
     } catch (error) {
+      console.error("onSubmit error", error);
       let message = "로그인 실패";
-      if (error instanceof Error) {
+      if (error instanceof ApiError) {
         message = error.message;
       }
-      setErrMessage("로그인 실패: " + message);
+      setErrMessage(message);
     } finally {
       setLoading(false);
     }

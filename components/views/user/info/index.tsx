@@ -20,7 +20,7 @@ const UserInfoView = () => {
   const param = useSearchParams();
   const { data: session } = useSession();
 
-  const userId = param.get("id") || session?.user.loginId;
+  const userId = param.get("id") || session?.user.id;
 
   const [phone, setPhone] = useState("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);

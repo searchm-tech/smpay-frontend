@@ -1,4 +1,5 @@
 // API Response Default Type
+
 export interface ApiResponse<T> {
   result: T;
   code: string;
