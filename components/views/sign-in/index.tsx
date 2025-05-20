@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +27,9 @@ interface SignInViewProps {
 }
 
 const SignInView = ({ loginType, company }: SignInViewProps) => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const formSchema = createFormSchema(loginType === "agency");
   type FormValues = z.infer<typeof formSchema>;
 
@@ -67,7 +71,6 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
         id: email,
         password: values.password,
       });
-      console.log("response 1", response);
 
       if (response?.user) {
         const user: TSMPayUser = {
@@ -79,6 +82,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
           name: response.user.name,
           phoneNumber: response.user.phoneNumber,
         };
+
         await signIn("credentials", {
           ...user,
           accessToken: response.accessToken,
@@ -97,6 +101,12 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (!session) return;
+
+    router.push("/sm-pay/management");
+  }, [session]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

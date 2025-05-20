@@ -21,3 +21,16 @@ export const signInApi = async (
     throw error;
   }
 };
+
+export const signOutApi = async () => {
+  try {
+    const response = await post("/users/logout");
+    console.log("signOutApi response", response);
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
