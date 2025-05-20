@@ -39,11 +39,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     router.push("/sign-in");
   };
 
-  useEffect(() => {
-    if (isNoNeedTokenPage || !session) {
-      setIsExpireModalOpen(true);
-    }
-  }, [isNoNeedTokenPage, session]);
+  // useEffect(() => {
+  //   if (isNoNeedTokenPage && !session) {
+  //     console.log(isNoNeedTokenPage && !session);
+  //     setIsExpireModalOpen(true);
+  //   }
+  // }, [isNoNeedTokenPage, session]);
 
   useEffect(() => {
     if (!isNoNavPage && pathname.includes("/sm-pay/management")) {
