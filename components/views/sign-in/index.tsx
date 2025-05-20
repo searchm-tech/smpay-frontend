@@ -45,6 +45,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     },
     mode: "onChange",
   });
+  console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
 
   const handleRememberChange = (checked: boolean) => {
     setIsRememberUsername(checked);
