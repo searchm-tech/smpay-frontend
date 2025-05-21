@@ -91,5 +91,7 @@ export const useQueryAgencyAll = () => {
   return useQuery<TAgency[]>({
     queryKey: ["agencyAll"],
     queryFn: getAgencyAllApi,
+    initialData: [],
+    select: (data) => data ?? [],
   });
 };

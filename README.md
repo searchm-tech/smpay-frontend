@@ -146,3 +146,21 @@ root
 6. naver-service # 네이버 서비스 설정
 
 ```
+
+## API
+
+```bash
+root
+│
+├── lib/
+│   ├── api/         # axios inteceptor
+│
+
+```
+
+- 문서 : [API](https://dev-api.smpay.co.kr/core/docs/smpay.html)
+- api 분기
+  - base : {baseUrl}/core/XXXX
+  - common : {baseUrl}/core/admin/api/v1/XXXX
+  - admin : {baseUrl}/core/admin/api/v1/XXXX
+  - service: {baseUrl}/core/service/api/v1/XXXX

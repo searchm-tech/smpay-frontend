@@ -154,8 +154,8 @@ export async function registerAgency(
 // 대행사 전체 리스트 조회 API
 export async function getAgencyAllApi(): Promise<TAgency[]> {
   try {
-    const response: ApiResponseData<TAgency[]> = await get("/agents/all");
-    return response.result; // result만 반환!
+    const response: TAgency[] = await get("/admin/api/v1/agents/all");
+    return response; // result만 반환!
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
