@@ -9,27 +9,23 @@ import {
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { RadioGroup } from "@/components/composite/radio-component";
-import { InputWithSuffix } from "@/components/composite/input-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import Select from "@/components/composite/select-components";
 import LoadingUI from "@/components/common/Loading";
 
 import ModalDepartment from "./ModalDepartment";
 
+import { useCreateMember } from "@/hooks/queries/member";
 import {
-  useCreateMember,
-  useCreateMemberByAgency,
-} from "@/hooks/queries/member";
-import { useQueryAgencyAll } from "@/hooks/queries/agency";
+  useMutationAgencySendMail,
+  useQueryAgencyAll,
+} from "@/hooks/queries/agency";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
-import { EMAIL_ID_REGEX } from "@/constants/reg";
+import { EMAIL_REGEX } from "@/constants/reg";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-
-type MailSendSectionProps = {
-  isAdmin: boolean;
-};
+import type { TAgencySendMailParams } from "@/services/agency";
 
 const Dialog = {
   err: "모든 필수 항목을 입력해주세요.",
@@ -40,13 +36,16 @@ const Dialog = {
     </div>
   ),
   department: "부서 선택을 해주세요.",
+  emailRegex: "이메일 형식이 올바르지 않습니다.",
 };
 
 type DialogType = keyof typeof Dialog;
 
-const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
-  const { data: agencyList } = useQueryAgencyAll();
+type MailSendSectionProps = {
+  isAdmin: boolean;
+};
 
+const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
 
@@ -56,6 +55,7 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
   const [name, setName] = useState("");
 
   const [dialog, setDialog] = useState<DialogType | null>(null);
+  const [failDialog, setFailDialog] = useState("");
 
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
   // 메일 발송 api 신규 필요 + 모달창 다시 확인
@@ -63,21 +63,32 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
     onSuccess: () => setDialog("success"),
   });
 
-  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
-    useCreateMemberByAgency({
-      onSuccess: () => setDialog("success"),
+  const { data: agencyList } = useQueryAgencyAll();
+  const { mutate: mutateSendMail, isPending: isPendingSendMail } =
+    useMutationAgencySendMail({
+      onSuccess: () => {
+        setDialog("success");
+        setDepartmentNode(null);
+        setSelectedAgency("");
+        setSelected("leader");
+        setEmailId("");
+        setName("");
+      },
+      onError: (error) => setFailDialog(error.message),
     });
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!EMAIL_ID_REGEX.test(e.target.value)) {
-      return;
-    }
     setEmailId(e.target.value);
   };
 
   const handleSubmit = () => {
     if (!emailId || !name) {
       setDialog("err");
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(emailId)) {
+      setDialog("emailRegex");
       return;
     }
 
@@ -101,13 +112,14 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
         return;
       }
 
-      const data = {
-        emailId,
-        agencyId: selectedAgency,
+      const params: TAgencySendMailParams = {
+        agentId: Number(selectedAgency),
+        userType: "AGENCY_GROUP_MASTER", // user.type,
         name,
+        emailAddress: emailId,
       };
 
-      createMemberByAgency(data);
+      mutateSendMail(params);
     }
   };
 
@@ -117,7 +129,7 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
 
   return (
     <section className="py-4">
-      {(isPending || isPendingByAgency) && (
+      {(isPending || isPendingSendMail) && (
         <LoadingUI title="초대 메일 전송 중..." />
       )}
 
@@ -133,8 +145,18 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
           open
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
-          title="오류"
+          title={dialog === "success" ? "전송 완료" : "오류"}
           content={Dialog[dialog]}
+        />
+      )}
+
+      {failDialog && (
+        <ConfirmDialog
+          open
+          onClose={() => setFailDialog("")}
+          onConfirm={() => setFailDialog("")}
+          title="오류"
+          content={failDialog}
         />
       )}
 
@@ -176,21 +198,19 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
             />
           )}
         </DescriptionItem>
-        {!isAdmin && (
-          <DescriptionItem label="성명 *">
-            <Input
-              className="max-w-[500px]"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </DescriptionItem>
-        )}
+        <DescriptionItem label="성명 *">
+          <Input
+            className="max-w-[500px]"
+            placeholder="성명을 입력해주세요."
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </DescriptionItem>
 
         <DescriptionItem label="발송될 이메일 주소 *">
-          <InputWithSuffix
+          <Input
             className="max-w-[500px]"
-            suffix="@smpay.com"
-            containerClassName="max-w-[500px]"
+            placeholder="이메일 주소를 입력해주세요."
             value={emailId}
             onChange={handleEmailIdChange}
           />
