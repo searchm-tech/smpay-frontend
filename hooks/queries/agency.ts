@@ -11,7 +11,9 @@ import {
   getAgencies,
   getAgency,
   getAgencyAllApi,
+  postAgencySendMailApi,
   registerAgency,
+  TAgencySendMailParams,
   updateAgency,
 } from "@/services/agency";
 
@@ -93,5 +95,16 @@ export const useQueryAgencyAll = () => {
     queryFn: getAgencyAllApi,
     initialData: [],
     select: (data) => data ?? [],
+  });
+};
+
+// 대행사 최상위 그룹장 회원 초대 메일 발송 뮤테이션
+export const useMutationAgencySendMail = (
+  options?: UseMutationOptions<AgencyData | null, Error, TAgencySendMailParams>
+) => {
+  return useMutation<AgencyData | null, Error, TAgencySendMailParams>({
+    mutationFn: (params: TAgencySendMailParams) =>
+      postAgencySendMailApi(params),
+    ...options,
   });
 };

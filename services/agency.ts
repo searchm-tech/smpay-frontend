@@ -1,8 +1,8 @@
-import { get, ApiError } from "@/lib/api";
+import { get, ApiError, post } from "@/lib/api";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
-import type { ApiResponseData } from "@/services/types";
+import type { TAuthType } from "@/types/user";
 
 export interface AgencyData {
   id: string;
@@ -156,6 +156,30 @@ export async function getAgencyAllApi(): Promise<TAgency[]> {
   try {
     const response: TAgency[] = await get("/admin/api/v1/agents/all");
     return response; // result만 반환!
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 최상위 그룹장 회원 초대 메일 발송 API
+export type TAgencySendMailParams = {
+  agentId: number;
+  userType: TAuthType;
+  name: string;
+  emailAddress: string;
+};
+export async function postAgencySendMailApi(
+  params: TAgencySendMailParams
+): Promise<AgencyData | null> {
+  try {
+    const response: AgencyData = await post(
+      "/admin/api/v1/agents/users/email",
+      params
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
