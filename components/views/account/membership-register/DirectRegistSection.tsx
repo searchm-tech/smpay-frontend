@@ -9,7 +9,7 @@ import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
-import { SelectSearchServer } from "@/components/composite/select-search-server";
+import Select from "@/components/composite/select-components";
 import { InputWithSuffix } from "@/components/composite/input-components";
 import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
@@ -49,6 +49,7 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [memberType, setMemberType] = useState("leader");
   const [agency, setAgency] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState("");
 
   const [errModal, setErrModal] = useState("");
   const [successModal, setSuccessModal] = useState(false);
@@ -191,13 +192,14 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
       <Descriptions columns={1} bordered>
         <DescriptionItem label="대행사 선택 *">
           {isAdmin ? (
-            <SelectSearchServer
+            <Select
               className="max-w-[500px]"
-              fetchOptions={fetchAdvertiserOptions}
-              value={agency}
-              onValueChange={setAgency}
-              placeholder="대행사를 선택하세요"
-              searchPlaceholder="대행사명, 대표자를 검색하세요."
+              value={selectedAgency}
+              onChange={(value) => setSelectedAgency(value)}
+              options={agencyList.map((agency) => ({
+                label: `${agency.name} | ${agency.representativeName}`,
+                value: agency.agentId.toString(),
+              }))}
             />
           ) : (
             <div className="flex items-center gap-2">

@@ -2,16 +2,16 @@ import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { SelectSearchServer } from "@/components/composite/select-search-server";
 import { RadioGroup } from "@/components/composite/radio-component";
 import { InputWithSuffix } from "@/components/composite/input-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
-
+import Select from "@/components/composite/select-components";
 import LoadingUI from "@/components/common/Loading";
 
 import ModalDepartment from "./ModalDepartment";
@@ -20,12 +20,11 @@ import {
   useCreateMember,
   useCreateMemberByAgency,
 } from "@/hooks/queries/member";
-import { fetchAdvertisers } from "@/services/advertiser";
+import { useQueryAgencyAll } from "@/hooks/queries/agency";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_ID_REGEX } from "@/constants/reg";
 
-import type { TableParams } from "@/services/types";
 import type { DepartmentTreeNode } from "@/types/tree";
 
 type MailSendSectionProps = {
@@ -46,9 +45,12 @@ const Dialog = {
 type DialogType = keyof typeof Dialog;
 
 const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
+  const { data: agencyList } = useQueryAgencyAll();
+
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
-  const [agency, setAgency] = useState("");
+
+  const [selectedAgency, setSelectedAgency] = useState("");
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
@@ -94,14 +96,14 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
 
       createMember(data);
     } else {
-      if (!agency) {
+      if (!selectedAgency) {
         setDialog("err");
         return;
       }
 
       const data = {
         emailId,
-        agency,
+        agencyId: selectedAgency,
         name,
       };
 
@@ -142,13 +144,14 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
       <Descriptions columns={1} bordered>
         <DescriptionItem label={`${isAdmin ? "대행사 선택 *" : "부서 선택 *"}`}>
           {isAdmin ? (
-            <SelectSearchServer
+            <Select
               className="max-w-[500px]"
-              fetchOptions={fetchAdvertiserOptions}
-              value={agency}
-              onValueChange={setAgency}
-              placeholder="대행사를 선택하세요"
-              searchPlaceholder="대행사명, 대표자를 검색하세요."
+              value={selectedAgency}
+              onChange={(value) => setSelectedAgency(value)}
+              options={agencyList.map((agency) => ({
+                label: `${agency.name} | ${agency.representativeName}`,
+                value: agency.agentId.toString(),
+              }))}
             />
           ) : (
             <div className="flex items-center gap-2">
@@ -214,17 +217,3 @@ const MailSendSection = ({ isAdmin = false }: MailSendSectionProps) => {
 };
 
 export default MailSendSection;
-
-async function fetchAdvertiserOptions(params: TableParams) {
-  const response = await fetchAdvertisers(params);
-
-  return {
-    items: response.data.map((advertiser) => ({
-      label: `${advertiser.advertiserName} | ${advertiser.name}`,
-      value: advertiser.customerId,
-    })),
-    hasNextPage:
-      response.total >
-      (params.pagination?.current || 1) * (params.pagination?.pageSize || 10),
-  };
-}
