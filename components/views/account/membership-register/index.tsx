@@ -8,15 +8,19 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 
 import { useSession } from "next-auth/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MemberRegisterView = () => {
   const { data: session } = useSession();
   const [isDirectRegist, setIsDirectRegist] = useState(false);
 
-  console.log("session", session);
   const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
     session?.user.type || ""
   );
+
+  if (!session?.user) {
+    return <Skeleton className="w-full h-[100px]" />;
+  }
 
   return (
     <div>
