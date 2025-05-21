@@ -9,7 +9,7 @@ export const postUsersPasswordResetApi = async (
 ): Promise<ApiResponseData<null>> => {
   try {
     const response = await post<ApiResponseData<null>>(
-      "/users/password-reset",
+      "/api/v1/users/password-reset",
       { loginId: email }
     );
     return response;

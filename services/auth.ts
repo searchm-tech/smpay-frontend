@@ -10,7 +10,7 @@ export const signInApi = async (
 ): Promise<SignInResponse> => {
   try {
     const response: SignInResponse = await post<SignInResponse>(
-      "/users/login",
+      "/api/v1/users/login",
       params
     );
     return response;
@@ -24,7 +24,7 @@ export const signInApi = async (
 
 export const signOutApi = async () => {
   try {
-    const response = await post("/users/logout");
+    const response = await post("/api/v1/users/logout");
     console.log("signOutApi response", response);
     return response;
   } catch (error) {

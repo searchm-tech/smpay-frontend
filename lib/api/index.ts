@@ -1,6 +1,7 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
+import { signOutApi } from "@/services/auth";
 import type { ApiResponse } from "@/types/api";
 
 // 커스텀 에러 클래스
@@ -17,7 +18,7 @@ export class ApiError extends Error {
 }
 
 const apiClient = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/core/api/v1`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/core`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -52,10 +53,17 @@ apiClient.interceptors.response.use(
     return response.data; // 전체 response.data 반환 (code, message, result)
   },
   (error) => {
-    // 예: 401 에러 처리
-    if (error.response && error.response.status === 401) {
-      // 로그아웃 처리 등
+    // 토큰 만료
+    if (error.response.data.code === "70") {
+      // TODO : 토큰 만료일 경우, refreshToken 사용 api 적용
+      signOutApi()
+        .then()
+        .catch((error) => {
+          console.error("error", error);
+        })
+        .finally(() => signOut({ callbackUrl: "/sign-in" }));
     }
+
     // 서버에서 온 에러 응답이 있으면 ApiError로 throw
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
