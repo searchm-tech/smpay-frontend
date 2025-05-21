@@ -1,4 +1,5 @@
 import { SmPayStatus } from "@/types/sm-pay";
+import { TAuthType, UserStatus } from "@/types/user";
 
 export const smPayStatusMap: Record<SmPayStatus, string> = {
   ADVERTISER_AGREEMENT_REQUEST: "광고주 동의 요청",
@@ -32,4 +33,21 @@ export const getSmPayStatusLabel = (status: SmPayStatus): string => {
 
 export const getSmPayStatusColor = (status: SmPayStatus): string => {
   return smPayStatusColorMap[status] || "text-gray-500";
+};
+
+// ---- 실제 util 함수 ----
+
+// 회원 권한 유형 레이블 맵핑
+export const userAuthTypeMap: Record<TAuthType, string> = {
+  ASSOCIATE_ADVERTISER: "준광고주",
+  ADVERTISER: "광고주",
+  AGENCY_GROUP_MEMBER: "대행사 그룹원",
+  AGENCY_GROUP_MANAGER: "대행사 그룹장",
+  AGENCY_GROUP_MASTER: "대행사 최상위 그룹장",
+  OPERATIONS_MANAGER: "운영관리자",
+  SYSTEM_ADMINISTRATOR: "시스템 관리자",
+} as const;
+
+export const getUserStatusLabel = (status: TAuthType): string => {
+  return userAuthTypeMap[status] || status;
 };

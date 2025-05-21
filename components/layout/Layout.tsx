@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   const [isExpireModalOpen, setIsExpireModalOpen] = useState(false);
 
@@ -25,9 +25,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/advertiser-verification" ||
     pathname === "/sign-in" ||
     pathname === "/membership/password-reset" ||
-    pathname === "/sign-out";
+    pathname === "/sign-out" ||
+    pathname === "/sign-up";
 
-  const isNoNeedTokenPage = pathname !== "/sign-in"; // 비밀번호 설정 관련 페이지도 추가
+  // const isNoNeedTokenPage = pathname !== "/sign-in"; // 비밀번호 설정 관련 페이지도 추가
 
   const isErrorPage =
     pathname === "/not-found" ||
