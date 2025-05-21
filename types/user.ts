@@ -21,7 +21,7 @@ export interface MemberData {
 
 export type ActiveStatus = "active" | "inactive";
 
-export type TAuthStatus = "NORMAL" | "STOP"; // NORMAL : 활성화 STOP : 비활성화
+export type TAuthStatus = "NORMAL" | "STOP"; // NORMAL : 활성화 STOP : 비활성화 - agency 통일
 export type TAuthType =
   | "ASSOCIATE_ADVERTISER"
   | "ADVERTISER"
