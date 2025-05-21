@@ -1,29 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { TSMPayUser } from "@/types/user";
 
-declare module "next-auth" {
-  interface Session {
-    user: TSMPayUser;
-    accessToken: string;
-    refreshToken: string;
-  }
-
-  // 평평하게!
-  interface User extends TSMPayUser {
-    accessToken: string;
-    refreshToken: string;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT extends TSMPayUser {
-    accessToken: string;
-    refreshToken: string;
-  }
-}
-
-console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // ✅ 추가
@@ -35,8 +12,6 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("credentials", credentials);
-        console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
         const c = credentials as any;
         if (!c?.id) return null;
         return {
