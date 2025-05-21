@@ -21,7 +21,8 @@ export interface MemberData {
 
 export type ActiveStatus = "active" | "inactive";
 
-export type TAuthStatus = "NORMAL" | "STOP"; // NORMAL : 활성화 STOP : 비활성화 - agency 통일
+// ------------------------실제 타입------------------------
+
 export type TAuthType =
   | "ASSOCIATE_ADVERTISER"
   | "ADVERTISER"
@@ -31,8 +32,6 @@ export type TAuthType =
   | "OPERATIONS_MANAGER"
   | "SYSTEM_ADMINISTRATOR";
 // 	ASSOCIATE_ADVERTISER : 준광고주 ADVERTISER : 광고주 AGENCY_GROUP_MEMBER : 대행사 그룹원 AGENCY_GROUP_MANAGER : 대행사 그룹장 AGENCY_GROUP_MASTER : 대행사 최상위 그룹장 OPERATIONS_MANAGER : 운영관리자 SYSTEM_ADMINISTRATOR : 시스템 관리자
-
-// ------------------------실제 타입------------------------
 
 export type TSMPayUser = {
   id: number;
@@ -45,3 +44,32 @@ export type TSMPayUser = {
 };
 
 export type UserStatus = "NORMAL" | "STOP" | "TEMP"; // NORMAL : 활성화 STOP : 비활성화 TEMP : 임시
+
+// agents/users/mail-verifications response type
+export type TMailVerifyUser = {
+  isVerified: boolean;
+  adminAgentResponseDto: AdminAgentResponseDto;
+  userResponseDto: UserResponseDto;
+};
+export type AdminAgentResponseDto = {
+  agentId: number;
+  name: string;
+  uniqueCode: string;
+  representativeName: string;
+  businessRegistrationNumber: string;
+};
+
+export type UserResponseDto = {
+  userId: number;
+  agentId: number;
+  id: string;
+  status: UserStatus;
+  type: TAuthType;
+  name: string;
+};
+
+// agents/users/mail-verifications params type
+export type TMailVerifyParams = {
+  agentCode: string;
+  userCode: string;
+};
