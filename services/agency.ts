@@ -1,5 +1,8 @@
+import { get, ApiError } from "@/lib/api";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
 import type { TableParams } from "@/types/table";
+import type { TAgency } from "@/types/agency";
+import type { ApiResponseData } from "@/services/types";
 
 export interface AgencyData {
   id: string;
@@ -144,4 +147,19 @@ export async function registerAgency(
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return data;
+}
+
+// ---- 실제 API 호출 ----
+
+// 대행사 전체 리스트 조회 API
+export async function getAgencyAllApi(): Promise<TAgency[]> {
+  try {
+    const response: ApiResponseData<TAgency[]> = await get("/agents/all");
+    return response.result; // result만 반환!
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
 }

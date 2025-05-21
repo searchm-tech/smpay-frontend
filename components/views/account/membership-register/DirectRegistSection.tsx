@@ -31,12 +31,15 @@ import { EMAIL_ID_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 import type { TableParams } from "@/services/types";
 
 import type { DepartmentTreeNode } from "@/types/tree";
+import { useQueryAgencyAll } from "@/hooks/queries/agency";
 
 type DirectRegistSectionProps = {
   isAdmin: boolean;
 };
 
 const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
+  const { data: agencyList } = useQueryAgencyAll();
+
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
   const [phone, setPhone] = useState("");
@@ -145,6 +148,8 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const handleDepartmentSelect = (node: DepartmentTreeNode) => {
     setDepartmentNode(node);
   };
+
+  console.log("agencyList", agencyList);
 
   return (
     <section className="py-4">

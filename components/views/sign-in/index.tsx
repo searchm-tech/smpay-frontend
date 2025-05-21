@@ -15,6 +15,8 @@ import CheckboxLabel from "@/components/composite/checkbox-label";
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
+import ModalPwdSetting from "./ModalPwdSetting";
+
 import { STORAGE_KEYS, createFormSchema } from "./constants";
 import { signInApi } from "@/services/auth";
 import { ApiError } from "@/lib/api";
@@ -36,6 +38,7 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
   const [isRememberUsername, setIsRememberUsername] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPwdSettingModalOpen, setIsPwdSettingModalOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -127,6 +130,10 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       {loading && <LoadingUI title="로그인 중..." />}
 
+      {isPwdSettingModalOpen && (
+        <ModalPwdSetting onClose={() => setIsPwdSettingModalOpen(false)} />
+      )}
+
       <div className="max-w-md w-full space-y-8">
         <div className="w-full flex justify-center">
           <Title />
@@ -177,9 +184,9 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
               />
               <span
                 className="text-[#545F71] cursor-pointer text-sm"
-                onClick={() => alert("비밀번호 찾기 페이지 이동")}
+                onClick={() => setIsPwdSettingModalOpen(true)}
               >
-                비밀번호 찾기
+                비밀번호 재설정
               </span>
             </div>
           </form>
