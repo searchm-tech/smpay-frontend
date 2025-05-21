@@ -39,7 +39,10 @@
 
 ## 기획안 및 피그마
 
-[피그마](https://www.figma.com/design/RxwP19dL9bvFhMJpZ5FzSW/SMPay-Planning?node-id=31-3468&p=f)
+[피그마- 기획](https://www.figma.com/design/RxwP19dL9bvFhMJpZ5FzSW/SMPay-Planning?node-id=31-3468&p=f)
+
+[피그마 - 디자인](https://www.figma.com/design/RxwP19dL9bvFhMJpZ5FzSW/SMPay-Planning?node-id=31-3468&p=f)
+
 [정책안](https://searchm-atlab.atlassian.net/wiki/spaces/SMPay/pages/13336707/2.)
 
 ## 빌드 및 실행

@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import SignInView from "@/components/views/sign-in";
 

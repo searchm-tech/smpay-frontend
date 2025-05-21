@@ -45,7 +45,6 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     },
     mode: "onChange",
   });
-  console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
 
   const handleRememberChange = (checked: boolean) => {
     setIsRememberUsername(checked);
@@ -83,13 +82,12 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
           name: response.user.name,
           phoneNumber: response.user.phoneNumber,
         };
-        console.log("response", response);
 
         await signIn("credentials", {
           ...user,
           accessToken: response.accessToken,
           refreshToken: response.refreshToken,
-          // callbackUrl: "/sm-pay/management",
+          callbackUrl: "/sm-pay/management",
         });
       }
     } catch (error) {
