@@ -10,11 +10,13 @@ import {
   checkCompanyEmailDomain,
   getAgencies,
   getAgency,
+  getAgencyAllApi,
   registerAgency,
   updateAgency,
 } from "@/services/agency";
 
 import type { TableParams } from "@/types/table";
+import { TAgency } from "@/types/agency";
 
 // 대행사 목록 > 대행사 목록  query
 export const useAgencyList = (params: TableParams) => {
@@ -79,5 +81,15 @@ export const useRegisterAgency = (
   return useMutation<AgencyData | null, Error, AgencyData>({
     mutationFn: (data: AgencyData) => registerAgency(data),
     ...options,
+  });
+};
+
+// --- 실제 API 호출 ---
+
+// 대행사 전체 리스트 조회 쿼리
+export const useQueryAgencyAll = () => {
+  return useQuery<TAgency[]>({
+    queryKey: ["agencyAll"],
+    queryFn: getAgencyAllApi,
   });
 };
