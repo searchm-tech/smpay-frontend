@@ -35,6 +35,7 @@ interface SelectSearchServerProps<T extends { value: string; label: string }> {
   debounceMs?: number;
 }
 
+// TODO : 나중에 처리
 export function SelectSearchServer<T extends { value: string; label: string }>({
   fetchOptions,
   value,
@@ -186,3 +187,96 @@ export function SelectSearchServer<T extends { value: string; label: string }>({
     </Popover>
   );
 }
+
+// 서버사이드 셀렉박스 예시
+/* <SelectSearchServer
+className="max-w-[500px]"
+fetchOptions={fetchAdvertiserOptions}
+value={agency}
+onValueChange={setAgency}
+placeholder="대행사를 선택하세요"
+searchPlaceholder="대행사명, 대표자를 검색하세요."
+/> 
+}
+
+async function fetchAdvertiserOptions(params: TableParams) {
+  const response = await fetchAdvertisers(params);
+
+  return {
+    items: response.data.map((advertiser) => ({
+      label: `${advertiser.advertiserName} | ${advertiser.name}`,
+      value: advertiser.customerId,
+    })),
+    hasNextPage:
+      response.total >
+      (params.pagination?.current || 1) * (params.pagination?.pageSize || 10),
+  };
+}
+
+
+export const fetchAdvertisers = async (
+  params: TableParams
+): Promise<AdvertiserListResponse & { total: number }> => {
+  // 서버 응답을 시뮬레이션하기 위한 지연
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  const { pagination, sort, filters } = params;
+  let filteredData = [...mockAdvertiserData];
+
+  // 필터링 적용
+  if (filters) {
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values && values.length > 0) {
+        if (key === "search") {
+          const searchTerm = values[0].toLowerCase();
+          filteredData = filteredData.filter(
+            (item: AdvertiserData) =>
+              item.name.toLowerCase().includes(searchTerm) ||
+              item.customerId.toLowerCase().includes(searchTerm) ||
+              item.loginId.toLowerCase().includes(searchTerm)
+          );
+        } else {
+          filteredData = filteredData.filter((item: AdvertiserData) => {
+            const itemValue = String((item as any)[key]);
+            return values.includes(itemValue);
+          });
+        }
+      }
+    });
+  }
+
+  // 정렬 적용
+  if (sort?.field && sort.order) {
+    filteredData.sort((a: AdvertiserData, b: AdvertiserData) => {
+      const aValue = (a as any)[sort.field!];
+      const bValue = (b as any)[sort.field!];
+
+      if (typeof aValue === "string") {
+        return sort.order === "ascend"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      if (typeof aValue === "number") {
+        return sort.order === "ascend" ? aValue - bValue : bValue - aValue;
+      }
+
+      return 0;
+    });
+  }
+
+  // 페이지네이션 적용
+  const { current, pageSize } = pagination;
+  const startIndex = (current - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+
+  return {
+    data: paginatedData,
+    success: true,
+    total: filteredData.length,
+    hasNextPage: filteredData.length > pageSize,
+  };
+};
+
+*/

@@ -3,7 +3,7 @@ import type { AdvertiserListResponse, TableParams } from "./types";
 import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 /**
- * 광고주 목록 조회 api
+ * TODO : 삭제  - 광고주 목록 조회 api
  * @param params
  * @returns
  */
