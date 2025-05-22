@@ -73,3 +73,9 @@ export type TMailVerifyParams = {
   agentCode: string;
   userCode: string;
 };
+
+// /admin/api/v1/agents/${agentCode}/users/${userCode} response type
+export type TSignUpMailVerifyResponse = {
+  url: string;
+  loginId: string;
+};
