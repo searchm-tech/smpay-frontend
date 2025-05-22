@@ -8,5 +8,5 @@ export default function SignUpPage({
   const company = searchParams.company as string;
   const code = searchParams.code as string;
 
-  return <SignUpView company={company} code={code} />;
+  return <SignUpView agentCode={company} userCode={code} />;
 }

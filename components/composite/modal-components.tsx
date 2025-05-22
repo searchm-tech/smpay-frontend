@@ -72,6 +72,7 @@ interface ContentModalProps extends ModalProps {
   contentClassName?: string;
   cancelDisabled?: boolean;
   confirmDisabled?: boolean;
+  iconDisabled?: boolean;
 }
 export const Modal = ({
   open = false,
@@ -85,6 +86,7 @@ export const Modal = ({
   contentClassName,
   cancelDisabled,
   confirmDisabled,
+  iconDisabled = false,
 }: ContentModalProps) => {
   return (
     <AlertDialog open={open}>
@@ -96,9 +98,14 @@ export const Modal = ({
         }}
       >
         <AlertDialogHeader className="px-8 border-b border-[#CCCCCC] py-4">
-          <AlertDialogTitle className="flex justify-between items-center">
+          <AlertDialogTitle className="flex justify-between items-center my-0">
             <span>{title}</span>
-            <X className="w-[22px] h-[22px] cursor-pointer" onClick={onClose} />
+            {!iconDisabled && (
+              <X
+                className="w-[22px] h-[22px] cursor-pointer"
+                onClick={onClose}
+              />
+            )}
           </AlertDialogTitle>
         </AlertDialogHeader>
 

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 import {
   Descriptions,
   DescriptionItem,
@@ -15,87 +16,125 @@ import {
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
+import ErrorView from "../error";
+
 import { userAuthTypeMap } from "@/utils/status";
-import { useQueryMailVerify } from "@/hooks/queries/user";
+import { PASSWORD_REGEX, PHONE_REGEX } from "@/constants/reg";
+
+import {
+  useQueryMailVerify,
+  useMutationSignUpMailVerify,
+} from "@/hooks/queries/user";
+
+import type { TSignUpMailVerifyParams } from "@/services/user";
+
+import ModalSuccess from "./ModalSuccess";
+import { TSignUpMailVerifyResponse } from "@/types/user";
 
 interface SignUpViewProps {
-  company: string;
-  code: string;
+  agentCode: string;
+  userCode: string;
 }
 
-const SignUpView = ({ company, code }: SignUpViewProps) => {
+const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
   const router = useRouter();
+
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [phone, setPhone] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [result, setResult] = useState<TSignUpMailVerifyResponse | null>(null);
+
+  const { mutate: signUpMailVerify, isPending: isSignUpMailVerifyLoading } =
+    useMutationSignUpMailVerify({
+      onSuccess: (data) => setResult(data),
+    });
 
   const {
     data: mailVerify,
     isLoading,
     error,
   } = useQueryMailVerify(
+    { agentCode, userCode },
     {
-      agentCode: company,
-      userCode: code,
-    },
-    {
-      queryKey: ["mailVerify", { agentCode: company, userCode: code }],
-      enabled: !!company && !!code,
+      queryKey: ["mailVerify", { agentCode, userCode }],
+      enabled: !!agentCode && !!userCode,
     }
   );
 
-  if (isLoading) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <LoadingUI />
-      </div>
-    );
-  }
+  const onSubmit = () => {
+    if (!mailVerify) return;
+    if (!phone || !password || !passwordConfirm) {
+      setErrorMessage("모든 항목을 입력해주세요.");
+      return;
+    }
 
-  if (error) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 text-lg font-medium mb-4">
-            {error instanceof Error ? error.message : "인증에 실패했습니다."}
-          </p>
-          <Button
-            variant="cancel"
-            className="w-[150px]"
-            onClick={() => router.push("/sign-in")}
-          >
-            이전 페이지로
-          </Button>
-        </div>
-      </div>
-    );
-  }
+    if (password !== passwordConfirm) {
+      setErrorMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (!PASSWORD_REGEX.test(password)) {
+      setErrorMessage(
+        "비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력해주세요."
+      );
+      return;
+    }
+
+    console.log(phone);
+
+    if (phone.length !== 11) {
+      setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
+      return;
+    }
+
+    const phoneNumber = phone.replace(/[^0-9]/g, "");
+
+    const params: TSignUpMailVerifyParams = {
+      agentId: mailVerify.userResponseDto.agentId,
+      userId: mailVerify.userResponseDto.userId,
+      password,
+      phone: phoneNumber,
+    };
+    signUpMailVerify(params);
+  };
+
+  if (isLoading) return <LoadingUI />;
+
+  if (error) return <ErrorView message={error.message} />;
 
   if (!mailVerify?.isVerified) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 text-lg font-medium mb-4">
-            유효하지 않은 인증 링크입니다.
-          </p>
-          <Button
-            variant="cancel"
-            className="w-[150px]"
-            onClick={() => router.push("/sign-in")}
-          >
-            이전 페이지로
-          </Button>
-        </div>
-      </div>
-    );
+    return <ErrorView message="유효하지 않은 인증 링크입니다." />;
   }
 
+  console.log(result);
   return (
-    <div className="w-full max-w-[1024px] h-screen flex flex-col gap-5 mx-auto my-10">
+    <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
+      {result && (
+        <ModalSuccess result={result} onClose={() => setResult(null)} />
+      )}
+
+      {errorMessage && (
+        <ConfirmDialog
+          open
+          onConfirm={() => setErrorMessage("")}
+          onClose={() => setErrorMessage("")}
+          content={errorMessage}
+        />
+      )}
+
+      {isSignUpMailVerifyLoading && (
+        <LoadingUI title="회원가입 중입니다. 잠시만 기다려주세요." />
+      )}
+
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
         <span>SM Pay를 이용해주셔서 감사합니다.</span>
         <span>비밀번호를 설정하고 회원가입을 완료해주세요.</span>
       </div>
-      <div className="space-y-1">
+      <div className="">
         <LabelBullet labelClassName="text-base font-bold">
           회원 정보
         </LabelBullet>
@@ -122,10 +161,22 @@ const SignUpView = ({ company, code }: SignUpViewProps) => {
         </span>
         <Descriptions bordered columns={1}>
           <DescriptionItem label="비밀번호 *">
-            <Input className="max-w-[500px]" />
+            <Input
+              className="max-w-[500px]"
+              type="password"
+              placeholder="비밀번호를 입력해주세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </DescriptionItem>
           <DescriptionItem label="비밀번호 확인 *">
-            <Input className="max-w-[500px]" />
+            <Input
+              className="max-w-[500px]"
+              type="password"
+              placeholder="비밀번호를 입력해주세요"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+            />
           </DescriptionItem>
           <DescriptionItem label="연락처">
             <PhoneInput
@@ -136,8 +187,10 @@ const SignUpView = ({ company, code }: SignUpViewProps) => {
         </Descriptions>
       </div>
 
-      <div className="flex justify-center gap-2 mt-4">
-        <Button className="w-[150px]">확인</Button>
+      <div className="flex justify-center gap-2">
+        <Button className="w-[150px]" onClick={onSubmit}>
+          확인
+        </Button>
         <Button
           variant="cancel"
           className="w-[150px]"
@@ -146,6 +199,10 @@ const SignUpView = ({ company, code }: SignUpViewProps) => {
           취소
         </Button>
       </div>
+
+      {errorMessage && (
+        <span className="text-red-500 text-center text-sm">{errorMessage}</span>
+      )}
     </div>
   );
 };
