@@ -73,6 +73,7 @@ interface ContentModalProps extends ModalProps {
   cancelDisabled?: boolean;
   confirmDisabled?: boolean;
   iconDisabled?: boolean;
+  footerDisabled?: boolean;
 }
 export const Modal = ({
   open = false,
@@ -87,6 +88,7 @@ export const Modal = ({
   cancelDisabled,
   confirmDisabled,
   iconDisabled = false,
+  footerDisabled = false,
 }: ContentModalProps) => {
   return (
     <AlertDialog open={open}>
@@ -111,25 +113,27 @@ export const Modal = ({
 
         <div className={cn("px-8 py-4", contentClassName)}>{children}</div>
 
-        <AlertDialogFooter className="py-4 bg-[#E2E2E2] rounded-b-lg">
-          {!confirmDisabled && (
-            <AlertDialogAction
-              className="min-w-[150px] min-h-[35px]"
-              onClick={onConfirm}
-            >
-              {confirmText}
-            </AlertDialogAction>
-          )}
+        {!footerDisabled && (
+          <AlertDialogFooter className="py-4 bg-[#E2E2E2] rounded-b-lg">
+            {!confirmDisabled && (
+              <AlertDialogAction
+                className="min-w-[150px] min-h-[35px]"
+                onClick={onConfirm}
+              >
+                {confirmText}
+              </AlertDialogAction>
+            )}
 
-          {!cancelDisabled && (
-            <AlertDialogCancel
-              className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
-              onClick={onClose}
-            >
-              {cancelText}
-            </AlertDialogCancel>
-          )}
-        </AlertDialogFooter>
+            {!cancelDisabled && (
+              <AlertDialogCancel
+                className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
+                onClick={onClose}
+              >
+                {cancelText}
+              </AlertDialogCancel>
+            )}
+          </AlertDialogFooter>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );
