@@ -11,11 +11,11 @@ interface Props {
 const ContentHeader = ({ title, items }: Props) => {
   return (
     <header>
-      <div className="space-y-1 px-2 flex justify-between items-center">
+      <div className="pt-3 px-2 flex justify-between items-center">
         <Typography variant="h4">{title}</Typography>
         <BreadcrumbContainer items={items} />
       </div>
-      <div className="my-3 border-b-2 border-black" />
+      <div className="my-1 border-b-2 border-black" />
     </header>
   );
 };

@@ -3,7 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/composite/app-sidebar";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
@@ -63,25 +63,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      {isExpireModalOpen && (
-        <ConfirmDialog
-          open
-          content="세션이 만료되었습니다. 다시 로그인해주세요."
-          onClose={handleCloseExpireModal}
-          onConfirm={handleCloseExpireModal}
-        />
-      )}
-      <SidebarProvider>
-        {!isErrorPage && <AppSidebar />}
-
-        <div className="flex flex-col flex-1">
-          {isGuideOpen && (
-            <SmPayGuideModal onClose={() => setGuideOpen(false)} />
-          )}
-          {!isErrorPage && <Header />}
-          <main className="flex-1 overflow-y-auto px-4">{children}</main>
-          <Footer />
+    <div className="[--header-height:calc(theme(spacing.14))]">
+      <SidebarProvider className="flex flex-col">
+        <Header />
+        <div className="flex flex-1">
+          <AppSidebar />
+          <SidebarInset>
+            <main className="flex-1 overflow-y-auto mt-[74px]">
+              <div className="flex flex-col flex-1">
+                <div className="px-4">{children}</div>
+                <Footer />
+              </div>
+            </main>
+          </SidebarInset>
         </div>
       </SidebarProvider>
     </div>

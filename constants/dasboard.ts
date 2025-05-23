@@ -110,7 +110,7 @@ export const DASHBOARD_ITEMS_AGENCY = [
 export const DASHBOARD_ITEMS_ADMIN = [
   {
     title: "SM Pay",
-    url: "/",
+    url: "/sm-pay",
     icon: AppWindow,
     isActive: true,
     items: [
