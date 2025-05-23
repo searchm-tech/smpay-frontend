@@ -1,3 +1,6 @@
+import { TAgency } from "./agency";
+import { TDepartment } from "./department";
+
 // TODO : 삭제 예정
 export type TUser = {
   id: string;
@@ -78,4 +81,22 @@ export type TMailVerifyParams = {
 export type TSignUpMailVerifyResponse = {
   url: string;
   loginId: string;
+};
+
+export type TResetPwdType = "REGISTER" | "RESET"; // REGISTER : 등록 RESET : 재설정
+
+export type TAgentsUsersPwResponse = {
+  agentId: number;
+  userType: TAuthType;
+  name: string;
+  emailAddress: string;
+};
+
+// 회원 정보 조회 API response type
+export type TUserInfoResponse = {
+  agent: TAgency;
+  user: {
+    user: TSMPayUser & { isDelete: boolean };
+    department: TDepartment;
+  };
 };
