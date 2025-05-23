@@ -55,9 +55,11 @@ export function NavDashboard() {
     return "agency";
   }, [session]);
 
+  console.log("dashboardItems[menuType]", dashboardItems[menuType]);
+  console.log("pathname", pathname);
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
       <SidebarMenu>
         {dashboardItems[menuType].map((item) =>
           item.items && item.items.length > 0 ? (
@@ -72,6 +74,9 @@ export function NavDashboard() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     className="cursor-pointer"
+                    isSelected={item.items.some(
+                      (subItem) => subItem.url === pathname
+                    )}
                     onClick={() => handleClick(item.url, item.items.length > 0)}
                   >
                     {item.icon && <item.icon />}

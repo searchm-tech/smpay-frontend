@@ -6,7 +6,7 @@ import DocumentComponent from "../common/Document";
 const Footer = () => {
   const [documentType, setDocumentType] = useState<
     "personalInfo" | "termsOfService" | null
-  >("termsOfService");
+  >(null);
 
   return (
     <footer className="w-full h-[223px] bg-[#EDF0F5] text-[#3C4D60] py-3 border-t border-[#A8A8A8] flex flex-col  justify-center gap-2 pl-8">
