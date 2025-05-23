@@ -10,3 +10,14 @@ export type SignInResponse = {
   refreshToken: string;
   user: TSMPayUser;
 };
+
+export type Token = {
+  token: string;
+  expiredDt: string;
+};
+
+export type RefreshTokenResponse = {
+  accessToken: Token;
+  refreshToken: Token;
+  user: TSMPayUser;
+};
