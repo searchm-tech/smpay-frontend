@@ -24,9 +24,13 @@ import { PASSWORD_REGEX, PHONE_REGEX } from "@/constants/reg";
 import {
   useQueryMailVerify,
   useMutationSignUpMailVerify,
+  useMutationAgentsUsersPw,
 } from "@/hooks/queries/user";
 
-import type { TSignUpMailVerifyParams } from "@/services/user";
+import type {
+  TAgentsUsersPwParams,
+  TSignUpMailVerifyParams,
+} from "@/services/user";
 
 import ModalSuccess from "./ModalSuccess";
 import { TSignUpMailVerifyResponse } from "@/types/user";
@@ -47,8 +51,8 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const [result, setResult] = useState<TSignUpMailVerifyResponse | null>(null);
 
-  const { mutate: signUpMailVerify, isPending: isSignUpMailVerifyLoading } =
-    useMutationSignUpMailVerify({
+  const { mutate: agentsUsersPw, isPending: isAgentsUsersPwLoading } =
+    useMutationAgentsUsersPw({
       onSuccess: (data) => setResult(data),
     });
 
@@ -92,13 +96,14 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
-    const params: TSignUpMailVerifyParams = {
+    const params: TAgentsUsersPwParams = {
       agentId: mailVerify.userResponseDto.agentId,
       userId: mailVerify.userResponseDto.userId,
       password,
       phone: phoneNumber,
+      type: "REGISTER",
     };
-    signUpMailVerify(params);
+    agentsUsersPw(params);
   };
 
   if (isLoading) return <LoadingUI />;
@@ -125,7 +130,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
         />
       )}
 
-      {isSignUpMailVerifyLoading && (
+      {isAgentsUsersPwLoading && (
         <LoadingUI title="회원가입 중입니다. 잠시만 기다려주세요." />
       )}
 

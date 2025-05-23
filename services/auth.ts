@@ -1,4 +1,4 @@
-import { ApiError, post } from "@/lib/api";
+import apiClient, { ApiError, post } from "@/lib/api";
 
 import type {
   SignInResponse,
@@ -36,8 +36,15 @@ export const signOutApi = async () => {
 };
 
 // 토큰 재발급 API
-export const postRefreshTokenApi = async () => {
+type RefreshTokenRequest = {
+  refreshToken: string;
+};
+
+export const postRefreshTokenApi = async (
+  params: RefreshTokenRequest
+): Promise<RefreshTokenResponse> => {
   try {
+    apiClient.defaults.headers.Authorization = `Bearer ${params.refreshToken}`;
     const response = await post<RefreshTokenResponse>(
       "/api/v1/users/token/refresh"
     );

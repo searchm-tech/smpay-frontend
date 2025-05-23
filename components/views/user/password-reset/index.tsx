@@ -11,11 +11,21 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
-
+import { useSession } from "next-auth/react";
 import Title from "@/components/common/Title";
+import { useQueryUserInfo } from "@/hooks/queries/user";
 
 const PasswordResetView = () => {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const { data: userInfo } = useQueryUserInfo({
+    agentId: session?.user.agentId || 0,
+    userId: session?.user.id || 0,
+  });
+
+  console.log(userInfo);
+
   const [phone, setPhone] = useState("");
 
   return (

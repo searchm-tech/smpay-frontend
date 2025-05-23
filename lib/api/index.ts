@@ -25,6 +25,35 @@ const apiClient = axios.create({
   },
 });
 
+// API 요청 카운터
+let requestCount = 0;
+const MAX_REQUESTS = 3;
+
+// 요청 인터셉터
+apiClient.interceptors.request.use(
+  (config) => {
+    if (requestCount >= MAX_REQUESTS) {
+      return Promise.reject(new Error("API 요청 횟수 초과"));
+    }
+    requestCount++;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    requestCount--; // 실패한 요청은 카운트에서 제외
+    return Promise.reject(error);
+  }
+);
+
 // 요청 인터셉터 (예: 토큰 자동 추가)
 apiClient.interceptors.request.use(
   async (config) => {
@@ -56,11 +85,23 @@ apiClient.interceptors.response.use(
     // 토큰 만료
     if (error.response?.data?.code === "70") {
       try {
-        const res = await postRefreshTokenApi();
-        alert("토큰 재발급");
-        apiClient.defaults.headers.Authorization = `Bearer ${res.accessToken.token}`;
-        error.config.headers.Authorization = `Bearer ${res.accessToken.token}`;
-        return apiClient.request(error.config);
+        const session = await getSession();
+
+        if (session?.refreshToken) {
+          const res = await postRefreshTokenApi({
+            refreshToken: session?.refreshToken,
+          })
+            .then((res) => {
+              alert("토큰 재발급");
+              apiClient.defaults.headers.Authorization = `Bearer ${res.accessToken.token}`;
+              error.config.headers.Authorization = `Bearer ${res.accessToken.token}`;
+              return apiClient.request(error.config);
+            })
+            .catch((err) => {
+              signOut({ callbackUrl: "/sign-in" });
+              alert("토큰 완전 끝");
+            });
+        }
       } catch (refreshError) {
         // refreshToken도 만료 → 로그아웃 처리
         await signOut({ callbackUrl: "/sign-in" });
