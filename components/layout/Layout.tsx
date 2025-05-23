@@ -1,6 +1,5 @@
 "use client";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -14,10 +13,9 @@ import SmPayGuideModal from "./GuideModal";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
   const pathname = usePathname();
   const router = useRouter();
-  // const { data: session } = useSession();
+  const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
 
   const [isExpireModalOpen, setIsExpireModalOpen] = useState(false);
 
@@ -62,18 +60,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return <div>{children}</div>;
   }
 
+  if (isErrorPage) {
+    return <div>{children}</div>;
+  }
+
   return (
-    <div className="[--header-height:calc(theme(spacing.14))]">
+    <div className="flex flex-col min-h-screen">
+      {isExpireModalOpen && (
+        <ConfirmDialog
+          open
+          content="세션이 만료되었습니다. 다시 로그인해주세요."
+          onClose={handleCloseExpireModal}
+          onConfirm={handleCloseExpireModal}
+        />
+      )}
+
+      {isGuideOpen && <SmPayGuideModal onClose={() => setGuideOpen(false)} />}
+
       <SidebarProvider className="flex flex-col">
-        <Header />
+        {!isErrorPage && <Header />}
         <div className="flex flex-1">
-          <AppSidebar />
+          {!isErrorPage && <AppSidebar />}
+
           <SidebarInset>
-            <main className="flex-1 overflow-y-auto mt-[74px]">
-              <div className="flex flex-col flex-1">
-                <div className="px-4">{children}</div>
-                <Footer />
+            <main className="flex-1 flex flex-col mt-[74px]">
+              <div className="flex-1 overflow-y-auto px-4 h-[100vh]">
+                {children}
               </div>
+              <Footer />
             </main>
           </SidebarInset>
         </div>
