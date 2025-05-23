@@ -1,7 +1,7 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
 import { getSession, signOut } from "next-auth/react";
-import { signOutApi } from "@/services/auth";
+import { postRefreshTokenApi, signOutApi } from "@/services/auth";
 import type { ApiResponse } from "@/types/api";
 
 // 커스텀 에러 클래스
@@ -52,16 +52,21 @@ apiClient.interceptors.response.use(
 
     return response.data; // 전체 response.data 반환 (code, message, result)
   },
-  (error) => {
+  async (error) => {
     // 토큰 만료
-    if (error.response.data.code === "70") {
-      // TODO : 토큰 만료일 경우, refreshToken 사용 api 적용
-      signOutApi()
-        .then()
-        .catch((error) => {
-          console.error("error", error);
-        })
-        .finally(() => signOut({ callbackUrl: "/sign-in" }));
+    if (error.response?.data?.code === "70") {
+      try {
+        const res = await postRefreshTokenApi();
+        alert("토큰 재발급");
+        apiClient.defaults.headers.Authorization = `Bearer ${res.accessToken.token}`;
+        error.config.headers.Authorization = `Bearer ${res.accessToken.token}`;
+        return apiClient.request(error.config);
+      } catch (refreshError) {
+        // refreshToken도 만료 → 로그아웃 처리
+        await signOut({ callbackUrl: "/sign-in" });
+        alert("토큰 완전 끝");
+        return Promise.reject(refreshError);
+      }
     }
 
     // 서버에서 온 에러 응답이 있으면 ApiError로 throw
