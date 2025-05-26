@@ -20,6 +20,7 @@ import {
   useMutationAgencySendMail,
   useQueryAgencyAll,
 } from "@/hooks/queries/agency";
+import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX } from "@/constants/reg";
@@ -37,6 +38,9 @@ const Dialog = {
   ),
   department: "부서 선택을 해주세요.",
   emailRegex: "이메일 형식이 올바르지 않습니다.",
+  nameCheck: "중복 체크를 해주세요.",
+  "check-email-empty": "이메일 주소를 입력해주세요.",
+  "check-email-regex": "이메일 형식이 올바르지 않습니다.",
 };
 
 type DialogType = keyof typeof Dialog;
@@ -53,11 +57,17 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
   const [selected, setSelected] = useState("leader");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
+  const [enableEmailId, setEnableEmailId] = useState(false);
 
   const [dialog, setDialog] = useState<DialogType | null>(null);
   const [failDialog, setFailDialog] = useState("");
 
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
+
+  const [nameCheckResult, setNameCheckResult] = useState<
+    "duplicate" | "available" | ""
+  >("");
+
   // 메일 발송 api 신규 필요 + 모달창 다시 확인
   const { mutate: createMember, isPending } = useCreateMember({
     onSuccess: () => setDialog("success"),
@@ -82,9 +92,37 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
     setEmailId(e.target.value);
   };
 
+  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
+    setDepartmentNode(node);
+  };
+
+  const handleNameCheck = async () => {
+    if (!emailId) {
+      setDialog("check-email-empty");
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(emailId)) {
+      setDialog("check-email-regex");
+      return;
+    }
+
+    try {
+      const response = await getUsersNameCheckApi(emailId);
+      setNameCheckResult(response ? "duplicate" : "available");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = () => {
     if (!emailId || !name) {
       setDialog("err");
+      return;
+    }
+
+    if (!enableEmailId) {
+      setDialog("nameCheck");
       return;
     }
 
@@ -124,10 +162,6 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
     }
   };
 
-  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
-    setDepartmentNode(node);
-  };
-
   return (
     <section className="py-4">
       {(isPending || isPendingSendMail) && (
@@ -148,6 +182,38 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
           onConfirm={() => setDialog(null)}
           title={dialog === "success" ? "전송 완료" : "오류"}
           content={Dialog[dialog]}
+        />
+      )}
+
+      {nameCheckResult === "duplicate" && (
+        <ConfirmDialog
+          open
+          onClose={() => {
+            setNameCheckResult("");
+            setEnableEmailId(false);
+          }}
+          onConfirm={() => {
+            setNameCheckResult("");
+            setEnableEmailId(false);
+          }}
+          title="중복 체크"
+          content="이미 존재하는 이메일 주소입니다."
+        />
+      )}
+
+      {nameCheckResult === "available" && (
+        <ConfirmDialog
+          open
+          onClose={() => {
+            setNameCheckResult("");
+            setEnableEmailId(true);
+          }}
+          onConfirm={() => {
+            setNameCheckResult("");
+            setEnableEmailId(true);
+          }}
+          title="중복 체크"
+          content="사용 가능한 이메일 주소입니다."
         />
       )}
 
@@ -209,12 +275,17 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
         </DescriptionItem>
 
         <DescriptionItem label="발송될 이메일 주소 *">
-          <Input
-            className="max-w-[500px]"
-            placeholder="이메일 주소를 입력해주세요."
-            value={emailId}
-            onChange={handleEmailIdChange}
-          />
+          <div className="flex items-center gap-2">
+            <Input
+              className="max-w-[500px]"
+              placeholder="이메일 주소를 입력해주세요."
+              value={emailId}
+              onChange={handleEmailIdChange}
+            />
+            <Button variant="outline" onClick={handleNameCheck}>
+              {enableEmailId ? "중복 체크 완료" : "중복 체크"}
+            </Button>
+          </div>
         </DescriptionItem>
       </Descriptions>
 
