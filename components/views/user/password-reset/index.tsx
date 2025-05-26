@@ -74,7 +74,7 @@ const PasswordResetView = () => {
       userId: session?.user.userId || 0,
       password,
       phone,
-      type: "REGISTER",
+      type: "RESET",
     };
 
     agentsUsersPw(params);
