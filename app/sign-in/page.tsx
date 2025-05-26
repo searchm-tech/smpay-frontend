@@ -7,8 +7,7 @@ interface PageProps {
 }
 
 export default function SignInPage({ searchParams }: PageProps) {
-  const company = searchParams.company as string | undefined;
-  const loginType = company ? "agency" : "admin";
+  const code = searchParams.code as string | undefined;
 
-  return <SignInView loginType={loginType} company={company} />;
+  return <SignInView code={code} />;
 }

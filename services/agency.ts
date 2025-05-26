@@ -187,3 +187,18 @@ export async function postAgencySendMailApi(
     throw error;
   }
 }
+
+// 대행사ㅣ 도메인 이름 조회
+export const getAgencyDomainNameApi = async (
+  code: string
+): Promise<TAgency> => {
+  try {
+    const response: TAgency = await get(`/api/v1/agents?agentCode=${code}`);
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};

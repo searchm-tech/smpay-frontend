@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,28 +17,30 @@ import LoadingUI from "@/components/common/Loading";
 
 import ModalPwdSetting from "./ModalPwdSetting";
 
+import { useSessionStore } from "@/store/useSessionStore";
+
 import { STORAGE_KEYS, createFormSchema } from "./constants";
 import { signInApi } from "@/services/auth";
 import { ApiError } from "@/lib/api";
 
 import type { TSMPayUser } from "@/types/user";
+import { getAgencyDomainNameApi } from "@/services/agency";
 
 interface SignInViewProps {
-  loginType: "admin" | "agency";
-  company?: string;
+  code?: string;
 }
 
-const SignInView = ({ loginType, company }: SignInViewProps) => {
-  const router = useRouter();
-  const { data: session } = useSession();
-
-  const formSchema = createFormSchema(loginType === "agency");
-  type FormValues = z.infer<typeof formSchema>;
+const SignInView = ({ code }: SignInViewProps) => {
+  const { setAccessToken, setRefreshToken } = useSessionStore();
 
   const [isRememberUsername, setIsRememberUsername] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPwdSettingModalOpen, setIsPwdSettingModalOpen] = useState(false);
+  const [domainName, setDomainName] = useState("");
+
+  const formSchema = createFormSchema(!!domainName);
+  type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -63,8 +65,9 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
 
     try {
       setLoading(true);
-      const email =
-        loginType === "agency" ? `${values.email}@${company}` : values.email;
+      const email = !!domainName
+        ? `${values.email}@${domainName}`
+        : values.email;
 
       if (isRememberUsername) {
         localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
@@ -92,6 +95,9 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
           refreshToken: response.refreshToken.token,
           callbackUrl: "/sm-pay/management",
         });
+
+        setAccessToken(response.accessToken.token);
+        setRefreshToken(response.refreshToken.token);
       }
     } catch (error) {
       console.error("onSubmit error", error);
@@ -126,6 +132,14 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     }
   }, [form]);
 
+  useEffect(() => {
+    if (code) {
+      getAgencyDomainNameApi(code).then((res) => {
+        setDomainName(res.domainName);
+      });
+    }
+  }, [code]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       {loading && <LoadingUI title="로그인 중..." />}
@@ -147,13 +161,11 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
             <InputForm<FormValues>
               control={form.control}
               name="email"
-              label={loginType === "agency" ? "아이디" : "이메일"}
+              label={!!domainName ? "아이디" : "이메일"}
               placeholder={
-                loginType === "agency"
-                  ? "아이디를 입력해주세요"
-                  : "이메일을 입력해주세요"
+                !!domainName ? "아이디를 입력해주세요" : "이메일을 입력해주세요"
               }
-              suffix={company ? `@${company}` : undefined}
+              suffix={domainName ? `@${domainName}` : undefined}
             />
 
             <InputForm<FormValues>
