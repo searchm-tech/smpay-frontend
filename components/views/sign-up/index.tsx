@@ -18,22 +18,17 @@ import LoadingUI from "@/components/common/Loading";
 
 import ErrorView from "../error";
 
+import ModalSuccess from "./ModalSuccess";
+
 import { userAuthTypeMap } from "@/utils/status";
-import { PASSWORD_REGEX, PHONE_REGEX } from "@/constants/reg";
+import { PASSWORD_REGEX } from "@/constants/reg";
 
 import {
   useQueryMailVerify,
-  useMutationSignUpMailVerify,
   useMutationAgentsUsersPw,
 } from "@/hooks/queries/user";
 
-import type {
-  TAgentsUsersPwParams,
-  TSignUpMailVerifyParams,
-} from "@/services/user";
-
-import ModalSuccess from "./ModalSuccess";
-import { TSignUpMailVerifyResponse } from "@/types/user";
+import type { TAgentsUsersPwParams } from "@/services/user";
 
 interface SignUpViewProps {
   agentCode: string;
@@ -49,12 +44,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [result, setResult] = useState<TSignUpMailVerifyResponse | null>(null);
-
-  const { mutate: agentsUsersPw, isPending: isAgentsUsersPwLoading } =
-    useMutationAgentsUsersPw({
-      onSuccess: (data) => setResult(data),
-    });
+  const [result, setResult] = useState<boolean>(false);
 
   const {
     data: mailVerify,
@@ -67,6 +57,13 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
       enabled: !!agentCode && !!userCode,
     }
   );
+
+  console.log(mailVerify);
+
+  const { mutate: agentsUsersPw, isPending: isAgentsUsersPwLoading } =
+    useMutationAgentsUsersPw({
+      onSuccess: () => setResult(true),
+    });
 
   const onSubmit = () => {
     if (!mailVerify) return;
@@ -86,8 +83,6 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
       );
       return;
     }
-
-    console.log(phone);
 
     if (phone.length !== 11) {
       setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
@@ -114,12 +109,9 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
     return <ErrorView message="유효하지 않은 인증 링크입니다." />;
   }
 
-  console.log(result);
   return (
     <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
-      {result && (
-        <ModalSuccess result={result} onClose={() => setResult(null)} />
-      )}
+      {result && <ModalSuccess onClose={() => setResult(false)} />}
 
       {errorMessage && (
         <ConfirmDialog

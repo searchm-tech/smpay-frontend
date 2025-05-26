@@ -1,5 +1,3 @@
-// ---- 실제 API 호출 ----
-
 import {
   useMutation,
   UseMutationOptions,
@@ -9,11 +7,9 @@ import {
 
 import {
   getUsersMailVerifyApi,
-  postAgentsUsersSignUpApi,
   postAgentsUsersPwApi,
   postUsersPasswordResetApi,
   TMailVerifyParams,
-  TSignUpMailVerifyParams,
   TAgentsUsersPwParams,
   getUserInfoApi,
   TUserInfoParams,
@@ -43,21 +39,6 @@ export const useQueryMailVerify = (
   return useQuery({
     queryKey: ["mailVerify", params],
     queryFn: () => getUsersMailVerifyApi(params),
-    ...options,
-  });
-};
-
-// 대행사 최상위 그룹장 회원 가입(메일 통한) mutation
-export const useMutationSignUpMailVerify = (
-  options?: UseMutationOptions<
-    TSignUpMailVerifyResponse,
-    Error,
-    TSignUpMailVerifyParams
-  >
-) => {
-  return useMutation({
-    mutationFn: (params: TSignUpMailVerifyParams) =>
-      postAgentsUsersSignUpApi(params),
     ...options,
   });
 };
