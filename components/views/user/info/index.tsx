@@ -1,7 +1,8 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,21 +14,34 @@ import {
 } from "@/components/composite/description-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { useSession } from "next-auth/react";
+import { useQueryAdminUserInfo } from "@/hooks/queries/user";
+import { useQueryUserInfo } from "@/hooks/queries/user";
 
 const UserInfoView = () => {
   const router = useRouter();
-  const param = useSearchParams();
+
   const { data: session } = useSession();
-
-  const userId = param.get("id") || session?.user.id;
-
-  const [phone, setPhone] = useState("");
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
     session?.user.type || ""
   );
+
+  const { data: userInfo } = useQueryUserInfo({
+    agentId: session?.user.agentId || 0,
+    userId: session?.user.userId || 0,
+    isAdmin,
+  });
+
+  const { data: adminUserInfo } = useQueryAdminUserInfo({
+    userId: session?.user.userId || 0,
+    isAdmin,
+  });
+
+  console.log("userInfo", userInfo);
+  console.log("adminUserInfo", adminUserInfo);
+
+  const [phone, setPhone] = useState("");
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   return (
     <div className="my-5">
