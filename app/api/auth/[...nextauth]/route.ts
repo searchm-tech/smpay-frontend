@@ -47,6 +47,7 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       session.user = {
+        loginId: token.id.toString(),
         id: token.id,
         agentId: token.agentId,
         userId: token.userId,

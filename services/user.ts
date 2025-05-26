@@ -1,4 +1,4 @@
-import { ApiError, get, post } from "@/lib/api";
+import { ApiError, get, patch, post } from "@/lib/api";
 import type { ApiResponseData } from "./types";
 import type {
   TAdminUserInfoResponse,
@@ -130,4 +130,28 @@ export const getUsersNameCheckApi = async (
   }
 };
 
-// 인증 코드 기반으로 도메인 주소 받기
+// 기본 정보 변경 API
+export type TUserInfoPatchParams = {
+  userId: number;
+  name: string;
+  emailAddress: string;
+  phoneNumber: string;
+};
+export const patchUserInfoApi = async (
+  params: TUserInfoPatchParams
+): Promise<null> => {
+  const { userId, name, emailAddress, phoneNumber } = params;
+  try {
+    const response = await patch<null>(`/api/v1/users/${userId}/profile`, {
+      name,
+      emailAddress,
+      phoneNumber,
+    });
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};

@@ -87,6 +87,7 @@ const SignInView = ({ code }: SignInViewProps) => {
           type: response.user.type,
           name: response.user.name,
           phoneNumber: response.user.phoneNumber,
+          loginId: response.user.loginId,
         };
 
         // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.

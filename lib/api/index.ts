@@ -77,6 +77,10 @@ apiClient.interceptors.response.use(
 // 요청 인터셉터 (항상 최신 세션의 accessToken 사용)
 apiClient.interceptors.request.use(
   (config) => {
+    if (config.url?.includes("/token/refresh")) {
+      return config;
+    }
+
     const { accessToken } = useSessionStore.getState();
 
     if (accessToken) {
@@ -110,14 +114,15 @@ apiClient.interceptors.response.use(
             });
 
             setTokens(res.accessToken.token, res.refreshToken.token);
-            const newConfig = {
-              ...error.config,
-              headers: {
-                ...error.config.headers,
-                Authorization: `Bearer ${res.accessToken.token}`,
-              },
-            };
-            return apiClient.request(newConfig);
+            // TODO : 안되면 아래 코드 사용
+            // const newConfig = {
+            //   ...error.config,
+            //   headers: {
+            //     ...error.config.headers,
+            //     Authorization: `Bearer ${res.accessToken.token}`,
+            //   },
+            // };
+            return apiClient.request(error.config);
           } catch (err) {
             const { clearSession } = useSessionStore.getState();
             await signOut({ callbackUrl: "/sign-in" });

@@ -50,34 +50,15 @@ export const postRefreshTokenApi = async (
     console.log("params", params);
     const response: RefreshTokenResponse = await post<RefreshTokenResponse>(
       "/api/v1/users/token/refresh",
-      params
+      null, // POST body가 필요하다면 여기에 추가
+      {
+        headers: {
+          Authorization: `Bearer ${params.refreshToken}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
-
-    console.log("response", response);
     return response;
-    // TODO : 위 내용이 안되면 기존거 그대로 사용할 것.
-    // // 토큰 갱신 요청은 인터셉터를 우회하기 위해 axios 인스턴스를 직접 생성
-    // const refreshClient = axios.create({
-    //   baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/core`,
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${params.refreshToken}`,
-    //   },
-    // });
-
-    // const response = await refreshClient.post<
-    //   ApiResponse<RefreshTokenResponse>
-    // >("/api/v1/users/token/refresh");
-
-    // if (response.data.code !== "0") {
-    //   throw new ApiError(
-    //     response.data.code,
-    //     response.data.message,
-    //     response.data.result
-    //   );
-    // }
-
-    // return response.data.result;
   } catch (error) {
     throw error;
   }
