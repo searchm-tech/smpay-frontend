@@ -105,7 +105,7 @@ apiClient.interceptors.response.use(
     // 토큰 만료
     if (error.response?.data?.code === "70") {
       try {
-        // await signOut({ callbackUrl: "/sign-out" });
+        await signOut({ callbackUrl: "/sign-out" });
         const session = await getSession();
 
         if (session?.refreshToken) {
