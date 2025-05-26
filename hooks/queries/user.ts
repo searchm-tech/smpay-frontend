@@ -9,17 +9,13 @@ import {
   getUsersMailVerifyApi,
   postAgentsUsersPwApi,
   postUsersPasswordResetApi,
-  TMailVerifyParams,
-  TAgentsUsersPwParams,
+  type TMailVerifyParams,
+  type TAgentsUsersPwParams,
   getUserInfoApi,
-  TUserInfoParams,
+  type TUserInfoParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
-import type {
-  TMailVerifyUser,
-  TSignUpMailVerifyResponse,
-  TUserInfoResponse,
-} from "@/types/user";
+import type { TMailVerifyUser, TUserInfoResponse } from "@/types/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
 export const useMutationPwdResetLink = (
@@ -45,14 +41,11 @@ export const useQueryMailVerify = (
 
 // 대행사 비밀번호 설정 또는 비밀번호 재설정 mutation
 export const useMutationAgentsUsersPw = (
-  options?: UseMutationOptions<
-    TSignUpMailVerifyResponse,
-    Error,
-    TAgentsUsersPwParams
-  >
+  options?: UseMutationOptions<null, Error, TAgentsUsersPwParams>
 ) => {
   return useMutation({
     mutationFn: (params: TAgentsUsersPwParams) => postAgentsUsersPwApi(params),
+    ...options,
   });
 };
 

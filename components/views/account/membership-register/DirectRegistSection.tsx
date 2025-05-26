@@ -10,7 +10,6 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import Select from "@/components/composite/select-components";
-import { InputWithSuffix } from "@/components/composite/input-components";
 import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
@@ -23,16 +22,34 @@ import {
   useCreateMember,
   useCreateMemberByAgency,
 } from "@/hooks/queries/member";
-import { fetchAdvertisers } from "@/services/advertiser";
+import { useQueryAgencyAll } from "@/hooks/queries/agency";
+import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
-import { EMAIL_ID_REGEX, PASSWORD_REGEX } from "@/constants/reg";
-
-import type { TableParams } from "@/services/types";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import { useQueryAgencyAll } from "@/hooks/queries/agency";
 
+const Dialog = {
+  err: "모든 필수 항목을 입력해주세요.",
+  success: (
+    <div className="text-center">
+      <p>메일 발송이 완료되었습니다.</p>
+      <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
+    </div>
+  ),
+  department: "부서 선택을 해주세요.",
+  emailRegex: "이메일 형식이 올바르지 않습니다.",
+  nameCheck: "중복 체크를 해주세요.",
+  "check-email-empty": "이메일 주소를 입력해주세요.",
+  "check-email-regex": "이메일 형식이 올바르지 않습니다.",
+  "password-regex":
+    "비밀번호가 영문, 숫자, 특수문자가 모두 들어간 8-16자가 아닙니다.",
+  "password-confirm": "비밀번호가 일치하지 않습니다.",
+  "phone-regex": "전화번호가 올바르지 않습니다.",
+};
+
+type DialogType = keyof typeof Dialog;
 type DirectRegistSectionProps = {
   isAdmin: boolean;
 };
@@ -48,12 +65,18 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [memberType, setMemberType] = useState("leader");
-  const [agency, setAgency] = useState("");
+
   const [selectedAgency, setSelectedAgency] = useState("");
 
-  const [errModal, setErrModal] = useState("");
   const [successModal, setSuccessModal] = useState(false);
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
+
+  const [dialog, setDialog] = useState<DialogType | null>(null);
+  const [enableEmailId, setEnableEmailId] = useState(false);
+  const [checkNameLoading, setCheckNameLoading] = useState(false);
+  const [nameCheckResult, setNameCheckResult] = useState<
+    "duplicate" | "available" | ""
+  >("");
 
   // 직접등록
   const { mutate: createMember, isPending } = useCreateMember({
@@ -77,27 +100,59 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   };
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!EMAIL_ID_REGEX.test(e.target.value)) {
+    setEmailId(e.target.value);
+  };
+
+  const handleNameCheck = async () => {
+    if (checkNameLoading) return;
+
+    if (!emailId) {
+      setDialog("check-email-empty");
       return;
     }
-    setEmailId(e.target.value);
+
+    if (!EMAIL_REGEX.test(emailId)) {
+      setDialog("check-email-regex");
+      return;
+    }
+
+    try {
+      setCheckNameLoading(true);
+      const response = await getUsersNameCheckApi(emailId);
+      console.log("response", response);
+      setNameCheckResult(response ? "duplicate" : "available");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setCheckNameLoading(false);
+    }
   };
 
   const handleSubmit = () => {
     // 공통 필수 항목 체크
     if (!emailId || !name || !phone || !password || !passwordConfirm) {
-      setErrModal("모든 필수 항목을 입력해주세요.");
+      setDialog("err");
+      return;
+    }
+
+    if (!enableEmailId) {
+      setDialog("nameCheck");
+      return;
+    }
+    if (!EMAIL_REGEX.test(emailId)) {
+      setDialog("emailRegex");
       return;
     }
 
     if (!isAdmin) {
       if (!memberType || !departmentNode) {
-        setErrModal("모든 필수 항목을 입력해주세요.");
+        setDialog("err");
         return;
       }
     } else {
-      if (!agency) {
-        setErrModal("모든 필수 항목을 입력해주세요.");
+      if (!selectedAgency) {
+        console.log("selectedAgency", selectedAgency);
+        setDialog("err");
         return;
       }
     }
@@ -106,19 +161,17 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
       !PASSWORD_REGEX.test(password) ||
       !PASSWORD_REGEX.test(passwordConfirm)
     ) {
-      setErrModal(
-        "비밀번호가 영문, 숫자, 특수문자가 모두 들어간 8-16자가 아닙니다."
-      );
+      setDialog("password-regex");
       return;
     }
 
     if (password !== passwordConfirm) {
-      setErrModal("비밀번호가 일치하지 않습니다.");
+      setDialog("password-confirm");
       return;
     }
 
     if (phone.length !== 11) {
-      setErrModal("전화번호가 올바르지 않습니다.");
+      setDialog("phone-regex");
       return;
     }
 
@@ -136,7 +189,7 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
     } else {
       const data = {
         emailId,
-        agency,
+        agencyId: selectedAgency,
         name,
         phone,
         password,
@@ -152,7 +205,7 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
 
   return (
     <section className="py-4">
-      {isPending && <LoadingUI />}
+      {(isPending || checkNameLoading || isPendingByAgency) && <LoadingUI />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment
@@ -161,12 +214,12 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
         />
       )}
 
-      {errModal && (
+      {dialog && (
         <ConfirmDialog
           open
-          onClose={() => setErrModal("")}
-          onConfirm={() => setErrModal("")}
-          content={errModal}
+          onClose={() => setDialog(null)}
+          onConfirm={() => setDialog(null)}
+          content={Dialog[dialog]}
         />
       )}
 
@@ -184,6 +237,39 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
           }
         />
       )}
+
+      {nameCheckResult === "duplicate" && (
+        <ConfirmDialog
+          open
+          onClose={() => {
+            setNameCheckResult("");
+            setEnableEmailId(false);
+          }}
+          onConfirm={() => {
+            setNameCheckResult("");
+            setEnableEmailId(false);
+          }}
+          title="중복 체크"
+          content="이미 존재하는 이메일 주소입니다."
+        />
+      )}
+
+      {nameCheckResult === "available" && (
+        <ConfirmDialog
+          open
+          onClose={() => {
+            setNameCheckResult("");
+            setEnableEmailId(true);
+          }}
+          onConfirm={() => {
+            setNameCheckResult("");
+            setEnableEmailId(true);
+          }}
+          title="중복 체크"
+          content="사용 가능한 이메일 주소입니다."
+        />
+      )}
+
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         회원 정보
       </LabelBullet>
@@ -225,18 +311,23 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
         <DescriptionItem label="성명 *">
           <Input
             className="max-w-[500px]"
+            placeholder="성명을 입력해주세요."
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </DescriptionItem>
         <DescriptionItem label="이메일 주소 *">
-          <InputWithSuffix
-            className="max-w-[500px]"
-            suffix="@smpay.com"
-            containerClassName="max-w-[500px]"
-            value={emailId}
-            onChange={handleEmailIdChange}
-          />
+          <div className="flex items-center gap-2">
+            <Input
+              className="max-w-[500px]"
+              placeholder="이메일 주소를 입력해주세요."
+              value={emailId}
+              onChange={handleEmailIdChange}
+            />
+            <Button variant="outline" onClick={handleNameCheck}>
+              {enableEmailId ? "중복 체크 완료" : "중복 체크"}
+            </Button>
+          </div>
         </DescriptionItem>
       </Descriptions>
 
@@ -284,22 +375,3 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
 };
 
 export default DirectRegistSection;
-
-/**
- * 무한스크롤에 맞는 형태의 함수  (기존 api 함수를 변형)
- * @param params
- * @returns hasNextPage 다음 페이지 존재 여부
- */
-async function fetchAdvertiserOptions(params: TableParams) {
-  const response = await fetchAdvertisers(params);
-
-  return {
-    items: response.data.map((advertiser) => ({
-      label: `${advertiser.advertiserName} | ${advertiser.name}`,
-      value: advertiser.customerId,
-    })),
-    hasNextPage:
-      response.total >
-      (params.pagination?.current || 1) * (params.pagination?.pageSize || 10),
-  };
-}

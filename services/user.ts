@@ -94,3 +94,21 @@ export const getUserInfoApi = async (
     throw error;
   }
 };
+
+// 회원 이름 중복 체크 [id 중복 체크]
+export const getUsersNameCheckApi = async (
+  loginId: string
+): Promise<boolean> => {
+  try {
+    const response = await get<boolean>(
+      `api/v1/users/name-duplicate?loginId=${loginId}`
+    );
+
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};

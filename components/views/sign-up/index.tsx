@@ -44,7 +44,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [result, setResult] = useState<boolean>(false);
+  const [result, setResult] = useState<boolean>(true);
 
   const {
     data: mailVerify,
@@ -57,8 +57,6 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
       enabled: !!agentCode && !!userCode,
     }
   );
-
-  console.log(mailVerify);
 
   const { mutate: agentsUsersPw, isPending: isAgentsUsersPwLoading } =
     useMutationAgentsUsersPw({

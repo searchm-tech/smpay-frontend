@@ -62,6 +62,7 @@ const findNodeById = (
   return null;
 };
 
+// TODO : 나중에 사용할 모달 컴포넌트임
 const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
   const router = useRouter();
   const [search, setSearch] = useState("");
