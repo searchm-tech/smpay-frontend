@@ -1,3 +1,6 @@
+import { TAgency } from "./agency";
+import { TDepartment } from "./department";
+
 // TODO : 삭제 예정
 export type TUser = {
   id: string;
@@ -57,6 +60,32 @@ export type AdminAgentResponseDto = {
   uniqueCode: string;
   representativeName: string;
   businessRegistrationNumber: string;
+  status: string;
+  domainName: string;
+};
+
+const ete = {
+  result: {
+    adminAgentResponseDto: {
+      agentId: 1,
+      name: "대행사 이름",
+      uniqueCode: "고유 코드",
+      representativeName: "대표자 이름",
+      businessRegistrationNumber: "사업자 등록 번호",
+      status: "NORMAL",
+      domainName: "도메인 이름",
+    },
+    userResponseDto: {
+      userId: 1,
+      agentId: 1,
+      id: "아이디",
+      status: "NORMAL",
+      type: "ADVERTISER",
+      name: "이름",
+      phoneNumber: "전화번호",
+    },
+    isVerified: true,
+  },
 };
 
 export type UserResponseDto = {
@@ -66,6 +95,7 @@ export type UserResponseDto = {
   status: UserStatus;
   type: TAuthType;
   name: string;
+  phoneNumber: string;
 };
 
 // agents/users/mail-verifications params type
@@ -78,4 +108,15 @@ export type TMailVerifyParams = {
 export type TSignUpMailVerifyResponse = {
   url: string;
   loginId: string;
+};
+
+export type TResetPwdType = "REGISTER" | "RESET"; // REGISTER : 등록 RESET : 재설정
+
+// 회원 정보 조회 API response type
+export type TUserInfoResponse = {
+  agent: TAgency;
+  user: {
+    user: TSMPayUser & { isDelete: boolean };
+    department: TDepartment;
+  };
 };

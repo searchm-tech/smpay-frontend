@@ -1,18 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { signOutApi } from "@/services/auth";
 
 const SignOutView = () => {
+  const { data: session } = useSession();
+
   useEffect(() => {
+    if (!session) {
+      signOut({ callbackUrl: "/sign-in" });
+      return;
+    }
+
     signOutApi()
       .then()
       .catch((error) => {
         console.error("error", error);
       })
       .finally(() => signOut({ callbackUrl: "/sign-in" }));
-  }, []);
+  }, [session]);
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">

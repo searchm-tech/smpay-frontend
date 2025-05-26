@@ -1,8 +1,11 @@
 import { ApiError, get, post } from "@/lib/api";
 import type { ApiResponseData } from "./types";
-import type { TMailVerifyUser, TSignUpMailVerifyResponse } from "@/types/user";
-
-// ----------------- 실제 API 호출 -----------------
+import type {
+  TMailVerifyUser,
+  TResetPwdType,
+  TSignUpMailVerifyResponse,
+  TUserInfoResponse,
+} from "@/types/user";
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -43,22 +46,45 @@ export const getUsersMailVerifyApi = async (
   }
 };
 
-// 대행사 최상위 그룹장 회원 가입(메일 통한) API
-export type TSignUpMailVerifyParams = {
+// 대행사 비밀번호 설정 또는 비밀번호 재설정 API
+export type TAgentsUsersPwParams = {
   agentId: number;
   userId: number;
   password: string;
   phone: string;
+  type: TResetPwdType;
 };
 
-export const postAgentsUsersSignUpApi = async (
-  params: TSignUpMailVerifyParams
-): Promise<TSignUpMailVerifyResponse> => {
-  const { agentId, userId, password, phone } = params;
+export const postAgentsUsersPwApi = async (
+  params: TAgentsUsersPwParams
+): Promise<null> => {
+  const { agentId, userId, password, phone, type } = params;
   try {
-    const response = await post<TSignUpMailVerifyResponse>(
-      `/admin/api/v1/agents/${agentId}/users/${userId}`,
-      { password, phoneNumber: phone }
+    const response = await post<null>(
+      `/api/v1/agents/${agentId}/users/${userId}/password`,
+      { password, phoneNumber: phone, type }
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 회원 정보 조회 API
+export type TUserInfoParams = {
+  agentId: number;
+  userId: number;
+};
+export const getUserInfoApi = async (
+  params: TUserInfoParams
+): Promise<TUserInfoResponse> => {
+  try {
+    const { agentId, userId } = params;
+    const response = await get<TUserInfoResponse>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/me`
     );
     return response;
   } catch (error) {

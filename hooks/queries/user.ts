@@ -1,5 +1,3 @@
-// ---- 실제 API 호출 ----
-
 import {
   useMutation,
   UseMutationOptions,
@@ -9,13 +7,19 @@ import {
 
 import {
   getUsersMailVerifyApi,
-  postAgentsUsersSignUpApi,
+  postAgentsUsersPwApi,
   postUsersPasswordResetApi,
   TMailVerifyParams,
-  TSignUpMailVerifyParams,
+  TAgentsUsersPwParams,
+  getUserInfoApi,
+  TUserInfoParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
-import type { TMailVerifyUser, TSignUpMailVerifyResponse } from "@/types/user";
+import type {
+  TMailVerifyUser,
+  TSignUpMailVerifyResponse,
+  TUserInfoResponse,
+} from "@/types/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
 export const useMutationPwdResetLink = (
@@ -39,17 +43,29 @@ export const useQueryMailVerify = (
   });
 };
 
-// 대행사 최상위 그룹장 회원 가입(메일 통한) mutation
-export const useMutationSignUpMailVerify = (
+// 대행사 비밀번호 설정 또는 비밀번호 재설정 mutation
+export const useMutationAgentsUsersPw = (
   options?: UseMutationOptions<
     TSignUpMailVerifyResponse,
     Error,
-    TSignUpMailVerifyParams
+    TAgentsUsersPwParams
   >
 ) => {
   return useMutation({
-    mutationFn: (params: TSignUpMailVerifyParams) =>
-      postAgentsUsersSignUpApi(params),
+    mutationFn: (params: TAgentsUsersPwParams) => postAgentsUsersPwApi(params),
+  });
+};
+
+//
+
+export const useQueryUserInfo = (
+  params: TUserInfoParams,
+  options?: UseQueryOptions<TUserInfoResponse, Error>
+) => {
+  return useQuery({
+    queryKey: ["userInfo", params],
+    queryFn: () => getUserInfoApi(params),
+    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };

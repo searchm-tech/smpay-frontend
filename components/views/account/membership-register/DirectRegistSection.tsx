@@ -150,8 +150,6 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
     setDepartmentNode(node);
   };
 
-  console.log("agencyList", agencyList);
-
   return (
     <section className="py-4">
       {isPending && <LoadingUI />}
