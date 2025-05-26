@@ -88,8 +88,8 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
 
         await signIn("credentials", {
           ...user,
-          accessToken: response.accessToken,
-          refreshToken: response.refreshToken,
+          accessToken: response.accessToken.token,
+          refreshToken: response.refreshToken.token,
           callbackUrl: "/sm-pay/management",
         });
       }
@@ -105,11 +105,11 @@ const SignInView = ({ loginType, company }: SignInViewProps) => {
     }
   }
 
-  useEffect(() => {
-    if (!session) return;
+  // useEffect(() => {
+  //   if (!session) return;
 
-    router.push("/sm-pay/management");
-  }, [session]);
+  //   router.push("/sm-pay/management");
+  // }, [session]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

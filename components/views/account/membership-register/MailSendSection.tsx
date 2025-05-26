@@ -64,6 +64,7 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
   });
 
   const { data: agencyList } = useQueryAgencyAll();
+
   const { mutate: mutateSendMail, isPending: isPendingSendMail } =
     useMutationAgencySendMail({
       onSuccess: () => {

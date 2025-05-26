@@ -12,9 +12,9 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
           queries: {
             staleTime: 0, // 항상 stale로 간주
             gcTime: 1000 * 60 * 30, // 캐시 30분 유지
-            retry: 1,
-            // refetchOnWindowFocus: true, // 포커스 시 항상 refetch
-            // refetchOnMount: "always", // 마운트 시 항상 refetch
+            retry: 0,
+            refetchOnWindowFocus: false, // 포커스 시 항상 refetch
+            // refetchOnMount: false, // 마운트 시 항상 refetch
           },
         },
       })

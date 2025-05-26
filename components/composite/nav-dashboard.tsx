@@ -55,9 +55,6 @@ export function NavDashboard() {
     return "agency";
   }, [session]);
 
-  console.log("dashboardItems[menuType]", dashboardItems[menuType]);
-  console.log("pathname", pathname);
-
   return (
     <SidebarGroup>
       <SidebarMenu>

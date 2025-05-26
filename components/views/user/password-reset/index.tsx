@@ -18,12 +18,12 @@ import { useQueryUserInfo } from "@/hooks/queries/user";
 const PasswordResetView = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  console.log(session);
 
   const { data: userInfo } = useQueryUserInfo({
     agentId: session?.user.agentId || 0,
-    userId: session?.user.id || 0,
+    userId: session?.user.userId || 0,
   });
-
   console.log(userInfo);
 
   const [phone, setPhone] = useState("");

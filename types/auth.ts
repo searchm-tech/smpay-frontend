@@ -6,8 +6,8 @@ export type SignInRequest = {
 };
 
 export type SignInResponse = {
-  accessToken: string;
-  refreshToken: string;
+  accessToken: Token;
+  refreshToken: Token;
   user: TSMPayUser;
 };
 

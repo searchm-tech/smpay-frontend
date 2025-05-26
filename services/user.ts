@@ -1,14 +1,11 @@
 import { ApiError, get, post } from "@/lib/api";
 import type { ApiResponseData } from "./types";
 import type {
-  TAgentsUsersPwResponse,
   TMailVerifyUser,
   TResetPwdType,
   TSignUpMailVerifyResponse,
   TUserInfoResponse,
 } from "@/types/user";
-
-// ----------------- 실제 API 호출 -----------------
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -49,33 +46,6 @@ export const getUsersMailVerifyApi = async (
   }
 };
 
-// TODO : 제거
-// 대행사 최상위 그룹장 회원 가입(메일 통한) API
-export type TSignUpMailVerifyParams = {
-  agentId: number;
-  userId: number;
-  password: string;
-  phone: string;
-};
-
-export const postAgentsUsersSignUpApi = async (
-  params: TSignUpMailVerifyParams
-): Promise<TSignUpMailVerifyResponse> => {
-  const { agentId, userId, password, phone } = params;
-  try {
-    const response = await post<TSignUpMailVerifyResponse>(
-      `/admin/api/v1/agents/${agentId}/users/${userId}`,
-      { password, phoneNumber: phone }
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
 // 대행사 비밀번호 설정 또는 비밀번호 재설정 API
 export type TAgentsUsersPwParams = {
   agentId: number;
@@ -87,10 +57,10 @@ export type TAgentsUsersPwParams = {
 
 export const postAgentsUsersPwApi = async (
   params: TAgentsUsersPwParams
-): Promise<TAgentsUsersPwResponse> => {
+): Promise<null> => {
   const { agentId, userId, password, phone, type } = params;
   try {
-    const response = await post<TAgentsUsersPwResponse>(
+    const response = await post<null>(
       `/api/v1/agents/${agentId}/users/${userId}/password`,
       { password, phoneNumber: phone, type }
     );
