@@ -18,13 +18,13 @@ import LoadingUI from "@/components/common/Loading";
 import ModalPwdSetting from "./ModalPwdSetting";
 
 import { useSessionStore } from "@/store/useSessionStore";
+import { signInApi } from "@/services/auth";
+import { getAgencyDomainNameApi } from "@/services/agency";
 
 import { STORAGE_KEYS, createFormSchema } from "./constants";
-import { signInApi } from "@/services/auth";
 import { ApiError } from "@/lib/api";
 
 import type { TSMPayUser } from "@/types/user";
-import { getAgencyDomainNameApi } from "@/services/agency";
 
 interface SignInViewProps {
   code?: string;
@@ -89,6 +89,7 @@ const SignInView = ({ code }: SignInViewProps) => {
           phoneNumber: response.user.phoneNumber,
         };
 
+        // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
           ...user,
           accessToken: response.accessToken.token,

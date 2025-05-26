@@ -11,11 +11,13 @@ import Footer from "./Footer";
 import SmPayGuideModal from "./GuideModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
+import { useSessionStore } from "@/store/useSessionStore";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
+  const { setTokens } = useSessionStore();
 
   const [isExpireModalOpen, setIsExpireModalOpen] = useState(false);
 
@@ -55,6 +57,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     }
   }, [pathname, setGuideOpen, isNoNavPage]);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (accessToken && refreshToken) {
+      setTokens(accessToken, refreshToken);
+    }
+  }, []);
 
   if (isNoNavPage) {
     return <div>{children}</div>;
