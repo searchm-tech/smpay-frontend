@@ -11,9 +11,11 @@ import {
   postUsersPasswordResetApi,
   getUserInfoApi,
   getAdminUserInfoApi,
+  patchUserInfoApi,
   type TMailVerifyParams,
   type TAgentsUsersPwParams,
   type TUserInfoParams,
+  type TUserInfoPatchParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type {
@@ -76,6 +78,16 @@ export const useQueryAdminUserInfo = (
     queryKey: ["adminUserInfo", params],
     queryFn: () => getAdminUserInfoApi(params.userId),
     enabled: !!params.userId && params.isAdmin,
+    ...options,
+  });
+};
+
+// 기본 정보 변경 mutation
+export const useMutationUserInfo = (
+  options?: UseMutationOptions<null, Error, TUserInfoPatchParams>
+) => {
+  return useMutation({
+    mutationFn: (params: TUserInfoPatchParams) => patchUserInfoApi(params),
     ...options,
   });
 };
