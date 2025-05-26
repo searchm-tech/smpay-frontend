@@ -3,12 +3,15 @@
 import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { signOutApi } from "@/services/auth";
+import { useSessionStore } from "@/store/useSessionStore";
 
 const SignOutView = () => {
   const { data: session } = useSession();
+  const { clearSession } = useSessionStore();
 
   useEffect(() => {
     if (!session) {
+      clearSession();
       signOut({ callbackUrl: "/sign-in" });
       return;
     }
@@ -18,7 +21,10 @@ const SignOutView = () => {
       .catch((error) => {
         console.error("error", error);
       })
-      .finally(() => signOut({ callbackUrl: "/sign-in" }));
+      .finally(() => {
+        clearSession();
+        signOut({ callbackUrl: "/sign-in" });
+      });
   }, [session]);
 
   return (

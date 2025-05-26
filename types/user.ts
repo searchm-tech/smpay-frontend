@@ -120,3 +120,13 @@ export type TUserInfoResponse = {
     department: TDepartment;
   };
 };
+
+export type TAdminUserInfoResponse = {
+  userId: number;
+  agentId: number;
+  id: string;
+  status: UserStatus;
+  type: TAuthType;
+  name: string;
+  phoneNumber: string;
+};

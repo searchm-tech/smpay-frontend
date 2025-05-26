@@ -9,13 +9,18 @@ import {
   getUsersMailVerifyApi,
   postAgentsUsersPwApi,
   postUsersPasswordResetApi,
+  getUserInfoApi,
+  getAdminUserInfoApi,
   type TMailVerifyParams,
   type TAgentsUsersPwParams,
-  getUserInfoApi,
   type TUserInfoParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
-import type { TMailVerifyUser, TUserInfoResponse } from "@/types/user";
+import type {
+  TAdminUserInfoResponse,
+  TMailVerifyUser,
+  TUserInfoResponse,
+} from "@/types/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
 export const useMutationPwdResetLink = (
@@ -49,16 +54,28 @@ export const useMutationAgentsUsersPw = (
   });
 };
 
-//
-
+// 회원 정보 조회 query
 export const useQueryUserInfo = (
-  params: TUserInfoParams,
+  params: TUserInfoParams & { isAdmin: boolean },
   options?: UseQueryOptions<TUserInfoResponse, Error>
 ) => {
   return useQuery({
     queryKey: ["userInfo", params],
     queryFn: () => getUserInfoApi(params),
-    enabled: !!params.agentId && !!params.userId,
+    enabled: !!params.agentId && !!params.userId && !params.isAdmin,
+    ...options,
+  });
+};
+
+// 관리자 회원 정보 조회 query
+export const useQueryAdminUserInfo = (
+  params: { userId: number; isAdmin: boolean },
+  options?: UseQueryOptions<TAdminUserInfoResponse, Error>
+) => {
+  return useQuery({
+    queryKey: ["adminUserInfo", params],
+    queryFn: () => getAdminUserInfoApi(params.userId),
+    enabled: !!params.userId && params.isAdmin,
     ...options,
   });
 };

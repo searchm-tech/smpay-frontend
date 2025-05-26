@@ -1,8 +1,9 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
 import axiosRetry from "axios-retry";
-import { getSession, signOut } from "next-auth/react";
-import { postRefreshTokenApi, signOutApi } from "@/services/auth";
+import { signOut } from "next-auth/react";
+import { postRefreshTokenApi } from "@/services/auth";
+import { useSessionStore } from "@/store/useSessionStore";
 import type { ApiResponse } from "@/types/api";
 
 // 커스텀 에러 클래스
@@ -73,24 +74,22 @@ apiClient.interceptors.response.use(
   }
 );
 
-// 요청 인터셉터 (예: 토큰 자동 추가)
+// 요청 인터셉터 (항상 최신 세션의 accessToken 사용)
 apiClient.interceptors.request.use(
-  async (config) => {
-    const session = await getSession();
-    console.log("session", session);
-    if (session?.accessToken) {
-      config.headers.Authorization = `Bearer ${session.accessToken}`;
-      console.log("config.headers.Authorization", config.headers.Authorization);
+  (config) => {
+    const { accessToken } = useSessionStore.getState();
+
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// 응답 인터셉터 (예: 에러 처리)
+// 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
   (response) => {
-    // code 0이 아닐 경우 > 정상적인 API 호출이 아님
     if (response.data && response.data.code !== "0") {
       throw new ApiError(
         response.data.code,
@@ -98,45 +97,45 @@ apiClient.interceptors.response.use(
         response.data.result
       );
     }
-
-    return response.data; // 전체 response.data 반환 (code, message, result)
+    return response.data;
   },
   async (error) => {
-    // 토큰 만료
     if (error.response?.data?.code === "70") {
       try {
-        await signOut({ callbackUrl: "/sign-out" });
-        const session = await getSession();
+        const { refreshToken, setTokens } = useSessionStore.getState();
+        if (refreshToken) {
+          try {
+            const res = await postRefreshTokenApi({
+              refreshToken,
+            });
 
-        if (session?.refreshToken) {
-          // const res = await postRefreshTokenApi({
-          //   refreshToken: session?.refreshToken,
-          // })
-          //   .then((res) => {
-          //     alert("토큰 재발급");
-          //     apiClient.defaults.headers.Authorization = `Bearer ${res.accessToken.token}`;
-          //     error.config.headers.Authorization = `Bearer ${res.accessToken.token}`;
-          //     return apiClient.request(error.config);
-          //   })
-          //   .catch((err) => {
-          //     signOut({ callbackUrl: "/sign-in" });
-          //     alert("토큰 완전 끝");
-          //   });
+            setTokens(res.accessToken.token, res.refreshToken.token);
+            const newConfig = {
+              ...error.config,
+              headers: {
+                ...error.config.headers,
+                Authorization: `Bearer ${res.accessToken.token}`,
+              },
+            };
+            return apiClient.request(newConfig);
+          } catch (err) {
+            const { clearSession } = useSessionStore.getState();
+            await signOut({ callbackUrl: "/sign-in" });
+            clearSession();
+            return Promise.reject(err);
+          }
         }
       } catch (refreshError) {
-        // refreshToken도 만료 → 로그아웃 처리
-        // await signOut({ callbackUrl: "/sign-out" });
-        alert("토큰 완전 끝");
+        const { clearSession } = useSessionStore.getState();
+        await signOut({ callbackUrl: "/sign-in" });
+        clearSession();
         return Promise.reject(refreshError);
       }
     }
-
-    // 서버에서 온 에러 응답이 있으면 ApiError로 throw
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
       throw new ApiError(code, message, result);
     }
-    // 그 외 네트워크 에러 등
     return Promise.reject(error);
   }
 );

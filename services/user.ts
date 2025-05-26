@@ -1,9 +1,9 @@
 import { ApiError, get, post } from "@/lib/api";
 import type { ApiResponseData } from "./types";
 import type {
+  TAdminUserInfoResponse,
   TMailVerifyUser,
   TResetPwdType,
-  TSignUpMailVerifyResponse,
   TUserInfoResponse,
 } from "@/types/user";
 
@@ -73,7 +73,7 @@ export const postAgentsUsersPwApi = async (
   }
 };
 
-// 회원 정보 조회 API
+// 회원 정보 조회
 export type TUserInfoParams = {
   agentId: number;
   userId: number;
@@ -85,6 +85,23 @@ export const getUserInfoApi = async (
     const { agentId, userId } = params;
     const response = await get<TUserInfoResponse>(
       `/service/api/v1/agents/${agentId}/users/${userId}/me`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 관리자 회원 정보 조회
+export const getAdminUserInfoApi = async (
+  userId: number
+): Promise<TAdminUserInfoResponse> => {
+  try {
+    const response = await get<TAdminUserInfoResponse>(
+      `/admin/api/v1/agents/users/${userId}/me`
     );
     return response;
   } catch (error) {
@@ -112,3 +129,5 @@ export const getUsersNameCheckApi = async (
     throw error;
   }
 };
+
+// 인증 코드 기반으로 도메인 주소 받기
