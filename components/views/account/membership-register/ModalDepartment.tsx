@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { LinkTextButton } from "@/components/composite/button-components";
 import { SearchInput } from "@/components/composite/input-components";
@@ -7,41 +7,26 @@ import { Modal } from "@/components/composite/modal-components";
 
 import DepartmentTree from "@/components/common/DepartmentTree";
 import type { DepartmentTreeNode } from "@/types/tree";
+import type { TSubDepartmentsResponse } from "@/types/department";
+import { useSession } from "next-auth/react";
+import { getSubDepartmentsApi } from "@/services/departments";
 
 type ModalDepartmentProps = {
   setIsOpen: (isOpen: boolean) => void;
   onSelect: (node: DepartmentTreeNode) => void;
 };
 
-const initialTreeData: DepartmentTreeNode[] = [
-  {
-    id: "dept-1",
-    name: "부서 1",
-    children: [
-      {
-        id: "dept-1-1",
-        name: "부서 1-1",
-        children: [
-          {
-            id: "dept-1-1-1",
-            name: "부서 1-1-1",
-            children: [],
-          },
-        ],
-      },
-      {
-        id: "dept-1-2",
-        name: "부서 1-2",
-        children: [],
-      },
-    ],
-  },
-  {
-    id: "dept-2",
-    name: "부서 2",
-    children: [],
-  },
-];
+const convertToDepartmentTreeNode = (
+  dept: TSubDepartmentsResponse
+): DepartmentTreeNode => {
+  return {
+    id: `dept-${dept.departmentId}`,
+    name: dept.name,
+    children: dept.children
+      .sort((a, b) => a.displayOrder - b.displayOrder) // displayOrder로 정렬
+      .map(convertToDepartmentTreeNode),
+  };
+};
 
 // 재귀적으로 노드를 찾는 함수
 const findNodeById = (
@@ -62,11 +47,14 @@ const findNodeById = (
   return null;
 };
 
-// TODO : 나중에 사용할 모달 컴포넌트임
 const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
   const router = useRouter();
+  const { data: session } = useSession();
+
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<DepartmentTreeNode | null>(null);
+  const [treeData, setTreeData] = useState<DepartmentTreeNode[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSelect = (node: DepartmentTreeNode) => setSelected(node);
 
@@ -74,6 +62,56 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
     if (selected) onSelect(selected);
     setIsOpen(false);
   };
+
+  // 검색 필터링 함수
+  const filterTreeData = (
+    nodes: DepartmentTreeNode[],
+    searchTerm: string
+  ): DepartmentTreeNode[] => {
+    if (!searchTerm) return nodes;
+
+    const filtered: DepartmentTreeNode[] = [];
+
+    for (const node of nodes) {
+      const matchesSearch = node.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const filteredChildren = filterTreeData(node.children || [], searchTerm);
+
+      if (matchesSearch || filteredChildren.length > 0) {
+        filtered.push({
+          ...node,
+          children: filteredChildren,
+        });
+      }
+    }
+
+    return filtered;
+  };
+
+  const filteredData = filterTreeData(treeData, search);
+
+  useEffect(() => {
+    if (session?.user) {
+      setIsLoading(true);
+      getSubDepartmentsApi(session.user.agentId, session.user.userId)
+        .then((res) => {
+          console.log("Department data:", res.children);
+          const sortedData = res.children.sort(
+            (a, b) => a.displayOrder - b.displayOrder
+          );
+
+          const convertedData = sortedData.map(convertToDepartmentTreeNode);
+          setTreeData(convertedData);
+        })
+        .catch((error) => {
+          console.error("Error fetching departments:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [session]);
 
   return (
     <Modal
@@ -94,11 +132,17 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
           />
         </div>
         <div className="flex flex-col gap-2 h-[400px] overflow-y-auto">
-          <DepartmentTree
-            data={initialTreeData}
-            selectedId={selected?.id}
-            onSelect={handleSelect}
-          />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <div>부서 정보를 불러오는 중...</div>
+            </div>
+          ) : (
+            <DepartmentTree
+              data={filteredData}
+              selectedId={selected?.id}
+              onSelect={handleSelect}
+            />
+          )}
         </div>
 
         <div className="flex justify-end">

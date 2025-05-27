@@ -8,22 +8,9 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
-  useDraggable,
-  useDroppable,
   MeasuringStrategy,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import {
-  CircleCheckBig,
-  FilePenLine,
-  Folder,
-  FolderOpen,
-  FolderPlus,
-  Move,
-  Trash2,
-  User,
-  X,
-} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import LoadingUI from "@/components/common/Loading";
@@ -32,306 +19,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import {
-  getDepartmentsApi,
-  putDepartmentsApi,
-  TDepartmentsPutParams,
-} from "@/services/departments";
+  useMutationDepartments,
+  useQueryDepartments,
+} from "@/hooks/queries/departments";
+
 import {
   convertTreeToParams,
   convertToTreeNode,
   getNodeDepth,
+  findNode,
+  removeNode,
+  TreeNodeComponent,
 } from "./constants";
 
 import type { OrganizationTreeNode } from "@/types/tree";
+import type { TDepartmentsPutParams } from "@/services/departments";
 
-const findNode = (
-  nodes: OrganizationTreeNode[],
-  id: string
-): [
-  OrganizationTreeNode | null,
-  OrganizationTreeNode[] | null,
-  OrganizationTreeNode | null
-] => {
-  for (const node of nodes) {
-    if (node.id === id) {
-      return [node, nodes, null];
-    }
-    if (node.children) {
-      const [found, parent, grandParent] = findNode(node.children, id);
-      if (found) {
-        return [found, parent, node];
-      }
-    }
-  }
-  return [null, null, null];
-};
-
-const removeNode = (nodes: OrganizationTreeNode[], id: string): boolean => {
-  const index = nodes.findIndex((node) => node.id === id);
-  if (index !== -1) {
-    nodes.splice(index, 1);
-    return true;
-  }
-  for (const node of nodes) {
-    if (node.children) {
-      if (removeNode(node.children, id)) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-interface TreeNodeProps {
+export interface TreeNodeProps {
   node: OrganizationTreeNode;
   level: number;
   onAddFolder: (parentId: string) => void;
   onUpdateName: (nodeId: string, newName: string) => Promise<boolean>;
   onDeleteFolder: (nodeId: string) => void;
 }
-
-const DroppableFolder: React.FC<{
-  id: string;
-  children: React.ReactNode;
-  isOpen: boolean;
-}> = ({ id, children, isOpen }) => {
-  const { setNodeRef, isOver } = useDroppable({
-    id: id,
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "transition-colors duration-200",
-        isOver && "bg-blue-50",
-        isOpen && "pb-2 rounded-md"
-      )}
-    >
-      {children}
-    </div>
-  );
-};
-
-// 폴더 내에 user가 있는지 확인하는 함수
-const hasUserInChildren = (node: OrganizationTreeNode): boolean => {
-  if (node.type === "user") return true;
-  if (!node.children) return false;
-
-  return node.children.some((child) => hasUserInChildren(child));
-};
-
-// 폴더 내의 전체 user 수를 계산하는 함수
-const countUsersInNode = (node: OrganizationTreeNode): number => {
-  if (node.type === "user") return 1;
-  if (!node.children) return 0;
-
-  return node.children.reduce((sum, child) => sum + countUsersInNode(child), 0);
-};
-
-const TreeNodeComponent: React.FC<TreeNodeProps> = ({
-  node,
-  level,
-  onAddFolder,
-  onUpdateName,
-  onDeleteFolder,
-}) => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState(node.name);
-  const [showDeleteError, setShowDeleteError] = useState(false);
-
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: node.id,
-      data: {
-        type: node.type,
-      },
-    });
-
-  const handleToggle = () => {
-    if (node.type === "folder") {
-      setIsOpen(!isOpen);
-    }
-  };
-
-  const handleNameSubmit = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      const success = await onUpdateName(node.id, editName);
-      if (success) {
-        setIsEditing(false);
-      }
-    } else if (e.key === "Escape") {
-      setEditName(node.name);
-      setIsEditing(false);
-    }
-  };
-
-  const handleDelete = (node: OrganizationTreeNode) => {
-    if (node.type === "folder") {
-      if (hasUserInChildren(node)) {
-        setShowDeleteError(true);
-      } else {
-        onDeleteFolder(node.id);
-      }
-    }
-  };
-
-  // 이동하는 트리
-  const style: React.CSSProperties | undefined = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        backgroundColor: "white",
-        position: "relative" as const,
-        zIndex: 999,
-      }
-    : undefined;
-
-  const content = (
-    <div
-      ref={setNodeRef}
-      className={`flex items-center gap-2 py-2 px-2 rounded-md ${
-        node.type === "folder" ? "hover:bg-gray-50" : "cursor-default"
-      } ${isDragging ? "opacity-50" : ""}`}
-      style={{
-        paddingLeft: `${level * 24}px`,
-        ...(isDragging ? { border: "2px solid #4A90E2" } : {}),
-        ...style,
-      }}
-    >
-      {node.type === "folder" ? (
-        isOpen ? (
-          <FolderOpen className={classNameLeft} onClick={handleToggle} />
-        ) : (
-          <Folder className={classNameLeft} onClick={handleToggle} />
-        )
-      ) : (
-        <User className={classNameLeft} />
-      )}
-      <div
-        {...attributes}
-        {...listeners}
-        className="flex-1 flex items-center gap-2 cursor-move"
-      >
-        {isEditing ? (
-          <input
-            type="text"
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            onKeyDown={handleNameSubmit}
-            className="flex-1 bg-white border rounded px-2 py-1 text-sm"
-            autoFocus
-          />
-        ) : (
-          <>
-            <span>{node.name}</span>
-            {node.type === "folder" && (
-              <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <User className="w-3 h-3" />
-                {countUsersInNode(node)}명
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {node.type === "user" && (
-        <div {...listeners} className="touch-none cursor-move">
-          <Move className={classNameObject} />
-        </div>
-      )}
-
-      {node.type === "folder" &&
-        (!isEditing ? (
-          <div className="flex items-center gap-2">
-            <FolderPlus
-              className={classNameObject}
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddFolder(node.id);
-              }}
-            />
-            <div {...listeners} className="touch-none cursor-move">
-              <Move className={classNameObject} />
-            </div>
-            <FilePenLine
-              className={classNameObject}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsEditing(true);
-              }}
-            />
-            <Trash2
-              className={classNameObject}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(node);
-              }}
-            />
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <CircleCheckBig
-              className={cn(classNameObject, "text-green-500")}
-              onClick={async (e) => {
-                e.stopPropagation();
-                const success = await onUpdateName(node.id, editName);
-                if (success) {
-                  setIsEditing(false);
-                }
-              }}
-            />
-            <X
-              className={cn(classNameObject, "text-red-500")}
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditName(node.name);
-                setIsEditing(false);
-              }}
-            />
-          </div>
-        ))}
-    </div>
-  );
-
-  return (
-    <div className="w-full">
-      {showDeleteError && (
-        <ConfirmDialog
-          open
-          content={
-            <div className="text-center">
-              <p>하위 그릅원이 있으면 그룹을 삭제할 수 없습니다.</p>
-              <p>그룹원을 이동한 후 다시 시도해주세요.</p>
-            </div>
-          }
-          onConfirm={() => setShowDeleteError(false)}
-        />
-      )}
-      {node.type === "folder" ? (
-        <DroppableFolder id={node.id} isOpen={isOpen}>
-          {content}
-          {isOpen && node.children && (
-            <div className="w-full">
-              {node.children.map((child) => (
-                <TreeNodeComponent
-                  key={child.id}
-                  node={child}
-                  level={level + 1}
-                  onAddFolder={onAddFolder}
-                  onUpdateName={onUpdateName}
-                  onDeleteFolder={onDeleteFolder}
-                />
-              ))}
-            </div>
-          )}
-        </DroppableFolder>
-      ) : (
-        <div>{content}</div>
-      )}
-    </div>
-  );
-};
 
 // Helper function to collect all folder names from the tree
 const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
@@ -352,13 +62,29 @@ const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
 
 const OrganizationSection: React.FC = () => {
   const { data: session } = useSession();
+  const enabled = !!session?.user.agentId;
+
+  const { refetch, isFetching: loadingDepartmentsQuery } = useQueryDepartments(
+    session?.user.agentId || 0,
+    { enabled }
+  );
+
+  const { mutate: mutateDepartments, isPending: loadingDepartmentsMutation } =
+    useMutationDepartments({
+      onSuccess: () => setSuccessSave(true),
+      onError: (error) => {
+        console.error("Error saving tree data:", error);
+      },
+    });
 
   const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [errorNewFolder, setErrorNewFolder] = useState(false);
   const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
   const [errorMaxDepth, setErrorMaxDepth] = useState(false);
+  const [errorNoData, setErrorNoData] = useState(false);
+
+  const [successSave, setSuccessSave] = useState(false);
 
   const [newFolderName, setNewFolderName] = useState("");
 
@@ -552,84 +278,61 @@ const OrganizationSection: React.FC = () => {
 
   const handleSave = async () => {
     if (!session?.user.agentId) return;
-    try {
-      setIsLoading(true);
-
-      const params: TDepartmentsPutParams = {
-        agentId: session?.user.agentId.toString(),
-        departments: convertTreeToParams(treeData),
-      };
-      console.log("params", params);
-
-      // const test: TDepartmentsPutParams = {
-      //   agentId: session?.user.agentId.toString(),
-      //   departments: [
-      //     {
-      //       departmentName: "최상위 부서",
-      //       displayOrder: 1,
-      //       userIds: [],
-      //       children: [
-      //         {
-      //           departmentName: "두번째 부서",
-      //           displayOrder: 1,
-      //           userIds: [],
-      //           children: [],
-      //         },
-      //         {
-      //           departmentName: "두번째 부서2",
-      //           displayOrder: 2,
-      //           userIds: [],
-      //           children: [
-      //             {
-      //               departmentName: "세번째 부서",
-      //               displayOrder: 1,
-      //               userIds: [],
-      //               children: [],
-      //             },
-      //           ],
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // };
-      // console.log("test", test);
-
-      const res = await putDepartmentsApi(params);
-      console.log("res", res);
-    } catch (error) {
-      console.error("Error saving tree data:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    const params: TDepartmentsPutParams = {
+      agentId: session?.user.agentId.toString(),
+      departments: convertTreeToParams(treeData),
+    };
+    mutateDepartments(params);
   };
 
-  const fetchData = async (agencyId: number) => {
-    try {
-      setIsLoading(true);
-      const res = await getDepartmentsApi(agencyId);
-      if (res.departments && res.departments.length > 0) {
-        const data = res.departments.map(convertToTreeNode);
-        setTreeData(data);
-      } else {
-        alert("현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다.");
-      }
-    } catch (error) {
-      console.error("Error fetching tree data:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleInitAddTopFolder = () => {
+    if (!session?.user.agentId) return;
+    const params: TDepartmentsPutParams = {
+      agentId: session.user.agentId.toString(),
+      departments: [
+        {
+          departmentName: "최상위 부서",
+          displayOrder: 1,
+          userIds: [session.user.userId],
+          children: [
+            {
+              departmentName: "새폴 더",
+              displayOrder: 1,
+              userIds: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    };
+    mutateDepartments(params);
   };
 
   useEffect(() => {
-    if (!session) return;
-    if (!session.user.agentId) return;
+    if (!enabled) return;
 
-    fetchData(session.user.agentId);
-  }, [session]);
+    refetch()
+      .then((res) => {
+        if (res.status === "success" && res.data && res.data.length > 0) {
+          const data = res.data.map(convertToTreeNode);
+          setTreeData(data);
+        } else {
+          setErrorNoData(true);
+          console.log("errorNoData");
+        }
+      })
+      .catch((error) => {
+        setErrorNoData(true);
+        console.log("Error fetching tree data:", error);
+      });
+  }, [enabled]);
+
+  const loadingDepartments =
+    loadingDepartmentsQuery || loadingDepartmentsMutation;
 
   return (
     <Fragment>
-      {isLoading && <LoadingUI />}
+      {loadingDepartments && <LoadingUI />}
       {errorNewFolder && (
         <ConfirmDialog
           open
@@ -649,6 +352,29 @@ const OrganizationSection: React.FC = () => {
           open
           content={<div>최대 4 depth까지만 폴더를 생성할 수 있습니다.</div>}
           onConfirm={() => setErrorMaxDepth(false)}
+        />
+      )}
+
+      {errorNoData && (
+        <ConfirmDialog
+          open
+          cancelDisabled
+          onConfirm={handleInitAddTopFolder}
+          content={
+            <div>
+              현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다.
+            </div>
+          }
+        />
+      )}
+      {successSave && (
+        <ConfirmDialog
+          open
+          content={<div>부서 정보가 저장되었습니다.</div>}
+          onConfirm={() => {
+            refetch();
+            setSuccessSave(false);
+          }}
         />
       )}
       <DndContext
@@ -698,7 +424,3 @@ const OrganizationSection: React.FC = () => {
 };
 
 export default OrganizationSection;
-
-const classNameObject =
-  "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
-const classNameLeft = "w-5 h-5 text-gray-400 cursor-pointer";
