@@ -2,10 +2,12 @@ import { ApiError, get, patch, post } from "@/lib/api";
 import type { ApiResponseData } from "./types";
 import type {
   TAdminUserInfoResponse,
+  TAuthType,
   TMailVerifyUser,
   TResetPwdType,
   TUserInfoResponse,
 } from "@/types/user";
+import type { AgencyData } from "./agency";
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -147,6 +149,56 @@ export const patchUserInfoApi = async (
       emailAddress,
       phoneNumber,
     });
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 API
+export type TAgencyUserEmailParams = {
+  agentId: number;
+  userType: TAuthType;
+  name: string;
+  emailAddress: string;
+};
+export async function postAgencyUserEmailApi(
+  params: TAgencyUserEmailParams
+): Promise<AgencyData | null> {
+  try {
+    const response: AgencyData = await post(
+      "/admin/api/v1/agents/users/email",
+      params
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// [관리자] 회원 직접 등록 API
+export type TAgencyUserPostParams = {
+  userType: TAuthType;
+  name: string;
+  emailAddress: string;
+  password: string;
+  phoneNumber: string;
+  agentId: number;
+};
+export const postAgencyUserApi = async (
+  params: TAgencyUserPostParams
+): Promise<TAdminUserInfoResponse> => {
+  try {
+    const response = await post<TAdminUserInfoResponse>(
+      `/admin/api/v1/agents/${params.agentId}/users`,
+      params
+    );
     return response;
   } catch (error) {
     if (error instanceof ApiError) {
