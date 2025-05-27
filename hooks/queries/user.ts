@@ -12,10 +12,12 @@ import {
   getUserInfoApi,
   getAdminUserInfoApi,
   patchUserInfoApi,
+  postAgencyUserApi,
   type TMailVerifyParams,
   type TAgentsUsersPwParams,
   type TUserInfoParams,
   type TUserInfoPatchParams,
+  type TAgencyUserPostParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type {
@@ -88,6 +90,20 @@ export const useMutationUserInfo = (
 ) => {
   return useMutation({
     mutationFn: (params: TUserInfoPatchParams) => patchUserInfoApi(params),
+    ...options,
+  });
+};
+
+// 관리자 : 대행사 최상위 그룹장 회원 가입(직접 등록)
+export const useMutationAgencyUser = (
+  options?: UseMutationOptions<
+    TAdminUserInfoResponse,
+    Error,
+    TAgencyUserPostParams
+  >
+) => {
+  return useMutation({
+    mutationFn: (params: TAgencyUserPostParams) => postAgencyUserApi(params),
     ...options,
   });
 };

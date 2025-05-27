@@ -65,30 +65,6 @@ export type AdminAgentResponseDto = {
   domainName: string;
 };
 
-const ete = {
-  result: {
-    adminAgentResponseDto: {
-      agentId: 1,
-      name: "대행사 이름",
-      uniqueCode: "고유 코드",
-      representativeName: "대표자 이름",
-      businessRegistrationNumber: "사업자 등록 번호",
-      status: "NORMAL",
-      domainName: "도메인 이름",
-    },
-    userResponseDto: {
-      userId: 1,
-      agentId: 1,
-      id: "아이디",
-      status: "NORMAL",
-      type: "ADVERTISER",
-      name: "이름",
-      phoneNumber: "전화번호",
-    },
-    isVerified: true,
-  },
-};
-
 export type UserResponseDto = {
   userId: number;
   agentId: number;

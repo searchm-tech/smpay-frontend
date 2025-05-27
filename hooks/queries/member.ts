@@ -1,6 +1,5 @@
 // TODO : 삭제 예정
 import {
-  createMember,
   createMemberByAgency,
   deleteMember,
   fetchMembers,
@@ -25,16 +24,6 @@ export const useDeleteMember = (
 ) => {
   return useMutation({
     mutationFn: (id: number) => deleteMember(id),
-    ...options,
-  });
-};
-
-// 회원 등록 - [대행사 기준]
-export const useCreateMember = (
-  options?: UseMutationOptions<{ success: boolean }, Error, any>
-) => {
-  return useMutation({
-    mutationFn: (data: any) => createMember(data),
     ...options,
   });
 };

@@ -15,7 +15,6 @@ import LoadingUI from "@/components/common/Loading";
 
 import ModalDepartment from "./ModalDepartment";
 
-import { useCreateMember } from "@/hooks/queries/member";
 import {
   useMutationAgencySendMail,
   useQueryAgencyAll,
@@ -26,7 +25,7 @@ import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX } from "@/constants/reg";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import type { TAgencySendMailParams } from "@/services/agency";
+import type { TAgencyUserEmailParams } from "@/services/user";
 
 const Dialog = {
   err: "모든 필수 항목을 입력해주세요.",
@@ -67,11 +66,6 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
   const [nameCheckResult, setNameCheckResult] = useState<
     "duplicate" | "available" | ""
   >("");
-
-  // 메일 발송 api 신규 필요 + 모달창 다시 확인
-  const { mutate: createMember, isPending } = useCreateMember({
-    onSuccess: () => setDialog("success"),
-  });
 
   const { data: agencyList } = useQueryAgencyAll();
 
@@ -136,22 +130,14 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
         setDialog("err");
         return;
       }
-
-      const data = {
-        emailId,
-        department: departmentNode.id,
-        selected,
-        name,
-      };
-
-      createMember(data);
     } else {
+      // 시스템 관리자 - 직접 딍록
       if (!selectedAgency) {
         setDialog("err");
         return;
       }
 
-      const params: TAgencySendMailParams = {
+      const params: TAgencyUserEmailParams = {
         agentId: Number(selectedAgency),
         userType: "AGENCY_GROUP_MASTER", // user.type,
         name,
@@ -164,9 +150,7 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
 
   return (
     <section className="py-4">
-      {(isPending || isPendingSendMail) && (
-        <LoadingUI title="초대 메일 전송 중..." />
-      )}
+      {isPendingSendMail && <LoadingUI title="초대 메일 전송 중..." />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment

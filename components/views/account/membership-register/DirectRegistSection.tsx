@@ -18,12 +18,13 @@ import { DescriptionBox } from "@/components/common/Box";
 
 import ModalDepartment from "./ModalDepartment";
 
-import {
-  useCreateMember,
-  useCreateMemberByAgency,
-} from "@/hooks/queries/member";
+import { useCreateMemberByAgency } from "@/hooks/queries/member";
 import { useQueryAgencyAll } from "@/hooks/queries/agency";
-import { getUsersNameCheckApi } from "@/services/user";
+import { useMutationAgencyUser } from "@/hooks/queries/user";
+import {
+  getUsersNameCheckApi,
+  type TAgencyUserPostParams,
+} from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
@@ -56,6 +57,10 @@ type DirectRegistSectionProps = {
 
 const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const { data: agencyList } = useQueryAgencyAll();
+  const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
+    useMutationAgencyUser({
+      onSuccess: () => setSuccessModal(true),
+    });
 
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
@@ -77,11 +82,6 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const [nameCheckResult, setNameCheckResult] = useState<
     "duplicate" | "available" | ""
   >("");
-
-  // 직접등록
-  const { mutate: createMember, isPending } = useCreateMember({
-    onSuccess: () => setSuccessModal(true),
-  });
 
   const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
     useCreateMemberByAgency({
@@ -176,26 +176,16 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
     }
 
     if (!isAdmin) {
-      const data = {
-        emailId,
-        department: departmentNode?.id,
-        memberType,
-        name,
-        phone,
-        password,
-        passwordConfirm,
-      };
-      createMember(data);
     } else {
-      const data = {
-        emailId,
-        agencyId: selectedAgency,
+      const data: TAgencyUserPostParams = {
+        userType: "AGENCY_GROUP_MASTER",
         name,
-        phone,
+        emailAddress: emailId,
         password,
-        passwordConfirm,
+        phoneNumber: phone,
+        agentId: Number(selectedAgency),
       };
-      createMemberByAgency(data);
+      mutateAddUserDirect(data);
     }
   };
 
@@ -205,8 +195,9 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
 
   return (
     <section className="py-4">
-      {(isPending || checkNameLoading || isPendingByAgency) && <LoadingUI />}
+      {(checkNameLoading || isPendingByAgency) && <LoadingUI />}
 
+      {isPendingAddUserDirect && <LoadingUI title="회원 등록 중..." />}
       {isOpenDepartmentModal && (
         <ModalDepartment
           setIsOpen={setIsOpenDepartmentModal}
