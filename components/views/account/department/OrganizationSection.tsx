@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-
+import { useSession } from "next-auth/react";
 import {
   DndContext,
   DragEndEvent,
@@ -24,26 +24,25 @@ import {
   User,
   X,
 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import {
+  getDepartmentsApi,
+  putDepartmentsApi,
+  TDepartmentsPutParams,
+} from "@/services/departments";
+import {
+  convertTreeToParams,
+  convertToTreeNode,
+  getNodeDepth,
+} from "./constants";
+
 import type { OrganizationTreeNode } from "@/types/tree";
-import { getTreeData } from "@/services/departments";
-
-interface UserData {
-  email: string;
-  displayType: string;
-}
-
-interface TreeNode {
-  id: string;
-  name: string;
-  type: "folder" | "user";
-  userData?: UserData;
-  children?: TreeNode[];
-}
 
 const findNode = (
   nodes: OrganizationTreeNode[],
@@ -87,7 +86,7 @@ interface TreeNodeProps {
   node: OrganizationTreeNode;
   level: number;
   onAddFolder: (parentId: string) => void;
-  onUpdateName: (nodeId: string, newName: string) => void;
+  onUpdateName: (nodeId: string, newName: string) => Promise<boolean>;
   onDeleteFolder: (nodeId: string) => void;
 }
 
@@ -156,10 +155,12 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     }
   };
 
-  const handleNameSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleNameSubmit = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onUpdateName(node.id, editName);
-      setIsEditing(false);
+      const success = await onUpdateName(node.id, editName);
+      if (success) {
+        setIsEditing(false);
+      }
     } else if (e.key === "Escape") {
       setEditName(node.name);
       setIsEditing(false);
@@ -272,10 +273,12 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
           <div className="flex items-center gap-2">
             <CircleCheckBig
               className={cn(classNameObject, "text-green-500")}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation();
-                onUpdateName(node.id, editName);
-                setIsEditing(false);
+                const success = await onUpdateName(node.id, editName);
+                if (success) {
+                  setIsEditing(false);
+                }
               }}
             />
             <X
@@ -330,16 +333,32 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   );
 };
 
-const OrganizationSection: React.FC = () => {
-  const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
+// Helper function to collect all folder names from the tree
+const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
+  const names: string[] = [];
+  const traverse = (nodeList: OrganizationTreeNode[]) => {
+    nodeList.forEach((node) => {
+      if (node.type === "folder") {
+        names.push(node.name);
+        if (node.children) {
+          traverse(node.children);
+        }
+      }
+    });
+  };
+  traverse(nodes);
+  return names;
+};
 
-  console.log(treeData);
+const OrganizationSection: React.FC = () => {
+  const { data: session } = useSession();
+
+  const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [loadingAddFolder, setLoadingAddFolder] = useState(false);
-  const [loadingUpdateName, setLoadingUpdateName] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
   const [errorNewFolder, setErrorNewFolder] = useState(false);
+  const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
+  const [errorMaxDepth, setErrorMaxDepth] = useState(false);
 
   const [newFolderName, setNewFolderName] = useState("");
 
@@ -414,78 +433,101 @@ const OrganizationSection: React.FC = () => {
   };
 
   const handleAddFolder = async (parentId: string) => {
-    if (loadingAddFolder) return;
-    setLoadingAddFolder(true);
-    try {
-      const { result } = await fetchAddFolder(parentId);
-      if (!result) return;
-      setTreeData((prevData) => {
-        const newData = JSON.parse(JSON.stringify(prevData));
-        const [parentNode] = findNode(newData, parentId);
+    setTreeData((prevData) => {
+      const newData = JSON.parse(JSON.stringify(prevData));
+      const [parentNode] = findNode(newData, parentId);
 
-        if (parentNode) {
-          if (!parentNode.children) {
-            parentNode.children = [];
-          }
+      if (parentNode) {
+        // 현재 부모 노드의 depth 확인
+        const parentDepth = getNodeDepth(newData, parentId);
 
-          const newFolder: OrganizationTreeNode = {
-            id: `folder-${Date.now()}`,
-            name: "새 폴더",
-            type: "folder",
-            children: [],
-          };
-
-          parentNode.children.push(newFolder);
+        // 4 depth 제한 체크 (새 폴더는 부모 depth + 1이 됨)
+        if (parentDepth >= 4) {
+          setErrorMaxDepth(true);
+          return prevData;
         }
 
-        return newData;
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingAddFolder(false);
-    }
+        if (!parentNode.children) {
+          parentNode.children = [];
+        }
+
+        // 전체 트리에서 모든 폴더 이름 수집
+        const allFolderNames = getAllFolderNames(newData);
+
+        // "새 폴더"로 시작하는 폴더들의 번호 추출
+        const baseName = "새 폴더";
+        const existingNumbers: number[] = [];
+
+        allFolderNames.forEach((name) => {
+          if (name === baseName) {
+            existingNumbers.push(1); // "새 폴더"는 1번으로 취급
+          } else if (name.startsWith(baseName + " (")) {
+            const match = name.match(/새 폴더 \((\d+)\)$/);
+            if (match) {
+              existingNumbers.push(parseInt(match[1]));
+            }
+          }
+        });
+
+        // 가장 큰 번호 찾기
+        const maxNumber =
+          existingNumbers.length > 0 ? Math.max(...existingNumbers) : 0;
+
+        // 새 폴더 이름 결정
+        const newFolderName =
+          maxNumber === 0 ? baseName : `${baseName} (${maxNumber + 1})`;
+
+        const newFolder: OrganizationTreeNode = {
+          id: `folder-${Date.now()}`,
+          name: newFolderName,
+          type: "folder",
+          children: [],
+        };
+
+        parentNode.children.push(newFolder);
+      }
+
+      return newData;
+    });
   };
 
-  const handleUpdateName = async (nodeId: string, newName: string) => {
-    if (loadingUpdateName) return;
-    setLoadingUpdateName(true);
-    try {
-      const { result } = await fetchUpdateName(nodeId, newName);
-      if (!result) return;
+  const handleUpdateName = async (
+    nodeId: string,
+    newName: string
+  ): Promise<boolean> => {
+    let isSuccess = false;
+    setTreeData((prevData) => {
+      const newData = JSON.parse(JSON.stringify(prevData));
+      const [node] = findNode(newData, nodeId);
+      if (node) {
+        // 전체 트리에서 모든 폴더 이름 수집 (현재 노드 제외)
+        const allFolderNames = getAllFolderNames(newData);
+        const otherFolderNames = allFolderNames.filter((name, index, arr) => {
+          // 현재 노드의 이름은 제외하고 중복 체크
+          return name !== node.name || arr.indexOf(name) !== index;
+        });
 
-      setTreeData((prevData) => {
-        const newData = JSON.parse(JSON.stringify(prevData));
-        const [node] = findNode(newData, nodeId);
-        if (node) {
-          node.name = newName;
+        const isDuplicate = otherFolderNames.includes(newName);
+
+        if (isDuplicate) {
+          setErrorDuplicateFolder(true);
+          isSuccess = false;
+          return prevData;
         }
-        return newData;
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingUpdateName(false);
-    }
+        node.name = newName;
+        isSuccess = true;
+      }
+      return newData;
+    });
+    return isSuccess;
   };
 
   const handleDeleteFolder = async (nodeId: string) => {
-    if (loadingDelete) return;
-    setLoadingDelete(true);
-    try {
-      const { result } = await fetchDeleteFolder(nodeId);
-      if (!result) return;
-
-      setTreeData((prevData) => {
-        const newData = JSON.parse(JSON.stringify(prevData));
-        removeNode(newData, nodeId);
-        return newData;
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingDelete(false);
-    }
+    setTreeData((prevData) => {
+      const newData = JSON.parse(JSON.stringify(prevData));
+      removeNode(newData, nodeId);
+      return newData;
+    });
   };
 
   const handleAddTopFolder = () => {
@@ -508,32 +550,105 @@ const OrganizationSection: React.FC = () => {
     setNewFolderName("");
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getTreeData();
-        setTreeData(data);
-      } catch (error) {
-        console.error("Error fetching tree data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const handleSave = async () => {
+    if (!session?.user.agentId) return;
+    try {
+      setIsLoading(true);
 
-    fetchData();
-  }, []);
+      const params: TDepartmentsPutParams = {
+        agentId: session?.user.agentId.toString(),
+        departments: convertTreeToParams(treeData),
+      };
+      console.log("params", params);
+
+      // const test: TDepartmentsPutParams = {
+      //   agentId: session?.user.agentId.toString(),
+      //   departments: [
+      //     {
+      //       departmentName: "최상위 부서",
+      //       displayOrder: 1,
+      //       userIds: [],
+      //       children: [
+      //         {
+      //           departmentName: "두번째 부서",
+      //           displayOrder: 1,
+      //           userIds: [],
+      //           children: [],
+      //         },
+      //         {
+      //           departmentName: "두번째 부서2",
+      //           displayOrder: 2,
+      //           userIds: [],
+      //           children: [
+      //             {
+      //               departmentName: "세번째 부서",
+      //               displayOrder: 1,
+      //               userIds: [],
+      //               children: [],
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // };
+      // console.log("test", test);
+
+      const res = await putDepartmentsApi(params);
+      console.log("res", res);
+    } catch (error) {
+      console.error("Error saving tree data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchData = async (agencyId: number) => {
+    try {
+      setIsLoading(true);
+      const res = await getDepartmentsApi(agencyId);
+      if (res.departments && res.departments.length > 0) {
+        const data = res.departments.map(convertToTreeNode);
+        setTreeData(data);
+      } else {
+        alert("현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다.");
+      }
+    } catch (error) {
+      console.error("Error fetching tree data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!session) return;
+    if (!session.user.agentId) return;
+
+    fetchData(session.user.agentId);
+  }, [session]);
 
   return (
     <Fragment>
-      {(isLoading ||
-        loadingAddFolder ||
-        loadingUpdateName ||
-        loadingDelete) && <LoadingUI />}
+      {isLoading && <LoadingUI />}
       {errorNewFolder && (
         <ConfirmDialog
           open
           content={<div>부서 이름을 입력해주세요.</div>}
           onConfirm={() => setErrorNewFolder(false)}
+        />
+      )}
+      {errorDuplicateFolder && (
+        <ConfirmDialog
+          open
+          content={<div>동일한 이름의 폴더가 이미 존재합니다.</div>}
+          onConfirm={() => setErrorDuplicateFolder(false)}
+        />
+      )}
+      {errorMaxDepth && (
+        <ConfirmDialog
+          open
+          content={<div>최대 4 depth까지만 폴더를 생성할 수 있습니다.</div>}
+          onConfirm={() => setErrorMaxDepth(false)}
         />
       )}
       <DndContext
@@ -576,6 +691,7 @@ const OrganizationSection: React.FC = () => {
           onChange={(e) => setNewFolderName(e.target.value)}
         />
         <Button onClick={handleAddTopFolder}>부서 추가</Button>
+        <Button onClick={handleSave}>저장</Button>
       </div>
     </Fragment>
   );
@@ -586,28 +702,3 @@ export default OrganizationSection;
 const classNameObject =
   "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
 const classNameLeft = "w-5 h-5 text-gray-400 cursor-pointer";
-
-// api 자식 폴더 추가
-const fetchAddFolder = async (parentId: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  return {
-    result: true,
-  };
-};
-
-// api 이름 수정
-const fetchUpdateName = async (nodeId: string, newName: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    result: true,
-  };
-};
-
-// api 폴더 삭제
-const fetchDeleteFolder = async (nodeId: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    result: true,
-  };
-};
