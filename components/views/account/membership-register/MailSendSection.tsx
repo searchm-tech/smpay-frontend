@@ -67,7 +67,7 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
     "duplicate" | "available" | ""
   >("");
 
-  const { data: agencyList } = useQueryAgencyAll();
+  const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
   const { mutate: mutateSendMail, isPending: isPendingSendMail } =
     useMutationAgencySendMail({

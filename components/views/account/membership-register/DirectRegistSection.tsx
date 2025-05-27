@@ -56,9 +56,14 @@ type DirectRegistSectionProps = {
 };
 
 const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
-  const { data: agencyList } = useQueryAgencyAll();
+  const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
   const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
     useMutationAgencyUser({
+      onSuccess: () => setSuccessModal(true),
+    });
+
+  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
+    useCreateMemberByAgency({
       onSuccess: () => setSuccessModal(true),
     });
 
@@ -82,11 +87,6 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const [nameCheckResult, setNameCheckResult] = useState<
     "duplicate" | "available" | ""
   >("");
-
-  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
-    useCreateMemberByAgency({
-      onSuccess: () => setSuccessModal(true),
-    });
 
   const handlePasswordChange = (
     e: ChangeEvent<HTMLInputElement>,
