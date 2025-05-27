@@ -46,17 +46,13 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const [result, setResult] = useState<boolean>(true);
 
+  const isEnabled = !!agentCode && !!userCode;
+
   const {
     data: mailVerify,
     isLoading,
     error,
-  } = useQueryMailVerify(
-    { agentCode, userCode },
-    {
-      queryKey: ["mailVerify", { agentCode, userCode }],
-      enabled: !!agentCode && !!userCode,
-    }
-  );
+  } = useQueryMailVerify({ agentCode, userCode }, { enabled: isEnabled });
 
   const { mutate: agentsUsersPw, isPending: isAgentsUsersPwLoading } =
     useMutationAgentsUsersPw({
