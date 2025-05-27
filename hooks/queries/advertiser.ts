@@ -12,7 +12,7 @@ import {
   sendAdvertiserAgreement,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
-import { AdvertiserData } from "@/types/adveriser";
+import type { AdvertiserData } from "@/types/adveriser";
 
 export const useAdvertiserList = (params: FetchAdvertiserParams) => {
   return useQuery({

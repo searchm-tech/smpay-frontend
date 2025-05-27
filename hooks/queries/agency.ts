@@ -2,6 +2,7 @@ import {
   useMutation,
   useQuery,
   UseMutationOptions,
+  UseQueryOptions,
 } from "@tanstack/react-query";
 import {
   AgencyData,
@@ -89,12 +90,14 @@ export const useRegisterAgency = (
 // --- 실제 API 호출 ---
 
 // 대행사 전체 리스트 조회 쿼리
-export const useQueryAgencyAll = () => {
+export const useQueryAgencyAll = (
+  options?: Partial<UseQueryOptions<TAgency[], Error>>
+) => {
   return useQuery<TAgency[]>({
     queryKey: ["agencyAll"],
     queryFn: getAgencyAllApi,
     initialData: [],
-    select: (data) => data ?? [],
+    ...options,
   });
 };
 

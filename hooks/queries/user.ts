@@ -39,11 +39,12 @@ export const useMutationPwdResetLink = (
 // 대행사 회원 메일 인증 코드 확인 query
 export const useQueryMailVerify = (
   params: TMailVerifyParams,
-  options?: UseQueryOptions<TMailVerifyUser, Error>
+  options?: Partial<UseQueryOptions<TMailVerifyUser, Error>>
 ) => {
   return useQuery({
     queryKey: ["mailVerify", params],
     queryFn: () => getUsersMailVerifyApi(params),
+    enabled: !!params.agentCode && !!params.userCode,
     ...options,
   });
 };

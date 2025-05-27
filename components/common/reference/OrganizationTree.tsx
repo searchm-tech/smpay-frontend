@@ -25,10 +25,10 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import LoadingUI from "./Loading";
-import { ConfirmDialog } from "../composite/modal-components";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import LoadingUI from "../Loading";
+import { ConfirmDialog } from "../../composite/modal-components";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
 
 import type { OrganizationTreeNode } from "@/types/tree";
 
