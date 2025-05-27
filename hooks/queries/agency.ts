@@ -11,14 +11,14 @@ import {
   getAgencies,
   getAgency,
   getAgencyAllApi,
-  postAgencySendMailApi,
   registerAgency,
-  TAgencySendMailParams,
   updateAgency,
 } from "@/services/agency";
+import { postAgencyUserEmailApi } from "@/services/user";
 
 import type { TableParams } from "@/types/table";
-import { TAgency } from "@/types/agency";
+import type { TAgency } from "@/types/agency";
+import type { TAgencyUserEmailParams } from "@/services/user";
 
 // 대행사 목록 > 대행사 목록  query
 export const useAgencyList = (params: TableParams) => {
@@ -100,11 +100,11 @@ export const useQueryAgencyAll = () => {
 
 // 대행사 최상위 그룹장 회원 초대 메일 발송 뮤테이션
 export const useMutationAgencySendMail = (
-  options?: UseMutationOptions<AgencyData | null, Error, TAgencySendMailParams>
+  options?: UseMutationOptions<AgencyData | null, Error, TAgencyUserEmailParams>
 ) => {
-  return useMutation<AgencyData | null, Error, TAgencySendMailParams>({
-    mutationFn: (params: TAgencySendMailParams) =>
-      postAgencySendMailApi(params),
+  return useMutation<AgencyData | null, Error, TAgencyUserEmailParams>({
+    mutationFn: (params: TAgencyUserEmailParams) =>
+      postAgencyUserEmailApi(params),
     ...options,
   });
 };
