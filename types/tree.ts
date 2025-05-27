@@ -1,3 +1,5 @@
+import type { TDepartmentUser } from "./department";
+
 export interface DepartmentTreeNode {
   id: string;
   name: string;
@@ -8,12 +10,7 @@ export interface OrganizationTreeNode {
   id: string;
   name: string;
   type: "folder" | "user";
-  userData?: UserData;
+  originId?: number; // 부서 ID 또는 사용자 ID
+  userData?: TDepartmentUser;
   children?: OrganizationTreeNode[];
-}
-
-// TODO : api에 따라 변경
-export interface UserData {
-  email: string;
-  position: string;
 }

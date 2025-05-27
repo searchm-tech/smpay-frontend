@@ -1,6 +1,7 @@
+// TODO : 폴더 트리 구조 참고용
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 
 import {
   DndContext,
@@ -29,12 +30,10 @@ import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { OrganizationTreeNode } from "@/types/tree";
-import { getTreeData } from "@/services/departments";
 
 interface UserData {
   email: string;
-  displayType: string;
+  position: string;
 }
 
 interface TreeNode {
@@ -46,13 +45,9 @@ interface TreeNode {
 }
 
 const findNode = (
-  nodes: OrganizationTreeNode[],
+  nodes: TreeNode[],
   id: string
-): [
-  OrganizationTreeNode | null,
-  OrganizationTreeNode[] | null,
-  OrganizationTreeNode | null
-] => {
+): [TreeNode | null, TreeNode[] | null, TreeNode | null] => {
   for (const node of nodes) {
     if (node.id === id) {
       return [node, nodes, null];
@@ -67,7 +62,7 @@ const findNode = (
   return [null, null, null];
 };
 
-const removeNode = (nodes: OrganizationTreeNode[], id: string): boolean => {
+const removeNode = (nodes: TreeNode[], id: string): boolean => {
   const index = nodes.findIndex((node) => node.id === id);
   if (index !== -1) {
     nodes.splice(index, 1);
@@ -83,8 +78,77 @@ const removeNode = (nodes: OrganizationTreeNode[], id: string): boolean => {
   return false;
 };
 
+const initialTreeData: TreeNode[] = [
+  {
+    id: "dev-hq",
+    name: "개발본부",
+    type: "folder",
+    children: [
+      {
+        id: "web-dev",
+        name: "웹개발팀",
+        type: "folder",
+        children: [
+          {
+            id: "user-1",
+            name: "김철수",
+            type: "user",
+            userData: {
+              email: "kim@example.com",
+              position: "팀장",
+            },
+          },
+          {
+            id: "user-2",
+            name: "이영희",
+            type: "user",
+            userData: {
+              email: "lee@example.com",
+              position: "선임개발자",
+            },
+          },
+        ],
+      },
+      {
+        id: "game-dev",
+        name: "게임개발팀",
+        type: "folder",
+        children: [
+          {
+            id: "user-3",
+            name: "박지성",
+            type: "user",
+            userData: {
+              email: "park@example.com",
+              position: "팀장",
+            },
+          },
+          {
+            id: "user-4",
+            name: "손흥민",
+            type: "user",
+            userData: {
+              email: "son@example.com",
+              position: "게임 디자이너",
+            },
+          },
+          {
+            id: "user-5",
+            name: "황희찬",
+            type: "user",
+            userData: {
+              email: "hwang@example.com",
+              position: "게임 개발자",
+            },
+          },
+        ],
+      },
+    ],
+  },
+];
+
 interface TreeNodeProps {
-  node: OrganizationTreeNode;
+  node: TreeNode;
   level: number;
   onAddFolder: (parentId: string) => void;
   onUpdateName: (nodeId: string, newName: string) => void;
@@ -115,7 +179,7 @@ const DroppableFolder: React.FC<{
 };
 
 // 폴더 내에 user가 있는지 확인하는 함수
-const hasUserInChildren = (node: OrganizationTreeNode): boolean => {
+const hasUserInChildren = (node: TreeNode): boolean => {
   if (node.type === "user") return true;
   if (!node.children) return false;
 
@@ -123,7 +187,7 @@ const hasUserInChildren = (node: OrganizationTreeNode): boolean => {
 };
 
 // 폴더 내의 전체 user 수를 계산하는 함수
-const countUsersInNode = (node: OrganizationTreeNode): number => {
+const countUsersInNode = (node: TreeNode): number => {
   if (node.type === "user") return 1;
   if (!node.children) return 0;
 
@@ -166,7 +230,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
     }
   };
 
-  const handleDelete = (node: OrganizationTreeNode) => {
+  const handleDelete = (node: TreeNode) => {
     if (node.type === "folder") {
       if (hasUserInChildren(node)) {
         setShowDeleteError(true);
@@ -331,10 +395,8 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 };
 
 const OrganizationSection: React.FC = () => {
-  const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
-
-  console.log(treeData);
-  const [isLoading, setIsLoading] = useState(true);
+  const [treeData, setTreeData] = useState<TreeNode[]>(initialTreeData);
+  // const [activeId, setActiveId] = useState<string | null>(null);
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
   const [loadingUpdateName, setLoadingUpdateName] = useState(false);
@@ -354,9 +416,11 @@ const OrganizationSection: React.FC = () => {
 
   const handleDragStart = (event: any) => {
     const { active } = event;
+    // setActiveId(active.id);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    // setActiveId(null);
     const { active, over } = event;
 
     if (!over) return;
@@ -387,8 +451,8 @@ const OrganizationSection: React.FC = () => {
       if (draggedNode.type === "folder" && overNode.type === "folder") {
         // 자기 자신을 자신의 하위로 이동하는 것을 방지
         const hasCircularDependency = (
-          parent: OrganizationTreeNode,
-          child: OrganizationTreeNode
+          parent: TreeNode,
+          child: TreeNode
         ): boolean => {
           if (parent.id === child.id) return true;
           if (!parent.children) return false;
@@ -428,7 +492,7 @@ const OrganizationSection: React.FC = () => {
             parentNode.children = [];
           }
 
-          const newFolder: OrganizationTreeNode = {
+          const newFolder: TreeNode = {
             id: `folder-${Date.now()}`,
             name: "새 폴더",
             type: "folder",
@@ -508,27 +572,11 @@ const OrganizationSection: React.FC = () => {
     setNewFolderName("");
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getTreeData();
-        setTreeData(data);
-      } catch (error) {
-        console.error("Error fetching tree data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <Fragment>
-      {(isLoading ||
-        loadingAddFolder ||
-        loadingUpdateName ||
-        loadingDelete) && <LoadingUI />}
+      {(loadingAddFolder || loadingUpdateName || loadingDelete) && (
+        <LoadingUI />
+      )}
       {errorNewFolder && (
         <ConfirmDialog
           open

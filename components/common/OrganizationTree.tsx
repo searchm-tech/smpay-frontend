@@ -70,74 +70,74 @@ const removeNode = (nodes: OrganizationTreeNode[], id: string): boolean => {
   return false;
 };
 
-const initialTreeData: OrganizationTreeNode[] = [
-  {
-    id: "dev-hq",
-    name: "개발본부",
-    type: "folder",
-    children: [
-      {
-        id: "web-dev",
-        name: "웹개발팀",
-        type: "folder",
-        children: [
-          {
-            id: "user-1",
-            name: "김철수",
-            type: "user",
-            userData: {
-              email: "kim@example.com",
-              position: "팀장",
-            },
-          },
-          {
-            id: "user-2",
-            name: "이영희",
-            type: "user",
-            userData: {
-              email: "lee@example.com",
-              position: "선임개발자",
-            },
-          },
-        ],
-      },
-      {
-        id: "game-dev",
-        name: "게임개발팀",
-        type: "folder",
-        children: [
-          {
-            id: "user-3",
-            name: "박지성",
-            type: "user",
-            userData: {
-              email: "park@example.com",
-              position: "팀장",
-            },
-          },
-          {
-            id: "user-4",
-            name: "손흥민",
-            type: "user",
-            userData: {
-              email: "son@example.com",
-              position: "게임 디자이너",
-            },
-          },
-          {
-            id: "user-5",
-            name: "황희찬",
-            type: "user",
-            userData: {
-              email: "hwang@example.com",
-              position: "게임 개발자",
-            },
-          },
-        ],
-      },
-    ],
-  },
-];
+// const initialTreeData: OrganizationTreeNode[] = [
+//   {
+//     id: "dev-hq",
+//     name: "개발본부",
+//     type: "folder",
+//     children: [
+//       {
+//         id: "web-dev",
+//         name: "웹개발팀",
+//         type: "folder",
+//         children: [
+//           {
+//             id: "user-1",
+//             name: "김철수",
+//             type: "user",
+//             userData: {
+//               email: "kim@example.com",
+//               position: "팀장",
+//             },
+//           },
+//           {
+//             id: "user-2",
+//             name: "이영희",
+//             type: "user",
+//             userData: {
+//               email: "lee@example.com",
+//               position: "선임개발자",
+//             },
+//           },
+//         ],
+//       },
+//       {
+//         id: "game-dev",
+//         name: "게임개발팀",
+//         type: "folder",
+//         children: [
+//           {
+//             id: "user-3",
+//             name: "박지성",
+//             type: "user",
+//             userData: {
+//               email: "park@example.com",
+//               position: "팀장",
+//             },
+//           },
+//           {
+//             id: "user-4",
+//             name: "손흥민",
+//             type: "user",
+//             userData: {
+//               email: "son@example.com",
+//               position: "게임 디자이너",
+//             },
+//           },
+//           {
+//             id: "user-5",
+//             name: "황희찬",
+//             type: "user",
+//             userData: {
+//               email: "hwang@example.com",
+//               position: "게임 개발자",
+//             },
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ];
 
 interface TreeNodeProps {
   node: OrganizationTreeNode;
@@ -355,8 +355,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
 };
 
 const OrganizationTree: React.FC = () => {
-  const [treeData, setTreeData] =
-    useState<OrganizationTreeNode[]>(initialTreeData);
+  const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
   // const [activeId, setActiveId] = useState<string | null>(null);
 
   const [loadingAddFolder, setLoadingAddFolder] = useState(false);
