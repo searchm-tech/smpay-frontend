@@ -1,7 +1,7 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import SmPayJudgementView from "@/components/views/sm-pay/judgement";
 
-import type { DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function SMPayJudgementPage() {
   return (

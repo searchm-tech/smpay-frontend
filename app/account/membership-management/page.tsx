@@ -1,6 +1,6 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import MembershipManagementView from "@/components/views/account/membership-management";
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function MembershipManagementPage() {
   return (

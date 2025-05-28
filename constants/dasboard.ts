@@ -1,5 +1,3 @@
-// types/dashboard.ts 또는 constants.ts에 함께 작성해도 OK
-
 import {
   AppWindow,
   ChartSpline,
@@ -7,22 +5,7 @@ import {
   Eraser,
   AlarmClock,
   Target,
-  type LucideIcon,
 } from "lucide-react";
-
-export interface DashboardSubItem {
-  title: string;
-  url: string;
-  disabled?: boolean;
-}
-
-export type DashboardItem = {
-  title: string;
-  url: string;
-  icon?: LucideIcon;
-  isActive?: boolean;
-  items?: DashboardSubItem[];
-};
 
 export const DASHBOARD_ITEMS_AGENCY = [
   {

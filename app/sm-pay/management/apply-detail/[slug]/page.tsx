@@ -1,7 +1,7 @@
 // TODO : agency/sm-pay/management/[slug]  변경
 
 import type { Metadata } from "next";
-import type { DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 import ContentHeader from "@/components/common/ContentHeader";
 import SmPayApplyDetailView from "@/components/views/sm-pay/manangement/apply-detail";
 
