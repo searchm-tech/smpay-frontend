@@ -97,10 +97,14 @@ root
 │
 ├── public/              # 유틸리티 함수 및 설정
 │
+├── service/              # api service
+│   └── *.ts
+│
 ├── store/               # zustand store
 │   └── use-*-Store.ts
 │
 ├── types/               # 타입
+│   ├── api/*.ts         # api request, response, params 관련 타입
 │   └── *.ts
 │
 ├── utils/              # utils

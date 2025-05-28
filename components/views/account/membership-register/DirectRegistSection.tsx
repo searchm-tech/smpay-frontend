@@ -23,74 +23,70 @@ import {
   useMutationAgencyGroupMaster,
   useMutationAgencyUserDirect,
 } from "@/hooks/queries/user";
-import {
-  getUsersNameCheckApi,
-  TAgencyUserDirectPostParams,
-  type TAgencyGroupMasterPostParams,
-} from "@/services/user";
+import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
-import { Dialog, type DialogType } from "./constant";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import { TAuthType } from "@/types/user";
+import type { TAuthType } from "@/types/user";
+import type { TViewProps } from ".";
+import { DialogContent, DialogContentType } from "./constant";
+import {
+  TAgencyGroupMasterPostParams,
+  TAgencyUserDirectPostParams,
+} from "@/types/api/user";
 
-type DirectRegistSectionProps = {
-  isAdmin: boolean;
-  agencyId: number;
-};
+const DirectRegistSection = ({ user }: TViewProps) => {
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    user.type
+  );
 
-const DirectRegistSection = ({
-  isAdmin = false,
-  agencyId,
-}: DirectRegistSectionProps) => {
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
   const {
     mutate: mutateAddGroupMasterDirect,
     isPending: isPendingAddGroupMasterDirect,
   } = useMutationAgencyGroupMaster({
-    onSuccess: () => setSuccessModal(true),
+    onSuccess: () => resetSuccess(),
     onError: (error) => setFailDialog(error.message),
   });
 
   const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
     useMutationAgencyUserDirect({
-      onSuccess: () => setSuccessModal(true),
+      onSuccess: () => resetSuccess(),
       onError: (error) => setFailDialog(error.message),
     });
 
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
-  const [phone, setPhone] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState("");
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
+
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [memberType, setMemberType] = useState("");
 
-  const [selectedAgency, setSelectedAgency] = useState("");
-
-  const [successModal, setSuccessModal] = useState(false);
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
-
   const [failDialog, setFailDialog] = useState("");
-  const [dialog, setDialog] = useState<DialogType | null>(null);
+  const [dialog, setDialog] = useState<DialogContentType | null>(null);
   const [enableEmailId, setEnableEmailId] = useState(false);
   const [checkNameLoading, setCheckNameLoading] = useState(false);
   const [nameCheckResult, setNameCheckResult] = useState<
     "duplicate" | "available" | ""
   >("");
 
-  const handlePasswordChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    target: "password" | "passwordConfirm"
-  ) => {
-    if (target === "password") {
-      setPassword(e.target.value);
-    } else {
-      setPasswordConfirm(e.target.value);
-    }
+  const resetSuccess = () => {
+    setDialog("success");
+    setDepartmentNode(null);
+    setSelectedAgency("");
+    setMemberType("");
+    setEmailId("");
+    setName("");
+    setPhone("");
+    setPassword("");
+    setPasswordConfirm("");
   };
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +116,21 @@ const DirectRegistSection = ({
     } finally {
       setCheckNameLoading(false);
     }
+  };
+
+  const handlePasswordChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    target: "password" | "passwordConfirm"
+  ) => {
+    if (target === "password") {
+      setPassword(e.target.value);
+    } else {
+      setPasswordConfirm(e.target.value);
+    }
+  };
+
+  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
+    setDepartmentNode(node);
   };
 
   const handleSubmit = () => {
@@ -157,22 +168,34 @@ const DirectRegistSection = ({
     }
 
     if (!isAdmin) {
+      /**
+       * 관리자가 아닌 경우
+       * - 부서 선택 필수
+       * - 회원 구분 선택 필수
+       * - 회원 직접 등록  (아이디, 비밀번호 정보 메일 전송)
+       */
+
       if (!memberType || !departmentNode) {
         setDialog("err");
         return;
       }
-      // 관리자가 아닌 경우 - 회원 등록
+
       const data: TAgencyUserDirectPostParams = {
         type: memberType as TAuthType,
         name,
         emailAddress: emailId,
         password,
         phoneNumber: phone,
-        agentId: agencyId,
+        agentId: user.agentId,
         departmentId: Number(departmentNode?.id),
       };
       mutateAddUserDirect(data);
     } else {
+      /**
+       * 관리자
+       * - 대행사 선택 필수
+       * - 대행사 최상위 그룹장 회원 가입 (직접 등록)
+       */
       if (!selectedAgency) {
         setDialog("err");
         return;
@@ -190,17 +213,14 @@ const DirectRegistSection = ({
     }
   };
 
-  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
-    setDepartmentNode(node);
-  };
-
   return (
     <section className="py-4">
-      {(checkNameLoading ||
-        isPendingAddGroupMasterDirect ||
-        isPendingAddUserDirect) && <LoadingUI />}
+      {(isPendingAddGroupMasterDirect || isPendingAddUserDirect) && (
+        <LoadingUI title="회원 등록 중..." />
+      )}
 
-      {isPendingAddUserDirect && <LoadingUI title="회원 등록 중..." />}
+      {checkNameLoading && <LoadingUI title="중복 체크 중..." />}
+
       {isOpenDepartmentModal && (
         <ModalDepartment
           setIsOpen={setIsOpenDepartmentModal}
@@ -213,22 +233,8 @@ const DirectRegistSection = ({
           open
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
-          content={Dialog[dialog]}
-        />
-      )}
-
-      {successModal && (
-        <ConfirmDialog
-          open={successModal}
-          onClose={() => setSuccessModal(false)}
-          onConfirm={() => setSuccessModal(false)}
-          title="성공"
-          content={
-            <div className="text-center">
-              <p>메일 발송이 완료되었습니다.</p>
-              <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
-            </div>
-          }
+          title={dialog === "success" ? "전송 완료" : "오류"}
+          content={DialogContent[dialog]}
         />
       )}
 
@@ -278,7 +284,7 @@ const DirectRegistSection = ({
         회원 정보
       </LabelBullet>
       <Descriptions columns={1} bordered>
-        <DescriptionItem label="대행사 선택 *">
+        <DescriptionItem label={`${isAdmin ? "대행사 선택 *" : "부서 선택 *"}`}>
           {isAdmin ? (
             <Select
               className="max-w-[500px]"

@@ -49,38 +49,6 @@ export type TSMPayUser = {
 
 export type UserStatus = "NORMAL" | "STOP" | "TEMP"; // NORMAL : 활성화 STOP : 비활성화 TEMP : 임시
 
-// agents/users/mail-verifications response type
-export type TMailVerifyUser = {
-  isVerified: boolean;
-  adminAgentResponseDto: AdminAgentResponseDto;
-  userResponseDto: UserResponseDto;
-};
-export type AdminAgentResponseDto = {
-  agentId: number;
-  name: string;
-  uniqueCode: string;
-  representativeName: string;
-  businessRegistrationNumber: string;
-  status: string;
-  domainName: string;
-};
-
-export type UserResponseDto = {
-  userId: number;
-  agentId: number;
-  id: string;
-  status: UserStatus;
-  type: TAuthType;
-  name: string;
-  phoneNumber: string;
-};
-
-// agents/users/mail-verifications params type
-export type TMailVerifyParams = {
-  agentCode: string;
-  userCode: string;
-};
-
 // /admin/api/v1/agents/${agentCode}/users/${userCode} response type
 export type TSignUpMailVerifyResponse = {
   url: string;

@@ -3,11 +3,20 @@ import type { ApiResponseData } from "./types";
 import type {
   TAdminUserInfoResponse,
   TAuthType,
-  TMailVerifyUser,
-  TResetPwdType,
   TUserInfoResponse,
 } from "@/types/user";
 import type { AgencyData } from "./agency";
+import type {
+  TAgencyGroupMasterPostParams,
+  TAgencyUserDirectPostParams,
+  TAgencyUserEmailParams,
+  TAgencyUserEmailSendParams,
+  TAgentsUsersPwParams,
+  TMailVerifyParams,
+  TMailVerifyUser,
+  TUserInfoParams,
+  TUserInfoPatchParams,
+} from "@/types/api/user";
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -27,11 +36,6 @@ export const postUsersPasswordResetApi = async (
   }
 };
 
-// 대행사 회원 메일 인증 코드 확인 API
-export type TMailVerifyParams = {
-  agentCode: string;
-  userCode: string;
-};
 export const getUsersMailVerifyApi = async (
   params: TMailVerifyParams
 ): Promise<TMailVerifyUser> => {
@@ -49,13 +53,6 @@ export const getUsersMailVerifyApi = async (
 };
 
 // 대행사 비밀번호 설정 또는 비밀번호 재설정 API
-export type TAgentsUsersPwParams = {
-  agentId: number;
-  userId: number;
-  password: string;
-  phone: string;
-  type: TResetPwdType;
-};
 
 export const postAgentsUsersPwApi = async (
   params: TAgentsUsersPwParams
@@ -76,10 +73,6 @@ export const postAgentsUsersPwApi = async (
 };
 
 // 회원 정보 조회
-export type TUserInfoParams = {
-  agentId: number;
-  userId: number;
-};
 export const getUserInfoApi = async (
   params: TUserInfoParams
 ): Promise<TUserInfoResponse> => {
@@ -132,13 +125,7 @@ export const getUsersNameCheckApi = async (
   }
 };
 
-// 기본 정보 변경 API
-export type TUserInfoPatchParams = {
-  userId: number;
-  name: string;
-  emailAddress: string;
-  phoneNumber: string;
-};
+// 기본 정보 변경 API (U004)
 export const patchUserInfoApi = async (
   params: TUserInfoPatchParams
 ): Promise<null> => {
@@ -158,13 +145,8 @@ export const patchUserInfoApi = async (
   }
 };
 
-// [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 API
-export type TAgencyUserEmailParams = {
-  agentId: number;
-  userType: TAuthType;
-  name: string;
-  emailAddress: string;
-};
+// [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 (AAG013) API
+
 export async function postAgencyUserEmailApi(
   params: TAgencyUserEmailParams
 ): Promise<AgencyData | null> {
@@ -182,15 +164,7 @@ export async function postAgencyUserEmailApi(
   }
 }
 
-// [관리자] 회원 직접 등록 API
-export type TAgencyGroupMasterPostParams = {
-  userType: TAuthType;
-  name: string;
-  emailAddress: string;
-  password: string;
-  phoneNumber: string;
-  agentId: number;
-};
+// [관리자] 대행사 최상위 그룹장 회원 가입 (직접 등록) (AAG005) API
 export const postAgencyGroupMasterApi = async (
   params: TAgencyGroupMasterPostParams
 ): Promise<TAdminUserInfoResponse> => {
@@ -209,15 +183,7 @@ export const postAgencyGroupMasterApi = async (
 };
 
 // 회원 직접 등록 API (SAG007)
-export type TAgencyUserDirectPostParams = {
-  type: TAuthType;
-  name: string;
-  emailAddress: string;
-  password: string;
-  phoneNumber: string;
-  agentId: number;
-  departmentId: number;
-};
+
 export const postAgencyUserDirectApi = async (
   params: TAgencyUserDirectPostParams
 ): Promise<TAdminUserInfoResponse> => {
@@ -236,13 +202,7 @@ export const postAgencyUserDirectApi = async (
 };
 
 // 회원 가입 메일 발송 API (SAG006)
-export type TAgencyUserEmailSendParams = {
-  type: TAuthType;
-  name: string;
-  emailAddress: string;
-  agentId: number;
-  departmentId: number;
-};
+
 export const postAgencyUserEmailSendApi = async (
   params: TAgencyUserEmailSendParams
 ): Promise<null> => {

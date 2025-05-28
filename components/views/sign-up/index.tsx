@@ -28,7 +28,7 @@ import {
   useMutationAgentsUsersPw,
 } from "@/hooks/queries/user";
 
-import type { TAgentsUsersPwParams } from "@/services/user";
+import type { TAgentsUsersPwParams } from "@/types/api/user";
 
 interface SignUpViewProps {
   agentCode: string;

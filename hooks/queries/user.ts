@@ -14,21 +14,21 @@ import {
   patchUserInfoApi,
   postAgencyGroupMasterApi,
   postAgencyUserDirectApi,
-  type TMailVerifyParams,
-  type TAgentsUsersPwParams,
-  type TUserInfoParams,
-  type TUserInfoPatchParams,
-  type TAgencyGroupMasterPostParams,
-  type TAgencyUserDirectPostParams,
   postAgencyUserEmailSendApi,
-  TAgencyUserEmailSendParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
+import type { TAdminUserInfoResponse, TUserInfoResponse } from "@/types/user";
+
 import type {
-  TAdminUserInfoResponse,
+  TAgencyGroupMasterPostParams,
+  TAgencyUserDirectPostParams,
+  TAgencyUserEmailSendParams,
+  TAgentsUsersPwParams,
+  TMailVerifyParams,
   TMailVerifyUser,
-  TUserInfoResponse,
-} from "@/types/user";
+  TUserInfoParams,
+  TUserInfoPatchParams,
+} from "@/types/api/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
 export const useMutationPwdResetLink = (

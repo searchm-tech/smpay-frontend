@@ -21,7 +21,7 @@ import {
   useQueryUserInfo,
 } from "@/hooks/queries/user";
 
-import type { TAgentsUsersPwParams } from "@/services/user";
+import type { TAgentsUsersPwParams } from "@/types/api/user";
 
 const PasswordResetView = () => {
   const router = useRouter();

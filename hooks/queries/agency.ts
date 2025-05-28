@@ -19,7 +19,7 @@ import { postAgencyUserEmailApi } from "@/services/user";
 
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
-import type { TAgencyUserEmailParams } from "@/services/user";
+import type { TAgencyUserEmailParams } from "@/types/api/user";
 
 // 대행사 목록 > 대행사 목록  query
 export const useAgencyList = (params: TableParams) => {

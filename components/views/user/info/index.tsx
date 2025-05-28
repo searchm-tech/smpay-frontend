@@ -13,6 +13,7 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+import LoadingUI from "@/components/common/Loading";
 
 import {
   useQueryAdminUserInfo,
@@ -20,9 +21,9 @@ import {
   useQueryUserInfo,
 } from "@/hooks/queries/user";
 import { EMAIL_REGEX } from "@/constants/reg";
-import type { TUserInfoPatchParams } from "@/services/user";
-import LoadingUI from "@/components/common/Loading";
 import { getUserStatusLabel } from "@/utils/status";
+
+import type { TUserInfoPatchParams } from "@/types/api/user";
 
 const UserInfoView = () => {
   const router = useRouter();
