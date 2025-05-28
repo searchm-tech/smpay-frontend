@@ -1,5 +1,5 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 import SMPayApplyWriteView from "@/components/views/sm-pay/manangement/apply-write";
 
 export default function SMPayApplyWritePage() {

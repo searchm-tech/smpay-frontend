@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -22,7 +21,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useQueryMenu } from "@/hooks/queries/menu";
 import { dashboardItems } from "@/constants/dasboard";
+import {
+  mapBackendMenuToFrontend,
+  filterMenuByUserType,
+} from "@/utils/menuMapper";
 
 export function NavDashboard() {
   const pathname = usePathname();
@@ -30,6 +34,7 @@ export function NavDashboard() {
   const { state, toggleSidebar } = useSidebar();
 
   const { data: session } = useSession();
+  const { data: backendMenu } = useQueryMenu();
 
   const handleClick = (url: string, isHasSubMenu: boolean) => {
     if (state === "collapsed") {
@@ -55,6 +60,21 @@ export function NavDashboard() {
     return "agency";
   }, [session]);
 
+  // 백엔드 메뉴가 있으면 사용, 없으면 기존 하드코딩된 메뉴 사용 - 나중에 이대로 테스트 해보고 적용
+  const menuItems = useMemo(() => {
+    if (backendMenu && session?.user) {
+      const mappedMenus = mapBackendMenuToFrontend(backendMenu);
+      const filteredMenus = filterMenuByUserType(
+        mappedMenus,
+        session.user.type
+      );
+      return filteredMenus;
+    }
+
+    // 백엔드 메뉴가 없으면 기존 방식 사용
+    return dashboardItems[menuType];
+  }, [backendMenu, session?.user, menuType]);
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -71,10 +91,12 @@ export function NavDashboard() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     className="cursor-pointer"
-                    isSelected={item.items.some(
+                    isSelected={item.items?.some(
                       (subItem) => subItem.url === pathname
                     )}
-                    onClick={() => handleClick(item.url, item.items.length > 0)}
+                    onClick={() =>
+                      handleClick(item.url, (item.items?.length || 0) > 0)
+                    }
                   >
                     {item.icon && <item.icon />}
                     <span className="font-medium">{item.title}</span>

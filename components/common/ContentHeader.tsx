@@ -2,7 +2,7 @@
 
 import { Typography } from "@/components/ui/typography";
 import { BreadcrumbContainer } from "@/components/composite/breadcrumb-separator";
-import type { DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 interface Props {
   title: string;

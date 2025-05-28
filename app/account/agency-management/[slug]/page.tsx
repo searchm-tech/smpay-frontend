@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 import ContentHeader from "@/components/common/ContentHeader";
 import AgencyEditView from "@/components/views/account/agency-edit";
 

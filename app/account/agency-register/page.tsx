@@ -1,7 +1,7 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import AgencyRegisterView from "@/components/views/account/agency-register";
 
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function AgencyRegisterPage() {
   return (

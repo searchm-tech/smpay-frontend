@@ -1,6 +1,6 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import DepartmentView from "@/components/views/account/department";
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function DepartmentPage() {
   return (

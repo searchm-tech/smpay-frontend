@@ -1,6 +1,7 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import AgencyManagementView from "@/components/views/account/agency-management";
-import { type DashboardSubItem } from "@/constants/dasboard";
+
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function AgencyManagementPage() {
   return (

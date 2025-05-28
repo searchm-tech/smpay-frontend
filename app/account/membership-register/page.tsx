@@ -1,6 +1,6 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import MemberRegisterView from "@/components/views/account/membership-register";
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function MemberRegisterPage() {
   return (

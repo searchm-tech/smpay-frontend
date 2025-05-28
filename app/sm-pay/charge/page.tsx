@@ -1,7 +1,7 @@
 import ContentHeader from "@/components/common/ContentHeader";
 import SmPayChargeView from "@/components/views/sm-pay/charge";
 
-import { type DashboardSubItem } from "@/constants/dasboard";
+import type { DashboardSubItem } from "@/types/menu";
 
 export default function ChargeCountPage() {
   return (
