@@ -1,7 +1,8 @@
 import {
   getDepartmentsApi,
+  getSubDepartmentsApi,
   putDepartmentsApi,
-  TDepartmentsPutParams,
+  type TDepartmentsPutParams,
 } from "@/services/departments";
 import {
   useMutation,
@@ -9,7 +10,10 @@ import {
   useQuery,
   UseQueryOptions,
 } from "@tanstack/react-query";
-import type { TDepartmentFolder } from "@/types/department";
+import type {
+  TDepartmentFolder,
+  TSubDepartmentsResponse,
+} from "@/types/department";
 
 // 대행사 부서 전체 조회 query
 export const useQueryDepartments = (
@@ -34,4 +38,16 @@ export const useMutationDepartments = (
   });
 };
 
-
+// 대행사 부서 하위 조회 query
+export const useQuerySubDepartments = (
+  agentId: number,
+  userId: number,
+  options?: Partial<UseQueryOptions<TSubDepartmentsResponse, Error>>
+) => {
+  return useQuery({
+    queryKey: ["subDepartments", agentId, userId],
+    queryFn: () => getSubDepartmentsApi(agentId, userId),
+    enabled: !!agentId && !!userId,
+    ...options,
+  });
+};

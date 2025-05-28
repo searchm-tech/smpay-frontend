@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Folder } from "lucide-react";
+import { Folder, FolderOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import type { DepartmentTreeNode } from "@/types/tree";
@@ -38,25 +38,20 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         }}
         onClick={handleClick}
       >
-        {node.children && node.children.length > 0 ? (
-          <div
-            className="cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsOpen(!isOpen);
-            }}
-          >
-            {isOpen ? (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronRight className="w-4 h-4 text-gray-500" />
-            )}
-          </div>
-        ) : (
-          <div className="w-4" /> // 간격 맞추기용 빈 div
-        )}
-        <Folder className="w-5 h-5 text-gray-400" />
-        <span className="flex-1">{node.name}</span>
+        <div
+          className="cursor-pointer ml-4"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+        >
+          {isOpen ? (
+            <FolderOpen className="w-4 h-4 text-gray-500" />
+          ) : (
+            <Folder className="w-4 h-4 text-gray-500" />
+          )}
+        </div>
+        <span>{node.name}</span>
       </div>
 
       {isOpen && node.children && (

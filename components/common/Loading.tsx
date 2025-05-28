@@ -8,7 +8,7 @@ function LoadingUI({ title = "Loading..." }: LoadingUIProps) {
       <div className="fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
         <div className="flex flex-col items-center gap-2">
           <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <h3 className="text-xl font-semibold">{title}</h3>
+          <h3 className="text-xl font-semibold mt-4">{title}</h3>
         </div>
       </div>
     </div>
