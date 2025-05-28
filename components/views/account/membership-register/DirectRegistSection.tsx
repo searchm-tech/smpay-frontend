@@ -23,28 +23,25 @@ import {
   useMutationAgencyGroupMaster,
   useMutationAgencyUserDirect,
 } from "@/hooks/queries/user";
-import {
-  getUsersNameCheckApi,
-  TAgencyUserDirectPostParams,
-  type TAgencyGroupMasterPostParams,
-} from "@/services/user";
+import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
-import { Dialog, type DialogType } from "./constant";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import { TAuthType } from "@/types/user";
+import type { TAuthType } from "@/types/user";
+import type { TViewProps } from ".";
+import { DialogContent, DialogContentType } from "./constant";
+import {
+  TAgencyGroupMasterPostParams,
+  TAgencyUserDirectPostParams,
+} from "@/types/api/user";
 
-type DirectRegistSectionProps = {
-  isAdmin: boolean;
-  agencyId: number;
-};
+const DirectRegistSection = ({ user }: TViewProps) => {
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    user.type
+  );
 
-const DirectRegistSection = ({
-  isAdmin = false,
-  agencyId,
-}: DirectRegistSectionProps) => {
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
   const {
     mutate: mutateAddGroupMasterDirect,
@@ -75,7 +72,7 @@ const DirectRegistSection = ({
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
   const [failDialog, setFailDialog] = useState("");
-  const [dialog, setDialog] = useState<DialogType | null>(null);
+  const [dialog, setDialog] = useState<DialogContentType | null>(null);
   const [enableEmailId, setEnableEmailId] = useState(false);
   const [checkNameLoading, setCheckNameLoading] = useState(false);
   const [nameCheckResult, setNameCheckResult] = useState<
@@ -168,7 +165,7 @@ const DirectRegistSection = ({
         emailAddress: emailId,
         password,
         phoneNumber: phone,
-        agentId: agencyId,
+        agentId: user.agentId,
         departmentId: Number(departmentNode?.id),
       };
       mutateAddUserDirect(data);
@@ -213,7 +210,7 @@ const DirectRegistSection = ({
           open
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
-          content={Dialog[dialog]}
+          content={DialogContent[dialog]}
         />
       )}
 

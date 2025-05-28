@@ -58,7 +58,7 @@ export const filterTreeData = (
   return filtered;
 };
 
-export const Dialog = {
+export const DialogContent = {
   err: "모든 필수 항목을 입력해주세요.",
   success: (
     <div className="text-center">
@@ -77,4 +77,11 @@ export const Dialog = {
   "phone-regex": "전화번호가 올바르지 않습니다.",
 };
 
-export type DialogType = keyof typeof Dialog;
+export type DialogContentType = keyof typeof DialogContent;
+
+export const DialogContentEmail = {
+  "available-email": "사용 가능한 이메일 주소입니다.",
+  "duplicate-email": "이미 존재하는 이메일 주소입니다.",
+};
+
+export type DialogContentTypeEmail = keyof typeof DialogContentEmail;

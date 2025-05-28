@@ -19,42 +19,32 @@ import {
   useMutationAgencySendMail,
   useQueryAgencyAll,
 } from "@/hooks/queries/agency";
+import { useMutationAgencyUserEmailSend } from "@/hooks/queries/user";
 import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX } from "@/constants/reg";
+import {
+  DialogContent,
+  DialogContentEmail,
+  DialogContentTypeEmail,
+  type DialogContentType,
+} from "./constant";
 
 import type { DepartmentTreeNode } from "@/types/tree";
+import type { TAuthType } from "@/types/user";
+
+import type { TViewProps } from ".";
 import type {
   TAgencyUserEmailParams,
   TAgencyUserEmailSendParams,
-} from "@/services/user";
-import { useMutationAgencyUserEmailSend } from "@/hooks/queries/user";
-import { TAuthType } from "@/types/user";
+} from "@/types/api/user";
 
-const Dialog = {
-  err: "모든 필수 항목을 입력해주세요.",
-  success: (
-    <div className="text-center">
-      <p>메일 발송이 완료되었습니다.</p>
-      <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
-    </div>
-  ),
-  department: "부서 선택을 해주세요.",
-  emailRegex: "이메일 형식이 올바르지 않습니다.",
-  nameCheck: "중복 체크를 해주세요.",
-  "check-email-empty": "이메일 주소를 입력해주세요.",
-  "check-email-regex": "이메일 형식이 올바르지 않습니다.",
-};
+const MailSendSection = ({ user }: TViewProps) => {
+  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
+    user.type
+  );
 
-type DialogType = keyof typeof Dialog;
-
-type MailSendSectionProps = {
-  isAdmin: boolean;
-  agencyId: number;
-};
-
-const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
 
@@ -64,16 +54,13 @@ const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
   const [name, setName] = useState("");
   const [enableEmailId, setEnableEmailId] = useState(false);
 
-  const [dialog, setDialog] = useState<DialogType | null>(null);
-
+  const [dialog, setDialog] = useState<DialogContentType | null>(null);
   const [failDialog, setFailDialog] = useState("");
-
-  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
-
+  const [dialogEmail, setDialogEmail] = useState<DialogContentTypeEmail | null>(
+    null
+  );
   const [checkNameLoading, setCheckNameLoading] = useState(false);
-  const [nameCheckResult, setNameCheckResult] = useState<
-    "duplicate" | "available" | ""
-  >("");
+  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
@@ -122,10 +109,17 @@ const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
     try {
       setCheckNameLoading(true);
       const response = await getUsersNameCheckApi(emailId);
-      console.log("response", response);
-      setNameCheckResult(response ? "duplicate" : "available");
+
+      // response가 true면 중복, false면 사용 가능
+      if (!response) {
+        setEnableEmailId(true);
+        setDialogEmail("available-email");
+      } else {
+        setEnableEmailId(false);
+        setDialogEmail("duplicate-email");
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setCheckNameLoading(false);
     }
@@ -157,7 +151,7 @@ const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
         type: selected as TAuthType,
         name,
         emailAddress: emailId,
-        agentId: agencyId,
+        agentId: user.agentId,
         departmentId: Number(departmentNode?.id),
       };
       mutateUserSendMail(params);
@@ -185,6 +179,8 @@ const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
         <LoadingUI title="초대 메일 전송 중..." />
       )}
 
+      {checkNameLoading && <LoadingUI title="중복 체크 중..." />}
+
       {isOpenDepartmentModal && (
         <ModalDepartment
           setIsOpen={setIsOpenDepartmentModal}
@@ -198,39 +194,16 @@ const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
           title={dialog === "success" ? "전송 완료" : "오류"}
-          content={Dialog[dialog]}
+          content={DialogContent[dialog]}
         />
       )}
-
-      {nameCheckResult === "duplicate" && (
+      {dialogEmail && (
         <ConfirmDialog
           open
-          onClose={() => {
-            setNameCheckResult("");
-            setEnableEmailId(false);
-          }}
-          onConfirm={() => {
-            setNameCheckResult("");
-            setEnableEmailId(false);
-          }}
+          onClose={() => setDialogEmail(null)}
+          onConfirm={() => setDialogEmail(null)}
           title="중복 체크"
-          content="이미 존재하는 이메일 주소입니다."
-        />
-      )}
-
-      {nameCheckResult === "available" && (
-        <ConfirmDialog
-          open
-          onClose={() => {
-            setNameCheckResult("");
-            setEnableEmailId(true);
-          }}
-          onConfirm={() => {
-            setNameCheckResult("");
-            setEnableEmailId(true);
-          }}
-          title="중복 체크"
-          content="사용 가능한 이메일 주소입니다."
+          content={DialogContentEmail[dialogEmail]}
         />
       )}
 
