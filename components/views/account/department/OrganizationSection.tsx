@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
   DndContext,
@@ -71,7 +71,10 @@ const OrganizationSection: React.FC = () => {
 
   const { mutate: mutateDepartments, isPending: loadingDepartmentsMutation } =
     useMutationDepartments({
-      onSuccess: () => setSuccessSave(true),
+      onSuccess: () => {
+        setSuccessSave(true);
+        setErrorNoData(false);
+      },
       onError: (error) => {
         console.error("Error saving tree data:", error);
       },
@@ -325,6 +328,7 @@ const OrganizationSection: React.FC = () => {
         setErrorNoData(true);
         console.log("Error fetching tree data:", error);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
   const loadingDepartments =
