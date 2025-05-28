@@ -24,7 +24,7 @@ export const convertToDepartmentTreeNode = (
   dept: TSubDepartmentsResponse
 ): DepartmentTreeNode => {
   return {
-    id: `dept-${dept.departmentId}`,
+    id: `${dept.departmentId}`,
     name: dept.name,
     children: dept.children
       .sort((a, b) => a.displayOrder - b.displayOrder) // displayOrder로 정렬
@@ -57,3 +57,24 @@ export const filterTreeData = (
 
   return filtered;
 };
+
+export const Dialog = {
+  err: "모든 필수 항목을 입력해주세요.",
+  success: (
+    <div className="text-center">
+      <p>메일 발송이 완료되었습니다.</p>
+      <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
+    </div>
+  ),
+  department: "부서 선택을 해주세요.",
+  emailRegex: "이메일 형식이 올바르지 않습니다.",
+  nameCheck: "중복 체크를 해주세요.",
+  "check-email-empty": "이메일 주소를 입력해주세요.",
+  "check-email-regex": "이메일 형식이 올바르지 않습니다.",
+  "password-regex":
+    "비밀번호가 영문, 숫자, 특수문자가 모두 들어간 8-16자가 아닙니다.",
+  "password-confirm": "비밀번호가 일치하지 않습니다.",
+  "phone-regex": "전화번호가 올바르지 않습니다.",
+};
+
+export type DialogType = keyof typeof Dialog;

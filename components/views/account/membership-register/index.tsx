@@ -34,8 +34,15 @@ const MemberRegisterView = () => {
         leftLabel="초대 메일 발송"
         rightLabel="직접 등록"
       />
-      {!isDirectRegist && <MailSendSection isAdmin={isAdmin} />}
-      {isDirectRegist && <DirectRegistSection isAdmin={isAdmin} />}
+      {!isDirectRegist && (
+        <MailSendSection isAdmin={isAdmin} agencyId={session?.user.agentId} />
+      )}
+      {isDirectRegist && (
+        <DirectRegistSection
+          isAdmin={isAdmin}
+          agencyId={session?.user.agentId}
+        />
+      )}
     </div>
   );
 };

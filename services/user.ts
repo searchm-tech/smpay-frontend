@@ -183,7 +183,7 @@ export async function postAgencyUserEmailApi(
 }
 
 // [관리자] 회원 직접 등록 API
-export type TAgencyUserPostParams = {
+export type TAgencyGroupMasterPostParams = {
   userType: TAuthType;
   name: string;
   emailAddress: string;
@@ -191,12 +191,64 @@ export type TAgencyUserPostParams = {
   phoneNumber: string;
   agentId: number;
 };
-export const postAgencyUserApi = async (
-  params: TAgencyUserPostParams
+export const postAgencyGroupMasterApi = async (
+  params: TAgencyGroupMasterPostParams
 ): Promise<TAdminUserInfoResponse> => {
   try {
     const response = await post<TAdminUserInfoResponse>(
       `/admin/api/v1/agents/${params.agentId}/users`,
+      params
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 회원 직접 등록 API (SAG007)
+export type TAgencyUserDirectPostParams = {
+  type: TAuthType;
+  name: string;
+  emailAddress: string;
+  password: string;
+  phoneNumber: string;
+  agentId: number;
+  departmentId: number;
+};
+export const postAgencyUserDirectApi = async (
+  params: TAgencyUserDirectPostParams
+): Promise<TAdminUserInfoResponse> => {
+  try {
+    const response = await post<TAdminUserInfoResponse>(
+      `/service/api/v1/agents/${params.agentId}/users`,
+      params
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 회원 가입 메일 발송 API (SAG006)
+export type TAgencyUserEmailSendParams = {
+  type: TAuthType;
+  name: string;
+  emailAddress: string;
+  agentId: number;
+  departmentId: number;
+};
+export const postAgencyUserEmailSendApi = async (
+  params: TAgencyUserEmailSendParams
+): Promise<null> => {
+  try {
+    const response = await post<null>(
+      `/service/api/v1/agents/${params.agentId}/users/email`,
       params
     );
     return response;
