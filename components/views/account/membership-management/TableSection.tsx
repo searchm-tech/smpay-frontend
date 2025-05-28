@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2, SquarePen } from "lucide-react";
 
 import Table from "@/components/composite/table";
@@ -10,12 +10,15 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import DialogDelete from "./DialogDelete";
 
-import { ACTIVE_STATUS } from "@/constants/table";
-
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import type { TableParams } from "@/types/table";
 import type { MemberData } from "@/types/user";
+import { getAgencyUsersListApi } from "@/services/user";
+import { TAgencyUser } from "@/types/api/user";
+import { getUserAuthTypeLabel } from "@/utils/status";
+import { formatDate } from "date-fns";
+import { USER_STATUS_OPTS } from "@/constants/status";
 
 /**
  *  관리자 일 경우 테이블
@@ -27,47 +30,53 @@ type TableSectionProps = {
   setTableParams: (params: TableParams) => void;
 };
 
+type TDataAgencyUser = TAgencyUser & { id: string };
 const TableSection = ({
   isAdmin,
   dataSource,
   isLoading,
   setTableParams,
 }: TableSectionProps) => {
+  const [agencyUsers, setAgencyUsers] = useState<TDataAgencyUser[]>([]);
+
   const router = useRouter();
 
-  const [statusModal, setStatusModal] = useState<MemberData | null>(null);
+  const [statusModal, setStatusModal] = useState<TDataAgencyUser | null>(null);
   const [deleteModal, setDeleteModal] = useState<MemberData | null>(null);
 
-  const companyNameColumn = {
+  const agentColumn = {
     title: "대행사명",
-    dataIndex: "companyName",
+    dataIndex: "agentName",
     sorter: true,
     align: "center",
   } as const;
 
-  const columns: TableProps<MemberData>["columns"] = [
+  const columns: TableProps<TDataAgencyUser>["columns"] = [
     {
       title: "No",
-      dataIndex: "no",
+      dataIndex: "id",
       align: "center",
       sorter: true,
     },
-    ...(isAdmin ? [companyNameColumn] : []), // "admin" 일 경우 대행사명 컬럼 추가
+    ...(isAdmin ? [agentColumn] : []), // "admin" 일 경우 대행사명 컬럼 추가
     {
       title: "계정유형",
-      dataIndex: "accountType",
+      dataIndex: "type",
       sorter: true,
       align: "center",
+      render: (value, record) => {
+        return <span>{getUserAuthTypeLabel(record.type)}</span>;
+      },
     },
     {
       title: "대표자명",
-      dataIndex: "name",
+      dataIndex: "userName",
       sorter: true,
       align: "center",
     },
     {
       title: "이메일(ID)",
-      dataIndex: "email",
+      dataIndex: "loginId",
       sorter: true,
       align: "center",
     },
@@ -81,12 +90,12 @@ const TableSection = ({
             <SquarePen
               className="text-[#007AFF] cursor-pointer"
               size={20}
-              onClick={() => router.push(`/user/info?id=${record.id}`)}
+              // onClick={() => router.push(`/user/info?id=${record.id}`)}
             />
             <Trash2
               className="text-[#FF0000] cursor-pointer"
               size={20}
-              onClick={() => setDeleteModal(record)}
+              // onClick={() => setDeleteModal(record)}
             />
           </div>
         );
@@ -98,12 +107,10 @@ const TableSection = ({
       sorter: true,
       align: "center",
       render: (value, record) => {
-        const selectedValue = value === "정상" ? "active" : "inactive";
-
         return (
           <Select
-            options={ACTIVE_STATUS}
-            value={selectedValue}
+            options={USER_STATUS_OPTS}
+            value={value}
             onChange={() => setStatusModal(record)}
           />
         );
@@ -111,9 +118,12 @@ const TableSection = ({
     },
     {
       title: "가입일",
-      dataIndex: "createdAt",
+      dataIndex: "registerDt",
       sorter: true,
       align: "center",
+      render: (value, record) => {
+        return <span>{formatDate(record.registerDt, "yyyy-MM-dd")}</span>;
+      },
     },
   ];
 
@@ -142,14 +152,30 @@ const TableSection = ({
     setStatusModal(null);
   };
 
+  useEffect(() => {
+    const fetchAgencyUsersList = async () => {
+      const response = await getAgencyUsersListApi({
+        page: 1,
+        size: 10,
+        keyword: "",
+        orderType: "AGENT_ASC",
+      });
+      setAgencyUsers(response.content);
+      console.log(response);
+    };
+    fetchAgencyUsersList();
+  }, []);
+
+  console.log(agencyUsers);
+
   return (
     <section>
-      <Table<MemberData>
+      <Table<TDataAgencyUser>
         columns={columns}
-        rowKey={(record) => record.no}
-        dataSource={dataSource}
-        total={dataSource.length}
-        onChange={handleTableChange}
+        rowKey={(record) => record.id}
+        dataSource={agencyUsers}
+        total={agencyUsers.length}
+        // onChange={handleTableChange}
         loading={isLoading}
       />
 
@@ -161,7 +187,7 @@ const TableSection = ({
           content={
             <div className="text-center">
               <p>
-                {statusModal?.status === "active"
+                {statusModal?.status === "NORMAL"
                   ? "회원을 비활성화하면 로그인 및 서비스 이용이 제한됩니다."
                   : "회원을 활성화하면 다시 서비스 이용이 가능해집니다."}
               </p>

@@ -48,6 +48,12 @@ export const userAuthTypeMap: Record<TAuthType, string> = {
   SYSTEM_ADMINISTRATOR: "시스템 관리자",
 } as const;
 
-export const getUserStatusLabel = (status: TAuthType): string => {
+export const getUserAuthTypeLabel = (status: TAuthType): string => {
   return userAuthTypeMap[status] || status;
 };
+
+export const userStatusMap: Record<UserStatus, string> = {
+  NORMAL: "활성화",
+  STOP: "비활성화",
+  TEMP: "임시",
+} as const;

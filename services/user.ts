@@ -11,6 +11,9 @@ import type {
   TAgencyUserDirectPostParams,
   TAgencyUserEmailParams,
   TAgencyUserEmailSendParams,
+  TAgencyUsersParams,
+  TAgencyUsersResponse,
+  TAgencyUsersResponseWithNo,
   TAgentsUsersPwParams,
   TMailVerifyParams,
   TMailVerifyUser,
@@ -212,6 +215,34 @@ export const postAgencyUserEmailSendApi = async (
       params
     );
     return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+export const getAgencyUsersListApi = async (
+  params: TAgencyUsersParams
+): Promise<TAgencyUsersResponseWithNo> => {
+  try {
+    // URL 파라미터 인코딩
+    const encodedKeyword = encodeURIComponent(params.keyword);
+
+    const response = await get<TAgencyUsersResponse>(
+      `/admin/api/v1/agents/users?page=${params.page}&size=${params.size}&keyword=${encodedKeyword}&orderType=${params.orderType}`
+    );
+
+    const result: TAgencyUsersResponseWithNo = {
+      ...response,
+      content: response.content.map((user, index) => ({
+        ...user,
+        id: ((params.page - 1) * params.size + index + 1).toString(), // 페이지네이션을 고려한 번호
+      })),
+    };
+
+    return result;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

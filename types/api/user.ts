@@ -95,3 +95,53 @@ export type TAgencyUserEmailSendParams = {
   agentId: number;
   departmentId: number;
 };
+
+// 대행사 회원 페이지네이션 조회 (AAG006) response type
+export type TAgencyUsersResponse = {
+  page: number;
+  size: number;
+  totalCount: number;
+  content: TAgencyUser[];
+};
+
+// TODO : 실제 모델이랑 비교 필요
+export type TAgencyUser = {
+  userId: number;
+  agentName: string;
+  type: TAuthType;
+  userName: string;
+  loginId: string;
+  status: UserStatus;
+  registerDt: string;
+  id: string;
+};
+
+// 확장된 응답 타입 (no 속성이 포함된 content)
+export type TAgencyUsersResponseWithNo = {
+  page: number;
+  size: number;
+  totalCount: number;
+  content: (TAgencyUser & { id: string })[];
+};
+
+// 대행사 회원 페이지네이션 조회 (AAG006) params type
+export type TAgencyUsersParams = {
+  page: number;
+  size: number;
+  keyword: string;
+  orderType: TAgencyUsersOrder;
+};
+
+export type TAgencyUsersOrder =
+  | "AGENT_ASC"
+  | "AGENT_DESC"
+  | "USER_TYPE_ASC"
+  | "USER_TYPE_DESC"
+  | "NAME_ASC"
+  | "NAME_DESC"
+  | "LOGIN_ID_ASC"
+  | "LOGIN_ID_DESC"
+  | "STATUS_ASC"
+  | "STATUS_DESC"
+  | "REGISTER_DT_ASC"
+  | "REGISTER_DT_DESC";

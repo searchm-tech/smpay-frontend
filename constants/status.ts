@@ -77,3 +77,8 @@ export const MEMBER_TYPE_OPTS = [
   { label: "그룹장", value: "AGENCY_GROUP_MANAGER" },
   { label: "그룹원", value: "AGENCY_GROUP_MEMBER" },
 ];
+
+export const USER_STATUS_OPTS = [
+  { label: "활성", value: "NORMAL" },
+  { label: "비활성", value: "STOP" },
+];
