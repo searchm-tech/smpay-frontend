@@ -12,12 +12,16 @@ import {
   getUserInfoApi,
   getAdminUserInfoApi,
   patchUserInfoApi,
-  postAgencyUserApi,
+  postAgencyGroupMasterApi,
+  postAgencyUserDirectApi,
   type TMailVerifyParams,
   type TAgentsUsersPwParams,
   type TUserInfoParams,
   type TUserInfoPatchParams,
-  type TAgencyUserPostParams,
+  type TAgencyGroupMasterPostParams,
+  type TAgencyUserDirectPostParams,
+  postAgencyUserEmailSendApi,
+  TAgencyUserEmailSendParams,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type {
@@ -95,16 +99,43 @@ export const useMutationUserInfo = (
   });
 };
 
-// 관리자 : 대행사 최상위 그룹장 회원 가입(직접 등록)
-export const useMutationAgencyUser = (
+// 관리자 : 대행사 최상위 그룹장 회원 가입(직접 등록) mutation
+export const useMutationAgencyGroupMaster = (
   options?: UseMutationOptions<
     TAdminUserInfoResponse,
     Error,
-    TAgencyUserPostParams
+    TAgencyGroupMasterPostParams
   >
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyUserPostParams) => postAgencyUserApi(params),
+    mutationFn: (params: TAgencyGroupMasterPostParams) =>
+      postAgencyGroupMasterApi(params),
+    ...options,
+  });
+};
+
+// 회원 직접 등록 mutation
+export const useMutationAgencyUserDirect = (
+  options?: UseMutationOptions<
+    TAdminUserInfoResponse,
+    Error,
+    TAgencyUserDirectPostParams
+  >
+) => {
+  return useMutation({
+    mutationFn: (params: TAgencyUserDirectPostParams) =>
+      postAgencyUserDirectApi(params),
+    ...options,
+  });
+};
+
+// 회원 가입 메일 발송 mutation
+export const useMutationAgencyUserEmailSend = (
+  options?: UseMutationOptions<null, Error, TAgencyUserEmailSendParams>
+) => {
+  return useMutation({
+    mutationFn: (params: TAgencyUserEmailSendParams) =>
+      postAgencyUserEmailSendApi(params),
     ...options,
   });
 };

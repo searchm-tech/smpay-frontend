@@ -163,6 +163,26 @@ export const DroppableFolder: React.FC<{
   );
 };
 
+// 순서 변경을 위한 드롭 영역 컴포넌트
+// export const DroppableOrderZone: React.FC<{
+//   id: string;
+//   position: "before" | "after";
+// }> = ({ id, position }) => {
+//   const { setNodeRef, isOver } = useDroppable({
+//     id: `${id}-${position}`,
+//   });
+
+//   return (
+//     <div
+//       ref={setNodeRef}
+//       className={cn(
+//         "h-1 transition-colors duration-200",
+//         isOver && "bg-blue-400 h-2"
+//       )}
+//     />
+//   );
+// };
+
 // 트리 노드 컴포넌트
 export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   node,
@@ -176,12 +196,18 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
   const [editName, setEditName] = useState(node.name);
   const [showDeleteError, setShowDeleteError] = useState(false);
 
+  // level 0 폴더와 AGENCY_GROUP_MASTER 사용자는 드래그 비활성화
+  const shouldDisableDrag =
+    (level === 0 && node.type === "folder") ||
+    (node.type === "user" && node.userData?.type === "AGENCY_GROUP_MASTER");
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: node.id,
       data: {
         type: node.type,
       },
+      disabled: shouldDisableDrag,
     });
 
   const handleToggle = () => {
@@ -244,9 +270,11 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         <User className={classNameLeft} />
       )}
       <div
-        {...attributes}
-        {...listeners}
-        className="flex-1 flex items-center gap-2 cursor-move"
+        {...(shouldDisableDrag ? {} : attributes)}
+        {...(shouldDisableDrag ? {} : listeners)}
+        className={`flex-1 flex items-center gap-2 ${
+          shouldDisableDrag ? "cursor-default" : "cursor-move"
+        }`}
       >
         {isEditing ? (
           <input
@@ -260,6 +288,12 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         ) : (
           <>
             <span>{node.name}</span>
+            {node.type === "user" &&
+              node.userData?.type === "AGENCY_GROUP_MASTER" && (
+                <span className="text-xs text-red-500 ml-1">
+                  (최상위 그룹장)
+                </span>
+              )}
             {node.type === "folder" && (
               <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full flex items-center gap-1">
                 <User className="w-3 h-3" />
@@ -270,7 +304,7 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
         )}
       </div>
 
-      {node.type === "user" && (
+      {node.type === "user" && !shouldDisableDrag && (
         <div {...listeners} className="touch-none cursor-move">
           <Move className={classNameObject} />
         </div>
@@ -286,45 +320,53 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
                 onAddFolder(node.id);
               }}
             />
-            <div {...listeners} className="touch-none cursor-move">
-              <Move className={classNameObject} />
-            </div>
-            <FilePenLine
-              className={classNameObject}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsEditing(true);
-              }}
-            />
-            <Trash2
-              className={classNameObject}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(node);
-              }}
-            />
+            {level > 0 && (
+              <div {...listeners} className="touch-none cursor-move">
+                <Move className={classNameObject} />
+              </div>
+            )}
+            {level > 0 && (
+              <FilePenLine
+                className={classNameObject}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+              />
+            )}
+            {level > 0 && (
+              <Trash2
+                className={classNameObject}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(node);
+                }}
+              />
+            )}
           </div>
         ) : (
-          <div className="flex items-center gap-2">
-            <CircleCheckBig
-              className={cn(classNameObject, "text-green-500")}
-              onClick={async (e) => {
-                e.stopPropagation();
-                const success = await onUpdateName(node.id, editName);
-                if (success) {
+          level > 0 && (
+            <div className="flex items-center gap-2">
+              <CircleCheckBig
+                className={cn(classNameObject, "text-green-500")}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const success = await onUpdateName(node.id, editName);
+                  if (success) {
+                    setIsEditing(false);
+                  }
+                }}
+              />
+              <X
+                className={cn(classNameObject, "text-red-500")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditName(node.name);
                   setIsEditing(false);
-                }
-              }}
-            />
-            <X
-              className={cn(classNameObject, "text-red-500")}
-              onClick={(e) => {
-                e.stopPropagation();
-                setEditName(node.name);
-                setIsEditing(false);
-              }}
-            />
-          </div>
+                }}
+              />
+            </div>
+          )
         ))}
     </div>
   );
@@ -343,6 +385,10 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
           onConfirm={() => setShowDeleteError(false)}
         />
       )}
+
+      {/* 순서 변경을 위한 상단 드롭 영역 */}
+      {/* {level > 0 && <DroppableOrderZone id={node.id} position="before" />} */}
+
       {node.type === "folder" ? (
         <DroppableFolder id={node.id} isOpen={isOpen}>
           {content}
@@ -364,6 +410,9 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <div>{content}</div>
       )}
+
+      {/* 순서 변경을 위한 하단 드롭 영역 */}
+      {/* {level > 0 && <DroppableOrderZone id={node.id} position="after" />} */}
     </div>
   );
 };

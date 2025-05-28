@@ -74,6 +74,6 @@ export const JUDGEMENT_STATUS_MAP: Record<SmPayJudgementStatus, string> = {
 };
 
 export const MEMBER_TYPE_OPTS = [
-  { label: "그룹장", value: "leader" },
-  { label: "그룹원", value: "member" },
+  { label: "그룹장", value: "AGENCY_GROUP_MANAGER" },
+  { label: "그룹원", value: "AGENCY_GROUP_MEMBER" },
 ];

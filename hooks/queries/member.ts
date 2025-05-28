@@ -27,13 +27,3 @@ export const useDeleteMember = (
     ...options,
   });
 };
-
-// TODO : 삭제 예정 - 회원 등록 - [대행사 기준]
-export const useCreateMemberByAgency = (
-  options?: UseMutationOptions<{ success: boolean }, Error, any>
-) => {
-  return useMutation({
-    mutationFn: (data: any) => createMemberByAgency(data),
-    ...options,
-  });
-};

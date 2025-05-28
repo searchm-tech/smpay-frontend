@@ -18,53 +18,46 @@ import { DescriptionBox } from "@/components/common/Box";
 
 import ModalDepartment from "./ModalDepartment";
 
-import { useCreateMemberByAgency } from "@/hooks/queries/member";
 import { useQueryAgencyAll } from "@/hooks/queries/agency";
-import { useMutationAgencyUser } from "@/hooks/queries/user";
+import {
+  useMutationAgencyGroupMaster,
+  useMutationAgencyUserDirect,
+} from "@/hooks/queries/user";
 import {
   getUsersNameCheckApi,
-  type TAgencyUserPostParams,
+  TAgencyUserDirectPostParams,
+  type TAgencyGroupMasterPostParams,
 } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
+import { Dialog, type DialogType } from "./constant";
 
 import type { DepartmentTreeNode } from "@/types/tree";
+import { TAuthType } from "@/types/user";
 
-const Dialog = {
-  err: "모든 필수 항목을 입력해주세요.",
-  success: (
-    <div className="text-center">
-      <p>메일 발송이 완료되었습니다.</p>
-      <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
-    </div>
-  ),
-  department: "부서 선택을 해주세요.",
-  emailRegex: "이메일 형식이 올바르지 않습니다.",
-  nameCheck: "중복 체크를 해주세요.",
-  "check-email-empty": "이메일 주소를 입력해주세요.",
-  "check-email-regex": "이메일 형식이 올바르지 않습니다.",
-  "password-regex":
-    "비밀번호가 영문, 숫자, 특수문자가 모두 들어간 8-16자가 아닙니다.",
-  "password-confirm": "비밀번호가 일치하지 않습니다.",
-  "phone-regex": "전화번호가 올바르지 않습니다.",
-};
-
-type DialogType = keyof typeof Dialog;
 type DirectRegistSectionProps = {
   isAdmin: boolean;
+  agencyId: number;
 };
 
-const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
+const DirectRegistSection = ({
+  isAdmin = false,
+  agencyId,
+}: DirectRegistSectionProps) => {
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
-  const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
-    useMutationAgencyUser({
-      onSuccess: () => setSuccessModal(true),
-    });
+  const {
+    mutate: mutateAddGroupMasterDirect,
+    isPending: isPendingAddGroupMasterDirect,
+  } = useMutationAgencyGroupMaster({
+    onSuccess: () => setSuccessModal(true),
+    onError: (error) => setFailDialog(error.message),
+  });
 
-  const { mutate: createMemberByAgency, isPending: isPendingByAgency } =
-    useCreateMemberByAgency({
+  const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
+    useMutationAgencyUserDirect({
       onSuccess: () => setSuccessModal(true),
+      onError: (error) => setFailDialog(error.message),
     });
 
   const [departmentNode, setDepartmentNode] =
@@ -74,13 +67,14 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [memberType, setMemberType] = useState("leader");
+  const [memberType, setMemberType] = useState("");
 
   const [selectedAgency, setSelectedAgency] = useState("");
 
   const [successModal, setSuccessModal] = useState(false);
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
+  const [failDialog, setFailDialog] = useState("");
   const [dialog, setDialog] = useState<DialogType | null>(null);
   const [enableEmailId, setEnableEmailId] = useState(false);
   const [checkNameLoading, setCheckNameLoading] = useState(false);
@@ -144,19 +138,6 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
       return;
     }
 
-    if (!isAdmin) {
-      if (!memberType || !departmentNode) {
-        setDialog("err");
-        return;
-      }
-    } else {
-      if (!selectedAgency) {
-        console.log("selectedAgency", selectedAgency);
-        setDialog("err");
-        return;
-      }
-    }
-
     if (
       !PASSWORD_REGEX.test(password) ||
       !PASSWORD_REGEX.test(passwordConfirm)
@@ -176,8 +157,28 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
     }
 
     if (!isAdmin) {
+      if (!memberType || !departmentNode) {
+        setDialog("err");
+        return;
+      }
+      // 관리자가 아닌 경우 - 회원 등록
+      const data: TAgencyUserDirectPostParams = {
+        type: memberType as TAuthType,
+        name,
+        emailAddress: emailId,
+        password,
+        phoneNumber: phone,
+        agentId: agencyId,
+        departmentId: Number(departmentNode?.id),
+      };
+      mutateAddUserDirect(data);
     } else {
-      const data: TAgencyUserPostParams = {
+      if (!selectedAgency) {
+        setDialog("err");
+        return;
+      }
+
+      const data: TAgencyGroupMasterPostParams = {
         userType: "AGENCY_GROUP_MASTER",
         name,
         emailAddress: emailId,
@@ -185,7 +186,7 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
         phoneNumber: phone,
         agentId: Number(selectedAgency),
       };
-      mutateAddUserDirect(data);
+      mutateAddGroupMasterDirect(data);
     }
   };
 
@@ -195,7 +196,9 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
 
   return (
     <section className="py-4">
-      {(checkNameLoading || isPendingByAgency) && <LoadingUI />}
+      {(checkNameLoading ||
+        isPendingAddGroupMasterDirect ||
+        isPendingAddUserDirect) && <LoadingUI />}
 
       {isPendingAddUserDirect && <LoadingUI title="회원 등록 중..." />}
       {isOpenDepartmentModal && (
@@ -258,6 +261,16 @@ const DirectRegistSection = ({ isAdmin = false }: DirectRegistSectionProps) => {
           }}
           title="중복 체크"
           content="사용 가능한 이메일 주소입니다."
+        />
+      )}
+
+      {failDialog && (
+        <ConfirmDialog
+          open
+          onClose={() => setFailDialog("")}
+          onConfirm={() => setFailDialog("")}
+          title="오류"
+          content={failDialog}
         />
       )}
 

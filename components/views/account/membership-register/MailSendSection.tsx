@@ -25,7 +25,12 @@ import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX } from "@/constants/reg";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import type { TAgencyUserEmailParams } from "@/services/user";
+import type {
+  TAgencyUserEmailParams,
+  TAgencyUserEmailSendParams,
+} from "@/services/user";
+import { useMutationAgencyUserEmailSend } from "@/hooks/queries/user";
+import { TAuthType } from "@/types/user";
 
 const Dialog = {
   err: "모든 필수 항목을 입력해주세요.",
@@ -46,41 +51,52 @@ type DialogType = keyof typeof Dialog;
 
 type MailSendSectionProps = {
   isAdmin: boolean;
+  agencyId: number;
 };
 
-const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
+const MailSendSection = ({ isAdmin, agencyId }: MailSendSectionProps) => {
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
 
   const [selectedAgency, setSelectedAgency] = useState("");
-  const [selected, setSelected] = useState("leader");
+  const [selected, setSelected] = useState("");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
   const [enableEmailId, setEnableEmailId] = useState(false);
 
   const [dialog, setDialog] = useState<DialogType | null>(null);
+
   const [failDialog, setFailDialog] = useState("");
 
   const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
+  const [checkNameLoading, setCheckNameLoading] = useState(false);
   const [nameCheckResult, setNameCheckResult] = useState<
     "duplicate" | "available" | ""
   >("");
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
-  const { mutate: mutateSendMail, isPending: isPendingSendMail } =
+  const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
-      onSuccess: () => {
-        setDialog("success");
-        setDepartmentNode(null);
-        setSelectedAgency("");
-        setSelected("leader");
-        setEmailId("");
-        setName("");
-      },
+      onSuccess: () => resetSuccess(),
       onError: (error) => setFailDialog(error.message),
     });
+
+  const { mutate: mutateUserSendMail, isPending: loadingUserSendMail } =
+    useMutationAgencyUserEmailSend({
+      onSuccess: () => resetSuccess(),
+      onError: (error) => setFailDialog(error.message),
+    });
+
+  const resetSuccess = () => {
+    setDialog("success");
+    setDepartmentNode(null);
+    setSelectedAgency("");
+    setSelected("");
+    setEmailId("");
+    setName("");
+  };
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmailId(e.target.value);
@@ -91,6 +107,8 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
   };
 
   const handleNameCheck = async () => {
+    if (checkNameLoading) return;
+
     if (!emailId) {
       setDialog("check-email-empty");
       return;
@@ -102,10 +120,14 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
     }
 
     try {
+      setCheckNameLoading(true);
       const response = await getUsersNameCheckApi(emailId);
+      console.log("response", response);
       setNameCheckResult(response ? "duplicate" : "available");
     } catch (error) {
       console.log(error);
+    } finally {
+      setCheckNameLoading(false);
     }
   };
 
@@ -130,6 +152,15 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
         setDialog("err");
         return;
       }
+
+      const params: TAgencyUserEmailSendParams = {
+        type: selected as TAuthType,
+        name,
+        emailAddress: emailId,
+        agentId: agencyId,
+        departmentId: Number(departmentNode?.id),
+      };
+      mutateUserSendMail(params);
     } else {
       // 시스템 관리자 - 직접 딍록
       if (!selectedAgency) {
@@ -144,13 +175,15 @@ const MailSendSection = ({ isAdmin }: MailSendSectionProps) => {
         emailAddress: emailId,
       };
 
-      mutateSendMail(params);
+      mutateGroupMasterSendMail(params);
     }
   };
 
   return (
     <section className="py-4">
-      {isPendingSendMail && <LoadingUI title="초대 메일 전송 중..." />}
+      {(loadingGrpSendMail || loadingUserSendMail) && (
+        <LoadingUI title="초대 메일 전송 중..." />
+      )}
 
       {isOpenDepartmentModal && (
         <ModalDepartment
