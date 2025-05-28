@@ -374,6 +374,7 @@ const OrganizationSection: React.FC = () => {
           onConfirm={() => {
             refetch();
             setSuccessSave(false);
+            setErrorNoData(false);
           }}
         />
       )}
