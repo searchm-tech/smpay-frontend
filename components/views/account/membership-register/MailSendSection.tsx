@@ -33,7 +33,6 @@ import {
 
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
-
 import type { TViewProps } from ".";
 import type {
   TAgencyUserEmailParams,
@@ -44,23 +43,6 @@ const MailSendSection = ({ user }: TViewProps) => {
   const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
     user.type
   );
-
-  const [departmentNode, setDepartmentNode] =
-    useState<DepartmentTreeNode | null>(null);
-
-  const [selectedAgency, setSelectedAgency] = useState("");
-  const [selected, setSelected] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [name, setName] = useState("");
-  const [enableEmailId, setEnableEmailId] = useState(false);
-
-  const [dialog, setDialog] = useState<DialogContentType | null>(null);
-  const [failDialog, setFailDialog] = useState("");
-  const [dialogEmail, setDialogEmail] = useState<DialogContentTypeEmail | null>(
-    null
-  );
-  const [checkNameLoading, setCheckNameLoading] = useState(false);
-  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
@@ -76,11 +58,27 @@ const MailSendSection = ({ user }: TViewProps) => {
       onError: (error) => setFailDialog(error.message),
     });
 
+  const [departmentNode, setDepartmentNode] =
+    useState<DepartmentTreeNode | null>(null);
+  const [selectedAgency, setSelectedAgency] = useState("");
+  const [memberType, setMemberType] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [name, setName] = useState("");
+  const [enableEmailId, setEnableEmailId] = useState(false);
+
+  const [dialog, setDialog] = useState<DialogContentType | null>(null);
+  const [failDialog, setFailDialog] = useState("");
+  const [dialogEmail, setDialogEmail] = useState<DialogContentTypeEmail | null>(
+    null
+  );
+  const [checkNameLoading, setCheckNameLoading] = useState(false);
+  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
+
   const resetSuccess = () => {
     setDialog("success");
     setDepartmentNode(null);
     setSelectedAgency("");
-    setSelected("");
+    setMemberType("");
     setEmailId("");
     setName("");
   };
@@ -142,13 +140,20 @@ const MailSendSection = ({ user }: TViewProps) => {
     }
 
     if (!isAdmin) {
-      if (!departmentNode || !selected) {
+      /**
+       * 관리자가 아닌 경우
+       * - 부서 선택 필수
+       * - 회원 구분 선택 필수
+       * - 회원 초대 메일 발송
+       */
+
+      if (!departmentNode || !memberType) {
         setDialog("err");
         return;
       }
 
       const params: TAgencyUserEmailSendParams = {
-        type: selected as TAuthType,
+        type: memberType as TAuthType,
         name,
         emailAddress: emailId,
         agentId: user.agentId,
@@ -156,7 +161,11 @@ const MailSendSection = ({ user }: TViewProps) => {
       };
       mutateUserSendMail(params);
     } else {
-      // 시스템 관리자 - 직접 딍록
+      /**
+       * 시스템 관리자
+       * - 대행사 선택 필수
+       * - 대행사 최상위 그룹장 회원 초대 메일 발송
+       */
       if (!selectedAgency) {
         setDialog("err");
         return;
@@ -250,8 +259,8 @@ const MailSendSection = ({ user }: TViewProps) => {
           ) : (
             <RadioGroup
               options={MEMBER_TYPE_OPTS}
-              value={selected}
-              onChange={setSelected}
+              value={memberType}
+              onChange={setMemberType}
             />
           )}
         </DescriptionItem>
