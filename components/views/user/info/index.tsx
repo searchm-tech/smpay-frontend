@@ -21,7 +21,7 @@ import {
   useQueryUserInfo,
 } from "@/hooks/queries/user";
 import { EMAIL_REGEX } from "@/constants/reg";
-import { getUserStatusLabel } from "@/utils/status";
+import { getUserAuthTypeLabel } from "@/utils/status";
 
 import type { TUserInfoPatchParams } from "@/types/api/user";
 
@@ -148,7 +148,7 @@ const UserInfoView = () => {
         <Descriptions bordered columns={1}>
           <DescriptionItem label="회원 구분 *">
             {userInfo?.user.user.type &&
-              getUserStatusLabel(userInfo?.user.user.type)}
+              getUserAuthTypeLabel(userInfo?.user.user.type)}
           </DescriptionItem>
           <DescriptionItem label="성명 *">
             <Input

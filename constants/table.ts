@@ -7,6 +7,7 @@ const defaultTableParams = {
   filters: {},
 };
 
+// TODO : 삭제 예정
 const ACTIVE_STATUS = [
   { label: "활성", value: "active" },
   { label: "비활성", value: "inactive" },

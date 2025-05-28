@@ -48,6 +48,7 @@ const MembershipManagementView = () => {
   const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
     session?.user.type || ""
   );
+
   return (
     <div className="flex flex-col gap-4">
       <SearchSection onSearch={onSearch} isAdmin={isAdmin} />
