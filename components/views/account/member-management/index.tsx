@@ -12,7 +12,7 @@ import { defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
 
-const MembershipManagementView = () => {
+const MemberManagementView = () => {
   const { data: session } = useSession();
 
   const [search, setSearch] = useState<string>("");
@@ -65,4 +65,4 @@ const MembershipManagementView = () => {
   );
 };
 
-export default MembershipManagementView;
+export default MemberManagementView;

@@ -1,5 +1,6 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import MemberRegisterView from "@/components/views/account/membership-register";
+import MemberRegisterView from "@/components/views/account/member-register";
+
 import type { DashboardSubItem } from "@/types/menu";
 
 export default function MemberRegisterPage() {
@@ -18,10 +19,10 @@ const breadcrumbItems: DashboardSubItem[] = [
   },
   {
     title: "회원 관리",
-    url: "/account/membership-management",
+    url: "/account/member-management",
   },
   {
     title: "회원 등록",
-    url: "/account/membership-register",
+    url: "/account/member-register",
   },
 ];

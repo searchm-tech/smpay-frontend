@@ -1,10 +1,6 @@
 import { ApiError, del, get, patch, post, put } from "@/lib/api";
 import type { ApiResponseData } from "./types";
-import type {
-  TAdminUserInfoResponse,
-  TUserInfoResponse,
-  UserStatus,
-} from "@/types/user";
+import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 import type { AgencyData } from "./agency";
 import type {
   TAgencyGroupMasterPostParams,
@@ -97,9 +93,9 @@ export const getUserInfoApi = async (
 // 관리자 회원 정보 조회
 export const getAdminUserInfoApi = async (
   userId: number
-): Promise<TAdminUserInfoResponse> => {
+): Promise<TSMPayUser> => {
   try {
-    const response = await get<TAdminUserInfoResponse>(
+    const response = await get<TSMPayUser>(
       `/admin/api/v1/agents/users/${userId}/me`
     );
     return response;
@@ -171,9 +167,9 @@ export async function postAgencyUserEmailApi(
 // [관리자] 대행사 최상위 그룹장 회원 가입 (직접 등록) (AAG005) API
 export const postAgencyGroupMasterApi = async (
   params: TAgencyGroupMasterPostParams
-): Promise<TAdminUserInfoResponse> => {
+): Promise<TSMPayUser> => {
   try {
-    const response = await post<TAdminUserInfoResponse>(
+    const response = await post<TSMPayUser>(
       `/admin/api/v1/agents/${params.agentId}/users`,
       params
     );
@@ -190,9 +186,9 @@ export const postAgencyGroupMasterApi = async (
 
 export const postAgencyUserDirectApi = async (
   params: TAgencyUserDirectPostParams
-): Promise<TAdminUserInfoResponse> => {
+): Promise<TSMPayUser> => {
   try {
-    const response = await post<TAdminUserInfoResponse>(
+    const response = await post<TSMPayUser>(
       `/service/api/v1/agents/${params.agentId}/users`,
       params
     );
