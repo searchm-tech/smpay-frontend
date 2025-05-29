@@ -3,23 +3,25 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
 import { useDeleteMember } from "@/hooks/queries/member";
+import type { TAgencyUserDeleteParams } from "@/types/api/user";
+import { useMutationAgencyUserDelete } from "@/hooks/queries/user";
 
 type DialogDeleteProps = {
-  id: number;
+  userInfo: TAgencyUserDeleteParams;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-const DialogDelete = ({ id, onClose, onConfirm }: DialogDeleteProps) => {
-  const { mutate: deleteMember, isPending } = useDeleteMember({
+const DialogDelete = ({ userInfo, onClose, onConfirm }: DialogDeleteProps) => {
+  const { mutate: deleteUser, isPending } = useMutationAgencyUserDelete({
     onSuccess: onConfirm,
-    onError: () => console.error("삭제에 실패했습니다."),
   });
 
   const handleSubmit = () => {
-    deleteMember(id);
+    deleteUser(userInfo);
   };
 
+  // 에러... refetch 안됨
   return (
     <Fragment>
       {isPending && <LoadingUI />}
