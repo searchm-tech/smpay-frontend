@@ -120,9 +120,25 @@ export const defaultPagination = {
   total: mockMemberData.length,
 };
 
-export const successModalContent = {
+export const dialogContent = {
   "update-status": "회원 상태가 변경되었습니다.",
-  delete: "회원이 삭제되었습니다.",
+  "response-delete": "회원이 삭제되었습니다.",
 };
 
-export type TSuccessModal = keyof typeof successModalContent;
+export type DialogTypes = keyof typeof dialogContent;
+
+export const statusDialogContent = {
+  NORMAL: (
+    <>
+      <p>회원을 활성화하면 다시 서비스 이용이 가능해집니다.</p>
+      <p>진행하시겠습니까?</p>
+    </>
+  ),
+  STOP: (
+    <>
+      <p>회원을 비활성화하면 로그인 및 서비스 이용이 제한됩니다.</p>
+      <p>진행하시겠습니까?</p>
+    </>
+  ),
+  TEMP: null,
+};
