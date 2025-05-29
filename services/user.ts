@@ -219,7 +219,7 @@ export const postAgencyUserEmailSendApi = async (
   }
 };
 
-// 대행사 회원 목록 조회 API (AAG006)
+// [시스템 관리자] 대행사 회원 목록 조회 API (AAG006)
 export const getAgencyUsersListApi = async (
   params: TAgencyUsersParams
 ): Promise<TAgencyUsersResponseWithNo> => {

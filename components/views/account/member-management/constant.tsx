@@ -1,4 +1,5 @@
 import type { MemberData } from "@/types/user";
+import { TableParamsMember } from "./admin";
 
 export const mockMemberData: MemberData[] = [
   {
@@ -141,4 +142,16 @@ export const statusDialogContent = {
     </>
   ),
   TEMP: null,
+};
+
+export const defaultTableParams: TableParamsMember = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  filters: {},
+  sortField: "AGENT_ASC",
+  sortOrder: "ascend",
+  keyword: "",
 };
