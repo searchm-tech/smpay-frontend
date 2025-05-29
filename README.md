@@ -114,6 +114,8 @@ root
 
 ## 페이지 구조
 
+### TODO : 페이지 수정 있음.
+
 ```bash
 
 0. sign-in # 로그인 화면
@@ -129,6 +131,7 @@ root
      ├── apply-submit : # 신청서 제출
      ├── apply-write : # 신청서 작성
      ├── / : # SM Pay 메인 페이지 (SM Pay 목록 페이지)
+3. me # 기본정보 수정 (마이페이지)
 3. user
    - info # (회원 정보)기본 정보 변경
      ├──
@@ -144,8 +147,9 @@ root
    - agency-management # 대행사 관리
    - agency-register # 대행사 등록
    - department # 부서관리
-   - membership-management # 회원관리
-   - membership-register # 회원등록
+   - member-management # 회원관리
+   - member-register # 회원등록
+   - member-edit # 기본정보 수정 (회원 정보 수정)
 5. advertiser-verification # sm-pay 신청 > 동의서 페이지
 6. naver-service # 네이버 서비스 설정
 

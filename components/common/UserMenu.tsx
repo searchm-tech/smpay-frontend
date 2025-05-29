@@ -33,7 +33,7 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/user/info">
+            <Link href="/me">
               <LabelBullet>기본 정보 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
@@ -50,7 +50,7 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
             <LabelBullet>대행사</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/user/password-reset">
+            <Link href="/password-reset">
               <LabelBullet>비밀번호 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>

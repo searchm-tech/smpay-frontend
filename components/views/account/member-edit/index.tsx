@@ -25,7 +25,7 @@ import { getUserAuthTypeLabel } from "@/utils/status";
 
 import type { TUserInfoPatchParams } from "@/types/api/user";
 
-const UserInfoView = () => {
+const MemberEditView = () => {
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -34,6 +34,7 @@ const UserInfoView = () => {
     session?.user.type || ""
   );
 
+  // 회원 정보 조회
   const {
     data: userInfo,
     isLoading: isUserInfoLoading,
@@ -214,4 +215,4 @@ const UserInfoView = () => {
   );
 };
 
-export default UserInfoView;
+export default MemberEditView;

@@ -38,7 +38,7 @@ const SearchSection = ({ onSearch, isAdmin = false }: SearchSectionProps) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <LinkButton onClick={() => router.push("/account/membership-register")}>
+        <LinkButton onClick={() => router.push("/account/member-register")}>
           회원 등록
         </LinkButton>
 

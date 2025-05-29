@@ -95,7 +95,9 @@ const TableSection = ({
             <SquarePen
               className="text-[#007AFF] cursor-pointer"
               size={20}
-              onClick={() => router.push(`/user/info?id=${record.userId}`)}
+              onClick={() =>
+                router.push(`/account/member-edit?id=${record.userId}`)
+              }
             />
             <Trash2
               className="text-[#FF0000] cursor-pointer"

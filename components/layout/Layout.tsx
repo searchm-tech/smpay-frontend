@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isNoNavPage =
     pathname === "/advertiser-verification" ||
     pathname === "/sign-in" ||
-    pathname === "/membership/password-reset" ||
+    pathname === "/password-reset" ||
     pathname === "/sign-out" ||
     pathname === "/sign-up";
 

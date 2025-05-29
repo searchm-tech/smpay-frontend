@@ -42,7 +42,7 @@ const MENU_CONFIG = {
     baseUrl: "/account",
     subMenus: {
       "부서 관리": "/account/department",
-      "회원 관리": "/account/membership-management",
+      "회원 관리": "/account/member-management",
       "대행사 관리": "/account/agency-management",
     },
   },

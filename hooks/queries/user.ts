@@ -19,7 +19,7 @@ import {
   delAgencyUserApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
-import type { TAdminUserInfoResponse, TUserInfoResponse } from "@/types/user";
+import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 
 import type {
   TAgencyGroupMasterPostParams,
@@ -83,7 +83,7 @@ export const useQueryUserInfo = (
 // 관리자 회원 정보 조회 query
 export const useQueryAdminUserInfo = (
   params: { userId: number; isAdmin: boolean },
-  options?: UseQueryOptions<TAdminUserInfoResponse, Error>
+  options?: UseQueryOptions<TSMPayUser, Error>
 ) => {
   return useQuery({
     queryKey: ["adminUserInfo", params],
@@ -105,11 +105,7 @@ export const useMutationUserInfo = (
 
 // 관리자 : 대행사 최상위 그룹장 회원 가입(직접 등록) mutation
 export const useMutationAgencyGroupMaster = (
-  options?: UseMutationOptions<
-    TAdminUserInfoResponse,
-    Error,
-    TAgencyGroupMasterPostParams
-  >
+  options?: UseMutationOptions<TSMPayUser, Error, TAgencyGroupMasterPostParams>
 ) => {
   return useMutation({
     mutationFn: (params: TAgencyGroupMasterPostParams) =>
@@ -120,11 +116,7 @@ export const useMutationAgencyGroupMaster = (
 
 // 회원 직접 등록 mutation
 export const useMutationAgencyUserDirect = (
-  options?: UseMutationOptions<
-    TAdminUserInfoResponse,
-    Error,
-    TAgencyUserDirectPostParams
-  >
+  options?: UseMutationOptions<TSMPayUser, Error, TAgencyUserDirectPostParams>
 ) => {
   return useMutation({
     mutationFn: (params: TAgencyUserDirectPostParams) =>

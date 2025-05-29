@@ -1,8 +1,8 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import MembershipManagementView from "@/components/views/account/membership-management";
+import MembershipManagementView from "@/components/views/account/member-management";
 import type { DashboardSubItem } from "@/types/menu";
 
-export default function MembershipManagementPage() {
+export default function MemberManagementPage() {
   return (
     <div>
       <ContentHeader title="회원 관리" items={breadcrumbItems} />
@@ -18,6 +18,6 @@ const breadcrumbItems: DashboardSubItem[] = [
   },
   {
     title: "회원 관리",
-    url: "/account/membership-management",
+    url: "/account/member-management",
   },
 ];
