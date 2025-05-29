@@ -116,6 +116,16 @@ export type TAgencyUser = {
   id: string;
 };
 
+export type TGroupUser = {
+  userId: number;
+  userType: TAuthType;
+  userName: string;
+  status: UserStatus;
+  registerDt: string;
+  emailAddress: string;
+  id: string;
+};
+
 // 확장된 응답 타입 (no 속성이 포함된 content)
 export type TAgencyUsersResponseWithNo = {
   page: number;
@@ -124,17 +134,35 @@ export type TAgencyUsersResponseWithNo = {
   content: (TAgencyUser & { id: string })[];
 };
 
+export type TGroupUserResponse = {
+  page: number;
+  size: number;
+  totalCount: number;
+  content: TGroupUser[];
+};
+
 // 대행사 회원 페이지네이션 조회 (AAG006) params type
-export type TAgencyUsersParams = {
+export type TAdminAgencyUsersParams = {
   page: number;
   size: number;
   keyword: string;
   orderType: TAgencyUsersOrder;
 };
 
+// 그룹장 회원 목록 조회 API params type
+export type TGroupUserParams = {
+  page: number;
+  size: number;
+  keyword: string;
+  orderType: TAgencyUsersOrder;
+};
+
+// 시스템 관리자 - 대행사 회원 목록 조회 API 정렬 타입
 export type TAgencyUsersOrder =
+  | "NO_ASC" // 불필요 - 그냥 프론트에서 필요함
+  | "NO_DESC" // 불필요 - 그냥 프론트에서 필요함
   | "AGENT_ASC"
-  | "AGENT_DESC"
+  | "AGE`NT_DESC"
   | "USER_TYPE_ASC"
   | "USER_TYPE_DESC"
   | "NAME_ASC"

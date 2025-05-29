@@ -15,9 +15,10 @@ import {
   postAgencyGroupMasterApi,
   postAgencyUserDirectApi,
   postAgencyUserEmailSendApi,
+  getAdminAgencyUsersListApi,
+  getGroupUserListApi,
   putAgencyUserStatusApi,
   delAgencyUserApi,
-  getAgencyUsersListApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
@@ -27,7 +28,8 @@ import type {
   TAgencyUserDeleteParams,
   TAgencyUserDirectPostParams,
   TAgencyUserEmailSendParams,
-  TAgencyUsersParams,
+  TAdminAgencyUsersParams,
+  TGroupUserParams,
   TAgencyUsersResponseWithNo,
   TAgencyUserStatusParams,
   TAgentsUsersPwParams,
@@ -35,6 +37,7 @@ import type {
   TMailVerifyUser,
   TUserInfoParams,
   TUserInfoPatchParams,
+  TGroupUserResponse,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
@@ -161,13 +164,25 @@ export const useMutationAgencyUserDelete = (
 };
 
 // [시스템 관리자] 대행사 회원 목록 조회 query
-export const useQueryAgencyUsersList = (
-  params: TAgencyUsersParams,
+export const useQueryAdminAgencyUsersList = (
+  params: TAdminAgencyUsersParams,
   options?: UseQueryOptions<TAgencyUsersResponseWithNo, Error>
 ) => {
   return useQuery({
     queryKey: ["agencyUsersList", params],
-    queryFn: () => getAgencyUsersListApi(params),
+    queryFn: () => getAdminAgencyUsersListApi(params),
+    ...options,
+  });
+};
+
+// 그룹장 회원 목록 조회 query
+export const useQueryGroupUserList = (
+  params: TGroupUserParams & { agentId: number; userId: number },
+  options?: UseQueryOptions<TGroupUserResponse, Error>
+) => {
+  return useQuery({
+    queryKey: ["groupUserList", params],
+    queryFn: () => getGroupUserListApi(params),
     ...options,
   });
 };
