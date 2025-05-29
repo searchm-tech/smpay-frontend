@@ -6,7 +6,7 @@ import SearchSection from "../SearchSection";
 import TableSection from "./TableSection";
 
 import { defaultTableParams } from "../constant";
-import { useQueryAgencyUsersList } from "@/hooks/queries/user";
+import { useQueryAdminAgencyUsersList } from "@/hooks/queries/user";
 
 import type { TableParams } from "@/types/table";
 import type { ViewProps } from "..";
@@ -26,7 +26,7 @@ const AdminMemberManagementView = ({ user }: ViewProps) => {
     data: dataSource,
     isPending,
     refetch,
-  } = useQueryAgencyUsersList({
+  } = useQueryAdminAgencyUsersList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: search,

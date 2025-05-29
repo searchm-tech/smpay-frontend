@@ -159,7 +159,7 @@ const TableSection = ({
 
       // field 이름을 API에서 요구하는 형식으로 변환
       const fieldMap: Record<string, string> = {
-        id: "REGISTER_DT",
+        id: "NO",
         agentName: "AGENT",
         type: "USER_TYPE",
         userName: "NAME",

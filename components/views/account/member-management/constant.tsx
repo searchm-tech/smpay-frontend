@@ -151,7 +151,7 @@ export const defaultTableParams: TableParamsMember = {
     total: 0,
   },
   filters: {},
-  sortField: "AGENT_ASC",
+  sortField: "REGISTER_DT_DESC",
   sortOrder: "ascend",
   keyword: "",
 };

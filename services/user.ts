@@ -7,7 +7,8 @@ import type {
   TAgencyUserDirectPostParams,
   TAgencyUserEmailParams,
   TAgencyUserEmailSendParams,
-  TAgencyUsersParams,
+  TAdminAgencyUsersParams,
+  TGroupUserParams,
   TAgencyUsersResponse,
   TAgencyUsersResponseWithNo,
   TAgencyUserStatusParams,
@@ -16,6 +17,7 @@ import type {
   TMailVerifyUser,
   TUserInfoParams,
   TUserInfoPatchParams,
+  TGroupUserResponse,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API
@@ -220,18 +222,56 @@ export const postAgencyUserEmailSendApi = async (
 };
 
 // [시스템 관리자] 대행사 회원 목록 조회 API (AAG006)
-export const getAgencyUsersListApi = async (
-  params: TAgencyUsersParams
+export const getAdminAgencyUsersListApi = async (
+  params: TAdminAgencyUsersParams
 ): Promise<TAgencyUsersResponseWithNo> => {
   try {
     // URL 파라미터 인코딩
     const encodedKeyword = encodeURIComponent(params.keyword);
 
+    // NO_DESC나 NO_ASC인 경우 실제 API 정렬은 REGISTER_DT_DESC로 고정
+    const isNoSort =
+      params.orderType === "NO_DESC" || params.orderType === "NO_ASC";
+    const apiOrderType = isNoSort ? "REGISTER_DT_DESC" : params.orderType;
+
     const response = await get<TAgencyUsersResponse>(
-      `/admin/api/v1/agents/users?page=${params.page}&size=${params.size}&keyword=${encodedKeyword}&orderType=${params.orderType}`
+      `/admin/api/v1/agents/users?page=${params.page}&size=${params.size}&keyword=${encodedKeyword}&orderType=${apiOrderType}`
     );
 
+    let content = response.content.map((user, index) => ({
+      ...user,
+      id: ((params.page - 1) * params.size + index + 1).toString(), // 페이지네이션을 고려한 번호
+    }));
+
+    // NO_ASC인 경우 배열을 reverse하여 번호 순서 변경
+    if (params.orderType === "NO_ASC") {
+      content = content.reverse();
+    }
+
     const result: TAgencyUsersResponseWithNo = {
+      ...response,
+      content,
+    };
+
+    return result;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 그룹장 회원 목록 조회 API (AAG007)
+export const getGroupUserListApi = async (
+  params: TGroupUserParams & { agentId: number; userId: number }
+): Promise<TGroupUserResponse> => {
+  try {
+    const response = await get<TGroupUserResponse>(
+      `/service/api/v1/agents/${params.agentId}/users/${params.userId}/subordinate-departments-users?page=${params.page}&size=${params.size}&keyword=${params.keyword}&orderType=${params.orderType}`
+    );
+
+    const result: TGroupUserResponse = {
       ...response,
       content: response.content.map((user, index) => ({
         ...user,
