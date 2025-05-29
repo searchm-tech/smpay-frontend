@@ -9,10 +9,9 @@ import { SearchBox } from "@/components/common/Box";
 // TODO : 타입 모듈화 필요
 type SearchSectionProps = {
   onSearch: (keyword: string) => void;
-  isAdmin: boolean;
 };
 
-const SearchSection = ({ onSearch, isAdmin = false }: SearchSectionProps) => {
+const SearchSection = ({ onSearch }: SearchSectionProps) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState<string>("");
 
@@ -41,8 +40,6 @@ const SearchSection = ({ onSearch, isAdmin = false }: SearchSectionProps) => {
         <LinkButton onClick={() => router.push("/account/member-register")}>
           회원 등록
         </LinkButton>
-
-        {!isAdmin && <LinkButton onClick={() => {}}>회원 삭제</LinkButton>}
       </div>
     </SearchBox>
   );

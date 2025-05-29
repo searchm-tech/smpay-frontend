@@ -17,6 +17,7 @@ import {
   postAgencyUserEmailSendApi,
   putAgencyUserStatusApi,
   delAgencyUserApi,
+  getAgencyUsersListApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
@@ -26,6 +27,8 @@ import type {
   TAgencyUserDeleteParams,
   TAgencyUserDirectPostParams,
   TAgencyUserEmailSendParams,
+  TAgencyUsersParams,
+  TAgencyUsersResponseWithNo,
   TAgencyUserStatusParams,
   TAgentsUsersPwParams,
   TMailVerifyParams,
@@ -153,6 +156,18 @@ export const useMutationAgencyUserDelete = (
 ) => {
   return useMutation({
     mutationFn: (params: TAgencyUserDeleteParams) => delAgencyUserApi(params),
+    ...options,
+  });
+};
+
+// [시스템 관리자] 대행사 회원 목록 조회 query
+export const useQueryAgencyUsersList = (
+  params: TAgencyUsersParams,
+  options?: UseQueryOptions<TAgencyUsersResponseWithNo, Error>
+) => {
+  return useQuery({
+    queryKey: ["agencyUsersList", params],
+    queryFn: () => getAgencyUsersListApi(params),
     ...options,
   });
 };

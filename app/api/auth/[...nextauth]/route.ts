@@ -31,7 +31,7 @@ const handler = NextAuth({
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = Number(user.id);
         token.userId = user.userId;
@@ -43,6 +43,15 @@ const handler = NextAuth({
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
       }
+
+      // trigger 옵션이 'update'인 경우 (updateSession 호출 시)
+      if (trigger === "update" && session?.user) {
+        const { name, phoneNumber } = session.user;
+        // token의 정보를 업데이트
+        if (name) token.name = name;
+        if (phoneNumber) token.phoneNumber = phoneNumber;
+      }
+
       return token;
     },
     async session({ session, token }) {

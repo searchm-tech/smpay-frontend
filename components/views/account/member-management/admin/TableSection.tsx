@@ -1,56 +1,48 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { formatDate } from "date-fns";
 import { Trash2, SquarePen } from "lucide-react";
 
-import { StatusDialog, DeleteDialog } from "./dialog";
+import { StatusDialog, DeleteDialog } from "../dialog";
 import Table from "@/components/composite/table";
 import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { getAgencyUsersListApi } from "@/services/user";
 import { getUserAuthTypeLabel } from "@/utils/status";
 import { USER_STATUS_OPTS } from "@/constants/status";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { TableParams } from "@/types/table";
+
 import type {
   TAgencyUser,
+  TAgencyUsersOrder,
   TAgencyUserDeleteParams as TDeleteParams,
   TAgencyUserStatusParams as TStatusParams,
 } from "@/types/api/user";
-import type { MemberData, TSMPayUser, UserStatus } from "@/types/user";
-import { dialogContent, type DialogTypes } from "./constant";
+import type { TSMPayUser, UserStatus } from "@/types/user";
+import type { TableParamsMember } from ".";
+import { dialogContent, type DialogTypes } from "../constant";
 
 type TableSectionProps = {
-  isAdmin: boolean;
-  dataSource: MemberData[];
+  dataSource: TAgencyUser[];
   isLoading: boolean;
-  setTableParams: (params: TableParams) => void;
+  setTableParams: (params: TableParamsMember) => void;
   user: TSMPayUser;
+  refetch: () => void;
 };
-
-const agentColumn = {
-  title: "대행사명",
-  dataIndex: "agentName",
-  sorter: true,
-  align: "center",
-} as const;
 
 type TDataAgencyUser = TAgencyUser & { id: string };
 const TableSection = ({
-  isAdmin,
   dataSource,
   isLoading,
   setTableParams,
   user,
+  refetch,
 }: TableSectionProps) => {
   const router = useRouter();
-
-  const [agencyUsers, setAgencyUsers] = useState<TDataAgencyUser[]>([]);
 
   const [statusDialog, setStatusDialog] = useState<TStatusParams | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<TDeleteParams | null>(null);
@@ -63,7 +55,12 @@ const TableSection = ({
       align: "center",
       sorter: true,
     },
-    ...(isAdmin ? [agentColumn] : []), // "admin" 일 경우 대행사명 컬럼 추가
+    {
+      title: "대행사명",
+      dataIndex: "agentName",
+      sorter: true,
+      align: "center",
+    },
     {
       title: "계정유형",
       dataIndex: "type",
@@ -146,54 +143,64 @@ const TableSection = ({
     },
   ];
 
-  const handleTableChange: TableProps<MemberData>["onChange"] = (
+  const handleTableChange: TableProps<TDataAgencyUser>["onChange"] = (
     pagination,
     filters,
     sorter
   ) => {
-    const newParams: TableParams = {
+    console.log(sorter);
+
+    // sorter에서 field와 order 추출하여 올바른 정렬 값 생성
+    let sortField: TAgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      // field 이름을 API에서 요구하는 형식으로 변환
+      const fieldMap: Record<string, string> = {
+        id: "REGISTER_DT",
+        agentName: "AGENT",
+        type: "USER_TYPE",
+        userName: "NAME",
+        loginId: "LOGIN_ID",
+        status: "STATUS",
+        registerDt: "REGISTER_DT",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        sortField = `${mappedField}_${order}` as TAgencyUsersOrder;
+      }
+    }
+
+    const newParams: TableParamsMember = {
       pagination: {
         current: pagination.current || 1,
         pageSize: pagination.pageSize || 10,
         total: pagination.total || 0,
       },
       filters: filters as Record<string, FilterValue>,
-      ...(!Array.isArray(sorter) && {
-        sortField: sorter.field?.toString(),
-        sortOrder: sorter.order,
-      }),
+      sortField,
+      keyword: "",
     };
     setTableParams(newParams);
   };
 
-  const fetchAgencyUsersList = async () => {
-    const response = await getAgencyUsersListApi({
-      page: 1,
-      size: 10,
-      keyword: "",
-      orderType: "AGENT_ASC",
-    });
-
-    setAgencyUsers(response.content);
-  };
-
   const handleSuccessModal = () => {
     setDialog(null);
-    fetchAgencyUsersList();
+    refetch();
   };
-
-  useEffect(() => {
-    fetchAgencyUsersList();
-  }, []);
 
   return (
     <section>
       <Table<TDataAgencyUser>
         columns={columns}
         rowKey={(record) => record.id}
-        dataSource={agencyUsers}
-        total={agencyUsers.length}
-        // onChange={handleTableChange}
+        dataSource={dataSource}
+        total={dataSource.length}
+        onChange={handleTableChange}
         loading={isLoading}
       />
 

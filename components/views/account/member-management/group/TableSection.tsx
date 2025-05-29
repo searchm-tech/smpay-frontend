@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { formatDate } from "date-fns";
 import { Trash2, SquarePen } from "lucide-react";
 
-import { StatusDialog, DeleteDialog } from "./dialog";
+import { StatusDialog, DeleteDialog } from "../dialog";
 import Table from "@/components/composite/table";
 import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
@@ -23,7 +23,7 @@ import type {
   TAgencyUserStatusParams as TStatusParams,
 } from "@/types/api/user";
 import type { MemberData, TSMPayUser, UserStatus } from "@/types/user";
-import { dialogContent, type DialogTypes } from "./constant";
+import { dialogContent, type DialogTypes } from "../constant";
 
 type TableSectionProps = {
   isAdmin: boolean;
