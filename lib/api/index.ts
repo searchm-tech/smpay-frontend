@@ -45,34 +45,34 @@ axiosRetry(apiClient, {
   },
 });
 
-// API 요청 카운터
-let requestCount = 0;
-const MAX_REQUESTS = 5;
+// // API 요청 카운터
+// let requestCount = 0;
+// const MAX_REQUESTS = 5;
 
-// 요청 인터셉터
-apiClient.interceptors.request.use(
-  (config) => {
-    if (requestCount >= MAX_REQUESTS) {
-      return Promise.reject(new Error("API 요청 횟수 초과"));
-    }
-    requestCount++;
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// // 요청 인터셉터
+// apiClient.interceptors.request.use(
+//   (config) => {
+//     if (requestCount >= MAX_REQUESTS) {
+//       return Promise.reject(new Error("API 요청 횟수 초과"));
+//     }
+//     requestCount++;
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
-// 응답 인터셉터
-apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    requestCount--; // 실패한 요청은 카운트에서 제외
-    return Promise.reject(error);
-  }
-);
+// // 응답 인터셉터
+// apiClient.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   (error) => {
+//     requestCount--; // 실패한 요청은 카운트에서 제외
+//     return Promise.reject(error);
+//   }
+// );
 
 // 요청 인터셉터 (항상 최신 세션의 accessToken 사용)
 apiClient.interceptors.request.use(
