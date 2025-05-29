@@ -20,8 +20,6 @@ import type { TSMPayUser } from "@/types/user";
 export function UserMenu({ user }: { user: TSMPayUser }) {
   const [open, setOpen] = useState(false);
 
-  console.log("user", user);
-
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
@@ -33,7 +31,7 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href="/me">
+            <Link href={`/account/member-edit?userId=${user.userId}`}>
               <LabelBullet>기본 정보 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
