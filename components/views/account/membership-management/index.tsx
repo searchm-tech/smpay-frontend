@@ -49,6 +49,8 @@ const MembershipManagementView = () => {
     session?.user.type || ""
   );
 
+  if (!session?.user) return null;
+
   return (
     <div className="flex flex-col gap-4">
       <SearchSection onSearch={onSearch} isAdmin={isAdmin} />
@@ -57,6 +59,7 @@ const MembershipManagementView = () => {
         dataSource={members?.data || []}
         isLoading={isLoading}
         setTableParams={setTableParams}
+        user={session.user}
       />
     </div>
   );

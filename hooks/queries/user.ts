@@ -15,14 +15,18 @@ import {
   postAgencyGroupMasterApi,
   postAgencyUserDirectApi,
   postAgencyUserEmailSendApi,
+  putAgencyUserStatusApi,
+  delAgencyUserApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type { TAdminUserInfoResponse, TUserInfoResponse } from "@/types/user";
 
 import type {
   TAgencyGroupMasterPostParams,
+  TAgencyUserDeleteParams,
   TAgencyUserDirectPostParams,
   TAgencyUserEmailSendParams,
+  TAgencyUserStatusParams,
   TAgentsUsersPwParams,
   TMailVerifyParams,
   TMailVerifyUser,
@@ -136,6 +140,27 @@ export const useMutationAgencyUserEmailSend = (
   return useMutation({
     mutationFn: (params: TAgencyUserEmailSendParams) =>
       postAgencyUserEmailSendApi(params),
+    ...options,
+  });
+};
+
+// 대행사 회원 상태 변경 mutation
+export const useMutationAgencyUserStatus = (
+  options?: UseMutationOptions<null, Error, TAgencyUserStatusParams>
+) => {
+  return useMutation({
+    mutationFn: (params: TAgencyUserStatusParams) =>
+      putAgencyUserStatusApi(params),
+    ...options,
+  });
+};
+
+// 대행사 회원 삭제 mutation
+export const useMutationAgencyUserDelete = (
+  options?: UseMutationOptions<null, Error, TAgencyUserDeleteParams>
+) => {
+  return useMutation({
+    mutationFn: (params: TAgencyUserDeleteParams) => delAgencyUserApi(params),
     ...options,
   });
 };

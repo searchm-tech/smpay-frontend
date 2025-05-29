@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { formatDate } from "date-fns";
 import { Trash2, SquarePen } from "lucide-react";
 
 import Table from "@/components/composite/table";
@@ -10,25 +11,32 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import DialogDelete from "./DialogDelete";
 
+import { getAgencyUsersListApi } from "@/services/user";
+import { getUserAuthTypeLabel } from "@/utils/status";
+import { USER_STATUS_OPTS } from "@/constants/status";
+import { useMutationAgencyUserStatus } from "@/hooks/queries/user";
+
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import type { TableParams } from "@/types/table";
-import type { MemberData } from "@/types/user";
-import { getAgencyUsersListApi } from "@/services/user";
-import { TAgencyUser } from "@/types/api/user";
-import { getUserAuthTypeLabel } from "@/utils/status";
-import { formatDate } from "date-fns";
-import { USER_STATUS_OPTS } from "@/constants/status";
+import type { TAgencyUser } from "@/types/api/user";
+import type { MemberData, TSMPayUser } from "@/types/user";
+import { successModalContent, type TSuccessModal } from "./constant";
 
-/**
- *  관리자 일 경우 테이블
- */
 type TableSectionProps = {
   isAdmin: boolean;
   dataSource: MemberData[];
   isLoading: boolean;
   setTableParams: (params: TableParams) => void;
+  user: TSMPayUser;
 };
+
+const agentColumn = {
+  title: "대행사명",
+  dataIndex: "agentName",
+  sorter: true,
+  align: "center",
+} as const;
 
 type TDataAgencyUser = TAgencyUser & { id: string };
 const TableSection = ({
@@ -36,20 +44,22 @@ const TableSection = ({
   dataSource,
   isLoading,
   setTableParams,
+  user,
 }: TableSectionProps) => {
-  const [agencyUsers, setAgencyUsers] = useState<TDataAgencyUser[]>([]);
-
   const router = useRouter();
 
-  const [statusModal, setStatusModal] = useState<TDataAgencyUser | null>(null);
-  const [deleteModal, setDeleteModal] = useState<MemberData | null>(null);
+  const { mutate: updateUserStatus } = useMutationAgencyUserStatus({
+    onSuccess: () => {
+      setSuccessModal("update-status");
+      setStatusModal(null);
+    },
+  });
 
-  const agentColumn = {
-    title: "대행사명",
-    dataIndex: "agentName",
-    sorter: true,
-    align: "center",
-  } as const;
+  const [agencyUsers, setAgencyUsers] = useState<TDataAgencyUser[]>([]);
+
+  const [statusModal, setStatusModal] = useState<TDataAgencyUser | null>(null);
+  const [deleteModal, setDeleteModal] = useState<TDataAgencyUser | null>(null);
+  const [successModal, setSuccessModal] = useState<TSuccessModal | null>(null);
 
   const columns: TableProps<TDataAgencyUser>["columns"] = [
     {
@@ -90,12 +100,12 @@ const TableSection = ({
             <SquarePen
               className="text-[#007AFF] cursor-pointer"
               size={20}
-              // onClick={() => router.push(`/user/info?id=${record.id}`)}
+              onClick={() => router.push(`/user/info?id=${record.userId}`)}
             />
             <Trash2
               className="text-[#FF0000] cursor-pointer"
               size={20}
-              // onClick={() => setDeleteModal(record)}
+              onClick={() => setDeleteModal(record)}
             />
           </div>
         );
@@ -152,21 +162,21 @@ const TableSection = ({
     setStatusModal(null);
   };
 
+  const fetchAgencyUsersList = async () => {
+    const response = await getAgencyUsersListApi({
+      page: 1,
+      size: 10,
+      keyword: "",
+      orderType: "AGENT_ASC",
+    });
+
+    console.log(response);
+    setAgencyUsers(response.content);
+  };
+
   useEffect(() => {
-    const fetchAgencyUsersList = async () => {
-      const response = await getAgencyUsersListApi({
-        page: 1,
-        size: 10,
-        keyword: "",
-        orderType: "AGENT_ASC",
-      });
-      setAgencyUsers(response.content);
-      console.log(response);
-    };
     fetchAgencyUsersList();
   }, []);
-
-  console.log(agencyUsers);
 
   return (
     <section>
@@ -183,7 +193,21 @@ const TableSection = ({
         <ConfirmDialog
           open
           onClose={() => setStatusModal(null)}
-          onConfirm={handleActiveChange}
+          onConfirm={() => {
+            if (statusModal.status === "NORMAL") {
+              updateUserStatus({
+                userId: statusModal.userId,
+                agentId: user.agentId,
+                status: "STOP",
+              });
+            } else {
+              updateUserStatus({
+                userId: statusModal.userId,
+                agentId: 1,
+                status: "NORMAL",
+              });
+            }
+          }}
           content={
             <div className="text-center">
               <p>
@@ -197,11 +221,33 @@ const TableSection = ({
         />
       )}
 
+      {successModal && (
+        <ConfirmDialog
+          open
+          cancelDisabled
+          onConfirm={() => {
+            setSuccessModal(null);
+            fetchAgencyUsersList();
+          }}
+          content={
+            <div className="text-center">
+              {successModalContent[successModal]}
+            </div>
+          }
+        />
+      )}
+
       {deleteModal && (
         <DialogDelete
-          id={deleteModal.id}
+          userInfo={{
+            userId: deleteModal.userId,
+            agentId: user.agentId,
+          }}
           onClose={() => setDeleteModal(null)}
-          onConfirm={() => setDeleteModal(null)}
+          onConfirm={() => {
+            fetchAgencyUsersList();
+            setSuccessModal("delete");
+          }}
         />
       )}
     </section>

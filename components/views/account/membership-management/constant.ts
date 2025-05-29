@@ -119,3 +119,10 @@ export const defaultPagination = {
   pageSize: 10,
   total: mockMemberData.length,
 };
+
+export const successModalContent = {
+  "update-status": "회원 상태가 변경되었습니다.",
+  delete: "회원이 삭제되었습니다.",
+};
+
+export type TSuccessModal = keyof typeof successModalContent;

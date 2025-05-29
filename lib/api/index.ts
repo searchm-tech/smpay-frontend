@@ -47,7 +47,7 @@ axiosRetry(apiClient, {
 
 // API 요청 카운터
 let requestCount = 0;
-const MAX_REQUESTS = 3;
+const MAX_REQUESTS = 5;
 
 // 요청 인터셉터
 apiClient.interceptors.request.use(

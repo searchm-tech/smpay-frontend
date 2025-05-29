@@ -145,3 +145,22 @@ export type TAgencyUsersOrder =
   | "STATUS_DESC"
   | "REGISTER_DT_ASC"
   | "REGISTER_DT_DESC";
+
+export type TAgencyUserStatusParams = {
+  userId: number;
+  agentId: number;
+  status: UserStatus;
+};
+
+// 대행사 회원 상태 변경 API 응답 타입
+export type TAgencyUserStatusResponse = {
+  result: null;
+  code: string;
+  message: string;
+};
+
+// 대행사 회원 삭제 API params type
+export type TAgencyUserDeleteParams = {
+  userId: number;
+  agentId: number;
+};

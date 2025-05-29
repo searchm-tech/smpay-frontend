@@ -1,9 +1,9 @@
-import { ApiError, get, patch, post } from "@/lib/api";
+import { ApiError, del, get, patch, post, put } from "@/lib/api";
 import type { ApiResponseData } from "./types";
 import type {
   TAdminUserInfoResponse,
-  TAuthType,
   TUserInfoResponse,
+  UserStatus,
 } from "@/types/user";
 import type { AgencyData } from "./agency";
 import type {
@@ -14,6 +14,7 @@ import type {
   TAgencyUsersParams,
   TAgencyUsersResponse,
   TAgencyUsersResponseWithNo,
+  TAgencyUserStatusParams,
   TAgentsUsersPwParams,
   TMailVerifyParams,
   TMailVerifyUser,
@@ -205,7 +206,6 @@ export const postAgencyUserDirectApi = async (
 };
 
 // 회원 가입 메일 발송 API (SAG006)
-
 export const postAgencyUserEmailSendApi = async (
   params: TAgencyUserEmailSendParams
 ): Promise<null> => {
@@ -223,6 +223,7 @@ export const postAgencyUserEmailSendApi = async (
   }
 };
 
+// 대행사 회원 목록 조회 API (AAG006)
 export const getAgencyUsersListApi = async (
   params: TAgencyUsersParams
 ): Promise<TAgencyUsersResponseWithNo> => {
@@ -243,6 +244,42 @@ export const getAgencyUsersListApi = async (
     };
 
     return result;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 대행사 회원 상태 변경 API (AAG007)
+export const putAgencyUserStatusApi = async (
+  params: TAgencyUserStatusParams
+): Promise<null> => {
+  try {
+    const { userId, agentId, status } = params;
+    const response = await put<null>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/status?status=${status}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 대행사 회원 삭제 API (AAG008)
+export const delAgencyUserApi = async (params: {
+  userId: number;
+  agentId: number;
+}): Promise<null> => {
+  try {
+    const response = await del<null>(
+      `/admin/api/v1/agents/${params.agentId}/users/${params.userId}`
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
