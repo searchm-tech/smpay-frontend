@@ -9,17 +9,18 @@ import {
   getAgency,
   getAgencyAllApi,
   getAgencyApi,
+  patchAgencyStatus,
   postAgencyRegister,
   updateAgency,
 } from "@/services/agency";
 import { postAgencyUserEmailApi } from "@/services/user";
 
-import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
 import type { TAgencyUserEmailParams } from "@/types/api/user";
 import type {
   RequestAgencyRegister,
   RequestAgencys,
+  RequestAgencyStatus,
   ResponseAgencyRegister,
   ResponseAgencys,
 } from "@/types/api/agency";
@@ -91,6 +92,16 @@ export const useMutationAgencyRegister = (
 ) => {
   return useMutation<ResponseAgencyRegister, Error, RequestAgencyRegister>({
     mutationFn: (data: RequestAgencyRegister) => postAgencyRegister(data),
+    ...options,
+  });
+};
+
+// 대행사 상태 변경 (AAG004) mutation
+export const useMutationAgencyStatus = (
+  options?: UseMutationOptions<null, Error, RequestAgencyStatus>
+) => {
+  return useMutation<null, Error, RequestAgencyStatus>({
+    mutationFn: (params: RequestAgencyStatus) => patchAgencyStatus(params),
     ...options,
   });
 };

@@ -1,4 +1,4 @@
-import { get, ApiError, post } from "@/lib/api";
+import { get, ApiError, post, patch, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
 
@@ -9,6 +9,7 @@ import type {
   ResponseDuplicate,
   RequestAgencyRegister,
   ResponseAgencyRegister,
+  RequestAgencyStatus,
 } from "@/types/api/agency";
 
 // TODO : 삭제
@@ -167,6 +168,24 @@ export async function postAgencyRegister(
     const response: ResponseAgencyRegister = await post(
       "/admin/api/v1/agents",
       data
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 상태 변경 (AAG004)
+export async function patchAgencyStatus(
+  params: RequestAgencyStatus
+): Promise<null> {
+  try {
+    const { agentId, status } = params;
+    const response: null = await put(
+      `/admin/api/v1/agents/${agentId}/status?status=${status}`
     );
     return response;
   } catch (error) {
