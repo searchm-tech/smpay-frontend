@@ -32,44 +32,48 @@ import {
   EMAIL_REGEX,
   BUSINESS_NUMBER_REGEX,
   EMAIL_DOMAIN_REGEX,
-  AGENCY_CODE_REGEX,
+  UNIQUE_CODE_REGEX,
 } from "@/constants/reg";
 import { TOOLTIP_AGENCY_CODE } from "@/constants/hover";
 
-import {
-  useCheckAgencyCode,
-  useCheckBusinessNumber,
-  useCheckCompanyEmailDomain,
-  useRegisterAgency,
-} from "@/hooks/queries/agency";
-
 import { formatBusinessNumber } from "@/utils/format";
 
-import { ModalInfo, type ModalInfoType } from "./constants";
+import {
+  ModalInfo,
+  type ModalInfoType,
+  createAgencyRequestData,
+  validateBillInfo,
+} from "./constants";
 
-import type { AgencyData } from "@/services/agency";
+import type { RequestAgencyRegister } from "@/types/api/agency";
+import { checkAgencyDomainName, duplicateUniqueCode } from "@/services/agency";
+import { useMutationAgencyRegister } from "@/hooks/queries/agency";
+
+export interface TRegisterInfo extends RequestAgencyRegister {
+  agentBillName: string;
+  agentBillPhoneNumber: string;
+  agentBillEmailAddress: string;
+}
 
 const formSchema = z.object({
   id: z.string(),
-  agency: z.string().min(1, "대행사명을 입력해주세요."),
-  code: z
+  name: z.string().min(1, "대행사명을 입력해주세요."),
+  uniqueCode: z
     .string()
     .min(1, "대행사 고유코드를 입력해주세요")
-    .regex(AGENCY_CODE_REGEX, "식별 가능한 값을 입력해주세요"),
-  owner: z.string(),
-  bussiness_num: z
+    .regex(UNIQUE_CODE_REGEX, "식별 가능한 값을 입력해주세요"),
+  representativeName: z.string().min(1, "대표자명을 입력해주세요."),
+  businessRegistrationNumber: z
     .string()
+    .min(1, "사업자등록번호를 입력해주세요.")
     .regex(BUSINESS_NUMBER_REGEX, "유효하지 않은 사업자등록번호입니다."),
-  company_email_domain: z
+  domainName: z
     .string()
+    .min(1, "회사 메일 도메인을 입력해주세요.")
     .regex(EMAIL_DOMAIN_REGEX, "유효하지 않은 회사 메일 도메인입니다."),
-  invoice_manager: z.string(),
-  invoice_manager_contact: z.string(),
-  invoice_manager_email: z
-    .string()
-    .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
-  status: z.boolean(),
-  date: z.string(),
+  agentBillName: z.string(),
+  agentBillPhoneNumber: z.string(),
+  agentBillEmailAddress: z.string(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -80,71 +84,124 @@ const AgencyRegisterView = () => {
   const formData = useHookForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: "",
-      agency: "",
-      code: "",
-      owner: "",
-      bussiness_num: "",
-      company_email_domain: "",
-      invoice_manager: "",
-      invoice_manager_contact: "",
-      invoice_manager_email: "",
-      status: false,
-      date: "",
-    } as AgencyData,
+      name: "",
+      uniqueCode: "",
+      representativeName: "",
+      businessRegistrationNumber: "",
+      domainName: "",
+      agentBillName: "",
+      agentBillPhoneNumber: "",
+      agentBillEmailAddress: "",
+    } as TRegisterInfo,
     mode: "onChange",
   });
 
-  const [modalInfo, setModalInfo] = useState<ModalInfoType | null>(null);
-
-  const { mutate: mutateCheckAgencyCode, isPending: loadingCheckAgencyCode } =
-    useCheckAgencyCode({
-      onSuccess: () => setModalInfo("check_agency_code"),
-      onError: () => setModalInfo("error_check_agency_code"),
-    });
-
-  const {
-    mutate: mutateCheckBusinessNumber,
-    isPending: loadingCheckBusinessNumber,
-  } = useCheckBusinessNumber({
-    onSuccess: () => setModalInfo("check_business_number"),
-    onError: () => setModalInfo("error_check_business_number"),
-  });
-
-  const { mutate: mutateCheckEmailDomain, isPending: loadingCheckEmailDomain } =
-    useCheckCompanyEmailDomain({
-      onSuccess: () => setModalInfo("check_company_email_domain"),
-      onError: () => setModalInfo("error_check_company_email_domain"),
-    });
-
-  const { mutate: mutateRegisterAgency, isPending: loadingRegisterAgency } =
-    useRegisterAgency({
+  const { mutate: mutateAgencyRegister, isPending: loadingAgencyRegister } =
+    useMutationAgencyRegister({
       onSuccess: () => setModalInfo("register_agency"),
       onError: () => setModalInfo("error_register_agency"),
     });
 
-  const onSubmit = (data: FormValues) => {
-    if (
-      !data.invoice_manager_email ||
-      !data.invoice_manager_contact ||
-      !data.invoice_manager ||
-      !data.agency ||
-      !data.code ||
-      !data.owner ||
-      !data.bussiness_num ||
-      !data.company_email_domain ||
-      !data.invoice_manager_email ||
-      !data.invoice_manager_contact ||
-      !data.invoice_manager ||
-      !data.agency ||
-      !data.code ||
-      !data.owner ||
-      !data.bussiness_num
-    ) {
+  const [modalInfo, setModalInfo] = useState<ModalInfoType | null>(null);
+  const [loading, setLoading] = useState("");
+  const [isEnableCode, setIsEnableCode] = useState(false);
+  const [isEnableEmailDomain, setIsEnableEmailDomain] = useState(false);
+
+  const onDuplicateUniqueCode = (code: string) => {
+    if (!UNIQUE_CODE_REGEX.test(code)) {
+      setModalInfo("error_invalid_unique_code");
       return;
     }
 
-    mutateRegisterAgency(data);
+    setLoading("고유코드 중복 확인 중...");
+    duplicateUniqueCode(code)
+      .then((res) => {
+        if (res.duplicate) {
+          setModalInfo("error_enable_unique_code");
+          setIsEnableCode(false); // duplicate : true면 중복 임
+        } else {
+          setModalInfo("enable_unique_code");
+          setIsEnableCode(true); // duplicate : false면 중복 아님
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(""));
+  };
+
+  const onDuplicateEmailDomain = (domain: string) => {
+    if (!EMAIL_DOMAIN_REGEX.test(domain)) {
+      setModalInfo("error_invalid_email_domain");
+      return;
+    }
+
+    setLoading("도메인 중복 확인 중...");
+    checkAgencyDomainName(domain)
+      .then((res) => {
+        if (res.duplicate) {
+          setModalInfo("error_enable_company_email_domain");
+          setIsEnableEmailDomain(false);
+        } else {
+          setModalInfo("enable_company_email_domain");
+          setIsEnableEmailDomain(true);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(""));
+  };
+
+  const onSubmit = (data: FormValues) => {
+    if (
+      !data.name ||
+      !data.uniqueCode ||
+      !data.representativeName ||
+      !data.businessRegistrationNumber ||
+      !data.domainName
+    ) {
+      setModalInfo("error_all");
+      return;
+    }
+
+    if (!isEnableCode) {
+      setModalInfo("no_unique_code_check");
+      return;
+    }
+
+    if (!isEnableEmailDomain) {
+      setModalInfo("no_email_domain_check");
+      return;
+    }
+
+    // 계산서 발행 담당자 정보 검증
+    const billValidation = validateBillInfo(data);
+    if (!billValidation.isValid) {
+      setModalInfo("error_incomplete_bill_info");
+      return;
+    }
+
+    if (
+      billValidation.isValid &&
+      data.agentBillEmailAddress &&
+      !EMAIL_REGEX.test(data.agentBillEmailAddress)
+    ) {
+      setModalInfo("error_invalid_email_address");
+      return;
+    }
+
+    if (
+      billValidation.isValid &&
+      data.agentBillPhoneNumber &&
+      data.agentBillPhoneNumber.length !== 11
+    ) {
+      setModalInfo("error_invalid_phone_number");
+      return;
+    }
+
+    // RequestData 생성
+    const requestData = createAgencyRequestData(data);
+
+    console.log("전송할 데이터:", requestData);
+    // TODO: API 호출
+    // mutateAgencyRegister(requestData);
   };
 
   const handleModal = () => {
@@ -159,10 +216,7 @@ const AgencyRegisterView = () => {
 
   return (
     <div className="py-4">
-      {(loadingCheckAgencyCode ||
-        loadingCheckBusinessNumber ||
-        loadingCheckEmailDomain ||
-        loadingRegisterAgency) && <LoadingUI />}
+      {loading && <LoadingUI title={loading} />}
 
       {modalInfo && (
         <ConfirmDialog
@@ -181,10 +235,10 @@ const AgencyRegisterView = () => {
       <Form {...formData}>
         <form onSubmit={formData.handleSubmit(onSubmit)}>
           <Descriptions columns={1} bordered>
-            <DescriptionItem label="대행사 선택 *">
+            <DescriptionItem label="대행사명 *">
               <FormField
                 control={formData.control}
-                name="agency"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -211,18 +265,23 @@ const AgencyRegisterView = () => {
             >
               <FormField
                 control={formData.control}
-                name="code"
+                name="uniqueCode"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
+                        <Input
+                          className="max-w-[500px]"
+                          placeholder="영문 4~16자"
+                          {...field}
+                        />
                         <Button
+                          type="button"
                           variant="outline"
-                          onClick={() => mutateCheckAgencyCode(field.value)}
+                          onClick={() => onDuplicateUniqueCode(field.value)}
                           disabled={!field.value}
                         >
-                          중복 체크
+                          {isEnableCode ? "중복 체크 완료" : "중복 체크"}
                         </Button>
                         <FormMessage variant="error" />
                       </div>
@@ -234,11 +293,14 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="대표자명 *">
               <FormField
                 control={formData.control}
-                name="owner"
+                name="representativeName"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input className="max-w-[500px]" {...field} />
+                      <div className="flex items-center gap-2">
+                        <Input className="max-w-[500px]" {...field} />
+                        <FormMessage variant="error" />
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}
@@ -247,7 +309,7 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="사업자 등록 번호 *">
               <FormField
                 control={formData.control}
-                name="bussiness_num"
+                name="businessRegistrationNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -262,13 +324,7 @@ const AgencyRegisterView = () => {
                           }}
                           maxLength={12}
                         />
-                        <Button
-                          variant="outline"
-                          disabled={!field.value}
-                          onClick={() => mutateCheckBusinessNumber(field.value)}
-                        >
-                          중복 체크
-                        </Button>
+
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>
@@ -279,21 +335,20 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="회사 메일 도메인 *">
               <FormField
                 control={formData.control}
-                name="company_email_domain"
+                name="domainName"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <span className="text-base min-w-[100px]">
-                          searchm @
-                        </span>
-                        <Input className="max-w-[390px]" {...field} />
+                        <span className="text-base">ID @</span>
+                        <Input className="max-w-[455px]" {...field} />
                         <Button
+                          type="button"
                           variant="outline"
-                          onClick={() => mutateCheckEmailDomain(field.value)}
+                          onClick={() => onDuplicateEmailDomain(field.value)}
                           disabled={!field.value}
                         >
-                          중복 체크
+                          {isEnableEmailDomain ? "중복 체크 완료" : "중복 체크"}
                         </Button>
                         <FormMessage variant="error" />
                       </div>
@@ -305,7 +360,7 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="계산서 발행 당담자명">
               <FormField
                 control={formData.control}
-                name="invoice_manager"
+                name="agentBillName"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -318,11 +373,10 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="계산서 발행 당담자 연락처">
               <FormField
                 control={formData.control}
-                name="invoice_manager_contact"
+                name="agentBillPhoneNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      {/* 확인 필요 */}
                       <PhoneInput className="max-w-[500px]" {...field} />
                     </FormControl>
                   </FormItem>
@@ -332,7 +386,7 @@ const AgencyRegisterView = () => {
             <DescriptionItem label="계산서 발행 당담자 이메일">
               <FormField
                 control={formData.control}
-                name="invoice_manager_email"
+                name="agentBillEmailAddress"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -348,8 +402,15 @@ const AgencyRegisterView = () => {
           </Descriptions>
 
           <div className="w-full flex justify-center gap-6 py-6">
-            <Button className="w-[150px]">확인</Button>
             <Button
+              type="submit"
+              className="w-[150px]"
+              onClick={() => onSubmit(formData.getValues())}
+            >
+              확인
+            </Button>
+            <Button
+              type="button"
               variant="cancel"
               className="w-[150px]"
               onClick={() => router.push("/account/agency-management")}

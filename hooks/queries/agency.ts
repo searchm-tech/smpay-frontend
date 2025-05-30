@@ -6,14 +6,11 @@ import {
 } from "@tanstack/react-query";
 import {
   AgencyData,
-  checkAgencyCode,
-  checkBusinessNumber,
-  checkCompanyEmailDomain,
   getAgencies,
   getAgency,
   getAgencyAllApi,
   getAgencyApi,
-  registerAgency,
+  postAgencyRegister,
   updateAgency,
 } from "@/services/agency";
 import { postAgencyUserEmailApi } from "@/services/user";
@@ -21,7 +18,12 @@ import { postAgencyUserEmailApi } from "@/services/user";
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
 import type { TAgencyUserEmailParams } from "@/types/api/user";
-import type { RequestAgencys, ResponseAgencys } from "@/types/api/agency";
+import type {
+  RequestAgencyRegister,
+  RequestAgencys,
+  ResponseAgencyRegister,
+  ResponseAgencys,
+} from "@/types/api/agency";
 
 // 대행사 목록 > 대행사 목록  query
 export const useAgencyList = (params: TableParams) => {
@@ -45,46 +47,6 @@ export const useAgencyUpdate = (
 ) => {
   return useMutation<AgencyData | null, Error, AgencyData>({
     mutationFn: (data: AgencyData) => updateAgency(data.id, data),
-    ...options,
-  });
-};
-
-// 대행사 등록 > 대행사 고유코드 중복 확인 mutation
-export const useCheckAgencyCode = (
-  options?: UseMutationOptions<boolean, Error, string>
-) => {
-  return useMutation<boolean, Error, string>({
-    mutationFn: (code: string) => checkAgencyCode(code),
-    ...options,
-  });
-};
-
-// 대행사 등록 > 사업자 등록 번호 중복 확인 mutation
-export const useCheckBusinessNumber = (
-  options?: UseMutationOptions<boolean, Error, string>
-) => {
-  return useMutation<boolean, Error, string>({
-    mutationFn: (number: string) => checkBusinessNumber(number),
-    ...options,
-  });
-};
-
-// 대행사 등록 > 회사 메일 도메인 중복 확인 mutation
-export const useCheckCompanyEmailDomain = (
-  options?: UseMutationOptions<boolean, Error, string>
-) => {
-  return useMutation<boolean, Error, string>({
-    mutationFn: (domain: string) => checkCompanyEmailDomain(domain),
-    ...options,
-  });
-};
-
-// 대행사 등록 > 대행사 등록 mutation
-export const useRegisterAgency = (
-  options?: UseMutationOptions<AgencyData | null, Error, AgencyData>
-) => {
-  return useMutation<AgencyData | null, Error, AgencyData>({
-    mutationFn: (data: AgencyData) => registerAgency(data),
     ...options,
   });
 };
@@ -124,6 +86,20 @@ export const useQueryAgencyApi = (
   return useQuery<ResponseAgencys>({
     queryKey: ["agencyApi", params],
     queryFn: () => getAgencyApi(params),
+    ...options,
+  });
+};
+
+// 대행사 회원가입 (AAG001) - 대행사 등록 mutation
+export const useMutationAgencyRegister = (
+  options?: UseMutationOptions<
+    ResponseAgencyRegister,
+    Error,
+    RequestAgencyRegister
+  >
+) => {
+  return useMutation<ResponseAgencyRegister, Error, RequestAgencyRegister>({
+    mutationFn: (data: RequestAgencyRegister) => postAgencyRegister(data),
     ...options,
   });
 };
