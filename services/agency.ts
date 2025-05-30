@@ -1,7 +1,9 @@
 import { get, ApiError, post } from "@/lib/api";
+import { buildQueryParams } from "@/lib/utils";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
+import type { RequestAgencys, ResponseAgencys } from "@/types/api/agency";
 
 export interface AgencyData {
   id: string;
@@ -177,3 +179,33 @@ export const getAgencyDomainNameApi = async (
     throw error;
   }
 };
+
+// ------------ 실제 API 호출 ------------
+
+// 대행사 페이지네이션 리스트 조회 (AAG003)
+export async function getAgencyApi(
+  params: RequestAgencys
+): Promise<ResponseAgencys> {
+  try {
+    const isNoSort =
+      params.orderType === "NO_DESC" || params.orderType === "NO_ASC";
+    const apiOrderType = isNoSort ? "REGISTER_DT_DESC" : params.orderType;
+
+    const queryParams = buildQueryParams({
+      page: params.page,
+      size: params.size,
+      keyword: params.keyword,
+      orderType: apiOrderType,
+    });
+
+    const response: ResponseAgencys = await get(
+      `/admin/api/v1/agents?${queryParams}`
+    );
+    return response; // result만 반환!
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}

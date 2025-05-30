@@ -4,12 +4,19 @@ import { useState } from "react";
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 
-import { useAgencyList } from "@/hooks/queries/agency";
+import { useAgencyList, useQueryAgencyApi } from "@/hooks/queries/agency";
 
 import { defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
 import type { FilterValue } from "antd/es/table/interface";
+import type { TAgencyOrder } from "@/types/api/agency";
+import { defaultTableParams2 } from "./constants";
+
+export interface TableParamsAgency extends TableParams {
+  keyword: string;
+  sortField?: TAgencyOrder;
+}
 
 const AgencyManagementView = () => {
   const [search, setSearch] = useState<string>("");
@@ -29,8 +36,28 @@ const AgencyManagementView = () => {
     },
   });
 
+  const [tableParams2, setTableParams2] =
+    useState<TableParamsAgency>(defaultTableParams2);
+
+  const { data: agencyApiData, isPending: isLoadingAgencyApi } =
+    useQueryAgencyApi({
+      page: tableParams2.pagination?.current || 1,
+      size: tableParams2.pagination?.pageSize || 10,
+      keyword: search,
+      orderType: tableParams2.sortField as TAgencyOrder,
+    });
+
+  console.log("agencyApiData 확인", agencyApiData);
+
   const onSearch = (keyword: string) => {
     setSearch(keyword);
+    setTableParams2((prev) => ({
+      ...prev,
+      pagination: {
+        ...prev.pagination,
+        current: 1,
+      },
+    }));
     setTableParams((prev) => ({
       ...prev,
       pagination: {

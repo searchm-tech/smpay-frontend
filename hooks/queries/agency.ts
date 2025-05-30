@@ -12,6 +12,7 @@ import {
   getAgencies,
   getAgency,
   getAgencyAllApi,
+  getAgencyApi,
   registerAgency,
   updateAgency,
 } from "@/services/agency";
@@ -20,6 +21,7 @@ import { postAgencyUserEmailApi } from "@/services/user";
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
 import type { TAgencyUserEmailParams } from "@/types/api/user";
+import type { RequestAgencys, ResponseAgencys } from "@/types/api/agency";
 
 // 대행사 목록 > 대행사 목록  query
 export const useAgencyList = (params: TableParams) => {
@@ -108,6 +110,20 @@ export const useMutationAgencySendMail = (
   return useMutation<AgencyData | null, Error, TAgencyUserEmailParams>({
     mutationFn: (params: TAgencyUserEmailParams) =>
       postAgencyUserEmailApi(params),
+    ...options,
+  });
+};
+
+// ------------ 실제 API query ------------
+
+// 대행사 페이지네이션 리스트 조회 (AAG003) query
+export const useQueryAgencyApi = (
+  params: RequestAgencys,
+  options?: Partial<UseQueryOptions<ResponseAgencys, Error>>
+) => {
+  return useQuery<ResponseAgencys>({
+    queryKey: ["agencyApi", params],
+    queryFn: () => getAgencyApi(params),
     ...options,
   });
 };
