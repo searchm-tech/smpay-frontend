@@ -10,7 +10,7 @@ import { useQueryAdminAgencyUsersList } from "@/hooks/queries/user";
 
 import type { TableParams } from "@/types/table";
 import type { ViewProps } from "..";
-import { TAgencyUsersOrder } from "@/types/api/user";
+import type { TAgencyUsersOrder } from "@/types/api/user";
 
 export interface TableParamsMember extends TableParams {
   keyword: string;
