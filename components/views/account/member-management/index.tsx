@@ -5,16 +5,15 @@ import { useSession } from "next-auth/react";
 import AdminMemberManagementView from "./admin";
 import GroupMemberManagementView from "./group";
 
+import { getIsAdmin } from "@/lib/utils";
 import type { TSMPayUser } from "@/types/user";
 
 const MemberManagementView = () => {
   const { data: session } = useSession();
 
-  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    session?.user.type || ""
-  );
-
   if (!session?.user) return null;
+
+  const isAdmin = getIsAdmin(session?.user.type || null);
 
   return (
     <div className="flex flex-col gap-4">

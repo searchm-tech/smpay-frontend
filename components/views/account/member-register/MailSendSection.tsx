@@ -30,6 +30,7 @@ import {
   DialogContentTypeEmail,
   type DialogContentType,
 } from "./constant";
+import { getIsAdmin } from "@/lib/utils";
 
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
@@ -40,9 +41,7 @@ import type {
 } from "@/types/api/user";
 
 const MailSendSection = ({ user }: TViewProps) => {
-  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    user.type
-  );
+  const isAdmin = getIsAdmin(user.type);
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 
 import AdminView from "./admin";
 import MemberView from "./member";
+import { getIsAdmin } from "@/lib/utils";
 
 // MemberEditView - 회원 정보 변경, 기본 정보 변경 공용 컴포넌트
 const MemberEditView = () => {
@@ -15,9 +16,7 @@ const MemberEditView = () => {
   const userId = searchParams.get("userId");
   const agentId = searchParams.get("agentId");
 
-  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    session?.user.type || ""
-  );
+  const isAdmin = getIsAdmin(session?.user.type || null);
 
   return (
     <Fragment>

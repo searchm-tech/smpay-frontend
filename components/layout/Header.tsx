@@ -10,15 +10,13 @@ import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/common/UserMenu";
 import ShortcutButton from "@/components/common/DownloadShortCut";
 
+import { getIsAdmin } from "@/lib/utils";
+
 const Header = () => {
   const { toggleSidebar } = useSidebar();
   const { data: session } = useSession();
 
-  const typeStr = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    session?.user.type || ""
-  )
-    ? "관리자"
-    : "회원";
+  const typeStr = getIsAdmin(session?.user.type || null) ? "관리자" : "회원";
 
   return (
     <header className="fixed top-0 left-0 z-10 w-full flex justify-between items-center space-x-4 text-sm py-3 px-4 h-[74px] bg-[#304153] text-white">

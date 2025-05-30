@@ -20,7 +20,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
+import { cn, getIsAdmin } from "@/lib/utils";
 import { useQueryMenu } from "@/hooks/queries/menu";
 import { dashboardItems } from "@/constants/dasboard";
 import {
@@ -52,9 +52,7 @@ export function NavDashboard() {
   const menuType = useMemo(() => {
     if (!session) return "agency";
     if (!session.user) return "agency";
-    if (
-      ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(session.user.type)
-    ) {
+    if (getIsAdmin(session.user.type)) {
       return "admin";
     }
     return "agency";
@@ -62,6 +60,7 @@ export function NavDashboard() {
 
   // 백엔드 메뉴가 있으면 사용, 없으면 기존 하드코딩된 메뉴 사용 - 나중에 이대로 테스트 해보고 적용
   const menuItems = useMemo(() => {
+    if (!session?.user) return dashboardItems["common"];
     if (backendMenu && session?.user) {
       const mappedMenus = mapBackendMenuToFrontend(backendMenu);
       const filteredMenus = filterMenuByUserType(
@@ -78,7 +77,7 @@ export function NavDashboard() {
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {dashboardItems[menuType].map((item) =>
+        {menuItems.map((item) =>
           item.items && item.items.length > 0 ? (
             <Collapsible
               key={item.title}
