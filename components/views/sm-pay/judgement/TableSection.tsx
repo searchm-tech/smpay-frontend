@@ -10,7 +10,7 @@ import Table from "@/components/composite/table";
 import RejectModal from "../components/RejectModal";
 import StopInfoModal from "../components/StopInfoModal";
 
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/utils/format";
 
 import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";

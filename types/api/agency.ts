@@ -71,3 +71,9 @@ export type ResponseAgencyBills = {
 export type ResponseDuplicate = {
   duplicate: boolean;
 };
+
+// 대행사 상태 변경 params type
+export type RequestAgencyStatus = {
+  agentId: number;
+  status: TAgencyStatus;
+};

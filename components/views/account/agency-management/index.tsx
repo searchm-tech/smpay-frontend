@@ -6,9 +6,10 @@ import TableSection from "./TableSection";
 
 import { useQueryAgencyApi } from "@/hooks/queries/agency";
 
+import { defaultTableParams } from "./constants";
+
 import type { TableParams } from "@/types/table";
 import type { TAgencyOrder } from "@/types/api/agency";
-import { defaultTableParams2 } from "./constants";
 
 export interface TableParamsAgency extends TableParams {
   keyword: string;
@@ -19,9 +20,13 @@ const AgencyManagementView = () => {
   const [search, setSearch] = useState<string>("");
 
   const [tableParams, setTableParams] =
-    useState<TableParamsAgency>(defaultTableParams2);
+    useState<TableParamsAgency>(defaultTableParams);
 
-  const { data: dataSource, isPending: isLoadingAgencys } = useQueryAgencyApi({
+  const {
+    data: dataSource,
+    isPending: isLoadingAgencys,
+    refetch,
+  } = useQueryAgencyApi({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: search,
@@ -48,6 +53,7 @@ const AgencyManagementView = () => {
         tableParams={tableParams}
         setTableParams={setTableParams}
         total={dataSource?.totalCount || 0}
+        refetch={refetch}
       />
     </div>
   );

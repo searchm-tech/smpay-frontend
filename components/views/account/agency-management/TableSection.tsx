@@ -1,27 +1,44 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { SquarePen } from "lucide-react";
 
 import Select from "@/components/composite/select-components";
 import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+import { StatusDialog } from "./dialog";
 
-import { ACTIVE_STATUS } from "@/constants/table";
-
-import { formatDate } from "@/lib/utils";
+import { formatBusinessNumber, formatDate } from "@/utils/format";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { FilterValue } from "antd/es/table/interface";
-import type { TAgency2 } from "@/types/agency";
-import type { TAgencyOrder } from "@/types/api/agency";
+import type { TAgency2, TAgencyStatus } from "@/types/agency";
+import type {
+  TAgencyOrder,
+  RequestAgencyStatus as TAgencyStatusParams,
+} from "@/types/api/agency";
+
+import {
+  AGENCY_STATUS_OPTS,
+  dialogContent,
+  type DialogTypes,
+} from "./constants";
 
 export interface TableParamsAgency extends TableParams {
   keyword: string;
   sortField?: TAgencyOrder;
 }
+
+type TableSectionProps = {
+  dataSource: TAgency2[];
+  isLoading: boolean;
+  tableParams: TableParamsAgency;
+  setTableParams: (params: TableParamsAgency) => void;
+  total: number;
+  refetch: () => void;
+};
 
 const TableSection = ({
   dataSource,
@@ -29,15 +46,13 @@ const TableSection = ({
   tableParams,
   setTableParams,
   total,
-}: {
-  dataSource: TAgency2[];
-  isLoading: boolean;
-  tableParams: TableParamsAgency;
-  setTableParams: (params: TableParamsAgency) => void;
-  total: number;
-}) => {
+  refetch,
+}: TableSectionProps) => {
   const router = useRouter();
-  const [statusModal, setStatusModal] = useState<TAgency2 | null>(null);
+  const [statusDialog, setStatusDialog] = useState<TAgencyStatusParams | null>(
+    null
+  );
+  const [dialog, setDialog] = useState<DialogTypes | null>(null);
 
   const handleTableChange: TableProps<TAgency2>["onChange"] = (
     pagination,
@@ -78,11 +93,6 @@ const TableSection = ({
     });
   };
 
-  const handleActiveChange = () => {
-    if (!statusModal) return;
-    setStatusModal(null);
-  };
-
   const columns: TableProps<TAgency2>["columns"] = [
     {
       title: "No",
@@ -106,6 +116,9 @@ const TableSection = ({
       dataIndex: "businessRegistrationNumber",
       sorter: true,
       align: "center",
+      render: (value: string) => {
+        return <span>{formatBusinessNumber(value)}</span>;
+      },
     },
     {
       title: "관리",
@@ -129,14 +142,17 @@ const TableSection = ({
       sorter: true,
       align: "center",
       width: 150,
-      render: (value: boolean, record) => {
-        const selectedValue = value ? "active" : "inactive";
-
+      render: (value, record) => {
         return (
           <Select
-            options={ACTIVE_STATUS}
-            value={selectedValue}
-            onChange={() => setStatusModal(record)}
+            options={AGENCY_STATUS_OPTS}
+            value={value}
+            onChange={(value) =>
+              setStatusDialog({
+                agentId: record.agentId,
+                status: value as TAgencyStatus,
+              })
+            }
           />
         );
       },
@@ -152,28 +168,13 @@ const TableSection = ({
     },
   ];
 
+  const handleSuccessModal = () => {
+    setDialog(null);
+    refetch();
+  };
+
   return (
-    <Fragment>
-      {statusModal && (
-        <ConfirmDialog
-          open
-          onClose={() => setStatusModal(null)}
-          onConfirm={handleActiveChange}
-          content={
-            statusModal.status ? (
-              <div className="text-center">
-                <p>대행사를 비활성하면 로그인 및 서비스 이용이 제한됩니다.</p>
-                <p>진행하시겠습니까?</p>
-              </div>
-            ) : (
-              <div className="text-center">
-                <p>대행사를 활성화하면 다시 서비스 이용이 가능해집니다.</p>
-                <p>진행하시겠습니까?</p>
-              </div>
-            )
-          }
-        />
-      )}
+    <section>
       <Table<TAgency2>
         columns={columns}
         rowKey={(record) => record.agentId.toString()}
@@ -185,7 +186,24 @@ const TableSection = ({
         loading={isLoading}
         onChange={handleTableChange}
       />
-    </Fragment>
+
+      {statusDialog && (
+        <StatusDialog
+          params={statusDialog}
+          onClose={() => setStatusDialog(null)}
+          onConfirm={() => setDialog("update-status")}
+        />
+      )}
+
+      {dialog && (
+        <ConfirmDialog
+          open
+          cancelDisabled
+          onConfirm={handleSuccessModal}
+          content={<div className="text-center">{dialogContent[dialog]}</div>}
+        />
+      )}
+    </section>
   );
 };
 

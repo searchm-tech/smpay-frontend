@@ -24,6 +24,7 @@ import type {
 } from "@/types/api/user";
 import type { TSMPayUser, UserStatus } from "@/types/user";
 import type { TableParamsMember } from ".";
+
 import { dialogContent, type DialogTypes } from "../constant";
 
 type TableSectionProps = {
@@ -66,7 +67,7 @@ const TableSection = ({
       dataIndex: "type",
       sorter: true,
       align: "center",
-      render: (value, record) => {
+      render: (_value, record) => {
         return <span>{getUserAuthTypeLabel(record.type)}</span>;
       },
     },

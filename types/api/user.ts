@@ -174,6 +174,7 @@ export type TAgencyUsersOrder =
   | "REGISTER_DT_ASC"
   | "REGISTER_DT_DESC";
 
+// 회원 상태 변경 params type
 export type TAgencyUserStatusParams = {
   userId: number;
   agentId: number;
