@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/common/UserMenu";
+import ShortcutButton from "@/components/common/DownloadShortCut";
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
@@ -40,6 +41,7 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-4">
+        <ShortcutButton url="https://www.google.com" />
         <Badge label={typeStr} color="#EB680E" />
         <Link href="/support">고객센터</Link>
         <Separator orientation="vertical" className="bg-gray-300 w-[1px] h-3" />
