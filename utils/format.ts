@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export const formatBusinessNumber = (value: string) => {
   // 숫자만 추출
   const numbers = value.replace(/\D/g, "");
@@ -14,3 +16,7 @@ export const formatBusinessNumber = (value: string) => {
     )}`;
   }
 };
+
+export function formatDate(date: string) {
+  return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+}

@@ -201,7 +201,7 @@ const AgencyRegisterView = () => {
 
     console.log("전송할 데이터:", requestData);
     // TODO: API 호출
-    // mutateAgencyRegister(requestData);
+    mutateAgencyRegister(requestData);
   };
 
   const handleModal = () => {
@@ -217,6 +217,7 @@ const AgencyRegisterView = () => {
   return (
     <div className="py-4">
       {loading && <LoadingUI title={loading} />}
+      {loadingAgencyRegister && <LoadingUI title="대행사 등록 중..." />}
 
       {modalInfo && (
         <ConfirmDialog
