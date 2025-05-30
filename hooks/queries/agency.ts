@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-query";
 import {
   AgencyData,
-  getAgencies,
   getAgency,
   getAgencyAllApi,
   getAgencyApi,
@@ -24,14 +23,6 @@ import type {
   ResponseAgencyRegister,
   ResponseAgencys,
 } from "@/types/api/agency";
-
-// 대행사 목록 > 대행사 목록  query
-export const useAgencyList = (params: TableParams) => {
-  return useQuery({
-    queryKey: ["agencies", params],
-    queryFn: () => getAgencies(params),
-  });
-};
 
 // 대행사 상세 > 대행사 상세  query
 export const useAgencyDetail = (id: string) => {

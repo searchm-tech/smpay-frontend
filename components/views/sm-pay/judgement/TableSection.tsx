@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import dayjs from "dayjs";
 
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
@@ -10,6 +9,8 @@ import Table from "@/components/composite/table";
 
 import RejectModal from "../components/RejectModal";
 import StopInfoModal from "../components/StopInfoModal";
+
+import { formatDate } from "@/lib/utils";
 
 import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";
@@ -133,7 +134,7 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (date) => {
-        return <span>{dayjs(date).format("YYYY-MM-DD HH:mm:ss")}</span>;
+        return <span>{formatDate(date)}</span>;
       },
     },
   ];

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-
 import { SquarePen } from "lucide-react";
 
 import Select from "@/components/composite/select-components";
@@ -11,10 +10,18 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { ACTIVE_STATUS } from "@/constants/table";
 
+import { formatDate } from "@/lib/utils";
+
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { FilterValue } from "antd/es/table/interface";
-import type { AgencyData } from "@/services/agency";
+import type { TAgency2 } from "@/types/agency";
+import type { TAgencyOrder } from "@/types/api/agency";
+
+export interface TableParamsAgency extends TableParams {
+  keyword: string;
+  sortField?: TAgencyOrder;
+}
 
 const TableSection = ({
   dataSource,
@@ -23,58 +30,80 @@ const TableSection = ({
   setTableParams,
   total,
 }: {
-  dataSource: AgencyData[];
+  dataSource: TAgency2[];
   isLoading: boolean;
-  tableParams: TableParams;
-  setTableParams: (params: TableParams) => void;
+  tableParams: TableParamsAgency;
+  setTableParams: (params: TableParamsAgency) => void;
   total: number;
 }) => {
   const router = useRouter();
-  const [statusModal, setStatusModal] = useState<AgencyData | null>(null);
+  const [statusModal, setStatusModal] = useState<TAgency2 | null>(null);
 
-  const handleTableChange: TableProps<AgencyData>["onChange"] = (
+  const handleTableChange: TableProps<TAgency2>["onChange"] = (
     pagination,
     filters,
     sorter
   ) => {
+    // sorter에서 field와 order 추출하여 올바른 정렬 값 생성
+    let sortField: TAgencyOrder = "REGISTER_DT_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      // field 이름을 API에서 요구하는 형식으로 변환
+      const fieldMap: Record<string, string> = {
+        rowNumber: "NO",
+        agentName: "AGENT",
+        status: "STATUS",
+        registerDt: "REGISTER_DT",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        sortField = `${mappedField}_${order}` as TAgencyOrder;
+      }
+    }
+
     setTableParams({
       pagination: {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
       },
       filters: filters as Record<string, FilterValue>,
-      sortField: !Array.isArray(sorter) ? String(sorter.field) : undefined,
-      sortOrder: !Array.isArray(sorter)
-        ? (sorter.order as "ascend" | "descend" | undefined)
-        : undefined,
+      sortField: sortField,
+      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
+      keyword: tableParams.keyword, // 기존 keyword 유지
     });
   };
+
   const handleActiveChange = () => {
     if (!statusModal) return;
     setStatusModal(null);
   };
 
-  const columns: TableProps<AgencyData>["columns"] = [
+  const columns: TableProps<TAgency2>["columns"] = [
     {
       title: "No",
-      dataIndex: "id",
+      dataIndex: "agentId",
       align: "center",
     },
     {
       title: "대행사명",
-      dataIndex: "agency",
+      dataIndex: "agentName",
       sorter: true,
       align: "center",
     },
     {
       title: "대표자명",
-      dataIndex: "owner",
+      dataIndex: "agentRepresentativeName",
       sorter: true,
       align: "center",
     },
     {
       title: "사업자 등록 번호",
-      dataIndex: "bussiness_num",
+      dataIndex: "businessRegistrationNumber",
       sorter: true,
       align: "center",
     },
@@ -88,7 +117,7 @@ const TableSection = ({
           <SquarePen
             className="w-4 h-4 text-blue-500 cursor-pointer text-center"
             onClick={() => {
-              router.push(`/account/agency-management/${record.id}`);
+              router.push(`/account/agency-management/${record.agentId}`);
             }}
           />
         </div>
@@ -114,9 +143,12 @@ const TableSection = ({
     },
     {
       title: "가입일",
-      dataIndex: "date",
+      dataIndex: "registerDt",
       sorter: true,
       align: "center",
+      render: (value: string) => {
+        return <span>{formatDate(value)}</span>;
+      },
     },
   ];
 
@@ -142,9 +174,9 @@ const TableSection = ({
           }
         />
       )}
-      <Table<AgencyData>
+      <Table<TAgency2>
         columns={columns}
-        rowKey={(record) => record.id}
+        rowKey={(record) => record.agentId.toString()}
         dataSource={dataSource ?? []}
         pagination={{
           ...tableParams.pagination,

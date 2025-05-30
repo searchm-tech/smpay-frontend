@@ -9,6 +9,7 @@ export type TAgency = {
 };
 
 export type TAgency2 = {
+  id: number;
   agentId: number;
   agentName: string;
   agentRepresentativeName: string;
