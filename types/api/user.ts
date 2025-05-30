@@ -2,14 +2,14 @@
 
 import { TAuthType, TResetPwdType, UserStatus } from "../user";
 
-// agents/users/mail-verifications params type
-export type TMailVerifyParams = {
+// agents/users/mail-verifications request type
+export type RequestMailVerify = {
   agentCode: string;
   userCode: string;
 };
 
 // agents/users/mail-verifications response type
-export type TMailVerifyUser = {
+export type ResponseMailVerify = {
   isVerified: boolean;
   adminAgentResponseDto: AdminAgentResponseDto;
   userResponseDto: UserResponseDto;
@@ -35,8 +35,8 @@ export type UserResponseDto = {
   phoneNumber: string;
 };
 
-// 대행사 비밀번호 설정 또는 비밀번호 재설정 params type
-export type TAgentsUsersPwParams = {
+// 대행사 비밀번호 설정 또는 비밀번호 재설정 request type
+export type RequestUserPwd = {
   agentId: number;
   userId: number;
   password: string;
@@ -44,30 +44,30 @@ export type TAgentsUsersPwParams = {
   type: TResetPwdType;
 };
 
-// 대행사 회원 정보 조회 params type
-export type TUserInfoParams = {
+// 대행사 회원 정보 조회 request type
+export type RequestUserInfo = {
   agentId: number;
   userId: number;
 };
 
-// 기본 정보 변경 (U004) params type
-export type TUserInfoPatchParams = {
+// 기본 정보 변경 (U004) request type
+export type RequestPatchUserInfo = {
   userId: number;
   name: string;
   emailAddress: string;
   phoneNumber: string;
 };
 
-// [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 (AAG013) params type
-export type TAgencyUserEmailParams = {
+// [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 (AAG013) request type
+export type RequestGroupMasterInvite = {
   agentId: number;
   userType: TAuthType;
   name: string;
   emailAddress: string;
 };
 
-// [관리자] 대행사 최상위 그룹장 회원 가입 (직접 등록) (AAG005) params type
-export type TAgencyGroupMasterPostParams = {
+// [관리자] 대행사 최상위 그룹장 회원 가입 (직접 등록) (AAG005) request type
+export type RequestAgencyGroupMasterDirect = {
   userType: TAuthType;
   name: string;
   emailAddress: string;
@@ -76,8 +76,8 @@ export type TAgencyGroupMasterPostParams = {
   agentId: number;
 };
 
-// 회원 직접 등록 API (SAG007) params type
-export type TAgencyUserDirectPostParams = {
+// 회원 직접 등록 API (SAG007) request type
+export type RequestMemberDirect = {
   type: TAuthType;
   name: string;
   emailAddress: string;
@@ -87,8 +87,8 @@ export type TAgencyUserDirectPostParams = {
   departmentId: number;
 };
 
-// 회원 가입 메일 발송 API (SAG006)
-export type TAgencyUserEmailSendParams = {
+// 회원 가입 메일 발송 API (SAG006) request type
+export type RequestSignupEmail = {
   type: TAuthType;
   name: string;
   emailAddress: string;
@@ -97,15 +97,15 @@ export type TAgencyUserEmailSendParams = {
 };
 
 // 대행사 회원 페이지네이션 조회 (AAG006) response type
-export type TAgencyUsersResponse = {
+export type ResponseAgencyUsers = {
   page: number;
   size: number;
   totalCount: number;
-  content: TAgencyUser[];
+  content: AgencyUserDto[];
 };
 
 // TODO : 실제 모델이랑 비교 필요
-export type TAgencyUser = {
+export type AgencyUserDto = {
   userId: number;
   agentName: string;
   type: TAuthType;
@@ -116,7 +116,7 @@ export type TAgencyUser = {
   id: string;
 };
 
-export type TGroupUser = {
+export type GroupUserDto = {
   userId: number;
   userType: TAuthType;
   userName: string;
@@ -127,38 +127,39 @@ export type TGroupUser = {
 };
 
 // 확장된 응답 타입 (no 속성이 포함된 content)
-export type TAgencyUsersResponseWithNo = {
+export type ResponseAgencyUsersWithNo = {
   page: number;
   size: number;
   totalCount: number;
-  content: (TAgencyUser & { id: string })[];
+  content: (AgencyUserDto & { id: string })[];
 };
 
-export type TGroupUserResponse = {
+// 그룹장 회원 목록 조회 API (AAG007) response type
+export type ResponseGroupUser = {
   page: number;
   size: number;
   totalCount: number;
-  content: TGroupUser[];
+  content: GroupUserDto[];
 };
 
 // 대행사 회원 페이지네이션 조회 (AAG006) params type
-export type TAdminAgencyUsersParams = {
+export type RequestAgencyUsers = {
   page: number;
   size: number;
   keyword: string;
-  orderType: TAgencyUsersOrder;
+  orderType: AgencyUsersOrder;
 };
 
 // 그룹장 회원 목록 조회 API params type
-export type TGroupUserParams = {
+export type GroupUserDtoParams = {
   page: number;
   size: number;
   keyword: string;
-  orderType: TAgencyUsersOrder;
+  orderType: AgencyUsersOrder;
 };
 
 // 시스템 관리자 - 대행사 회원 목록 조회 API 정렬 타입
-export type TAgencyUsersOrder =
+export type AgencyUsersOrder =
   | "NO_ASC" // 불필요 - 그냥 프론트에서 필요함
   | "NO_DESC" // 불필요 - 그냥 프론트에서 필요함
   | "AGENT_ASC"
@@ -175,21 +176,14 @@ export type TAgencyUsersOrder =
   | "REGISTER_DT_DESC";
 
 // 회원 상태 변경 params type
-export type TAgencyUserStatusParams = {
+export type RequestAgencyUserStatus = {
   userId: number;
   agentId: number;
   status: UserStatus;
 };
 
-// 대행사 회원 상태 변경 API 응답 타입
-export type TAgencyUserStatusResponse = {
-  result: null;
-  code: string;
-  message: string;
-};
-
 // 대행사 회원 삭제 API params type
-export type TAgencyUserDeleteParams = {
+export type RequestAgencyUserDelete = {
   userId: number;
   agentId: number;
 };

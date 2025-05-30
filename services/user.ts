@@ -4,21 +4,21 @@ import type { ApiResponseData } from "./types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 import type { AgencyData } from "./agency";
 import type {
-  TAgencyGroupMasterPostParams,
-  TAgencyUserDirectPostParams,
-  TAgencyUserEmailParams,
-  TAgencyUserEmailSendParams,
-  TAdminAgencyUsersParams,
-  TGroupUserParams,
-  TAgencyUsersResponse,
-  TAgencyUsersResponseWithNo,
-  TAgencyUserStatusParams,
-  TAgentsUsersPwParams,
-  TMailVerifyParams,
-  TMailVerifyUser,
-  TUserInfoParams,
-  TUserInfoPatchParams,
-  TGroupUserResponse,
+  RequestAgencyGroupMasterDirect,
+  RequestMemberDirect,
+  RequestGroupMasterInvite,
+  RequestSignupEmail,
+  RequestAgencyUsers,
+  GroupUserDtoParams,
+  ResponseAgencyUsers,
+  ResponseAgencyUsersWithNo,
+  RequestAgencyUserStatus,
+  RequestUserPwd,
+  RequestMailVerify,
+  ResponseMailVerify,
+  RequestUserInfo,
+  RequestPatchUserInfo,
+  ResponseGroupUser,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API
@@ -40,14 +40,14 @@ export const postUsersPasswordResetApi = async (
 };
 
 export const getUsersMailVerifyApi = async (
-  params: TMailVerifyParams
-): Promise<TMailVerifyUser> => {
+  params: RequestMailVerify
+): Promise<ResponseMailVerify> => {
   const queryParams = buildQueryParams({
     agentCode: params.agentCode,
     userCode: params.userCode,
   });
   try {
-    const response = await get<TMailVerifyUser>(
+    const response = await get<ResponseMailVerify>(
       `/api/v1/agents/users/mail-verifications?${queryParams}`
     );
     return response;
@@ -60,9 +60,8 @@ export const getUsersMailVerifyApi = async (
 };
 
 // 대행사 비밀번호 설정 또는 비밀번호 재설정 API
-
 export const postAgentsUsersPwApi = async (
-  params: TAgentsUsersPwParams
+  params: RequestUserPwd
 ): Promise<null> => {
   const { agentId, userId, password, phone, type } = params;
   try {
@@ -81,7 +80,7 @@ export const postAgentsUsersPwApi = async (
 
 // 회원 정보 조회
 export const getUserInfoApi = async (
-  params: TUserInfoParams
+  params: RequestUserInfo
 ): Promise<TUserInfoResponse> => {
   try {
     const { agentId, userId } = params;
@@ -134,7 +133,7 @@ export const getUsersNameCheckApi = async (
 
 // 기본 정보 변경 API (U004)
 export const patchUserInfoApi = async (
-  params: TUserInfoPatchParams
+  params: RequestPatchUserInfo
 ): Promise<null> => {
   const { userId, name, emailAddress, phoneNumber } = params;
   try {
@@ -155,7 +154,7 @@ export const patchUserInfoApi = async (
 // [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 (AAG013) API
 
 export async function postAgencyUserEmailApi(
-  params: TAgencyUserEmailParams
+  params: RequestGroupMasterInvite
 ): Promise<AgencyData | null> {
   try {
     const response: AgencyData = await post(
@@ -173,7 +172,7 @@ export async function postAgencyUserEmailApi(
 
 // [관리자] 대행사 최상위 그룹장 회원 가입 (직접 등록) (AAG005) API
 export const postAgencyGroupMasterApi = async (
-  params: TAgencyGroupMasterPostParams
+  params: RequestAgencyGroupMasterDirect
 ): Promise<TSMPayUser> => {
   try {
     const response = await post<TSMPayUser>(
@@ -192,7 +191,7 @@ export const postAgencyGroupMasterApi = async (
 // 회원 직접 등록 API (SAG007)
 
 export const postAgencyUserDirectApi = async (
-  params: TAgencyUserDirectPostParams
+  params: RequestMemberDirect
 ): Promise<TSMPayUser> => {
   try {
     const response = await post<TSMPayUser>(
@@ -210,7 +209,7 @@ export const postAgencyUserDirectApi = async (
 
 // 회원 가입 메일 발송 API (SAG006)
 export const postAgencyUserEmailSendApi = async (
-  params: TAgencyUserEmailSendParams
+  params: RequestSignupEmail
 ): Promise<null> => {
   try {
     const response = await post<null>(
@@ -228,8 +227,8 @@ export const postAgencyUserEmailSendApi = async (
 
 // [시스템 관리자] 대행사 회원 목록 조회 API (AAG006)
 export const getAdminAgencyUsersListApi = async (
-  params: TAdminAgencyUsersParams
-): Promise<TAgencyUsersResponseWithNo> => {
+  params: RequestAgencyUsers
+): Promise<ResponseAgencyUsersWithNo> => {
   try {
     // NO_DESC나 NO_ASC인 경우 실제 API 정렬은 REGISTER_DT_DESC로 고정
     const isNoSort =
@@ -243,7 +242,7 @@ export const getAdminAgencyUsersListApi = async (
       orderType: apiOrderType,
     });
 
-    const response = await get<TAgencyUsersResponse>(
+    const response = await get<ResponseAgencyUsers>(
       `/admin/api/v1/agents/users?${queryParams}`
     );
 
@@ -257,7 +256,7 @@ export const getAdminAgencyUsersListApi = async (
       content = content.reverse();
     }
 
-    const result: TAgencyUsersResponseWithNo = {
+    const result: ResponseAgencyUsersWithNo = {
       ...response,
       content,
     };
@@ -273,8 +272,8 @@ export const getAdminAgencyUsersListApi = async (
 
 // 그룹장 회원 목록 조회 API (AAG007)
 export const getGroupUserListApi = async (
-  params: TGroupUserParams & { agentId: number; userId: number }
-): Promise<TGroupUserResponse> => {
+  params: GroupUserDtoParams & { agentId: number; userId: number }
+): Promise<ResponseGroupUser> => {
   try {
     const { agentId, userId } = params;
 
@@ -285,11 +284,11 @@ export const getGroupUserListApi = async (
       orderType: params.orderType,
     });
 
-    const response = await get<TGroupUserResponse>(
+    const response = await get<ResponseGroupUser>(
       `/service/api/v1/agents/${agentId}/users/${userId}/subordinate-departments-users?${queryParams}`
     );
 
-    const result: TGroupUserResponse = {
+    const result: ResponseGroupUser = {
       ...response,
       content: response.content.map((user, index) => ({
         ...user,
@@ -308,7 +307,7 @@ export const getGroupUserListApi = async (
 
 // 대행사 회원 상태 변경 API (AAG007)
 export const putAgencyUserStatusApi = async (
-  params: TAgencyUserStatusParams
+  params: RequestAgencyUserStatus
 ): Promise<null> => {
   try {
     const { userId, agentId, status } = params;

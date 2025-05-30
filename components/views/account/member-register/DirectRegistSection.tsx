@@ -34,8 +34,8 @@ import type { TAuthType } from "@/types/user";
 import type { TViewProps } from ".";
 import { DialogContent, DialogContentType } from "./constant";
 import {
-  TAgencyGroupMasterPostParams,
-  TAgencyUserDirectPostParams,
+  RequestAgencyGroupMasterDirect,
+  RequestMemberDirect,
 } from "@/types/api/user";
 
 const DirectRegistSection = ({ user }: TViewProps) => {
@@ -179,7 +179,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         return;
       }
 
-      const data: TAgencyUserDirectPostParams = {
+      const data: RequestMemberDirect = {
         type: memberType as TAuthType,
         name,
         emailAddress: emailId,
@@ -200,7 +200,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         return;
       }
 
-      const data: TAgencyGroupMasterPostParams = {
+      const data: RequestAgencyGroupMasterDirect = {
         userType: "AGENCY_GROUP_MASTER",
         name,
         emailAddress: emailId,

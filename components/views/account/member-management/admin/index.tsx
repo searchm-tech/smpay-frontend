@@ -10,11 +10,11 @@ import { useQueryAdminAgencyUsersList } from "@/hooks/queries/user";
 
 import type { TableParams } from "@/types/table";
 import type { ViewProps } from "..";
-import type { TAgencyUsersOrder } from "@/types/api/user";
+import type { AgencyUsersOrder } from "@/types/api/user";
 
 export interface TableParamsMember extends TableParams {
   keyword: string;
-  sortField?: TAgencyUsersOrder;
+  sortField?: AgencyUsersOrder;
 }
 
 const AdminMemberManagementView = ({ user }: ViewProps) => {
@@ -30,7 +30,7 @@ const AdminMemberManagementView = ({ user }: ViewProps) => {
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: search,
-    orderType: tableParams.sortField as TAgencyUsersOrder,
+    orderType: tableParams.sortField as AgencyUsersOrder,
   });
 
   const onSearch = (keyword: string) => {

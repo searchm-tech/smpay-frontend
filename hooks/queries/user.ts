@@ -24,20 +24,20 @@ import type { ApiResponseData } from "@/services/types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 
 import type {
-  TAgencyGroupMasterPostParams,
-  TAgencyUserDeleteParams,
-  TAgencyUserDirectPostParams,
-  TAgencyUserEmailSendParams,
-  TAdminAgencyUsersParams,
-  TGroupUserParams,
-  TAgencyUsersResponseWithNo,
-  TAgencyUserStatusParams,
-  TAgentsUsersPwParams,
-  TMailVerifyParams,
-  TMailVerifyUser,
-  TUserInfoParams,
-  TUserInfoPatchParams,
-  TGroupUserResponse,
+  RequestAgencyGroupMasterDirect,
+  RequestAgencyUserDelete,
+  RequestMemberDirect,
+  RequestSignupEmail,
+  RequestAgencyUsers,
+  GroupUserDtoParams,
+  ResponseAgencyUsersWithNo,
+  RequestAgencyUserStatus,
+  RequestUserPwd,
+  RequestMailVerify,
+  ResponseMailVerify,
+  RequestUserInfo,
+  RequestPatchUserInfo,
+  ResponseGroupUser,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
@@ -52,8 +52,8 @@ export const useMutationPwdResetLink = (
 
 // 대행사 회원 메일 인증 코드 확인 query
 export const useQueryMailVerify = (
-  params: TMailVerifyParams,
-  options?: Partial<UseQueryOptions<TMailVerifyUser, Error>>
+  params: RequestMailVerify,
+  options?: Partial<UseQueryOptions<ResponseMailVerify, Error>>
 ) => {
   return useQuery({
     queryKey: ["mailVerify", params],
@@ -65,17 +65,17 @@ export const useQueryMailVerify = (
 
 // 대행사 비밀번호 설정 또는 비밀번호 재설정 mutation
 export const useMutationAgentsUsersPw = (
-  options?: UseMutationOptions<null, Error, TAgentsUsersPwParams>
+  options?: UseMutationOptions<null, Error, RequestUserPwd>
 ) => {
   return useMutation({
-    mutationFn: (params: TAgentsUsersPwParams) => postAgentsUsersPwApi(params),
+    mutationFn: (params: RequestUserPwd) => postAgentsUsersPwApi(params),
     ...options,
   });
 };
 
 // 회원 정보 조회 query
 export const useQueryUserInfo = (
-  params: TUserInfoParams & { isAdmin: boolean },
+  params: RequestUserInfo & { isAdmin: boolean },
   options?: UseQueryOptions<TUserInfoResponse, Error>
 ) => {
   return useQuery({
@@ -101,20 +101,24 @@ export const useQueryAdminUserInfo = (
 
 // 기본 정보 변경 mutation
 export const useMutationUserInfo = (
-  options?: UseMutationOptions<null, Error, TUserInfoPatchParams>
+  options?: UseMutationOptions<null, Error, RequestPatchUserInfo>
 ) => {
   return useMutation({
-    mutationFn: (params: TUserInfoPatchParams) => patchUserInfoApi(params),
+    mutationFn: (params: RequestPatchUserInfo) => patchUserInfoApi(params),
     ...options,
   });
 };
 
 // 관리자 : 대행사 최상위 그룹장 회원 가입(직접 등록) mutation
 export const useMutationAgencyGroupMaster = (
-  options?: UseMutationOptions<TSMPayUser, Error, TAgencyGroupMasterPostParams>
+  options?: UseMutationOptions<
+    TSMPayUser,
+    Error,
+    RequestAgencyGroupMasterDirect
+  >
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyGroupMasterPostParams) =>
+    mutationFn: (params: RequestAgencyGroupMasterDirect) =>
       postAgencyGroupMasterApi(params),
     ...options,
   });
@@ -122,10 +126,10 @@ export const useMutationAgencyGroupMaster = (
 
 // 회원 직접 등록 mutation
 export const useMutationAgencyUserDirect = (
-  options?: UseMutationOptions<TSMPayUser, Error, TAgencyUserDirectPostParams>
+  options?: UseMutationOptions<TSMPayUser, Error, RequestMemberDirect>
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyUserDirectPostParams) =>
+    mutationFn: (params: RequestMemberDirect) =>
       postAgencyUserDirectApi(params),
     ...options,
   });
@@ -133,10 +137,10 @@ export const useMutationAgencyUserDirect = (
 
 // 회원 가입 메일 발송 mutation
 export const useMutationAgencyUserEmailSend = (
-  options?: UseMutationOptions<null, Error, TAgencyUserEmailSendParams>
+  options?: UseMutationOptions<null, Error, RequestSignupEmail>
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyUserEmailSendParams) =>
+    mutationFn: (params: RequestSignupEmail) =>
       postAgencyUserEmailSendApi(params),
     ...options,
   });
@@ -144,10 +148,10 @@ export const useMutationAgencyUserEmailSend = (
 
 // 대행사 회원 상태 변경 mutation
 export const useMutationAgencyUserStatus = (
-  options?: UseMutationOptions<null, Error, TAgencyUserStatusParams>
+  options?: UseMutationOptions<null, Error, RequestAgencyUserStatus>
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyUserStatusParams) =>
+    mutationFn: (params: RequestAgencyUserStatus) =>
       putAgencyUserStatusApi(params),
     ...options,
   });
@@ -155,18 +159,18 @@ export const useMutationAgencyUserStatus = (
 
 // 대행사 회원 삭제 mutation
 export const useMutationAgencyUserDelete = (
-  options?: UseMutationOptions<null, Error, TAgencyUserDeleteParams>
+  options?: UseMutationOptions<null, Error, RequestAgencyUserDelete>
 ) => {
   return useMutation({
-    mutationFn: (params: TAgencyUserDeleteParams) => delAgencyUserApi(params),
+    mutationFn: (params: RequestAgencyUserDelete) => delAgencyUserApi(params),
     ...options,
   });
 };
 
 // [시스템 관리자] 대행사 회원 목록 조회 query
 export const useQueryAdminAgencyUsersList = (
-  params: TAdminAgencyUsersParams,
-  options?: UseQueryOptions<TAgencyUsersResponseWithNo, Error>
+  params: RequestAgencyUsers,
+  options?: UseQueryOptions<ResponseAgencyUsersWithNo, Error>
 ) => {
   return useQuery({
     queryKey: ["agencyUsersList", params],
@@ -177,8 +181,8 @@ export const useQueryAdminAgencyUsersList = (
 
 // 그룹장 회원 목록 조회 query
 export const useQueryGroupUserList = (
-  params: TGroupUserParams & { agentId: number; userId: number },
-  options?: UseQueryOptions<TGroupUserResponse, Error>
+  params: GroupUserDtoParams & { agentId: number; userId: number },
+  options?: UseQueryOptions<ResponseGroupUser, Error>
 ) => {
   return useQuery({
     queryKey: ["groupUserList", params],

@@ -11,11 +11,11 @@ import { useQueryGroupUserList } from "@/hooks/queries/user";
 import type { TableParams } from "@/types/table";
 import type { ViewProps } from "..";
 
-import { TAgencyUsersOrder } from "@/types/api/user";
+import { AgencyUsersOrder } from "@/types/api/user";
 
 export interface TableParamsMember extends TableParams {
   keyword: string;
-  sortField?: TAgencyUsersOrder;
+  sortField?: AgencyUsersOrder;
 }
 
 const GroupMemberManagementView = ({ user }: ViewProps) => {
@@ -31,7 +31,7 @@ const GroupMemberManagementView = ({ user }: ViewProps) => {
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: search,
-    orderType: tableParams.sortField as TAgencyUsersOrder,
+    orderType: tableParams.sortField as AgencyUsersOrder,
     agentId: user.agentId,
     userId: user.userId,
   });

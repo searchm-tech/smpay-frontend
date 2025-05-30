@@ -22,7 +22,7 @@ import { EMAIL_REGEX } from "@/constants/reg";
 import { getUserAuthTypeLabel } from "@/utils/status";
 
 import type { TSMPayUser } from "@/types/user";
-import type { TUserInfoPatchParams } from "@/types/api/user";
+import type { RequestPatchUserInfo } from "@/types/api/user";
 
 type Props = {
   userId: number;
@@ -75,7 +75,7 @@ const AdminView = ({ userId }: Props) => {
       return;
     }
 
-    const params: TUserInfoPatchParams = {
+    const params: RequestPatchUserInfo = {
       userId,
       name,
       emailAddress: id.toString(),
