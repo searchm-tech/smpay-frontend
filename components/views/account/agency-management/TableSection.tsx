@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-
 import { SquarePen } from "lucide-react";
 
 import Select from "@/components/composite/select-components";
@@ -10,6 +9,8 @@ import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { ACTIVE_STATUS } from "@/constants/table";
+
+import { formatDate } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
@@ -145,6 +146,9 @@ const TableSection = ({
       dataIndex: "registerDt",
       sorter: true,
       align: "center",
+      render: (value: string) => {
+        return <span>{formatDate(value)}</span>;
+      },
     },
   ];
 
