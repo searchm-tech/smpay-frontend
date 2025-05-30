@@ -1,7 +1,7 @@
 import { get, ApiError, post } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
-import type { TableParams } from "@/types/table";
+
 import type { TAgency } from "@/types/agency";
 import type {
   RequestAgencys,
@@ -24,81 +24,6 @@ export interface AgencyData {
   invoice_manager_email: string; // 계산서 발행 담당자 이메일
   status: boolean;
   date: string;
-}
-
-// TODO : 무료 목 api 테스트 용
-export async function getAgencies(params: TableParams): Promise<{
-  data: AgencyData[];
-  total: number;
-  success: boolean;
-}> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  let filtered = [...mockAgencyData];
-
-  // 필터링
-  if (params.filters) {
-    Object.entries(params.filters).forEach(([key, values]) => {
-      if (values && Array.isArray(values) && values.length > 0) {
-        if (key === "search") {
-          filtered = filtered.filter((item) =>
-            Object.values(item).some((value) => {
-              if (typeof value === "string") {
-                return value
-                  .toLowerCase()
-                  .includes(String(values[0]).toLowerCase());
-              }
-              if (typeof value === "number" || typeof value === "boolean") {
-                return String(value)
-                  .toLowerCase()
-                  .includes(String(values[0]).toLowerCase());
-              }
-              return false;
-            })
-          );
-        } else {
-          filtered = filtered.filter((item) =>
-            Array.isArray(values)
-              ? values
-                  .map(String)
-                  .includes(String(item[key as keyof AgencyData]))
-              : String(item[key as keyof AgencyData]) === String(values)
-          );
-        }
-      }
-    });
-  }
-
-  // 정렬
-  if (params.sortField && params.sortOrder) {
-    filtered.sort((a, b) => {
-      const aValue = a[params.sortField as keyof AgencyData];
-      const bValue = b[params.sortField as keyof AgencyData];
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return params.sortOrder === "ascend"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return params.sortOrder === "ascend"
-          ? aValue - bValue
-          : bValue - aValue;
-      }
-      return 0;
-    });
-  }
-
-  // 페이지네이션
-  const { current = 1, pageSize = 10 } = params.pagination || {};
-  const startIndex = (current - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginated = filtered.slice(startIndex, endIndex);
-
-  return {
-    data: paginated,
-    total: filtered.length,
-    success: true,
-  };
 }
 
 // 대행사 상세
@@ -176,7 +101,22 @@ export async function getAgencyApi(
     const response: ResponseAgencys = await get(
       `/admin/api/v1/agents?${queryParams}`
     );
-    return response; // result만 반환!
+
+    let content = response.content.map((item, index) => ({
+      ...item,
+      id: item.agentId, // 원본 agentId 유지 (타입 호환성)
+      rowNumber: (params.page - 1) * params.size + index + 1, // 페이지네이션을 고려한 행 번호
+    }));
+
+    // NO_ASC인 경우 배열을 reverse하여 번호 순서 변경
+    if (params.orderType === "NO_ASC") {
+      content = content.reverse();
+    }
+
+    return {
+      ...response,
+      content,
+    }; // result만 반환!
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
