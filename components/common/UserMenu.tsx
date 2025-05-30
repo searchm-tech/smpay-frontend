@@ -31,7 +31,7 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
       <DropdownMenuContent align="end" className="min-w-[200px] px-4 ">
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">
-            <Link href={`/account/member-edit?userId=${user.userId}`}>
+            <Link href="/profile">
               <LabelBullet>기본 정보 변경</LabelBullet>
             </Link>
           </DropdownMenuItem>
