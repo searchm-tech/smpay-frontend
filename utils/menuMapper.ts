@@ -6,7 +6,9 @@ import {
   AlarmClock,
   Target,
 } from "lucide-react";
+import { getIsAdmin } from "@/lib/utils";
 import type { TResponseMenu } from "@/types/api/menu";
+import type { TAuthType } from "@/types/user";
 
 // 메뉴 이름과 아이콘/URL 매핑
 const MENU_CONFIG = {
@@ -151,10 +153,10 @@ export function mapBackendMenuToFrontend(
 // 사용자 타입별 메뉴 필터링
 export function filterMenuByUserType(
   menus: FrontendMenuItem[],
-  userType: string
+  userType: TAuthType | null
 ): FrontendMenuItem[] {
   // 관리자는 모든 메뉴 접근 가능
-  if (["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(userType)) {
+  if (getIsAdmin(userType)) {
     return menus;
   }
 

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import dayjs from "dayjs";
+import type { TAuthType } from "@/types/user";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,4 +28,10 @@ export function buildQueryParams(params: Record<string, any>): string {
   });
 
   return searchParams.toString();
+}
+
+// 관리자 확인
+export function getIsAdmin(type?: TAuthType | null) {
+  if (!type) return false;
+  return ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(type || "");
 }

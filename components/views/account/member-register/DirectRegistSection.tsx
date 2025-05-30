@@ -27,6 +27,7 @@ import { getUsersNameCheckApi } from "@/services/user";
 
 import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
+import { getIsAdmin } from "@/lib/utils";
 
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
@@ -38,9 +39,7 @@ import {
 } from "@/types/api/user";
 
 const DirectRegistSection = ({ user }: TViewProps) => {
-  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    user.type
-  );
+  const isAdmin = getIsAdmin(user.type);
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
   const {

@@ -159,7 +159,47 @@ export const DASHBOARD_ITEMS_ADMIN = [
   },
 ];
 
+export const COMMON_ITEMS = [
+  {
+    title: "SM Pay",
+    url: "/sm-pay",
+    icon: AppWindow,
+    isActive: true,
+    items: [
+      {
+        title: "SM Pay 관리",
+        url: "/sm-pay/management",
+      },
+      {
+        title: "충전 회수 관리",
+        url: "/sm-pay/charge",
+      },
+    ],
+  },
+  {
+    title: "계정 관리",
+    url: "/account",
+    icon: Smile,
+    isActive: true,
+    items: [
+      {
+        title: "대행사 관리",
+        url: "/account/agency-management",
+      },
+      {
+        title: "회원 관리",
+        url: "/account/member-management",
+      },
+      {
+        title: "부서 관리",
+        url: "/account/department",
+      },
+    ],
+  },
+];
+
 export const dashboardItems = {
   admin: DASHBOARD_ITEMS_ADMIN,
   agency: DASHBOARD_ITEMS_AGENCY,
+  common: COMMON_ITEMS,
 };

@@ -20,6 +20,7 @@ import {
   useQueryAdminUserInfo,
   useQueryUserInfo,
 } from "@/hooks/queries/user";
+import { getIsAdmin } from "@/lib/utils";
 
 import type { TAgentsUsersPwParams } from "@/types/api/user";
 
@@ -27,9 +28,7 @@ const PasswordResetView = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const isAdmin = ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(
-    session?.user.type || ""
-  );
+  const isAdmin = getIsAdmin(session?.user.type || null);
 
   const { data: userInfo } = useQueryUserInfo({
     agentId: session?.user.agentId || 0,
