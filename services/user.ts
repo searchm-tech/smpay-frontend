@@ -1,4 +1,5 @@
 import { ApiError, del, get, patch, post, put } from "@/lib/api";
+import { buildQueryParams } from "@/lib/utils";
 import type { ApiResponseData } from "./types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 import type { AgencyData } from "./agency";
@@ -41,9 +42,13 @@ export const postUsersPasswordResetApi = async (
 export const getUsersMailVerifyApi = async (
   params: TMailVerifyParams
 ): Promise<TMailVerifyUser> => {
+  const queryParams = buildQueryParams({
+    agentCode: params.agentCode,
+    userCode: params.userCode,
+  });
   try {
     const response = await get<TMailVerifyUser>(
-      `/api/v1/agents/users/mail-verifications?agentCode=${params.agentCode}&userCode=${params.userCode}`
+      `/api/v1/agents/users/mail-verifications?${queryParams}`
     );
     return response;
   } catch (error) {
@@ -226,16 +231,20 @@ export const getAdminAgencyUsersListApi = async (
   params: TAdminAgencyUsersParams
 ): Promise<TAgencyUsersResponseWithNo> => {
   try {
-    // URL 파라미터 인코딩
-    const encodedKeyword = encodeURIComponent(params.keyword);
-
     // NO_DESC나 NO_ASC인 경우 실제 API 정렬은 REGISTER_DT_DESC로 고정
     const isNoSort =
       params.orderType === "NO_DESC" || params.orderType === "NO_ASC";
     const apiOrderType = isNoSort ? "REGISTER_DT_DESC" : params.orderType;
 
+    const queryParams = buildQueryParams({
+      page: params.page,
+      size: params.size,
+      keyword: params.keyword,
+      orderType: apiOrderType,
+    });
+
     const response = await get<TAgencyUsersResponse>(
-      `/admin/api/v1/agents/users?page=${params.page}&size=${params.size}&keyword=${encodedKeyword}&orderType=${apiOrderType}`
+      `/admin/api/v1/agents/users?${queryParams}`
     );
 
     let content = response.content.map((user, index) => ({
@@ -267,8 +276,17 @@ export const getGroupUserListApi = async (
   params: TGroupUserParams & { agentId: number; userId: number }
 ): Promise<TGroupUserResponse> => {
   try {
+    const { agentId, userId } = params;
+
+    const queryParams = buildQueryParams({
+      page: params.page,
+      size: params.size,
+      keyword: params.keyword,
+      orderType: params.orderType,
+    });
+
     const response = await get<TGroupUserResponse>(
-      `/service/api/v1/agents/${params.agentId}/users/${params.userId}/subordinate-departments-users?page=${params.page}&size=${params.size}&keyword=${params.keyword}&orderType=${params.orderType}`
+      `/service/api/v1/agents/${agentId}/users/${userId}/subordinate-departments-users?${queryParams}`
     );
 
     const result: TGroupUserResponse = {
