@@ -16,7 +16,7 @@ import {
 import { postAgencyUserEmailApi } from "@/services/user";
 
 import type { TAgency } from "@/types/agency";
-import type { TAgencyUserEmailParams } from "@/types/api/user";
+import type { RequestGroupMasterInvite } from "@/types/api/user";
 import type {
   RequestAgencyRegister,
   RequestAgencys,
@@ -59,10 +59,14 @@ export const useQueryAgencyAll = (
 
 // 대행사 최상위 그룹장 회원 초대 메일 발송 뮤테이션
 export const useMutationAgencySendMail = (
-  options?: UseMutationOptions<AgencyData | null, Error, TAgencyUserEmailParams>
+  options?: UseMutationOptions<
+    AgencyData | null,
+    Error,
+    RequestGroupMasterInvite
+  >
 ) => {
-  return useMutation<AgencyData | null, Error, TAgencyUserEmailParams>({
-    mutationFn: (params: TAgencyUserEmailParams) =>
+  return useMutation<AgencyData | null, Error, RequestGroupMasterInvite>({
+    mutationFn: (params: RequestGroupMasterInvite) =>
       postAgencyUserEmailApi(params),
     ...options,
   });

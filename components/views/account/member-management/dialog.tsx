@@ -9,8 +9,8 @@ import {
 import { statusDialogContent } from "./constant";
 
 import type {
-  TAgencyUserDeleteParams,
-  TAgencyUserStatusParams,
+  RequestAgencyUserDelete,
+  RequestAgencyUserStatus,
 } from "@/types/api/user";
 
 type DialogProps = {
@@ -22,7 +22,7 @@ type DialogProps = {
  * 회원 삭제 모달
  */
 interface DeleteDialogProps extends DialogProps {
-  params: TAgencyUserDeleteParams;
+  params: RequestAgencyUserDelete;
 }
 
 const DeleteDialog = ({ params, onClose, onConfirm }: DeleteDialogProps) => {
@@ -55,7 +55,7 @@ const DeleteDialog = ({ params, onClose, onConfirm }: DeleteDialogProps) => {
  */
 
 interface StatusDialogProps extends DialogProps {
-  params: TAgencyUserStatusParams;
+  params: RequestAgencyUserStatus;
 }
 
 const StatusDialog = ({ params, onClose, onConfirm }: StatusDialogProps) => {

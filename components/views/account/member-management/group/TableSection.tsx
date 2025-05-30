@@ -17,17 +17,17 @@ import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 
 import type {
-  TAgencyUsersOrder,
-  TAgencyUserDeleteParams as TDeleteParams,
-  TGroupUser,
-  TAgencyUserStatusParams as TStatusParams,
+  AgencyUsersOrder,
+  RequestAgencyUserDelete as TDeleteParams,
+  GroupUserDto,
+  RequestAgencyUserStatus as TStatusParams,
 } from "@/types/api/user";
 import type { TSMPayUser, UserStatus } from "@/types/user";
 import type { TableParamsMember } from ".";
 import { dialogContent, type DialogTypes } from "../constant";
 
 type TableSectionProps = {
-  dataSource: TGroupUser[];
+  dataSource: GroupUserDto[];
   isLoading: boolean;
   setTableParams: (params: TableParamsMember) => void;
   user: TSMPayUser;
@@ -47,7 +47,7 @@ const TableSection = ({
   const [deleteDialog, setDeleteDialog] = useState<TDeleteParams | null>(null);
   const [dialog, setDialog] = useState<DialogTypes | null>(null);
 
-  const columns: TableProps<TGroupUser>["columns"] = [
+  const columns: TableProps<GroupUserDto>["columns"] = [
     {
       title: "No",
       dataIndex: "id",
@@ -136,7 +136,7 @@ const TableSection = ({
     },
   ];
 
-  const handleTableChange: TableProps<TGroupUser>["onChange"] = (
+  const handleTableChange: TableProps<GroupUserDto>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -144,7 +144,7 @@ const TableSection = ({
     console.log(sorter);
 
     // sorter에서 field와 order 추출하여 올바른 정렬 값 생성
-    let sortField: TAgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
+    let sortField: AgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
 
     if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
       const field = sorter.field as string;
@@ -164,7 +164,7 @@ const TableSection = ({
       const mappedField = fieldMap[field];
 
       if (mappedField) {
-        sortField = `${mappedField}_${order}` as TAgencyUsersOrder;
+        sortField = `${mappedField}_${order}` as AgencyUsersOrder;
       }
     }
 
@@ -188,7 +188,7 @@ const TableSection = ({
 
   return (
     <section>
-      <Table<TGroupUser>
+      <Table<GroupUserDto>
         columns={columns}
         rowKey={(record) => record.id}
         dataSource={dataSource}

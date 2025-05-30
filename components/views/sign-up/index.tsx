@@ -28,7 +28,7 @@ import {
   useMutationAgentsUsersPw,
 } from "@/hooks/queries/user";
 
-import type { TAgentsUsersPwParams } from "@/types/api/user";
+import type { RequestUserPwd } from "@/types/api/user";
 
 interface SignUpViewProps {
   agentCode: string;
@@ -85,7 +85,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
-    const params: TAgentsUsersPwParams = {
+    const params: RequestUserPwd = {
       agentId: mailVerify.userResponseDto.agentId,
       userId: mailVerify.userResponseDto.userId,
       password,

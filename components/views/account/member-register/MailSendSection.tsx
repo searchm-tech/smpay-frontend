@@ -36,8 +36,8 @@ import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
 import type { TViewProps } from ".";
 import type {
-  TAgencyUserEmailParams,
-  TAgencyUserEmailSendParams,
+  RequestGroupMasterInvite,
+  RequestSignupEmail,
 } from "@/types/api/user";
 
 const MailSendSection = ({ user }: TViewProps) => {
@@ -151,7 +151,7 @@ const MailSendSection = ({ user }: TViewProps) => {
         return;
       }
 
-      const params: TAgencyUserEmailSendParams = {
+      const params: RequestSignupEmail = {
         type: memberType as TAuthType,
         name,
         emailAddress: emailId,
@@ -170,7 +170,7 @@ const MailSendSection = ({ user }: TViewProps) => {
         return;
       }
 
-      const params: TAgencyUserEmailParams = {
+      const params: RequestGroupMasterInvite = {
         agentId: Number(selectedAgency),
         userType: "AGENCY_GROUP_MASTER", // user.type,
         name,

@@ -20,7 +20,7 @@ import { useMutationUserInfo, useQueryUserInfo } from "@/hooks/queries/user";
 import { EMAIL_REGEX } from "@/constants/reg";
 
 import type { TAgency } from "@/types/agency";
-import type { TUserInfoPatchParams } from "@/types/api/user";
+import type { RequestPatchUserInfo } from "@/types/api/user";
 import type { TDepartment } from "@/types/department";
 import type { TSMPayUser } from "@/types/user";
 
@@ -77,7 +77,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       return;
     }
 
-    const params: TUserInfoPatchParams = {
+    const params: RequestPatchUserInfo = {
       userId,
       name,
       emailAddress: loginId.toString(),

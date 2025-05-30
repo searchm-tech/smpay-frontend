@@ -22,7 +22,7 @@ import {
 } from "@/hooks/queries/user";
 import { getIsAdmin } from "@/lib/utils";
 
-import type { TAgentsUsersPwParams } from "@/types/api/user";
+import type { RequestUserPwd } from "@/types/api/user";
 
 const PasswordResetView = () => {
   const router = useRouter();
@@ -68,7 +68,7 @@ const PasswordResetView = () => {
       return;
     }
 
-    const params: TAgentsUsersPwParams = {
+    const params: RequestUserPwd = {
       agentId: session?.user.agentId || 0,
       userId: session?.user.userId || 0,
       password,

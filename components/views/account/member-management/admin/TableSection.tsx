@@ -17,10 +17,10 @@ import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 
 import type {
-  TAgencyUser,
-  TAgencyUsersOrder,
-  TAgencyUserDeleteParams as TDeleteParams,
-  TAgencyUserStatusParams as TStatusParams,
+  AgencyUserDto,
+  AgencyUsersOrder,
+  RequestAgencyUserDelete as TDeleteParams,
+  RequestAgencyUserStatus as TStatusParams,
 } from "@/types/api/user";
 import type { TSMPayUser, UserStatus } from "@/types/user";
 import type { TableParamsMember } from ".";
@@ -28,14 +28,14 @@ import type { TableParamsMember } from ".";
 import { dialogContent, type DialogTypes } from "../constant";
 
 type TableSectionProps = {
-  dataSource: TAgencyUser[];
+  dataSource: AgencyUserDto[];
   isLoading: boolean;
   setTableParams: (params: TableParamsMember) => void;
   user: TSMPayUser;
   refetch: () => void;
 };
 
-type TDataAgencyUser = TAgencyUser & { id: string };
+type TDataAgencyUser = AgencyUserDto & { id: string };
 const TableSection = ({
   dataSource,
   isLoading,
@@ -152,7 +152,7 @@ const TableSection = ({
     console.log(sorter);
 
     // sorter에서 field와 order 추출하여 올바른 정렬 값 생성
-    let sortField: TAgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
+    let sortField: AgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
 
     if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
       const field = sorter.field as string;
@@ -172,7 +172,7 @@ const TableSection = ({
       const mappedField = fieldMap[field];
 
       if (mappedField) {
-        sortField = `${mappedField}_${order}` as TAgencyUsersOrder;
+        sortField = `${mappedField}_${order}` as AgencyUsersOrder;
       }
     }
 

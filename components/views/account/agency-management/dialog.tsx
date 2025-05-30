@@ -6,7 +6,7 @@ import { useMutationAgencyStatus } from "@/hooks/queries/agency";
 
 import { statusDialogContent } from "./constants";
 
-import type { TAgencyUserDeleteParams } from "@/types/api/user";
+import type { RequestAgencyUserDelete } from "@/types/api/user";
 import type { RequestAgencyStatus } from "@/types/api/agency";
 
 type DialogProps = {
@@ -18,7 +18,7 @@ type DialogProps = {
  * 회원 삭제 모달
  */
 interface DeleteDialogProps extends DialogProps {
-  params: TAgencyUserDeleteParams;
+  params: RequestAgencyUserDelete;
 }
 
 const DeleteDialog = ({ params, onClose, onConfirm }: DeleteDialogProps) => {
