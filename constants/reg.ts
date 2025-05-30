@@ -10,4 +10,4 @@ export const PASSWORD_REGEX =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[a-zA-Z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,16}$/;
 
 // 대행사 고유코드 정규식 4~16자의 영문으로 이루어진 식별 가능한 값
-export const AGENCY_CODE_REGEX = /^[a-zA-Z]{4,16}$/;
+export const UNIQUE_CODE_REGEX = /^[a-zA-Z]{4,16}$/;

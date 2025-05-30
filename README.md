@@ -86,6 +86,9 @@ root
 │   ├── layout/           # 전체 레이아웃 구성 컴포넌트
 │   ├── ui/               # 순수 shadcn-ui 컴포넌트
 │   └── views/            # 클라이언트 view 컴포넌트
+│   │   └── admin         # 관리자 view
+│   │   ├── not-admin     # 관리자가 아닌 사용자 view (그룹장, 그룹원...)
+│   │   └── index.tsx     # 둘 다 상관없는 경우
 │
 ├── hooks/               # 커스텀 훅
 │   ├── queries         # react-query api hook

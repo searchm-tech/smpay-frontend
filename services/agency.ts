@@ -3,8 +3,15 @@ import { buildQueryParams } from "@/lib/utils";
 import { agencyData as mockAgencyData } from "@/services/mock/agency";
 import type { TableParams } from "@/types/table";
 import type { TAgency } from "@/types/agency";
-import type { RequestAgencys, ResponseAgencys } from "@/types/api/agency";
+import type {
+  RequestAgencys,
+  ResponseAgencys,
+  ResponseDuplicate,
+  RequestAgencyRegister,
+  ResponseAgencyRegister,
+} from "@/types/api/agency";
 
+// TODO : 삭제
 export interface AgencyData {
   id: string;
   agency: string; // 대행사명
@@ -118,38 +125,6 @@ export async function updateAgency(
   return null;
 }
 
-// 대행사 등록 > 대행사 고유코드 중복 확인
-export async function checkAgencyCode(code: string): Promise<boolean> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return !mockAgencyData.some((item) => item.code === code);
-}
-
-// 대행사 등록 > 사업자 등록 번호 중복 확인
-export async function checkBusinessNumber(number: string): Promise<boolean> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return !mockAgencyData.some((item) => item.bussiness_num === number);
-}
-
-// 대행사 등록 > 회사 메일 도메인 중복 확인
-export async function checkCompanyEmailDomain(
-  domain: string
-): Promise<boolean> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return !mockAgencyData.some((item) => item.company_email_domain === domain);
-}
-
-// 대행사 등록
-export async function registerAgency(
-  data: AgencyData
-): Promise<AgencyData | null> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return data;
-}
-
 // ---- 실제 API 호출 ----
 
 // 대행사 전체 리스트 조회 API
@@ -202,6 +177,58 @@ export async function getAgencyApi(
       `/admin/api/v1/agents?${queryParams}`
     );
     return response; // result만 반환!
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 고유 코드 중복 체크 (AAG009)
+export async function duplicateUniqueCode(
+  code: string
+): Promise<ResponseDuplicate> {
+  try {
+    const response: ResponseDuplicate = await get(
+      `/admin/api/v1/agents/uniquecode/duplicate?uniqueCode=${code}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 도메인 이름 중복 체크 (AAG011)
+export async function checkAgencyDomainName(
+  domain: string
+): Promise<ResponseDuplicate> {
+  try {
+    const response: ResponseDuplicate = await get(
+      `/admin/api/v1/agents/domain-name/duplicate?domainName=${domain}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 회원가입 (AAG001) - 대행사 등록
+export async function postAgencyRegister(
+  data: RequestAgencyRegister
+): Promise<ResponseAgencyRegister> {
+  try {
+    const response: ResponseAgencyRegister = await post(
+      "/admin/api/v1/agents",
+      data
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
