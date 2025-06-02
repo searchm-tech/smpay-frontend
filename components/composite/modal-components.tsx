@@ -24,6 +24,7 @@ export interface ModalProps {
   title?: string | React.ReactNode;
   cancelDisabled?: boolean;
   confirmDisabled?: boolean;
+  confirmText?: string;
 }
 
 // 피그마 디자인 기준으로 봤을 땐, content 없이 title만 있는 경우가 많아서 이렇게 구현
@@ -33,6 +34,7 @@ export const Dialog = ({
   onConfirm,
   title,
   cancelDisabled,
+  confirmText,
 }: ModalProps) => {
   return (
     <AlertDialog open={open}>
@@ -47,7 +49,7 @@ export const Dialog = ({
             className="min-w-[100px] min-h-[35px]"
             onClick={onConfirm}
           >
-            확인
+            {confirmText}
           </AlertDialogAction>
 
           {!cancelDisabled && (
@@ -146,6 +148,7 @@ export const Modal = ({
  */
 export interface ConfirmDialogProps extends ModalProps {
   content: string | React.ReactNode;
+  confirmText?: string;
 }
 export const ConfirmDialog = ({
   open = false,
@@ -153,6 +156,7 @@ export const ConfirmDialog = ({
   onConfirm,
   content,
   cancelDisabled = false,
+  confirmText = "확인",
 }: ConfirmDialogProps) => {
   return (
     <Dialog
@@ -161,6 +165,7 @@ export const ConfirmDialog = ({
       onConfirm={onConfirm}
       title={content}
       cancelDisabled={cancelDisabled}
+      confirmText={confirmText}
     />
   );
 };

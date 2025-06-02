@@ -8,19 +8,19 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 
 const NaverServiceView = () => {
-  const [value, setValue] = useState(false);
+  const [isCustomerStep, setIsCustomerStep] = useState(false);
 
   return (
     <div>
-      <LabelBullet labelClassName="text-base">정보 등록</LabelBullet>
+      <LabelBullet labelClassName="text-base font-bold">정보 등록</LabelBullet>
       <TabSwitch
-        value={value}
-        onValueChange={setValue}
+        value={isCustomerStep}
+        onValueChange={setIsCustomerStep}
         leftLabel="API 라이선스 등록"
         rightLabel="광고주 등록"
       />
-      {!value && <LicenseSection />}
-      {value && <AdvertiserSection />}
+      {!isCustomerStep && <LicenseSection />}
+      {isCustomerStep && <AdvertiserSection />}
     </div>
   );
 };
