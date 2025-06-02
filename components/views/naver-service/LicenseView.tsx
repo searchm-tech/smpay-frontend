@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSession } from "next-auth/react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -17,20 +18,27 @@ import { Button } from "@/components/ui/button";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { Descriptions } from "@/components/composite/description-components";
+import { ConfirmDialog } from "@/components/composite/modal-components";
+import LoadingUI from "@/components/common/Loading";
 
 import { CreateGuideSection } from "./GuideSection";
 import {
   CheckUpdateLicenseDialog,
   DeleteLicenseDialog,
   SuccessCreateLicenseDialog,
-  SuccessUpdateLicenseDialog,
 } from "./dialog";
 
-import type { TLicenseInfo } from "./index";
-import { useSession } from "next-auth/react";
+import { useMuateCreateLicense } from "@/hooks/queries/license";
+
+import { ApiError } from "@/lib/api";
+import { DEFAULT_LICENSE_INFO } from "./constants";
+
+import type { TLicenseInfo } from ".";
+import type { TRequestLicenseCreate } from "@/types/api/license";
 
 type Props = {
   licenseInfo: TLicenseInfo | null;
+  refetch: () => void;
 };
 const formSchema = z.object({
   customerId: z.string().min(1, { message: "CUSTOMER ID를 입력해주세요." }),
@@ -38,52 +46,53 @@ const formSchema = z.object({
   secretKey: z.string().min(1, { message: "SECRET KEY를 입력해주세요." }),
 });
 
-const LicenseSection = ({ licenseInfo }: Props) => {
+const LicenseView = ({ licenseInfo, refetch }: Props) => {
   const { data: session } = useSession();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      customerId: "",
-      accessKey: "",
-      secretKey: "",
+    defaultValues: DEFAULT_LICENSE_INFO,
+  });
+
+  const { mutate: createLicense, isPending } = useMuateCreateLicense({
+    onSuccess: () => setIsSuccessCreate(true),
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        setErrMessage(error.message);
+      }
     },
   });
 
+  const [errMessage, setErrMessage] = useState("");
   const [isSuccessCreate, setIsSuccessCreate] = useState(false);
-
-  const [isSuccessUpdate, setIsSuccessUpdate] = useState(false);
-
-  const [createLicenseInfo, setCreateLicenseInfo] =
-    useState<TLicenseInfo | null>(null);
-  const [deleteLicenseInfo, setDeleteLicenseInfo] =
-    useState<TLicenseInfo | null>(null);
-  const [editLicenseInfo, setEditLicenseInfo] = useState<TLicenseInfo | null>(
-    null
-  );
+  const [deleteInfo, setDeleteInfo] = useState<TLicenseInfo | null>(null);
+  const [editInfo, setEditInfo] = useState<TLicenseInfo | null>(null);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const isUpdate = !!licenseInfo;
+    const isUpdate = !!licenseInfo; // 수정 여부 확인
 
     if (isUpdate) {
-      console.log("update");
-      setEditLicenseInfo({
+      // 수정 모달 띄우기
+      setEditInfo({
         ...licenseInfo,
         customerId: Number(data.customerId),
         apiKey: data.accessKey,
         secretKey: data.secretKey,
       });
     } else {
+      // 등록 적용
       if (!session?.user) return;
       const { agentId, userId } = session?.user;
-      setIsSuccessCreate(true);
-      setCreateLicenseInfo({
+
+      const params: TRequestLicenseCreate = {
         userId: userId,
         agentId: agentId,
         customerId: Number(data.customerId),
         apiKey: data.accessKey,
         secretKey: data.secretKey,
-      });
-      console.log("create");
+      };
+
+      createLicense(params);
     }
   };
 
@@ -94,41 +103,51 @@ const LicenseSection = ({ licenseInfo }: Props) => {
         accessKey: licenseInfo.apiKey,
         secretKey: licenseInfo.secretKey,
       });
+    } else {
+      form.reset(DEFAULT_LICENSE_INFO);
     }
   }, [licenseInfo, form]);
 
   return (
     <section className="p-4">
-      {!!createLicenseInfo && (
+      {isPending && <LoadingUI title="라이선스 등록 중..." />}
+
+      {isSuccessCreate && (
         <SuccessCreateLicenseDialog
-          licenseInfo={createLicenseInfo}
           onConfirm={() => {
-            setIsSuccessCreate(true);
-            setCreateLicenseInfo(null);
-          }}
-          onClose={() => {
-            setCreateLicenseInfo(null);
+            setIsSuccessCreate(false);
+            refetch();
           }}
         />
       )}
-      {!!editLicenseInfo && (
+      {!!editInfo && (
         <CheckUpdateLicenseDialog
-          licenseInfo={editLicenseInfo}
-          onConfirm={() => {
-            setIsSuccessUpdate(true);
-            setEditLicenseInfo(null);
-          }}
+          licenseInfo={editInfo}
           onClose={() => {
-            setEditLicenseInfo(null);
+            setEditInfo(null);
+            refetch();
           }}
         />
       )}
 
-      {!!deleteLicenseInfo && (
+      {!!deleteInfo && (
         <DeleteLicenseDialog
-          licenseInfo={deleteLicenseInfo}
-          onConfirm={() => setDeleteLicenseInfo(null)}
-          onClose={() => setDeleteLicenseInfo(null)}
+          licenseInfo={deleteInfo}
+          onClose={() => {
+            setDeleteInfo(null);
+            refetch();
+          }}
+        />
+      )}
+
+      {errMessage && (
+        <ConfirmDialog
+          open
+          title="라이선스 등록 실패"
+          confirmText="확인"
+          cancelDisabled
+          content={<p>{errMessage}</p>}
+          onConfirm={() => setErrMessage("")}
         />
       )}
 
@@ -196,7 +215,7 @@ const LicenseSection = ({ licenseInfo }: Props) => {
                 type="button"
                 variant="outline"
                 className="w-[150px]"
-                onClick={() => setDeleteLicenseInfo(licenseInfo)}
+                onClick={() => setDeleteInfo(licenseInfo)}
               >
                 취소
               </Button>
@@ -216,4 +235,4 @@ const LicenseSection = ({ licenseInfo }: Props) => {
   );
 };
 
-export default LicenseSection;
+export default LicenseView;

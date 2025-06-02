@@ -1,28 +1,48 @@
+import Image from "next/image";
+import { useState } from "react";
+
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
+
 import {
   useMuateCreateLicense,
   useMuateDeleteLicense,
 } from "@/hooks/queries/license";
-
-import Image from "next/image";
-import { TLicenseInfo } from ".";
 import { ApiError } from "@/lib/api";
-import { useState } from "react";
+
+import { dialogContent } from "./constants";
+import type { TLicenseInfo } from ".";
 
 type Props = {
   onConfirm: () => void;
-  onClose: () => void;
-  licenseInfo: TLicenseInfo;
 };
-export const SuccessCreateLicenseDialog = ({
-  onConfirm,
+export const SuccessCreateLicenseDialog = ({ onConfirm }: Props) => {
+  return (
+    <ConfirmDialog
+      open
+      title="라이선스 등록 성공"
+      confirmText="광고주 등록"
+      cancelDisabled
+      content={dialogContent["success-create"]}
+      onConfirm={onConfirm}
+    />
+  );
+};
+
+type PropsWithInfo = {
+  licenseInfo: TLicenseInfo;
+  onClose: () => void;
+};
+
+export const CheckUpdateLicenseDialog = ({
   onClose,
   licenseInfo,
-}: Props) => {
+}: PropsWithInfo) => {
+  const [isSuccess, setIsSuccess] = useState(false);
   const [errMessage, setErrMessage] = useState("");
+
   const { mutate: createLicense, isPending } = useMuateCreateLicense({
-    onSuccess: () => onConfirm,
+    onSuccess: () => setIsSuccess(true),
     onError: (error) => {
       if (error instanceof ApiError) {
         setErrMessage(error.message);
@@ -31,17 +51,16 @@ export const SuccessCreateLicenseDialog = ({
   });
 
   if (isPending) {
-    return <LoadingUI title="라이선스 등록 중..." />;
+    return <LoadingUI title="라이선스 수정 중..." />;
   }
 
   if (errMessage) {
     return (
       <ConfirmDialog
         open
-        title="라이선스 등록 실패"
-        confirmText="확인"
+        title="라이선스 수정 실패"
         cancelDisabled
-        content={<p>{errMessage}</p>}
+        content={<p className="text-center">{errMessage}</p>}
         onConfirm={() => {
           setErrMessage("");
           onClose();
@@ -50,89 +69,43 @@ export const SuccessCreateLicenseDialog = ({
     );
   }
 
-  return (
-    <ConfirmDialog
-      open
-      title="라이선스 등록 성공"
-      confirmText="광고주 등록"
-      cancelDisabled
-      content={
-        <div className="text-center">
-          <p>등록이 성공적으로 완료되었습니다.</p>
-          <p>광고주를 등록해주세요.</p>
-        </div>
-      }
-      onConfirm={() => createLicense(licenseInfo)}
-    />
-  );
-};
-
-export const SuccessUpdateLicenseDialog = ({ onConfirm }: Props) => {
-  return (
-    <ConfirmDialog
-      open
-      title="라이선스 등록 성공"
-      confirmText="광고주 등록"
-      cancelDisabled
-      content={<p className="text-center">수정이 성공적으로 완료되었습니다.</p>}
-      onConfirm={onConfirm}
-    />
-  );
-};
-
-type CheckUpdateLicenseDialogProps = {
-  onConfirm: () => void;
-  onClose: () => void;
-  licenseInfo: TLicenseInfo;
-};
-export const CheckUpdateLicenseDialog = ({
-  onConfirm,
-  onClose,
-  licenseInfo,
-}: CheckUpdateLicenseDialogProps) => {
-  const { mutate: createLicense, isPending } = useMuateCreateLicense({
-    onSuccess: () => onConfirm,
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  if (isPending) {
-    return <LoadingUI title="라이선스 수정 중..." />;
+  if (isSuccess) {
+    return (
+      <ConfirmDialog
+        open
+        title=""
+        cancelDisabled
+        content={
+          <p className="text-center">수정이 성공적으로 완료되었습니다.</p>
+        }
+        onConfirm={onClose}
+      />
+    );
   }
 
   return (
     <ConfirmDialog
       open
       cancelDisabled
-      content={
-        <div className="text-center">
-          <p>API 라이선스를 수정하면,</p>
-          <p>이 계정에 등록된 광고주 정보가 초기화됩니다.</p>
-          <br />
-          <p>동기화에는 최대 30분이 소요될 수 있습니다.</p>
-          <p>계속하시겠습니까?</p>
-        </div>
-      }
+      content={dialogContent["check-update"]}
       onConfirm={() => createLicense(licenseInfo)}
       onClose={onClose}
     />
   );
 };
 
-type DeleteLicenseDialogProps = {
-  onConfirm: () => void;
-  onClose: () => void;
-  licenseInfo: TLicenseInfo;
-};
 export const DeleteLicenseDialog = ({
-  onConfirm,
   onClose,
   licenseInfo,
-}: DeleteLicenseDialogProps) => {
+}: PropsWithInfo) => {
   const { mutate: deleteLicense, isPending } = useMuateDeleteLicense({
-    onSuccess: () => onConfirm,
+    onSuccess: () => onClose,
   });
+
+  const handleDelete = () => {
+    deleteLicense(licenseInfo);
+    onClose();
+  };
 
   if (isPending) {
     return <LoadingUI title="라이선스 삭제 중..." />;
@@ -143,38 +116,9 @@ export const DeleteLicenseDialog = ({
       title="라이선스 삭제"
       confirmText="삭제"
       cancelDisabled
-      content={
-        <div className="text-center">
-          <p>API 라이선스를 삭제 시,</p>
-          <p>이 계정에 등록된 모든 광고주 정보가 초기화 됩니다.</p>
-          <br />
-          <p>동기화에는 최대 30분이 소요될 수 있습니다.</p>
-          <p>계속하시겠습니까?</p>
-        </div>
-      }
-      onConfirm={() =>
-        deleteLicense({
-          agentId: licenseInfo.agentId,
-          userId: licenseInfo.userId,
-        })
-      }
+      onConfirm={handleDelete}
       onClose={onClose}
-    />
-  );
-};
-
-type NoLicenseDialogProps = {
-  onClose: () => void;
-};
-export const NoLicenseDialog = ({ onClose }: NoLicenseDialogProps) => {
-  return (
-    <ConfirmDialog
-      open
-      title="라이선스 미등록"
-      confirmText="확인"
-      cancelDisabled
-      onConfirm={onClose}
-      content={<p>라이선스를 먼저 등록해주세요.</p>}
+      content={<p className="text-center">삭제가 성공적으로 완료되었습니다.</p>}
     />
   );
 };
