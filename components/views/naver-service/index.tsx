@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import AdvertiserSection from "./AdvertiserSection";
-import LicenseSection from "./LicenseSection";
-import { NoLicenseDialog } from "./dialog";
+import AdvertiserView from "./AdvertiserView";
+import LicenseView from "./LicenseView";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
-
 import { TabSwitch } from "@/components/composite/tab-switch";
+import { ConfirmDialog } from "@/components/composite/modal-components";
+import LoadingUI from "@/components/common/Loading";
 
 import { getAgentsUserLicense } from "@/services/license";
 
-import type { TResponseLicense } from "@/types/api/license";
+import { dialogContent } from "./constants";
 
 export type TLicenseInfo = {
   userId: number;
@@ -27,12 +27,12 @@ const NaverServiceView = () => {
   const { data: session } = useSession();
 
   const [isCustomerStep, setIsCustomerStep] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
   const [isNoLicenseDialogOpen, setIsNoLicenseDialogOpen] = useState(false);
 
   const handleChangeStep = (value: boolean) => {
     if (value) {
-      // TODO : api 정상 동작하면 그때 적용
       if (!licenseInfo) {
         setIsNoLicenseDialogOpen(true);
         return;
@@ -45,28 +45,47 @@ const NaverServiceView = () => {
     }
   };
 
+  const fetchLicenseInfo = async () => {
+    if (!session?.user) return;
+    const { agentId, userId } = session.user;
+    try {
+      setIsLoading(true);
+      const res = await getAgentsUserLicense(
+        agentId.toString(),
+        userId.toString()
+      );
+      setLicenseInfo({
+        userId: res.userId,
+        agentId: agentId,
+        customerId: res.customerId,
+        apiKey: res.accessLicense,
+        secretKey: res.secretKey,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (session?.user) {
-      const { agentId, userId } = session.user;
-      getAgentsUserLicense(agentId.toString(), userId.toString()).then(
-        (res) => {
-          console.log(res);
-          setLicenseInfo({
-            userId: res.userId,
-            agentId: agentId,
-            customerId: res.customerId,
-            apiKey: res.accessLicense,
-            secretKey: res.secretKey,
-          });
-        }
-      );
+      fetchLicenseInfo();
     }
   }, [session?.user]);
 
   return (
     <div>
+      {isLoading && <LoadingUI title="라이선스 정보 로딩 중..." />}
       {isNoLicenseDialogOpen && (
-        <NoLicenseDialog onClose={() => setIsNoLicenseDialogOpen(false)} />
+        <ConfirmDialog
+          open
+          title="라이선스 미등록"
+          confirmText="확인"
+          cancelDisabled
+          onConfirm={() => setIsNoLicenseDialogOpen(false)}
+          content={dialogContent["no-license"]}
+        />
       )}
       <LabelBullet labelClassName="text-base font-bold">정보 등록</LabelBullet>
       <TabSwitch
@@ -75,8 +94,10 @@ const NaverServiceView = () => {
         leftLabel="API 라이선스 등록"
         rightLabel="광고주 등록"
       />
-      {!isCustomerStep && <LicenseSection licenseInfo={licenseInfo} />}
-      {isCustomerStep && <AdvertiserSection />}
+      {!isCustomerStep && (
+        <LicenseView licenseInfo={licenseInfo} refetch={fetchLicenseInfo} />
+      )}
+      {isCustomerStep && <AdvertiserView />}
     </div>
   );
 };
