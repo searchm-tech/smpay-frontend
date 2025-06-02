@@ -2,8 +2,8 @@ import { TCustomer } from "../license";
 
 // 마케터 API 라이선스 등록 + 수정 (SAG008) request type
 export type TRequestLicenseCreate = {
-  agentId: string;
-  userId: string;
+  agentId: number;
+  userId: number;
   customerId: number;
   apiKey: string;
   secretKey: string;
@@ -19,8 +19,8 @@ export type TResponseLicense = {
 
 // 마케터 API 라이선스 삭제 (SAG011) request type
 export type TRequestLicenseDelete = {
-  agentId: string;
-  userId: string;
+  agentId: number;
+  userId: number;
 };
 
 // 광고주 리스트 조회 (SAG012) response type
