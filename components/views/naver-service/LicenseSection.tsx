@@ -27,6 +27,7 @@ import {
 } from "./dialog";
 
 import type { TLicenseInfo } from "./index";
+import { useSession } from "next-auth/react";
 
 type Props = {
   licenseInfo: TLicenseInfo | null;
@@ -38,6 +39,7 @@ const formSchema = z.object({
 });
 
 const LicenseSection = ({ licenseInfo }: Props) => {
+  const { data: session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,6 +53,8 @@ const LicenseSection = ({ licenseInfo }: Props) => {
 
   const [isSuccessUpdate, setIsSuccessUpdate] = useState(false);
 
+  const [createLicenseInfo, setCreateLicenseInfo] =
+    useState<TLicenseInfo | null>(null);
   const [deleteLicenseInfo, setDeleteLicenseInfo] =
     useState<TLicenseInfo | null>(null);
   const [editLicenseInfo, setEditLicenseInfo] = useState<TLicenseInfo | null>(
@@ -69,7 +73,16 @@ const LicenseSection = ({ licenseInfo }: Props) => {
         secretKey: data.secretKey,
       });
     } else {
+      if (!session?.user) return;
+      const { agentId, userId } = session?.user;
       setIsSuccessCreate(true);
+      setCreateLicenseInfo({
+        userId: userId,
+        agentId: agentId,
+        customerId: Number(data.customerId),
+        apiKey: data.accessKey,
+        secretKey: data.secretKey,
+      });
       console.log("create");
     }
   };
@@ -86,9 +99,16 @@ const LicenseSection = ({ licenseInfo }: Props) => {
 
   return (
     <section className="p-4">
-      {isSuccessCreate && (
+      {!!createLicenseInfo && (
         <SuccessCreateLicenseDialog
-          onConfirm={() => setIsSuccessCreate(false)}
+          licenseInfo={createLicenseInfo}
+          onConfirm={() => {
+            setIsSuccessCreate(true);
+            setCreateLicenseInfo(null);
+          }}
+          onClose={() => {
+            setCreateLicenseInfo(null);
+          }}
         />
       )}
       {!!editLicenseInfo && (
@@ -109,12 +129,6 @@ const LicenseSection = ({ licenseInfo }: Props) => {
           licenseInfo={deleteLicenseInfo}
           onConfirm={() => setDeleteLicenseInfo(null)}
           onClose={() => setDeleteLicenseInfo(null)}
-        />
-      )}
-
-      {isSuccessUpdate && (
-        <SuccessUpdateLicenseDialog
-          onConfirm={() => setIsSuccessUpdate(false)}
         />
       )}
 
