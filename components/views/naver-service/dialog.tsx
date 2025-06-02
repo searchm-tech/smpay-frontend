@@ -7,11 +7,49 @@ import {
 
 import Image from "next/image";
 import { TLicenseInfo } from ".";
+import { ApiError } from "@/lib/api";
+import { useState } from "react";
 
 type Props = {
   onConfirm: () => void;
+  onClose: () => void;
+  licenseInfo: TLicenseInfo;
 };
-export const SuccessCreateLicenseDialog = ({ onConfirm }: Props) => {
+export const SuccessCreateLicenseDialog = ({
+  onConfirm,
+  onClose,
+  licenseInfo,
+}: Props) => {
+  const [errMessage, setErrMessage] = useState("");
+  const { mutate: createLicense, isPending } = useMuateCreateLicense({
+    onSuccess: () => onConfirm,
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        setErrMessage(error.message);
+      }
+    },
+  });
+
+  if (isPending) {
+    return <LoadingUI title="라이선스 등록 중..." />;
+  }
+
+  if (errMessage) {
+    return (
+      <ConfirmDialog
+        open
+        title="라이선스 등록 실패"
+        confirmText="확인"
+        cancelDisabled
+        content={<p>{errMessage}</p>}
+        onConfirm={() => {
+          setErrMessage("");
+          onClose();
+        }}
+      />
+    );
+  }
+
   return (
     <ConfirmDialog
       open
@@ -24,7 +62,7 @@ export const SuccessCreateLicenseDialog = ({ onConfirm }: Props) => {
           <p>광고주를 등록해주세요.</p>
         </div>
       }
-      onConfirm={onConfirm}
+      onConfirm={() => createLicense(licenseInfo)}
     />
   );
 };
@@ -54,6 +92,9 @@ export const CheckUpdateLicenseDialog = ({
 }: CheckUpdateLicenseDialogProps) => {
   const { mutate: createLicense, isPending } = useMuateCreateLicense({
     onSuccess: () => onConfirm,
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   if (isPending) {

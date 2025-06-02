@@ -27,24 +27,18 @@ const NaverServiceView = () => {
   const { data: session } = useSession();
 
   const [isCustomerStep, setIsCustomerStep] = useState(false);
-  const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>({
-    userId: 1,
-    agentId: 1,
-    customerId: 0,
-    apiKey: "",
-    secretKey: "",
-  });
+  const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
   const [isNoLicenseDialogOpen, setIsNoLicenseDialogOpen] = useState(false);
 
   const handleChangeStep = (value: boolean) => {
     if (value) {
       // TODO : api 정상 동작하면 그때 적용
-      // if (!licenseInfo) {
-      //   setIsNoLicenseDialogOpen(true);
-      //   return;
-      // } else {
-      //   setIsCustomerStep(true);
-      // }
+      if (!licenseInfo) {
+        setIsNoLicenseDialogOpen(true);
+        return;
+      } else {
+        setIsCustomerStep(true);
+      }
       setIsCustomerStep(true);
     } else {
       setIsCustomerStep(false);
@@ -52,15 +46,21 @@ const NaverServiceView = () => {
   };
 
   useEffect(() => {
-    // TODO : api 정상 동작하면 그때 적용
-    // if (session?.user) {
-    //   const { agentId, userId } = session.user;
-    //   getAgentsUserLicense(agentId.toString(), userId.toString()).then(
-    //     (res) => {
-    //       setLicenseInfo(res);
-    //     }
-    //   );
-    // }
+    if (session?.user) {
+      const { agentId, userId } = session.user;
+      getAgentsUserLicense(agentId.toString(), userId.toString()).then(
+        (res) => {
+          console.log(res);
+          setLicenseInfo({
+            userId: res.userId,
+            agentId: agentId,
+            customerId: res.customerId,
+            apiKey: res.accessLicense,
+            secretKey: res.secretKey,
+          });
+        }
+      );
+    }
   }, [session?.user]);
 
   return (
