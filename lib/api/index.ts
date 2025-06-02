@@ -91,6 +91,10 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// 토큰 갱신 중복 방지를 위한 변수들
+let isRefreshing = false;
+let refreshTokenPromise: Promise<any> | null = null;
+
 // 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
   (response) => {
@@ -105,38 +109,53 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.data?.code === "70") {
-      try {
-        const { refreshToken, setTokens } = useSessionStore.getState();
-        if (refreshToken) {
-          try {
-            const res = await postRefreshTokenApi({
-              refreshToken,
-            });
+      const { refreshToken, setTokens } = useSessionStore.getState();
 
-            setTokens(res.accessToken.token, res.refreshToken.token);
-            // TODO : 안되면 아래 코드 사용
-            // const newConfig = {
-            //   ...error.config,
-            //   headers: {
-            //     ...error.config.headers,
-            //     Authorization: `Bearer ${res.accessToken.token}`,
-            //   },
-            // };
-            return apiClient.request(error.config);
-          } catch (err) {
-            const { clearSession } = useSessionStore.getState();
-            await signOut({ callbackUrl: "/sign-in" });
-            clearSession();
-            return Promise.reject(err);
-          }
-        }
-      } catch (refreshError) {
+      if (!refreshToken) {
         const { clearSession } = useSessionStore.getState();
         await signOut({ callbackUrl: "/sign-in" });
         clearSession();
+        return Promise.reject(error);
+      }
+
+      // 이미 토큰 갱신 중이면 기존 Promise를 재사용
+      if (isRefreshing && refreshTokenPromise) {
+        try {
+          await refreshTokenPromise;
+          // 토큰 갱신이 완료되면 원래 요청을 재시도
+          return apiClient.request(error.config);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+
+      // 토큰 갱신 시작
+      isRefreshing = true;
+      refreshTokenPromise = postRefreshTokenApi({ refreshToken })
+        .then((res) => {
+          setTokens(res.accessToken.token, res.refreshToken.token);
+          return res;
+        })
+        .catch(async (err) => {
+          const { clearSession } = useSessionStore.getState();
+          await signOut({ callbackUrl: "/sign-in" });
+          clearSession();
+          throw err;
+        })
+        .finally(() => {
+          isRefreshing = false;
+          refreshTokenPromise = null;
+        });
+
+      try {
+        await refreshTokenPromise;
+        // 토큰 갱신 성공 시 원래 요청 재시도
+        return apiClient.request(error.config);
+      } catch (refreshError) {
         return Promise.reject(refreshError);
       }
     }
+
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
       throw new ApiError(code, message, result);
