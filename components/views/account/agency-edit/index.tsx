@@ -99,6 +99,8 @@ const AgencyEditView = ({ id }: { id: string }) => {
     }
   }, [data, form]);
 
+  console.log("data", data);
+
   return (
     <div className="py-4">
       {(isLoadingDetail || isPendingUpdate) && <LoadingUI />}

@@ -37,16 +37,12 @@ const AdminView = ({ userId }: Props) => {
     data: adminUserInfo,
     isLoading,
     refetch,
-  } = useQueryAdminUserInfo({
-    userId,
-    isAdmin: true,
-  });
+  } = useQueryAdminUserInfo({ userId });
 
-  const { mutate: patchUserInfo, isPending: isPatchUserInfoPending } =
-    useMutationUserInfo({
-      onSuccess: () => setSuccessDialog(true),
-      onError: (error) => setErrorDialog(error.message),
-    });
+  const { mutate: patchUserInfo, isPending } = useMutationUserInfo({
+    onSuccess: () => setSuccessDialog(true),
+    onError: (error) => setErrorDialog(error.message),
+  });
 
   const [errorDialog, setErrorDialog] = useState("");
   const [successDialog, setSuccessDialog] = useState<boolean>(false);
@@ -108,7 +104,7 @@ const AdminView = ({ userId }: Props) => {
   return (
     <div className="my-5">
       {isLoading && <LoadingUI title="회원 정보 조회 중..." />}
-      {isPatchUserInfoPending && <LoadingUI title="회원 정보 수정 중..." />}
+      {isPending && <LoadingUI title="회원 정보 수정 중..." />}
 
       <div className="space-y-1">
         <LabelBullet labelClassName="text-base font-bold">
