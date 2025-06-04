@@ -96,7 +96,7 @@ export const getUserInfoApi = async (
   }
 };
 
-// 관리자 회원 정보 조회
+// 관리자 본인 회원 정보 조회 (AAG016)
 export const getAdminUserInfoApi = async (
   userId: number
 ): Promise<TSMPayUser> => {

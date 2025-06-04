@@ -49,10 +49,13 @@ const SMPayManagementView = () => {
       pagination: {
         ...prev.pagination,
         current: 1,
+        pageSize: 10,
+        total: response?.total || 0,
       },
     }));
   };
 
+  // TODO : 페이지네이션 관련 테스트 확인 필요
   const onSearch = (keyword: string) => {
     setSearch(keyword);
     setSelectedStatus("ALL");
@@ -61,6 +64,8 @@ const SMPayManagementView = () => {
       pagination: {
         ...prev.pagination,
         current: 1,
+        pageSize: 10,
+        total: response?.total || 0,
       },
     }));
   };
