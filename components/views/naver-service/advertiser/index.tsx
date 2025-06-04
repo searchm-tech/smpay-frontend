@@ -12,13 +12,14 @@ import { useQueryAdvertiserList } from "@/hooks/queries/advertiser";
 
 import type { TableParams } from "@/types/table";
 import type { AdvertiserOrderType } from "@/types/adveriser";
+import type { UserWithUniqueCode } from "@/types/next-auth";
 
 export interface TableParamsAdvertiser extends TableParams {
   keyword: string;
   sortField?: AdvertiserOrderType;
 }
 
-const AdvertiserView = () => {
+const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
   const { data: session } = useSession();
 
   const [search, setSearch] = useState<string>("");
@@ -41,6 +42,7 @@ const AdvertiserView = () => {
       <SearchSection onSearch={setSearch} />
 
       <TableSection
+        user={user}
         dataSource={dataSource?.content || []}
         isLoading={isLoadingAgencys}
         tableParams={tableParams}

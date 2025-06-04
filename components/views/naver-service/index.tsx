@@ -97,7 +97,7 @@ const NaverServiceView = () => {
       {!isAdvertiserStep && (
         <LicenseView licenseInfo={licenseInfo} refetch={fetchLicenseInfo} />
       )}
-      {isAdvertiserStep && <AdvertiserView />}
+      {isAdvertiserStep && <AdvertiserView user={session?.user} />}
     </div>
   );
 };

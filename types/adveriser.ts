@@ -47,3 +47,6 @@ export type AdvertiserOrderType =
   | "ADVERTISER_REGISTER_TIME_DESC";
 
 export type TSyncType = "SYNC" | "UNSYNC" | "FAIL";
+
+export type AdvertiserSyncStatus = "IN_PROGRESS" | "BEFORE_PROGRESS" | "DONE";
+// BEFORE_PROGRESS: 작업 실행 전, IN_PROGRESS: 작업 중, DONE: 작업 완료
