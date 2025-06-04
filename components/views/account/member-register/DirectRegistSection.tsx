@@ -29,11 +29,13 @@ import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 import { getIsAdmin } from "@/lib/utils";
 
+import { DialogContent, type DialogContentType } from "./constant";
+
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
 import type { TViewProps } from ".";
-import { DialogContent, DialogContentType } from "./constant";
-import {
+
+import type {
   RequestAgencyGroupMasterDirect,
   RequestMemberDirect,
 } from "@/types/api/user";
