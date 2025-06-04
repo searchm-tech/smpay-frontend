@@ -78,28 +78,38 @@ const SignInView = ({ code }: SignInViewProps) => {
         password: values.password,
       });
 
-      if (response?.user) {
-        const user: TSMPayUser = {
-          id: response.user.userId,
-          userId: response.user.userId,
-          agentId: response.user.agentId,
-          status: response.user.status,
-          type: response.user.type,
-          name: response.user.name,
-          phoneNumber: response.user.phoneNumber,
-          loginId: response.user.loginId,
+      console.log("response", response);
+
+      if (response?.userWithToken) {
+        const {
+          user: userData,
+          accessToken,
+          refreshToken,
+        } = response.userWithToken;
+        const { uniqueCode } = response.agent;
+
+        const user: TSMPayUser & { uniqueCode: string } = {
+          id: userData.userId,
+          userId: userData.userId,
+          agentId: userData.agentId,
+          status: userData.status,
+          type: userData.type,
+          name: userData.name,
+          phoneNumber: userData.phoneNumber,
+          loginId: userData.loginId,
+          uniqueCode: uniqueCode,
         };
 
         // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
           ...user,
-          accessToken: response.accessToken.token,
-          refreshToken: response.refreshToken.token,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
           callbackUrl: "/sm-pay/management",
         });
 
-        setAccessToken(response.accessToken.token);
-        setRefreshToken(response.refreshToken.token);
+        setAccessToken(accessToken.token);
+        setRefreshToken(refreshToken.token);
       }
     } catch (error) {
       console.error("onSubmit error", error);

@@ -25,6 +25,7 @@ const handler = NextAuth({
           phoneNumber: c.phoneNumber,
           accessToken: c.accessToken,
           refreshToken: c.refreshToken,
+          uniqueCode: c.uniqueCode,
         };
       },
     }),
