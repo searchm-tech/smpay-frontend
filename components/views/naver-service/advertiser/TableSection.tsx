@@ -1,18 +1,27 @@
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import Table from "@/components/composite/table";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { formatDate } from "@/utils/format";
-import { syncTypeMap } from "../constants";
+import { dialogContent, syncTypeMap } from "../constants";
+
+import { useMutateAdvertiserSyncJobStatus } from "@/hooks/queries/advertiser";
+import { useMutateAdvertiserSync } from "@/hooks/queries/advertiser";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
+import type { UserWithUniqueCode } from "@/types/next-auth";
+
 import type { TableParamsAdvertiser } from ".";
+import LoadingUI from "@/components/common/Loading";
 
 type TableSectionProps = {
+  user?: UserWithUniqueCode;
   dataSource: TAdvertiser[];
   isLoading: boolean;
   tableParams: TableParamsAdvertiser;
@@ -21,13 +30,34 @@ type TableSectionProps = {
 };
 
 const TableSection = ({
+  user,
   dataSource,
   isLoading,
   tableParams,
   setTableParams,
   total,
 }: TableSectionProps) => {
+  // 1-1. 동기화 하기 전, 작업 상태 변경
+  const {
+    mutate: mutateAdvertiserSyncJobStatus,
+    isPending: isPendingAdvertiserSyncJobStatus,
+  } = useMutateAdvertiserSyncJobStatus({
+    onSuccess: () => {
+      mutateAdvertiserSync({
+        agentId: user?.agentId ?? 0,
+        userId: user?.userId ?? 0,
+        advertiserIds: selectedRowKeys.map((id) => Number(id)),
+      });
+    },
+    onError: (error) => setMessage(error.message),
+  });
+
+  // 1-2. 작업 상태 변경 후, 바로 동기화 작업 실행
+  const { mutate: mutateAdvertiserSync } = useMutateAdvertiserSync();
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [errorMessage, setMessage] = useState<string>("");
+  const [isSuccessSync, setIsSuccessSync] = useState<boolean>(false);
 
   const rowSelection = {
     selectedRowKeys,
@@ -116,8 +146,6 @@ const TableSection = ({
       }
     }
 
-    console.log("sortField", sortField);
-
     setTableParams({
       pagination: {
         current: pagination.current ?? 1,
@@ -130,8 +158,78 @@ const TableSection = ({
     });
   };
 
+  const handleSyncAdvertiser = () => {
+    if (!user) return;
+
+    if (selectedRowKeys.length === 0) {
+      setMessage("등록할 광고주를 선택해주세요.");
+      return;
+    }
+
+    const { agentId, userId } = user;
+
+    mutateAdvertiserSyncJobStatus({
+      agentId,
+      userId,
+      jobList: selectedRowKeys.map((id) => ({
+        advertiserId: Number(id),
+        status: "IN_PROGRESS",
+      })),
+    });
+    setIsSuccessSync(true);
+  };
+
+  const handleSyncAllAdvertiser = () => {
+    if (!user) return;
+    if (dataSource.length === 0) {
+      setMessage("등록할 광고주가 없습니다.");
+      return;
+    }
+
+    const { agentId, userId } = user;
+
+    mutateAdvertiserSyncJobStatus({
+      agentId,
+      userId,
+      jobList: dataSource.map((advertiser) => ({
+        advertiserId: advertiser.advertiserId,
+        status: "IN_PROGRESS",
+      })),
+    });
+    setIsSuccessSync(true);
+  };
+
   return (
     <section className="mt-4">
+      {isPendingAdvertiserSyncJobStatus && (
+        <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />
+      )}
+      {isSuccessSync && (
+        <ConfirmDialog
+          open
+          title="광고주 등록 완료"
+          confirmText="확인"
+          cancelDisabled
+          onConfirm={() => {
+            setIsSuccessSync(false);
+            setTableParams({
+              ...tableParams,
+              sortField: "ADVERTISER_SYNC_ASC",
+            });
+          }}
+          content={dialogContent["success-sync"]}
+        />
+      )}
+      {errorMessage && (
+        <ConfirmDialog
+          open
+          title="광고주 등록 실패"
+          confirmText="확인"
+          cancelDisabled
+          onConfirm={() => setMessage("")}
+          content={errorMessage}
+        />
+      )}
       <LabelBullet className="text-base mb-2">광고주 등록</LabelBullet>
       <Table<TAdvertiser>
         rowSelection={rowSelection}
@@ -146,6 +244,18 @@ const TableSection = ({
         onChange={handleTableChange}
         loading={isLoading}
       />
+
+      <div className="flex justify-center mt-4 gap-2">
+        <Button className="w-[150px]" onClick={handleSyncAllAdvertiser}>
+          전체 등록
+        </Button>
+        <Button className="w-[150px]" onClick={handleSyncAdvertiser}>
+          선택 등록
+        </Button>
+        <Button className="w-[150px]" variant="secondary">
+          등록 해제
+        </Button>
+      </div>
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { get } from "@/lib/api";
+import { ApiError, get, post } from "@/lib/api";
 import { mockAdvertiserData } from "./mock/advertiser";
 import { buildQueryParams } from "@/lib/utils";
 
@@ -7,6 +7,8 @@ import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import type {
   RequestAdvertiserList,
+  RequestAdvertiserSync,
+  RequestAdvertiserSyncStatus,
   ResponseAdvertiserList,
 } from "@/types/api/advertiser";
 
@@ -193,4 +195,43 @@ export const getAdvertiserList = async (
     `/service/api/v1/agents/${agentId}/users/${userId}/advertiser-list?${queryParams}`
   );
   return response;
+};
+
+// 광고주 데이터 동기화 작업 상태 변경 (SAG015)
+// Description :동기화 하기전, IN_PROGRESS 상태로 변경하여, 진행중으로 만들고, 서버에서 성공하면 동기화 api 실행할 것
+export const postAdvertiserSyncJobStatus = async (
+  params: RequestAdvertiserSyncStatus
+) => {
+  try {
+    const { agentId, userId, jobList } = params;
+
+    const response: null = await post(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertiser/sync/job-status`,
+      jobList
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 광고주 데이터 동기화 (SAG013)
+export const postAdvertiserSync = async (params: RequestAdvertiserSync) => {
+  const { agentId, userId, advertiserIds } = params;
+
+  try {
+    const response: null = await post(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertiser/sync`,
+      { advertiserIds }
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
 };
