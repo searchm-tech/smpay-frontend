@@ -8,7 +8,10 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import { formatDate } from "@/utils/format";
 import { dialogContent, syncTypeMap } from "../constants";
 
-import { useMutateAdvertiserSyncJobStatus } from "@/hooks/queries/advertiser";
+import {
+  useMuateDeleteAdvertiserSync,
+  useMutateAdvertiserSyncJobStatus,
+} from "@/hooks/queries/advertiser";
 import { useMutateAdvertiserSync } from "@/hooks/queries/advertiser";
 
 import type { TableProps } from "antd";
@@ -18,6 +21,7 @@ import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
 
 import type { TableParamsAdvertiser } from ".";
+import { SyncFailDialog, type SyncFail } from "../dialog";
 import LoadingUI from "@/components/common/Loading";
 
 type TableSectionProps = {
@@ -27,6 +31,7 @@ type TableSectionProps = {
   tableParams: TableParamsAdvertiser;
   setTableParams: (params: TableParamsAdvertiser) => void;
   total: number;
+  refetch: () => void;
 };
 
 const TableSection = ({
@@ -36,6 +41,7 @@ const TableSection = ({
   tableParams,
   setTableParams,
   total,
+  refetch,
 }: TableSectionProps) => {
   // 1-1. 동기화 하기 전, 작업 상태 변경
   const {
@@ -55,9 +61,20 @@ const TableSection = ({
   // 1-2. 작업 상태 변경 후, 바로 동기화 작업 실행
   const { mutate: mutateAdvertiserSync } = useMutateAdvertiserSync();
 
+  // 2. 광고주 데이터 동기화 해제
+  const { mutate: mutateDeleteAdvertiserSync } = useMuateDeleteAdvertiserSync({
+    onSuccess: () => {
+      setMessage("광고주 등록 해제 완료");
+      refetch();
+      setSelectedRowKeys([]);
+    },
+    onError: (error) => setMessage(error.message),
+  });
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [errorMessage, setMessage] = useState<string>("");
   const [isSuccessSync, setIsSuccessSync] = useState<boolean>(false);
+  const [failDialogInfo, setFailDialogInfo] = useState<SyncFail | null>(null);
 
   const rowSelection = {
     selectedRowKeys,
@@ -101,9 +118,21 @@ const TableSection = ({
       dataIndex: "syncType",
       sorter: true,
       align: "center",
-      render: (value: TSyncType) => {
+      render: (value: TSyncType, record: TAdvertiser) => {
         if (value === "FAIL") {
-          return <p className="text-[#007AFF] cursor-pointer">실패</p>;
+          return (
+            <p
+              className="text-[#007AFF] cursor-pointer"
+              onClick={() => {
+                setFailDialogInfo({
+                  date: record.registerOrUpdateDt,
+                  reason: record.description,
+                });
+              }}
+            >
+              동기화 실패
+            </p>
+          );
         }
         return <p>{syncTypeMap[value]}</p>;
       },
@@ -199,6 +228,31 @@ const TableSection = ({
     setIsSuccessSync(true);
   };
 
+  const handleDeleteAdvertiserSync = () => {
+    if (!user) return;
+    if (selectedRowKeys.length === 0) {
+      setMessage("등록할 광고주를 선택해주세요.");
+      return;
+    }
+
+    const findSyncedAdvertiser = dataSource.find(
+      (advertiser) =>
+        advertiser.syncType === "UNSYNC" &&
+        selectedRowKeys.includes(advertiser.advertiserId)
+    );
+
+    if (findSyncedAdvertiser) {
+      setMessage("동기화 된 광고주만 해제할 수 있습니다.");
+      return;
+    }
+
+    mutateDeleteAdvertiserSync({
+      agentId: user.agentId,
+      userId: user.userId,
+      advertiserIds: selectedRowKeys.map((id) => Number(id)),
+    });
+  };
+
   return (
     <section className="mt-4">
       {isPendingAdvertiserSyncJobStatus && (
@@ -212,10 +266,8 @@ const TableSection = ({
           cancelDisabled
           onConfirm={() => {
             setIsSuccessSync(false);
-            setTableParams({
-              ...tableParams,
-              sortField: "ADVERTISER_SYNC_ASC",
-            });
+            refetch();
+            setSelectedRowKeys([]);
           }}
           content={dialogContent["success-sync"]}
         />
@@ -230,6 +282,14 @@ const TableSection = ({
           content={errorMessage}
         />
       )}
+
+      {failDialogInfo && (
+        <SyncFailDialog
+          data={failDialogInfo}
+          onClose={() => setFailDialogInfo(null)}
+        />
+      )}
+
       <LabelBullet className="text-base mb-2">광고주 등록</LabelBullet>
       <Table<TAdvertiser>
         rowSelection={rowSelection}
@@ -252,7 +312,11 @@ const TableSection = ({
         <Button className="w-[150px]" onClick={handleSyncAdvertiser}>
           선택 등록
         </Button>
-        <Button className="w-[150px]" variant="secondary">
+        <Button
+          className="w-[150px]"
+          variant="secondary"
+          onClick={handleDeleteAdvertiserSync}
+        >
           등록 해제
         </Button>
       </div>

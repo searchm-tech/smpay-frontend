@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
-
+import { Descriptions } from "@/components/composite/description-components";
 import {
   useMuateCreateLicense,
   useMuateDeleteLicense,
@@ -12,6 +12,7 @@ import { ApiError } from "@/lib/api";
 
 import { dialogContent } from "./constants";
 import type { TLicenseInfo } from ".";
+import { formatDate } from "@/utils/format";
 
 type Props = {
   onConfirm: () => void;
@@ -156,6 +157,36 @@ export const CreateLicTipDialog = ({ onClose }: CreateLicTipDialogProps) => {
             height={320}
           />
         </div>
+      </div>
+    </Modal>
+  );
+};
+
+export type SyncFail = {
+  date: string;
+  reason: string;
+};
+
+type SyncFailDialogProps = {
+  onClose: () => void;
+  data: SyncFail;
+};
+export const SyncFailDialog = ({ data, onClose }: SyncFailDialogProps) => {
+  return (
+    <Modal
+      open
+      title="광고 데이터 동기화 실패"
+      cancelDisabled
+      onClose={onClose}
+      onConfirm={onClose}
+    >
+      <div className="w-[500px]">
+        <Descriptions columns={1}>
+          <Descriptions.Item label="동기화 실패 일시">
+            {formatDate(data.date)}
+          </Descriptions.Item>
+          <Descriptions.Item label="실패 사유">{data.reason}</Descriptions.Item>
+        </Descriptions>
       </div>
     </Modal>
   );
