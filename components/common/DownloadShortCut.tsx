@@ -28,8 +28,6 @@ const ShortcutButton = ({ code }: Props) => {
     URL.revokeObjectURL(link.href);
   };
 
-  if (!agencyInfo) return null;
-
   return (
     <Fragment>
       {error && (

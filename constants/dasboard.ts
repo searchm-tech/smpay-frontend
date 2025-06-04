@@ -73,7 +73,7 @@ export const DASHBOARD_ITEMS_AGENCY = [
     ],
   },
   {
-    title: "계정 관리",
+    title: "계정관리",
     url: "/account",
     icon: Smile,
     isActive: true,
@@ -112,7 +112,7 @@ export const DASHBOARD_ITEMS_ADMIN = [
     ],
   },
   {
-    title: "계정 관리",
+    title: "계정관리",
     url: "/account",
     icon: Smile,
     isActive: true,

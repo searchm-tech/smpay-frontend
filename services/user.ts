@@ -78,7 +78,7 @@ export const postAgentsUsersPwApi = async (
   }
 };
 
-// 회원 정보 조회
+// 회원 정보 조회 (SAG001)
 export const getUserInfoApi = async (
   params: RequestUserInfo
 ): Promise<TUserInfoResponse> => {
