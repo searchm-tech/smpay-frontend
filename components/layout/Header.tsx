@@ -40,7 +40,9 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        {session?.user && <ShortcutButton url="https://www.google.com" />}
+        {session?.user.uniqueCode && (
+          <ShortcutButton code={session.user.uniqueCode} />
+        )}
         {labelType && <Badge label={labelType} color="#EB680E" />}
         <Link href="/support">고객센터</Link>
         <Separator orientation="vertical" className="bg-gray-300 w-[1px] h-3" />
