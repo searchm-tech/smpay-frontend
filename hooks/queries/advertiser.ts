@@ -2,6 +2,7 @@ import {
   useMutation,
   useQuery,
   UseMutationOptions,
+  UseQueryOptions,
 } from "@tanstack/react-query";
 import {
   fetchAdvertisers,
@@ -10,9 +11,15 @@ import {
   updateAdvertiser,
   SendAdvertiserAgreementParams,
   sendAdvertiserAgreement,
+  getAdvertiserList,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
 import type { AdvertiserData } from "@/types/adveriser";
+
+import type {
+  RequestAdvertiserList,
+  ResponseAdvertiserList,
+} from "@/types/api/advertiser";
 
 export const useAdvertiserList = (params: FetchAdvertiserParams) => {
   return useQuery({
@@ -91,6 +98,21 @@ export const useMutateSendAdvertiserAgreement = (
   return useMutation({
     mutationFn: (params: SendAdvertiserAgreementParams) =>
       sendAdvertiserAgreement(params),
+    ...options,
+  });
+};
+
+// ---- 실제 react-query 사용 코드 ----
+
+// 광고주 리스트 페이지네이션 조회 (SAG012) query
+export const useQueryAdvertiserList = (
+  params: RequestAdvertiserList,
+  options?: UseQueryOptions<ResponseAdvertiserList, Error>
+) => {
+  return useQuery({
+    queryKey: ["advertiserList", params],
+    queryFn: () => getAdvertiserList(params),
+    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };

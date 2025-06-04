@@ -1,3 +1,4 @@
+// TODO : 삭제  - 광고주 목록 조회 api
 export type TCustomer = {
   advertiserId: number;
   customerId: number;
@@ -10,4 +11,5 @@ export type TCustomer = {
   registerOrUpdateDt: string;
 };
 
+// TODO : 삭제  - 광고주 목록 조회 api
 export type TSyncType = "SYNC" | "UNSYNC" | "FAIL";

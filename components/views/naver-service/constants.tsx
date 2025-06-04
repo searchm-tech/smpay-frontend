@@ -1,3 +1,5 @@
+import type { TableParamsAdvertiser } from "./advertiser";
+
 export interface AdvertiserData {
   key: number;
   customerId: string;
@@ -158,4 +160,22 @@ export const dialogContent = {
   ),
 
   "no-license": <p className="text-center">라이선스를 먼저 등록해주세요.</p>,
+};
+
+export const syncTypeMap = {
+  SYNC: "동기화",
+  UNSYNC: "비동기화",
+  FAIL: "동기화 실패",
+};
+
+export const defaultTableParams: TableParamsAdvertiser = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  filters: {},
+  sortField: "ADVERTISER_REGISTER_TIME_DESC",
+  sortOrder: "ascend",
+  keyword: "",
 };

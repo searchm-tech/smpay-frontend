@@ -59,7 +59,7 @@ export const CreateGuideSection = () => {
             <h3 className="font-semibold mb-2 text-sm md:text-base">
               마케터 API 라이선스 등록
             </h3>
-            <p className="text-xs md:text-sm text-gray-600">
+            <p className="text-xs md:text-sm text-gray-600 cursor-pointer">
               <span className="mr-1">API 라이선스는</span>
               <span
                 className="text-blue-600 border-b border-blue-600 cursor-pointer"
@@ -103,11 +103,15 @@ export const CreateGuideSection = () => {
 };
 
 export const AdvertiserGuideSection = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  {
+    isOpen && <CreateLicTipDialog onClose={() => setIsOpen(false)} />;
+  }
+
   return (
     <div className="mx-auto px-4 py-8 mb-8">
-      <h1 className="text-lg font-semibold mb-8 text-center">
-        서비스 신청 방법
-      </h1>
+      <h1 className="text-lg font-semibold mb-8 text-center">등록 TIP!</h1>
 
       <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-16">
         <div className="flex flex-col items-center h-[250px] w-[280px] lg:w-[320px]">

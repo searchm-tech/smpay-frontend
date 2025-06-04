@@ -24,3 +24,26 @@ export type AdvertiserStatus =
   | "REVIEW_APPROVED" // 심사 승인
   | "REVIEW_REJECTED"; // 심사 반려 (신청 가능)
 
+export type TAdvertiser = {
+  advertiserId: number;
+  customerId: number;
+  id: string;
+  nickname: string;
+  name: string;
+  isAdvertiserRegister: boolean;
+  syncType: TSyncType;
+  description: string;
+  registerOrUpdateDt: string;
+};
+
+export type AdvertiserOrderType =
+  | "ADVERTISER_ID_ASC"
+  | "ADVERTISER_ID_DESC"
+  | "ADVERTISER_REGISTER_ASC"
+  | "ADVERTISER_REGISTER_DESC"
+  | "ADVERTISER_SYNC_ASC"
+  | "ADVERTISER_SYNC_DESC"
+  | "ADVERTISER_REGISTER_TIME_ASC"
+  | "ADVERTISER_REGISTER_TIME_DESC";
+
+export type TSyncType = "SYNC" | "UNSYNC" | "FAIL";
