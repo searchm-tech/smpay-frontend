@@ -1,8 +1,8 @@
-import type { TAgency2, TAgencyStatus } from "@/types/agency";
+import type { TAgency, TAgencyData, TAgencyStatus } from "@/types/agency";
 
 // 대행사 페이지네이션 리스트 조회 응답 타입
 export type ResponseAgencys = {
-  content: TAgency2[];
+  content: TAgencyData[];
   page: number;
   size: number;
   totalCount: number;
@@ -76,4 +76,20 @@ export type ResponseDuplicate = {
 export type RequestAgencyStatus = {
   agentId: number;
   status: TAgencyStatus;
+};
+
+// 대행사 단일 정보 조회 response type
+export type ResponseAgencyDetail = {
+  agent: TAgency;
+  agentBills: ResponseAgencyBills[];
+};
+
+// 대행사 정보 수정 request type
+export type RequestPutAgencyBill = {
+  agentId: number;
+  bills: {
+    name: string;
+    phoneNumber: string;
+    emailAddress: string;
+  }[];
 };

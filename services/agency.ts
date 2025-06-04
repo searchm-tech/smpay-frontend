@@ -1,6 +1,5 @@
-import { get, ApiError, post, patch, put } from "@/lib/api";
+import { get, ApiError, post, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
-import { agencyData as mockAgencyData } from "@/services/mock/agency";
 
 import type { TAgency } from "@/types/agency";
 import type {
@@ -10,50 +9,11 @@ import type {
   RequestAgencyRegister,
   ResponseAgencyRegister,
   RequestAgencyStatus,
+  ResponseAgencyDetail,
+  RequestPutAgencyBill,
 } from "@/types/api/agency";
 
-// TODO : 삭제
-export interface AgencyData {
-  id: string;
-  agency: string; // 대행사명
-  code: string; // 대행사 고유코드
-  owner: string; // 대표자명
-  bussiness_num: string; // 사업자 등록 번호
-  company_email_domain: string; // 회사 메일 도메인
-  invoice_manager: string; // 계산서 발행 담당자명
-  invoice_manager_contact: string; // 계산서 발행 담당자 연락처
-  invoice_manager_email: string; // 계산서 발행 담당자 이메일
-  status: boolean;
-  date: string;
-}
-
-// 대행사 상세
-export async function getAgency(id: string): Promise<AgencyData | null> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return mockAgencyData.find((item) => item.id === id) ?? null;
-}
-
-// 대행사 정보 수정
-export async function updateAgency(
-  id: string,
-  data: AgencyData
-): Promise<AgencyData | null> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const index = mockAgencyData.findIndex((item) => item.id === id);
-  if (index !== -1) {
-    mockAgencyData[index] = data;
-
-    return data;
-  }
-
-  return null;
-}
-
-// ---- 실제 API 호출 ----
-
-// 대행사 전체 리스트 조회 API
+// 대행사 전체 리스트 조회 API (AAG012)
 export async function getAgencyAllApi(): Promise<TAgency[]> {
   try {
     const response: TAgency[] = await get("/admin/api/v1/agents/all");
@@ -66,7 +26,7 @@ export async function getAgencyAllApi(): Promise<TAgency[]> {
   }
 }
 
-// 대행사ㅣ 도메인 이름 조회
+// 대행사ㅣ 도메인 이름 조회 (AAG005)
 export const getAgencyDomainNameApi = async (
   code: string
 ): Promise<TAgency> => {
@@ -80,8 +40,6 @@ export const getAgencyDomainNameApi = async (
     throw error;
   }
 };
-
-// ------------ 실제 API 호출 ------------
 
 // 대행사 페이지네이션 리스트 조회 (AAG003)
 export async function getAgencyApi(
@@ -195,3 +153,38 @@ export async function patchAgencyStatus(
     throw error;
   }
 }
+
+// 대행사 단일 정보 조회 (AAG017)
+export async function getAgencyDetail(
+  agentId: number
+): Promise<ResponseAgencyDetail | null> {
+  try {
+    const response: ResponseAgencyDetail = await get(
+      `/admin/api/v1/agents/${agentId}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+}
+
+// 대행사 정보 수정 (AAG002)
+export const putAgencyDetail = async (
+  data: RequestPutAgencyBill
+): Promise<null> => {
+  try {
+    const response: null = await put(
+      `/admin/api/v1/agents/${data.agentId}`,
+      data.bills
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
