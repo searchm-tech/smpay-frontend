@@ -8,7 +8,7 @@ export type TAgency = {
   domainName: string;
 };
 
-export type TAgency2 = {
+export type TAgencyData = {
   id: number;
   agentId: number;
   agentName: string;
