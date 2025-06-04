@@ -6,7 +6,6 @@ import { SearchInput } from "@/components/composite/input-components";
 import { LinkButton } from "@/components/composite/button-components";
 import { SearchBox } from "@/components/common/Box";
 
-// TODO : 타입 모듈화 필요
 type SearchSectionProps = {
   onSearch: (keyword: string) => void;
 };
