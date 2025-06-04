@@ -1,7 +1,15 @@
+import { get } from "@/lib/api";
 import { mockAdvertiserData } from "./mock/advertiser";
+import { buildQueryParams } from "@/lib/utils";
+
 import type { AdvertiserListResponse, TableParams } from "./types";
 import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type {
+  RequestAdvertiserList,
+  ResponseAdvertiserList,
+} from "@/types/api/advertiser";
+
 /**
  * TODO : 삭제  - 광고주 목록 조회 api
  * @param params
@@ -164,4 +172,25 @@ export const sendAdvertiserAgreement = async (
   return {
     success: true,
   };
+};
+
+// --- 실제 API ---
+
+// 광고주 리스트 페이지네이션 조회 (SAG012)
+export const getAdvertiserList = async (
+  params: RequestAdvertiserList
+): Promise<ResponseAdvertiserList> => {
+  const { agentId, userId } = params;
+
+  const queryParams = buildQueryParams({
+    page: params.page,
+    size: params.size,
+    keyword: params.keyword,
+    orderType: params.orderType,
+  });
+
+  const response: ResponseAdvertiserList = await get(
+    `/service/api/v1/agents/${agentId}/users/${userId}/advertiser-list?${queryParams}`
+  );
+  return response;
 };

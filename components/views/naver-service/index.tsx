@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import AdvertiserView from "./AdvertiserView";
+import AdvertiserView from "./advertiser";
 import LicenseView from "./LicenseView";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -26,7 +26,7 @@ export type TLicenseInfo = {
 const NaverServiceView = () => {
   const { data: session } = useSession();
 
-  const [isCustomerStep, setIsCustomerStep] = useState(false);
+  const [isAdvertiserStep, setIsAdvertiserStep] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
   const [isNoLicenseDialogOpen, setIsNoLicenseDialogOpen] = useState(false);
@@ -37,11 +37,11 @@ const NaverServiceView = () => {
         setIsNoLicenseDialogOpen(true);
         return;
       } else {
-        setIsCustomerStep(true);
+        setIsAdvertiserStep(true);
       }
-      setIsCustomerStep(true);
+      setIsAdvertiserStep(true);
     } else {
-      setIsCustomerStep(false);
+      setIsAdvertiserStep(false);
     }
   };
 
@@ -89,15 +89,15 @@ const NaverServiceView = () => {
       )}
       <LabelBullet labelClassName="text-base font-bold">정보 등록</LabelBullet>
       <TabSwitch
-        value={isCustomerStep}
+        value={isAdvertiserStep}
         onValueChange={handleChangeStep}
         leftLabel="API 라이선스 등록"
         rightLabel="광고주 등록"
       />
-      {!isCustomerStep && (
+      {!isAdvertiserStep && (
         <LicenseView licenseInfo={licenseInfo} refetch={fetchLicenseInfo} />
       )}
-      {isCustomerStep && <AdvertiserView />}
+      {isAdvertiserStep && <AdvertiserView />}
     </div>
   );
 };
