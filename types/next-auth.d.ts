@@ -1,22 +1,24 @@
 import NextAuth from "next-auth";
 import type { TSMPayUser, UserType } from "./user";
 
+type UserWithUniqueCode = TSMPayUser & { uniqueCode: string };
+
 declare module "next-auth" {
   interface Session {
-    user: TSMPayUser;
+    user: UserWithUniqueCode;
     accessToken: string;
     refreshToken: string;
   }
 
   // 평평하게!
-  interface User extends TSMPayUser {
+  interface User extends UserWithUniqueCode {
     accessToken: string;
     refreshToken: string;
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT extends TSMPayUser {
+  interface JWT extends UserWithUniqueCode {
     accessToken: string;
     refreshToken: string;
   }
