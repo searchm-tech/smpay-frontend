@@ -1,4 +1,4 @@
-import { ApiError, get, post } from "@/lib/api";
+import { ApiError, del, get, post } from "@/lib/api";
 import { mockAdvertiserData } from "./mock/advertiser";
 import { buildQueryParams } from "@/lib/utils";
 
@@ -219,6 +219,7 @@ export const postAdvertiserSyncJobStatus = async (
 };
 
 // 광고주 데이터 동기화 (SAG013)
+// Description : 동기화는 어떤 데이터든 할 수 있다.
 export const postAdvertiserSync = async (params: RequestAdvertiserSync) => {
   const { agentId, userId, advertiserIds } = params;
 
@@ -226,6 +227,26 @@ export const postAdvertiserSync = async (params: RequestAdvertiserSync) => {
     const response: null = await post(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertiser/sync`,
       { advertiserIds }
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 광고주 데이터 동기화 해제 (SAG014)
+// Description : 동기화 해제는 동기화 된 광고주만 가능하다.
+
+export const delAdvertiserSync = async (params: RequestAdvertiserSync) => {
+  const { agentId, userId, advertiserIds } = params;
+
+  try {
+    const response: null = await del(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertiser/sync`,
+      { data: { advertiserIds } }
     );
     return response;
   } catch (error) {

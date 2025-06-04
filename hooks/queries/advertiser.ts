@@ -14,6 +14,7 @@ import {
   getAdvertiserList,
   postAdvertiserSyncJobStatus,
   postAdvertiserSync,
+  delAdvertiserSync,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
 import type { AdvertiserData } from "@/types/adveriser";
@@ -139,6 +140,17 @@ export const useMutateAdvertiserSync = (
 ) => {
   return useMutation({
     mutationFn: (params: RequestAdvertiserSync) => postAdvertiserSync(params),
+    ...options,
+  });
+};
+
+// 광고주 데이터 동기화 해제 (SAG014)
+// Description : 동기화 해제는 동기화 된 광고주만 가능하다.
+export const useMuateDeleteAdvertiserSync = (
+  options?: UseMutationOptions<null, Error, RequestAdvertiserSync>
+) => {
+  return useMutation<null, Error, RequestAdvertiserSync>({
+    mutationFn: (data: RequestAdvertiserSync) => delAdvertiserSync(data),
     ...options,
   });
 };

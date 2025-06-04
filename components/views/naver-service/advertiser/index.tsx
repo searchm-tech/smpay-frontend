@@ -27,15 +27,18 @@ const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
   const [tableParams, setTableParams] =
     useState<TableParamsAdvertiser>(defaultTableParams);
 
-  const { data: dataSource, isPending: isLoadingAgencys } =
-    useQueryAdvertiserList({
-      page: tableParams.pagination?.current || 1,
-      size: tableParams.pagination?.pageSize || 10,
-      keyword: search,
-      orderType: tableParams.sortField as AdvertiserOrderType,
-      agentId: session?.user.agentId,
-      userId: session?.user.userId,
-    });
+  const {
+    data: dataSource,
+    isPending: isLoadingAgencys,
+    refetch,
+  } = useQueryAdvertiserList({
+    page: tableParams.pagination?.current || 1,
+    size: tableParams.pagination?.pageSize || 10,
+    keyword: search,
+    orderType: tableParams.sortField as AdvertiserOrderType,
+    agentId: session?.user.agentId,
+    userId: session?.user.userId,
+  });
 
   return (
     <div>
@@ -48,6 +51,7 @@ const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
         tableParams={tableParams}
         setTableParams={setTableParams}
         total={dataSource?.totalCount || 0}
+        refetch={refetch}
       />
 
       <Separator className="my-4 mt-12 mx-auto" variant="dotted" />
