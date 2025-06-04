@@ -38,27 +38,23 @@ const TableSection = ({
 
   const columns: TableProps<TAdvertiser>["columns"] = [
     {
-      title: "",
+      title: "CUSTOMER ID",
       dataIndex: "customerId",
       align: "center",
-      sorter: true,
     },
     {
       title: "광고주 로그인 ID",
       dataIndex: "advertiserId",
-      sorter: true,
       align: "center",
     },
     {
       title: "광고주 닉네임",
       dataIndex: "nickname",
-      sorter: true,
       align: "center",
     },
     {
       title: "광고주명",
       dataIndex: "name", // TODO : SM Pay 신청에서 광고주명 등록해야함.
-      sorter: true,
       align: "center",
     },
     {
@@ -73,6 +69,7 @@ const TableSection = ({
     {
       title: "광고 데이터 동기화 여부",
       dataIndex: "syncType",
+      sorter: true,
       align: "center",
       render: (value: TSyncType) => {
         if (value === "FAIL") {
@@ -109,6 +106,7 @@ const TableSection = ({
         advertiserId: "ADVERTISER_ID",
         syncType: "ADVERTISER_SYNC",
         registerOrUpdateDt: "ADVERTISER_REGISTER_TIME",
+        isAdvertiserRegister: "ADVERTISER_REGISTER",
       };
 
       const mappedField = fieldMap[field];
