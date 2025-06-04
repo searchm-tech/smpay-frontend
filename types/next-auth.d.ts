@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import type { TSMPayUser, UserType } from "./user";
 
-type UserWithUniqueCode = TSMPayUser & { uniqueCode: string };
+export type UserWithUniqueCode = TSMPayUser & { uniqueCode: string };
 
 declare module "next-auth" {
   interface Session {

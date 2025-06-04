@@ -1,15 +1,12 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { SearchBox } from "@/components/common/Box";
-import { LabelBullet } from "@/components/composite/label-bullet";
-import { SearchInput } from "@/components/composite/input-components";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-
+import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 import { AdvertiserGuideSection } from "../GuideSection";
 import { defaultTableParams } from "../constants";
+
+import { Separator } from "@/components/ui/separator";
 
 import { useQueryAdvertiserList } from "@/hooks/queries/advertiser";
 
@@ -41,15 +38,7 @@ const AdvertiserView = () => {
 
   return (
     <div>
-      <section>
-        <LabelBullet className="text-base mb-2">광고주 검색</LabelBullet>
-        <SearchBox className="justify-between">
-          <div className="flex items-center gap-2">
-            <SearchInput className="w-[425px]" />
-            <Button>검색</Button>
-          </div>
-        </SearchBox>
-      </section>
+      <SearchSection onSearch={setSearch} />
 
       <TableSection
         dataSource={dataSource?.content || []}

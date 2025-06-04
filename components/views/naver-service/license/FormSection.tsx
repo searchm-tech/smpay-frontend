@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
-
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
@@ -12,43 +9,43 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-
-import { LabelBullet } from "@/components/composite/label-bullet";
-import { Descriptions } from "@/components/composite/description-components";
-import { ConfirmDialog } from "@/components/composite/modal-components";
-import LoadingUI from "@/components/common/Loading";
-
-import { CreateGuideSection } from "./GuideSection";
-import {
-  CheckUpdateLicenseDialog,
-  DeleteLicenseDialog,
-  SuccessCreateLicenseDialog,
-} from "./dialog";
-
-import { useMuateCreateLicense } from "@/hooks/queries/license";
 
 import { ApiError } from "@/lib/api";
-import { DEFAULT_LICENSE_INFO } from "./constants";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMuateCreateLicense } from "@/hooks/queries/license";
 
-import type { TLicenseInfo } from ".";
+import { ConfirmDialog } from "@/components/composite/modal-components";
+import { Descriptions } from "@/components/composite/description-components";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import LoadingUI from "@/components/common/Loading";
+
+import {
+  SuccessCreateLicenseDialog,
+  CheckUpdateLicenseDialog,
+  DeleteLicenseDialog,
+} from "../dialog";
+
+import { DEFAULT_LICENSE_INFO } from "../constants";
+
+import type { TLicenseInfo } from "..";
+import type { UserWithUniqueCode } from "@/types/next-auth";
 import type { TRequestLicenseCreate } from "@/types/api/license";
 
-type Props = {
-  licenseInfo: TLicenseInfo | null;
-  refetch: () => void;
-};
 const formSchema = z.object({
   customerId: z.string().min(1, { message: "CUSTOMER ID를 입력해주세요." }),
   accessKey: z.string().min(1, { message: "ACCESS LIC를 입력해주세요." }),
   secretKey: z.string().min(1, { message: "SECRET KEY를 입력해주세요." }),
 });
 
-const LicenseView = ({ licenseInfo, refetch }: Props) => {
-  const { data: session } = useSession();
+type Props = {
+  licenseInfo: TLicenseInfo | null;
+  refetch: () => void;
+  user?: UserWithUniqueCode;
+};
 
+const FormSection = ({ licenseInfo, refetch, user }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_LICENSE_INFO,
@@ -81,8 +78,8 @@ const LicenseView = ({ licenseInfo, refetch }: Props) => {
       });
     } else {
       // 등록 적용
-      if (!session?.user) return;
-      const { agentId, userId } = session?.user;
+      if (!user) return;
+      const { agentId, userId } = user;
 
       const params: TRequestLicenseCreate = {
         userId: userId,
@@ -103,13 +100,11 @@ const LicenseView = ({ licenseInfo, refetch }: Props) => {
         accessKey: licenseInfo.apiKey,
         secretKey: licenseInfo.secretKey,
       });
-    } else {
-      form.reset(DEFAULT_LICENSE_INFO);
     }
   }, [licenseInfo, form]);
 
   return (
-    <section className="p-4">
+    <section>
       {isPending && <LoadingUI title="라이선스 등록 중..." />}
 
       {isSuccessCreate && (
@@ -150,8 +145,6 @@ const LicenseView = ({ licenseInfo, refetch }: Props) => {
           onConfirm={() => setErrMessage("")}
         />
       )}
-
-      <LabelBullet className="text-base mb-2">API 라이선스 정보</LabelBullet>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -227,12 +220,8 @@ const LicenseView = ({ licenseInfo, refetch }: Props) => {
           )}
         </form>
       </Form>
-
-      <Separator className="my-4 mt-12 mx-auto" variant="dotted" />
-
-      <CreateGuideSection />
     </section>
   );
 };
 
-export default LicenseView;
+export default FormSection;

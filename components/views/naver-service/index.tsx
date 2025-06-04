@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import AdvertiserView from "./advertiser";
-import LicenseView from "./LicenseView";
+import LicenseView from "./license";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
@@ -26,7 +26,7 @@ export type TLicenseInfo = {
 const NaverServiceView = () => {
   const { data: session } = useSession();
 
-  const [isAdvertiserStep, setIsAdvertiserStep] = useState(true);
+  const [isAdvertiserStep, setIsAdvertiserStep] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
   const [isNoLicenseDialogOpen, setIsNoLicenseDialogOpen] = useState(false);
