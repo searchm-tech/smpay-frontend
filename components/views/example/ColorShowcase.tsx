@@ -16,6 +16,24 @@ const ColorShowcase = () => {
         </p>
       </div>
 
+      {/* 버튼 테스트 하는 곳 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            버튼 색상 테스트 (버튼을 코드를 작성해서 테스트 해보세요.)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-2">
+          <Button className="w-[250px]">일반 버튼</Button>
+          <Button className="w-[250px]" variant="outline">
+            라인 버튼
+          </Button>
+          <Button className="w-[250px]" variant="brandOutline">
+            브랜드 라인 버튼
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Main Colors */}
       <Card>
         <CardHeader>
@@ -117,10 +135,10 @@ const ColorShowcase = () => {
         </CardContent>
       </Card>
 
-      {/* Button Examples */}
+      {/* Button getColorClasses Examples */}
       <Card>
         <CardHeader>
-          <CardTitle>버튼 컴포넌트 예시 (재작업 필요)</CardTitle>
+          <CardTitle>버튼 컴포넌트 예시 - getColorClasses(임시)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -141,7 +159,17 @@ const ColorShowcase = () => {
                 getColorClasses("warning") Button
               </Button>
             </div>
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* Button getColorClasses Examples */}
+      <Card>
+        <CardHeader>
+          <CardTitle>버튼 컴포넌트 예시 - className(임시)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"

@@ -189,7 +189,7 @@ const SignInView = ({ code }: SignInViewProps) => {
             />
 
             <div>
-              <Button type="submit" className="w-full h-12 text-base">
+              <Button type="submit" className="w-full">
                 로그인
               </Button>
 
