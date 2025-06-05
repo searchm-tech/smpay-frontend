@@ -4,15 +4,16 @@ import { useState } from "react";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import { Descriptions } from "@/components/composite/description-components";
+
 import {
   useMuateCreateLicense,
   useMuateDeleteLicense,
 } from "@/hooks/queries/license";
 import { ApiError } from "@/lib/api";
-
-import { dialogContent } from "./constants";
-import type { TLicenseInfo } from ".";
 import { formatDate } from "@/utils/format";
+import { dialogContent } from "./constants";
+
+import type { TLicenseInfo } from ".";
 
 type Props = {
   onConfirm: () => void;

@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
+import LoadingUI from "@/components/common/Loading";
 
 import { formatDate } from "@/utils/format";
 import { dialogContent, syncTypeMap } from "../constants";
+import { SyncFailDialog, type SyncFail } from "../dialog";
 
 import {
   useMuateDeleteAdvertiserSync,
@@ -19,10 +21,7 @@ import type { FilterValue } from "antd/es/table/interface";
 import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
-
 import type { TableParamsAdvertiser } from ".";
-import { SyncFailDialog, type SyncFail } from "../dialog";
-import LoadingUI from "@/components/common/Loading";
 
 type TableSectionProps = {
   user?: UserWithUniqueCode;
@@ -44,19 +43,17 @@ const TableSection = ({
   refetch,
 }: TableSectionProps) => {
   // 1-1. 동기화 하기 전, 작업 상태 변경
-  const {
-    mutate: mutateAdvertiserSyncJobStatus,
-    isPending: isPendingAdvertiserSyncJobStatus,
-  } = useMutateAdvertiserSyncJobStatus({
-    onSuccess: () => {
-      mutateAdvertiserSync({
-        agentId: user?.agentId ?? 0,
-        userId: user?.userId ?? 0,
-        advertiserIds: selectedRowKeys.map((id) => Number(id)),
-      });
-    },
-    onError: (error) => setMessage(error.message),
-  });
+  const { mutate: mutateAdvertiserSyncJobStatus, isPending } =
+    useMutateAdvertiserSyncJobStatus({
+      onSuccess: () => {
+        mutateAdvertiserSync({
+          agentId: user?.agentId ?? 0,
+          userId: user?.userId ?? 0,
+          advertiserIds: selectedRowKeys.map((id) => Number(id)),
+        });
+      },
+      onError: (error) => setMessage(error.message),
+    });
 
   // 1-2. 작업 상태 변경 후, 바로 동기화 작업 실행
   const { mutate: mutateAdvertiserSync } = useMutateAdvertiserSync();
@@ -255,9 +252,7 @@ const TableSection = ({
 
   return (
     <section className="mt-4">
-      {isPendingAdvertiserSyncJobStatus && (
-        <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />
-      )}
+      {isPending && <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />}
       {isSuccessSync && (
         <ConfirmDialog
           open

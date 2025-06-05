@@ -54,6 +54,26 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --sidebar-input: 240 5.9% 90%;
+
+    /* 브랜드 색상 (HEX 값으로 직접 정의) */
+    --brand-orange: #eb680e; /* Main Orange (235, 104, 14) */
+    --brand-orange-light: #ffb380; /* Main Orange Light (255, 179, 128) */
+
+    /* Gray Scale */
+    --brand-black: #000000; /* Black (0, 0, 0) */
+    --brand-gray-800: #8d8d8d; /* Gray 800 (141, 141, 141) */
+    --brand-gray-300: #d2d2d2; /* Gray 300 (210, 210, 210) */
+
+    /* Sub Colors */
+    --brand-red: #c92121; /* Red (201, 33, 33) */
+    --brand-blue: #2177c9; /* Blue (33, 119, 201) */
+    --brand-green: #0ca635; /* Green (12, 166, 53) */
+
+    /* shadcn 기본 컬러 오버라이드 (HSL 포맷 유지) */
+    --primary: 24 88% 49%; /* #EB680E */
+    --primary-foreground: 0 0% 100%; /* white */
+    --background: 0 0% 100%; /* white */
+    --foreground: 0 0% 0%; /* black */
   }
 
   .dark {
