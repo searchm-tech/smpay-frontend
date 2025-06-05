@@ -39,7 +39,7 @@ const MENU_CONFIG = {
     baseUrl: "/auto-bidding",
     subMenus: {},
   },
-  계정관리: {
+  "계정 관리": {
     icon: Smile,
     baseUrl: "/account",
     subMenus: {
