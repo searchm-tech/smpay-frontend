@@ -66,17 +66,17 @@ const config: Config = {
         // 브랜드 색상 정의
         brand: {
           orange: {
-            DEFAULT: "hsl(var(--brand-orange))", // #EB680E
-            light: "hsl(var(--brand-orange-light))", // #FFB380
+            DEFAULT: "#EB680E", // Main Orange (235, 104, 14)
+            light: "#FFB380", // Main Orange Light (255, 179, 128)
           },
-          red: "hsl(var(--brand-red))", // #C92121
-          blue: "hsl(var(--brand-blue))", // #2177C9
-          green: "hsl(var(--brand-green))", // #0CA635
+          red: "#C92121", // Sub Red (201, 33, 33)
+          blue: "#2177C9", // Sub Blue (33, 119, 201)
+          green: "#0CA635", // Sub Green (12, 166, 53)
         },
         neutral: {
-          black: "hsl(var(--brand-black))", // #000000
-          "800": "hsl(var(--brand-gray-800))", // #8D8D8D
-          "300": "hsl(var(--brand-gray-300))", // #D2D2D2
+          black: "#000000", // Black (0, 0, 0)
+          "800": "#8D8D8D", // Gray 800 (141, 141, 141)
+          "300": "#D2D2D2", // Gray 300 (210, 210, 210)
         },
         sidebar: {
           DEFAULT: "#253951",
