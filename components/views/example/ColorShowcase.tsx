@@ -24,15 +24,23 @@ const ColorShowcase = () => {
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="bg-brand-orange h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-brand-orange h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Orange #EB680E</span>
+                <span className="text-white font-medium">(HSL 24 88% 49%)</span>
+                <span className="text-white font-medium">
+                  bg-primary / bg-brand-orange
+                </span>
               </div>
               <p className="text-sm text-gray-600">Primary Brand Color</p>
             </div>
             <div className="space-y-2">
-              <div className="bg-brand-orange-light h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-brand-orange-light h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-gray-800 font-medium">
                   Orange Light #FFB380
+                </span>
+
+                <span className="text-gray-800 font-medium">
+                  bg-brand-orange-light
                 </span>
               </div>
               <p className="text-sm text-gray-600">Light Variant</p>
@@ -49,21 +57,26 @@ const ColorShowcase = () => {
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <div className="bg-neutral-black h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-neutral-black h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Black #000000</span>
+                <span className="text-white font-medium">bg-neutral-black</span>
               </div>
               <p className="text-sm text-gray-600">Pure Black</p>
             </div>
             <div className="space-y-2">
-              <div className="bg-neutral-800 h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-neutral-800 h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Gray #8D8D8D</span>
+                <span className="text-white font-medium">bg-neutral-800</span>
               </div>
               <p className="text-sm text-gray-600">Medium Gray</p>
             </div>
             <div className="space-y-2">
-              <div className="bg-neutral-300 h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-neutral-300 h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-gray-800 font-medium">
                   Light Gray #D2D2D2
+                </span>
+                <span className="text-gray-800 font-medium">
+                  bg-neutral-300
                 </span>
               </div>
               <p className="text-sm text-gray-600">Light Gray</p>
@@ -80,20 +93,23 @@ const ColorShowcase = () => {
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <div className="bg-brand-red h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-brand-red h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Red #C92121</span>
+                <span className="text-white font-medium">bg-brand-red</span>
               </div>
               <p className="text-sm text-gray-600">Error/Danger</p>
             </div>
             <div className="space-y-2">
-              <div className="bg-brand-blue h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-brand-blue h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Blue #2177C9</span>
+                <span className="text-white font-medium">bg-brand-blue</span>
               </div>
               <p className="text-sm text-gray-600">Info/Primary</p>
             </div>
             <div className="space-y-2">
-              <div className="bg-brand-green h-20 rounded-lg flex items-center justify-center">
+              <div className="bg-brand-green h-20 rounded-lg flex flex-col items-center justify-center">
                 <span className="text-white font-medium">Green #0CA635</span>
+                <span className="text-white font-medium">bg-brand-green</span>
               </div>
               <p className="text-sm text-gray-600">Success</p>
             </div>
@@ -104,23 +120,25 @@ const ColorShowcase = () => {
       {/* Button Examples */}
       <Card>
         <CardHeader>
-          <CardTitle>버튼 컴포넌트 예시</CardTitle>
+          <CardTitle>버튼 컴포넌트 예시 (재작업 필요)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Button className={getColorClasses("primary")}>
-                Primary Button
+                getColorClasses("primary") Button
               </Button>
               <Button className={getColorClasses("success")}>
-                Success Button
+                getColorClasses("success") Button
               </Button>
               <Button className={getColorClasses("danger")}>
-                Danger Button
+                getColorClasses("danger") Button
               </Button>
-              <Button className={getColorClasses("info")}>Info Button</Button>
+              <Button className={getColorClasses("info")}>
+                getColorClasses("info") Button
+              </Button>
               <Button className={getColorClasses("warning")}>
-                Warning Button
+                getColorClasses("warning") Button
               </Button>
             </div>
 
@@ -157,7 +175,7 @@ const ColorShowcase = () => {
       {/* Status Examples */}
       <Card>
         <CardHeader>
-          <CardTitle>상태 배지 예시</CardTitle>
+          <CardTitle>상태 배지 예시 (재작업 필요)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">

@@ -1,8 +1,5 @@
-import ColorShowcase from "@/components/examples/ColorShowcase";
-import ColorTest from "@/components/examples/ColorTest";
+import ExampleView from "@/components/views/example";
 
 export default function ExamplePage() {
-  // return <ColorShowcase />;
-
-  return <ColorTest />;
+  return <ExampleView />;
 }
