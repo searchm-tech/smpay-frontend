@@ -3,13 +3,16 @@ import { mockAdvertiserData } from "./mock/advertiser";
 import { buildQueryParams } from "@/lib/utils";
 
 import type { AdvertiserListResponse, TableParams } from "./types";
-import type { AdvertiserData } from "@/types/adveriser";
+import type { AdvertiserData, TAdvertiserBizMoney } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import type {
   RequestAdvertiserList,
   RequestAdvertiserSync,
   RequestAdvertiserSyncStatus,
   ResponseAdvertiserList,
+  ResponseAdvertiserSyncCompleteList,
+  RequestAdvertiserBizMoneyList,
+  ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
 
 /**
@@ -239,7 +242,6 @@ export const postAdvertiserSync = async (params: RequestAdvertiserSync) => {
 
 // 광고주 데이터 동기화 해제 (SAG014)
 // Description : 동기화 해제는 동기화 된 광고주만 가능하다.
-
 export const delAdvertiserSync = async (params: RequestAdvertiserSync) => {
   const { agentId, userId, advertiserIds } = params;
 
@@ -249,6 +251,80 @@ export const delAdvertiserSync = async (params: RequestAdvertiserSync) => {
       { data: { advertiserIds } }
     );
     return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 광고주 데이터 동기화 완료 리스트 조회 (SAG016)
+export const getAdvertiserSyncCompleteList = async (params: {
+  agentId: number;
+  userId: number;
+}) => {
+  try {
+    const { agentId, userId } = params;
+    const response: ResponseAdvertiserSyncCompleteList[] = await get(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers-sync-list`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 광고주 비즈머니 데이터 동기화 (SAG017)
+// Description : synStatus : SYN, jobStatus : DONE,  bizSyncStatus : false 일 경우에만 동기화 가능  - 서버가 알아서해줌
+export const postAdvertiserSyncBizMoney = async (params: {
+  agentId: number;
+  userId: number;
+  advertiserIds: number[];
+}) => {
+  const { agentId, userId, advertiserIds } = params;
+
+  const response: ResponseAdvertiserSyncCompleteList[] = await post(
+    `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/biz-money`,
+    { advertiserIds }
+  );
+  return response;
+};
+
+// 광고주 비즈머니 리스트 페이지네이션 조회 (SAG018)
+export const getAdvertiserBizMoneyList = async (
+  params: RequestAdvertiserBizMoneyList
+): Promise<ResponseAdvertiserBizMoneyList> => {
+  const { agentId, userId } = params;
+  const queryParams = buildQueryParams({
+    page: params.page,
+    size: params.size,
+    keyword: params.keyword,
+    orderType: params.orderType,
+  });
+
+  try {
+    const response: ResponseAdvertiserBizMoneyList = await get(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/biz-money?${queryParams}`
+    );
+
+    let content = response.content.map((item, index) => ({
+      ...item,
+      rowNumber: (params.page - 1) * params.size + index + 1, // 페이지네이션을 고려한 행 번호
+    }));
+
+    // rowNumber 정렬의 경우 번호를 역순으로 처리
+    if (params.orderType === "NO_ASC" || params.orderType === "REGISTER_DESC") {
+      content = content.reverse();
+    }
+
+    return {
+      ...response,
+      content,
+    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

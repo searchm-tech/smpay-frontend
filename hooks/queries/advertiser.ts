@@ -15,15 +15,18 @@ import {
   postAdvertiserSyncJobStatus,
   postAdvertiserSync,
   delAdvertiserSync,
+  getAdvertiserBizMoneyList,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
-import type { AdvertiserData } from "@/types/adveriser";
+import type { AdvertiserData, TAdvertiserBizMoney } from "@/types/adveriser";
 
 import type {
   RequestAdvertiserList,
   RequestAdvertiserSync,
   RequestAdvertiserSyncStatus,
   ResponseAdvertiserList,
+  RequestAdvertiserBizMoneyList,
+  ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
 
 export const useAdvertiserList = (params: FetchAdvertiserParams) => {
@@ -151,6 +154,19 @@ export const useMuateDeleteAdvertiserSync = (
 ) => {
   return useMutation<null, Error, RequestAdvertiserSync>({
     mutationFn: (data: RequestAdvertiserSync) => delAdvertiserSync(data),
+    ...options,
+  });
+};
+
+// 광고주 비즈머니 리스트 페이지네이션 조회 (SAG018) query
+export const useQueryAdvertiserBizMoneyList = (
+  params: RequestAdvertiserBizMoneyList,
+  options?: UseQueryOptions<ResponseAdvertiserBizMoneyList, Error>
+) => {
+  return useQuery({
+    queryKey: ["advertiserBizMoneyList", params],
+    queryFn: () => getAdvertiserBizMoneyList(params),
+    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };

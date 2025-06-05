@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -22,6 +22,11 @@ import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
 import type { TableParamsAdvertiser } from ".";
+import {
+  getAdvertiserSyncCompleteList,
+  postAdvertiserSyncBizMoney,
+} from "@/services/advertiser";
+import type { ResponseAdvertiserSyncCompleteList } from "@/types/api/advertiser";
 
 type TableSectionProps = {
   user?: UserWithUniqueCode;
@@ -33,6 +38,7 @@ type TableSectionProps = {
   refetch: () => void;
 };
 
+// TODO : IN_PROGRESS 일 경우, 아예 체크 박스 방지 (외부 api이랑 연동 중이라는 뜻이므로...)
 const TableSection = ({
   user,
   dataSource,
@@ -78,6 +84,10 @@ const TableSection = ({
     onChange: (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
     },
+    getCheckboxProps: (record: TAdvertiser) => ({
+      disabled: record.isBizMoneySync, // Column configuration not to be checked
+      name: record.name,
+    }),
   };
 
   const columns: TableProps<TAdvertiser>["columns"] = [
@@ -250,6 +260,28 @@ const TableSection = ({
     });
   };
 
+  // 광고주 동기화 완료 목록  -> 비즈머니 동기화 작업 실행
+  const fetchAdvertiserSyncCompleteList = async () => {
+    if (!user) return;
+    getAdvertiserSyncCompleteList({
+      agentId: user.agentId,
+      userId: user.userId,
+    }).then(async (res) => {
+      const list = res.map((item) => item.advertiserId);
+      if (list.length > 0) {
+        await postAdvertiserSyncBizMoney({
+          agentId: user.agentId,
+          userId: user.userId,
+          advertiserIds: list,
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchAdvertiserSyncCompleteList();
+  }, [user]);
+
   return (
     <section className="mt-4">
       {isPending && <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />}
@@ -284,7 +316,7 @@ const TableSection = ({
           onClose={() => setFailDialogInfo(null)}
         />
       )}
-
+      {/* jobStatus */}
       <LabelBullet className="text-base mb-2">광고주 등록</LabelBullet>
       <Table<TAdvertiser>
         rowSelection={rowSelection}

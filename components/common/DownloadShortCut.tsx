@@ -39,7 +39,7 @@ const ShortcutButton = ({ code }: Props) => {
           onConfirm={() => setError("")}
         />
       )}
-      <button onClick={handleDownloadShortcut}>바로가기 다운로드</button>
+      <button onClick={handleDownloadShortcut}>바탕화면 바로가기 만들기</button>
     </Fragment>
   );
 };
