@@ -133,4 +133,39 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 폰트 디자인 시스템 */
+  /* Noto Sans KR Bold */
+  .text-title-xl {
+    font-size: 20pt;
+    font-weight: 700;
+    line-height: 1.3;
+  } /* 문장 제목 */
+  .text-title-lg {
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.3;
+  } /* 내비게이션 */
+  .text-title-sm {
+    font-size: 14pt;
+    font-weight: 700;
+    line-height: 1.3;
+  } /* 카테고리 타이틀 */
+
+  /* Noto Sans KR Medium */
+  .text-content-lg {
+    font-size: 18pt;
+    font-weight: 500;
+    line-height: 1.5;
+  } /* 팝업 본문 */
+  .text-content-md {
+    font-size: 14pt;
+    font-weight: 500;
+    line-height: 1.5;
+  } /* 일반 본문 */
+  .text-content-sm {
+    font-size: 12pt;
+    font-weight: 500;
+    line-height: 1.5;
+  } /* 작은 본문 */
 }
