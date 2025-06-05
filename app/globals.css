@@ -54,6 +54,27 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --sidebar-input: 240 5.9% 90%;
+
+    /* shadcn은 HSL 포맷으로 사용 -> 브랜드 색상 (HSL 포맷으로 정의) */
+    /* Main Colors - HSL 변환값 */
+    --brand-orange: 24.6 95% 53.1%; /* #EB680E */
+    --brand-orange-light: 27 100% 75%; /* #FFB380 */
+
+    /* Gray Scale - HSL 변환값 */
+    --brand-black: 0 0% 0%; /* #000000 */
+    --brand-gray-800: 0 0% 55.3%; /* #8D8D8D */
+    --brand-gray-300: 0 0% 82.4%; /* #D2D2D2 */
+
+    /* Sub Colors - HSL 변환값 */
+    --brand-red: 0 71.8% 46.3%; /* #C92121 */
+    --brand-blue: 210 74.3% 49.4%; /* #2177C9 */
+    --brand-green: 143 85.4% 37.6%; /* #0CA635 */
+
+    /* shadcn 기본 컬러 오버라이드 */
+    --primary: var(--brand-orange);
+    --primary-foreground: 0 0% 100%; /* white */
+    --background: 0 0% 100%; /* white */
+    --foreground: 0 0% 0%; /* black */
   }
 
   .dark {

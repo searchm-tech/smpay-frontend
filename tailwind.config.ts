@@ -63,8 +63,23 @@ const config: Config = {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        // 브랜드 색상 정의
+        brand: {
+          orange: {
+            DEFAULT: "hsl(var(--brand-orange))", // #EB680E
+            light: "hsl(var(--brand-orange-light))", // #FFB380
+          },
+          red: "hsl(var(--brand-red))", // #C92121
+          blue: "hsl(var(--brand-blue))", // #2177C9
+          green: "hsl(var(--brand-green))", // #0CA635
+        },
+        neutral: {
+          black: "hsl(var(--brand-black))", // #000000
+          "800": "hsl(var(--brand-gray-800))", // #8D8D8D
+          "300": "hsl(var(--brand-gray-300))", // #D2D2D2
+        },
         sidebar: {
-          DEFAULT: "#253951", // "hsl(var(--sidebar-background))",
+          DEFAULT: "#253951",
           foreground: "hsl(var(--sidebar-foreground))",
           primary: "hsl(var(--sidebar-primary))",
           "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
