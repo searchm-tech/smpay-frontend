@@ -1,5 +1,3 @@
-import { Inter } from "next/font/google";
-
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { SessionProvider } from "@/lib/providers/SessionProvider";
 import Layout from "@/components/layout/Layout";
@@ -8,8 +6,6 @@ import "./globals.css";
 import "antd/dist/reset.css"; // antd 리셋 css
 
 import type { Metadata } from "next";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SM Pay",
@@ -23,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={inter.className}>
+      <body>
         <SessionProvider>
           <QueryProvider>
             <Layout>{children}</Layout>
