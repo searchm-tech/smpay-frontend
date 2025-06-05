@@ -144,19 +144,19 @@ const ColorShowcase = () => {
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Button className={getColorClasses("primary")}>
-                getColorClasses("primary") Button
+                getColorClasses primary Button
               </Button>
               <Button className={getColorClasses("success")}>
-                getColorClasses("success") Button
+                getColorClassessuccess Button
               </Button>
               <Button className={getColorClasses("danger")}>
-                getColorClasses("danger") Button
+                getColorClasses danger Button
               </Button>
               <Button className={getColorClasses("info")}>
-                getColorClasses("info") Button
+                getColorClasses info Button
               </Button>
               <Button className={getColorClasses("warning")}>
-                getColorClasses("warning") Button
+                getColorClasses warning Button
               </Button>
             </div>
           </div>
