@@ -25,6 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log("process.env.NEXTAUTH_SECRET", process.env.NEXTAUTH_SECRET);
   return (
     <html lang="ko">
       <body className={notoSansKr.className}>
