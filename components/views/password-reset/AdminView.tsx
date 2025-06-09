@@ -86,7 +86,7 @@ const AdminView = ({ userId }: Props) => {
       )}
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
-        <p>빔리번호를 재설정할 수 있는 페이지입니다.</p>
+        <p>비밀번호를 재설정할 수 있는 페이지입니다.</p>
         <p>아래 안내에 따라 새로운 비밀번호를 입력해주세요.</p>
       </div>
       <div className="space-y-1">
@@ -98,7 +98,6 @@ const AdminView = ({ userId }: Props) => {
             {adminUserInfo?.type && getUserAuthTypeLabel(adminUserInfo.type)}
           </DescriptionItem>
           <DescriptionItem label="성명">{adminUserInfo?.name}</DescriptionItem>
-          <DescriptionItem label="부서명">마케팅 기획실</DescriptionItem>
           <DescriptionItem label="이메일 주소">
             {adminUserInfo?.id}
           </DescriptionItem>
