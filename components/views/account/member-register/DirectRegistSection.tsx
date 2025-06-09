@@ -110,10 +110,9 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     try {
       setCheckNameLoading(true);
       const response = await getUsersNameCheckApi(emailId);
-      console.log("response", response);
+
       setNameCheckResult(response ? "duplicate" : "available");
     } catch (error) {
-      console.log(error);
     } finally {
       setCheckNameLoading(false);
     }

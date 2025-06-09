@@ -148,7 +148,6 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             columnWidth: 50,
             columnTitle: "No",
             renderCell: (_, record) => {
-              console.log("record", record);
               return (
                 <Radio
                   checked={selectedRowKey === record.id}

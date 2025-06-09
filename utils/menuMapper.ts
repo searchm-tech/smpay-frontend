@@ -86,7 +86,7 @@ function processMenuItems(menus: TResponseMenu[]): FrontendMenuItem[] {
       const config = MENU_CONFIG[menu.name as keyof typeof MENU_CONFIG];
 
       if (!config) {
-        console.warn(`메뉴 설정을 찾을 수 없습니다: ${menu.name}`);
+        console.error(`메뉴 설정을 찾을 수 없습니다: ${menu.name}`);
         return null;
       }
 
@@ -138,18 +138,14 @@ export function mapBackendMenuToFrontend(
 
   // 단일 객체인 경우 배열로 변환
   const menuArray = Array.isArray(backendMenu) ? backendMenu : [backendMenu];
-  console.log("menuArray", menuArray);
 
   // 모든 메뉴를 평면화
   const allMenus = flattenMenus(menuArray);
-  console.log("allMenus", allMenus);
 
   // 최상위 메뉴들만 필터링 (parentId가 null이거나 0인 것들)
   const topLevelMenus = allMenus.filter(
     (menu) => menu.parentId === null || menu.parentId === 0
   );
-
-  console.log("topLevelMenus", topLevelMenus);
 
   return processMenuItems(topLevelMenus);
 }

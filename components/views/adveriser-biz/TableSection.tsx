@@ -30,7 +30,6 @@ const TableSection = ({
   setTableParams,
   total,
 }: TableSectionProps) => {
-  console.log("📊 dataSource:", dataSource);
   const columns: TableProps<TAdvertiserBizMoney>["columns"] = [
     {
       title: "No",
@@ -112,15 +111,8 @@ const TableSection = ({
           const reversedOrder = order === "ASC" ? "DESC" : "ASC";
           sortField =
             `${mappedField}_${reversedOrder}` as TAdvertiserBizMoneyOrderType;
-          console.log("🔢 rowNumber 정렬:", {
-            field,
-            order,
-            reversedOrder,
-            sortField,
-          });
         } else {
           sortField = `${mappedField}_${order}` as TAdvertiserBizMoneyOrderType;
-          console.log("📝 일반 정렬:", { field, order, sortField });
         }
       }
     }
@@ -136,7 +128,6 @@ const TableSection = ({
       sortField: sortField,
     };
 
-    console.log("🚀 setTableParams 호출:", newParams);
     setTableParams(newParams);
   };
 
