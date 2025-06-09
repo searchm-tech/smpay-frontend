@@ -88,6 +88,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     setPhone("");
     setPassword("");
     setPasswordConfirm("");
+    setEnableEmailId(false);
   };
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {

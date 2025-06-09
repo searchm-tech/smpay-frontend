@@ -1,10 +1,25 @@
 "use client";
 
+import { ReactNode, useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactNode, useState } from "react";
+
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
 export default function QueryProvider({ children }: { children: ReactNode }) {
+  const [roleError, setRoleError] = useState(false);
+
+  useEffect(() => {
+    const handleAuthError = (event: any) => {
+      if (event.detail?.code === "80") {
+        setRoleError(true);
+      }
+    };
+
+    window.addEventListener("authError", handleAuthError);
+    return () => window.removeEventListener("authError", handleAuthError);
+  }, []);
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -22,6 +37,17 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {roleError && (
+        <ConfirmDialog
+          open
+          content="인가권한이 없는 화면입니다."
+          onConfirm={() => {
+            setRoleError(false);
+            window.location.href = "/sm-pay/management";
+          }}
+          cancelDisabled
+        />
+      )}
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
