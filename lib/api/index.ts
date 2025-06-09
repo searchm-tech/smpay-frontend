@@ -156,6 +156,10 @@ apiClient.interceptors.response.use(
       }
     }
 
+    if (error.response?.data?.code === "80") {
+      window.history.back();
+    }
+
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
       throw new ApiError(code, message, result);

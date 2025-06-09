@@ -11,7 +11,6 @@ const PasswordResetView = () => {
   const { data: session } = useSession();
 
   const isAdmin = getIsAdmin(session?.user.type || null);
-  console.log("isAdmin", isAdmin);
 
   if (isAdmin) {
     return <AdminView userId={session?.user.userId || 0} />;

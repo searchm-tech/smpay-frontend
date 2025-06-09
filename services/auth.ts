@@ -56,8 +56,6 @@ export const postRefreshTokenApi = async (
   params: RefreshTokenRequest
 ): Promise<RefreshTokenResponse> => {
   try {
-    alert("토큰 만료 테스트");
-
     // 별도의 axios 인스턴스 사용하여 interceptor 루프 방지
     const response = await refreshTokenClient.post<{
       code: string;
