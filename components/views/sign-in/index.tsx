@@ -78,8 +78,6 @@ const SignInView = ({ code }: SignInViewProps) => {
         password: values.password,
       });
 
-      console.log("response", response);
-
       if (response?.userWithToken) {
         const {
           user: userData,

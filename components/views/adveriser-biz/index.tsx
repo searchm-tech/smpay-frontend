@@ -27,9 +27,6 @@ const AdvertiserBizView = () => {
   const [tableParams, setTableParams] =
     useState<TableParamsBizMoney>(defaultTableParams);
 
-  console.log("🔍 tableParams:", tableParams);
-  console.log("🔍 sortField:", tableParams.sortField);
-
   const { data: dataSource, isPending: isLoading } =
     useQueryAdvertiserBizMoneyList({
       page: tableParams.pagination?.current || 1,

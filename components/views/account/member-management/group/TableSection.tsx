@@ -141,8 +141,6 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    console.log(sorter);
-
     // sorter에서 field와 order 추출하여 올바른 정렬 값 생성
     let sortField: AgencyUsersOrder = "REGISTER_DT_DESC"; // 기본값
 
