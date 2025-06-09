@@ -44,7 +44,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [result, setResult] = useState<boolean>(true);
+  const [result, setResult] = useState<boolean>(false);
 
   const isEnabled = !!agentCode && !!userCode;
 
@@ -105,7 +105,14 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   return (
     <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
-      {result && <ModalSuccess onClose={() => setResult(false)} />}
+      {result && (
+        <ModalSuccess
+          onClose={() => {
+            router.push("/sign-in");
+            setResult(false);
+          }}
+        />
+      )}
 
       {errorMessage && (
         <ConfirmDialog

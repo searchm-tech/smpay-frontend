@@ -27,7 +27,7 @@ export const postUsersPasswordResetApi = async (
 ): Promise<ApiResponseData<null>> => {
   try {
     const response = await post<ApiResponseData<null>>(
-      "/api/v1/users/password-reset",
+      "/api/v1/users/password-reset-mail",
       { loginId: email }
     );
     return response;
@@ -85,7 +85,7 @@ export const getUserInfoApi = async (
   try {
     const { agentId, userId } = params;
     const response = await get<TUserInfoResponse>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/me`
+      `/service/api/v1/agents/${agentId}/users/${userId}`
     );
     return response;
   } catch (error) {
@@ -102,7 +102,7 @@ export const getAdminUserInfoApi = async (
 ): Promise<TSMPayUser> => {
   try {
     const response = await get<TSMPayUser>(
-      `/admin/api/v1/agents/users/${userId}/me`
+      `/admin/api/v1/agents/users/${userId}`
     );
     return response;
   } catch (error) {
