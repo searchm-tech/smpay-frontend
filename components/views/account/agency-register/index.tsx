@@ -199,7 +199,6 @@ const AgencyRegisterView = () => {
     // RequestData 생성
     const requestData = createAgencyRequestData(data);
 
-    console.log("전송할 데이터:", requestData);
     // TODO: API 호출
     mutateAgencyRegister(requestData);
   };
@@ -358,7 +357,7 @@ const AgencyRegisterView = () => {
                 )}
               />
             </DescriptionItem>
-            <DescriptionItem label="계산서 발행 당담자명">
+            <DescriptionItem label="계산서 발행 담당자명">
               <FormField
                 control={formData.control}
                 name="agentBillName"
@@ -371,7 +370,7 @@ const AgencyRegisterView = () => {
                 )}
               />
             </DescriptionItem>
-            <DescriptionItem label="계산서 발행 당담자 연락처">
+            <DescriptionItem label="계산서 발행 담당자 연락처">
               <FormField
                 control={formData.control}
                 name="agentBillPhoneNumber"
@@ -384,7 +383,7 @@ const AgencyRegisterView = () => {
                 )}
               />
             </DescriptionItem>
-            <DescriptionItem label="계산서 발행 당담자 이메일">
+            <DescriptionItem label="계산서 발행 담당자 이메일">
               <FormField
                 control={formData.control}
                 name="agentBillEmailAddress"
