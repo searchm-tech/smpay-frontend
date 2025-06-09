@@ -80,6 +80,7 @@ const MailSendSection = ({ user }: TViewProps) => {
     setMemberType("");
     setEmailId("");
     setName("");
+    setEnableEmailId(false);
   };
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {

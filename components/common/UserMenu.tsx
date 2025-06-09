@@ -15,10 +15,14 @@ import {
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 
+import { getIsAdmin } from "@/lib/utils";
+
 import type { TSMPayUser } from "@/types/user";
 
 export function UserMenu({ user }: { user: TSMPayUser }) {
   const [open, setOpen] = useState(false);
+
+  const isAdmin = getIsAdmin(user.type);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -47,24 +51,27 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem className="cursor-pointer">
-            <Link href="/naver-service">
-              <LabelBullet>네이버 서비스 설정</LabelBullet>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link href="/advertiser-biz">
-              <LabelBullet>광고주별 비즈머니 조회</LabelBullet>
-            </Link>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
+          {!isAdmin && (
+            <>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link href="/naver-service">
+                  <LabelBullet>네이버 서비스 설정</LabelBullet>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link href="/advertiser-biz">
+                  <LabelBullet>광고주별 비즈머니 조회</LabelBullet>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
 
           <DropdownMenuItem className="cursor-pointer">
             <LabelBullet>공지사항</LabelBullet>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <LabelBullet>고객센터</LabelBullet>
+            <LabelBullet>SM Pay 도움말</LabelBullet>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

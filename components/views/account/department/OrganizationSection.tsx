@@ -74,6 +74,7 @@ const OrganizationSection: React.FC = () => {
       onSuccess: () => {
         setSuccessSave(true);
         setErrorNoData(false);
+        handleFetchTreeData();
       },
       onError: (error) => {
         console.error("Error saving tree data:", error);
@@ -283,7 +284,7 @@ const OrganizationSection: React.FC = () => {
     if (!session?.user.agentId) return;
     const params: TDepartmentsPutParams = {
       agentId: session?.user.agentId.toString(),
-      departments: convertTreeToParams(treeData),
+      departments: [], // convertTreeToParams(treeData),
     };
     mutateDepartments(params);
   };
@@ -299,7 +300,7 @@ const OrganizationSection: React.FC = () => {
           userIds: [session.user.userId],
           children: [
             {
-              departmentName: "새폴 더",
+              departmentName: "새 폴더",
               displayOrder: 1,
               userIds: [],
               children: [],
@@ -311,9 +312,7 @@ const OrganizationSection: React.FC = () => {
     mutateDepartments(params);
   };
 
-  useEffect(() => {
-    if (!enabled) return;
-
+  const handleFetchTreeData = async () => {
     refetch()
       .then((res) => {
         if (res.status === "success" && res.data && res.data.length > 0) {
@@ -328,6 +327,11 @@ const OrganizationSection: React.FC = () => {
         setErrorNoData(true);
         console.log("Error fetching tree data:", error);
       });
+  };
+
+  useEffect(() => {
+    if (!enabled) return;
+    handleFetchTreeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
@@ -376,7 +380,6 @@ const OrganizationSection: React.FC = () => {
           open
           content={<div>부서 정보가 저장되었습니다.</div>}
           onConfirm={() => {
-            refetch();
             setSuccessSave(false);
             setErrorNoData(false);
           }}

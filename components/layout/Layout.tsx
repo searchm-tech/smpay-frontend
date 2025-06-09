@@ -25,6 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/advertiser-verification" ||
     pathname === "/sign-in" ||
     pathname === "/password-reset" ||
+    pathname === "/find-password" ||
     pathname === "/sign-out" ||
     pathname === "/sign-up" ||
     pathname === "/example";

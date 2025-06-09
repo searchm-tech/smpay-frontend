@@ -38,10 +38,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatBusinessNumber } from "@/utils/format";
 
 const formSchema = z.object({
-  agentBillName: z.string().min(1, "계산서 발행 당담자명을 입력해주세요"),
+  agentBillName: z.string().min(1, "계산서 발행 담당자명을 입력해주세요"),
   agentBillPhoneNumber: z
     .string()
-    .min(1, "계산서 발행 당담자 연락처를 입력해주세요"),
+    .min(1, "계산서 발행 담당자 연락처를 입력해주세요"),
   agentBillEmailAddress: z
     .string()
     .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
@@ -53,6 +53,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
   const router = useRouter();
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [failDialog, setFailDialog] = useState("");
 
   const {
     data: agencyDetail,
@@ -66,9 +67,8 @@ const AgencyEditView = ({ id }: { id: string }) => {
         setIsSuccess(true);
         refetch();
       },
+      onError: (error) => setFailDialog(error.message),
     });
-
-  console.log("agencyDetail", agencyDetail);
 
   const form = useHookForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -130,6 +130,14 @@ const AgencyEditView = ({ id }: { id: string }) => {
           onClose={() => setIsSuccess(false)}
         />
       )}
+      {failDialog && (
+        <ConfirmDialog
+          open
+          content={failDialog}
+          onConfirm={() => setFailDialog("")}
+          cancelDisabled
+        />
+      )}
 
       <LabelBullet className="mb-4" labelClassName="text-base font-bold">
         대행사 정보
@@ -170,7 +178,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
               </div>
             </DescriptionItem>
 
-            <DescriptionItem label="계산서 발행 당담자명">
+            <DescriptionItem label="계산서 발행 담당자명">
               <FormField
                 control={form.control}
                 name="agentBillName"
@@ -187,7 +195,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
               />
             </DescriptionItem>
 
-            <DescriptionItem label="계산서 발행 당담자 연락처">
+            <DescriptionItem label="계산서 발행 담당자 연락처">
               <FormField
                 control={form.control}
                 name="agentBillPhoneNumber"
@@ -204,7 +212,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
               />
             </DescriptionItem>
 
-            <DescriptionItem label="계산서 발행 당담자 이메일">
+            <DescriptionItem label="계산서 발행 담당자 이메일">
               <FormField
                 control={form.control}
                 name="agentBillEmailAddress"

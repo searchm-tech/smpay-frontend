@@ -98,12 +98,24 @@ let refreshTokenPromise: Promise<any> | null = null;
 // 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
   (response) => {
+    if (response?.data?.code === "80") {
+      // 권한 없음 - 직접 모달 처리를 위해 전역 이벤트 발생
+      window.dispatchEvent(
+        new CustomEvent("authError", {
+          detail: { code: "80", message: "인가권한이 없는 화면입니다." },
+        })
+      );
+      const { code, message, result } = response.data;
+      throw new ApiError(code, message, result);
+    }
+
     if (response.data && response.data.code !== "0") {
-      throw new ApiError(
+      const error = new ApiError(
         response.data.code,
         response.data.message,
         response.data.result
       );
+      return Promise.reject(error);
     }
     return response.data;
   },
@@ -154,10 +166,6 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         return Promise.reject(refreshError);
       }
-    }
-
-    if (error.response?.data?.code === "80") {
-      window.history.back();
     }
 
     if (error.response && error.response.data) {
