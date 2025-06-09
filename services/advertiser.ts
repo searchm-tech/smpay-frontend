@@ -317,7 +317,7 @@ export const getAdvertiserBizMoneyList = async (
     }));
 
     // rowNumber 정렬의 경우 번호를 역순으로 처리
-    if (params.orderType === "NO_ASC" || params.orderType === "REGISTER_DESC") {
+    if (params.orderType === "NO_ASC") {
       content = content.reverse();
     }
 
