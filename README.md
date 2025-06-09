@@ -1,36 +1,177 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SM-pay Frontend
 
-## Getting Started
+## 기술 스택
 
-First, run the development server:
+### core
+
+- Nextjs 14, React 18
+- Typescript
+
+### state
+
+- React-query
+- Zustand
+
+### styles & ui
+
+- tailwinds
+
+### ui 라이브러리
+
+- shadcn-ui
+- antd-ui(일부만 : Description, Table)
+
+### ui 라이브러리 이슈
+
+0. 최대한 shadcn 위주로 작업as하는게 목표. tailwinds 방식이 요새 선호하는 추세
+
+1. Table
+
+- antd ui table
+
+2. Description
+
+- shadcn은 이런 형태가 없으므로 antd 로 사용중
+
+4. Form
+
+- shadcn으로 Form 사용하기로 결정.
+
+## 기획안 및 피그마
+
+[피그마- 기획](https://www.figma.com/design/RxwP19dL9bvFhMJpZ5FzSW/SMPay-Planning?node-id=31-3468&p=f)
+
+[피그마 - 디자인](https://www.figma.com/design/RxwP19dL9bvFhMJpZ5FzSW/SMPay-Planning?node-id=31-3468&p=f)
+
+[정책안](https://searchm-atlab.atlassian.net/wiki/spaces/SMPay/pages/13336707/2.)
+
+## 빌드 및 실행
+
+### 빌드
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 로컬 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# port : 8081 - 백엔드 측에서 다른 외부 접근으로 인하여 포트 지정
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 운영 실행
 
-## Learn More
+```bash
+# port : 8081 - 백엔드 측에서 다른 외부 접근으로 인하여 포트 지정
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 프로젝트 구조
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+root
+├── app/                   # Next.js 14 app directory
+│   ├── */                 # 각 페이지 폴더
+│   │   └── [slug]/.       # 각 페이지의 상세 페이지
+│   ├── globals.css        # 전역 스타일
+│   ├── loading.tsx        # 각 페이지 초기 로딩
+│   ├── page.tsx           # 각 페이지 서버사이드 페이지
+│   └── layout.tsx         # 루트 레이아웃
+│
+├── components/           # 컴포넌트 디렉토리
+│   ├── common/           # 공통 컴포넌트
+│   ├── composite/        # 조합형 UI (shadcn, antd 기반)
+│   ├── layout/           # 전체 레이아웃 구성 컴포넌트
+│   ├── ui/               # 순수 shadcn-ui 컴포넌트
+│   └── views/            # 클라이언트 view 컴포넌트
+│   │   └── admin         # 관리자 view
+│   │   ├── not-admin     # 관리자가 아닌 사용자 view (그룹장, 그룹원...)
+│   │   └── index.tsx     # 둘 다 상관없는 경우
+│
+├── hooks/               # 커스텀 훅
+│   ├── queries         # react-query api hook
+│   └── use-*.ts
+│
+├── lib/                  # 유틸리티 함수 및 설정
+│   ├── provider/         # react-query provider
+│   └── utils.ts
+│
+├── public/              # 유틸리티 함수 및 설정
+│
+├── service/              # api service
+│   └── *.ts
+│
+├── store/               # zustand store
+│   └── use-*-Store.ts
+│
+├── types/               # 타입
+│   ├── api/*.ts         # api request, response, params 관련 타입
+│   └── *.ts
+│
+├── utils/              # utils
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 페이지 구조
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### TODO : 페이지 수정 있음.
+
+```bash
+
+0. sign-in # 로그인 화면
+1. sign-out # 로그아웃
+2. sm-pay
+   - charge # 충전 회수 관리
+     ├──
+   - judgement # SM Pay 심사
+     ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
+     ├── [slug] : # SM Pay 심사 요청 상세
+   - management # SM Pay 관리
+     ├── apply-detail : # 신청 상세
+     ├── apply-submit : # 신청서 제출
+     ├── apply-write : # 신청서 작성
+     ├── / : # SM Pay 메인 페이지 (SM Pay 목록 페이지)
+3. me # 기본정보 수정 (마이페이지)
+3. user
+   - info # (회원 정보)기본 정보 변경
+     ├──
+   - password-reset # 비밀번호 변경
+     ├── / : # SM Pay 심사 메인 페이지(심사 요청 목록)
+     ├── [slug] : # SM Pay 심사 요청 상세
+   - management # SM Pay 관리
+     ├── apply-detail : # 신청 상세
+     ├── apply-submit : # 신청서 제출
+     ├── apply-write : # 신청서 작성
+     ├── / : # SM Pay 메인 페이지 (SM Pay 목록 페이지)
+4. account # 계정 관리
+   - agency-management # 대행사 관리
+   - agency-register # 대행사 등록
+   - department # 부서관리
+   - member-management # 회원관리
+   - member-register # 회원등록
+   - member-edit # 기본정보 수정 (회원 정보 수정)
+5. advertiser-verification # sm-pay 신청 > 동의서 페이지
+6. naver-service # 네이버 서비스 설정
+
+```
+
+## API
+
+```bash
+root
+│
+├── lib/
+│   ├── api/         # axios inteceptor
+│
+
+```
+
+- 문서 : [API](https://dev-api.smpay.co.kr/core/docs/smpay.html)
+- api 분기
+  - base : {baseUrl}/core/XXXX
+  - common : {baseUrl}/core/admin/api/v1/XXXX
+  - admin : {baseUrl}/core/admin/api/v1/XXXX
+  - service: {baseUrl}/core/service/api/v1/XXXX
