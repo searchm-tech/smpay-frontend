@@ -39,7 +39,7 @@ const MENU_CONFIG = {
     baseUrl: "/auto-bidding",
     subMenus: {},
   },
-  계정관리: {
+  "계정 관리": {
     icon: Smile,
     baseUrl: "/account",
     subMenus: {
@@ -165,7 +165,7 @@ export function filterMenuByUserType(
     "SM Pay 관리",
     "광고 성과 리포트",
     "자동 입찰",
-    "계정관리",
+    "계정 관리",
   ];
   return menus.filter((menu) => allowedMenus.includes(menu.title));
 }

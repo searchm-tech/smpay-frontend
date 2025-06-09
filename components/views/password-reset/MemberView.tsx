@@ -19,7 +19,7 @@ import {
 } from "@/hooks/queries/user";
 
 import type { RequestUserPwd } from "@/types/api/user";
-
+import { getUserAuthTypeLabel } from "@/utils/status";
 type Props = {
   userId: number;
   agentId: number;
@@ -37,18 +37,19 @@ const MemberView = ({ userId, agentId }: Props) => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [dialog, setDialog] = useState("");
+  const [enableInfo, setEnableInfo] = useState(false);
 
   const handleSubmit = () => {
+    if (!userInfo) {
+      return;
+    }
+
     if (!password || !passwordConfirm || phone.length !== 11) {
       setDialog("모든 필수 정보를 입력해주세요.");
       return;
     }
     if (password !== passwordConfirm) {
       setDialog("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    if (!userInfo) {
       return;
     }
 
@@ -60,12 +61,16 @@ const MemberView = ({ userId, agentId }: Props) => {
       type: "RESET",
     };
 
+    console.log("params", params);
+
     agentsUsersPw(params);
   };
 
   useEffect(() => {
     if (userInfo) {
       setPhone(userInfo.user.user.phoneNumber);
+    } else {
+      setEnableInfo(true);
     }
   }, [userInfo]);
 
@@ -81,9 +86,21 @@ const MemberView = ({ userId, agentId }: Props) => {
           onConfirm={() => setDialog("")}
         />
       )}
+      {enableInfo && (
+        <ConfirmDialog
+          open
+          title="회원정보 변경"
+          content="부서 설정이 되어있지 않습니다. 관리자에게 문의해주세요."
+          cancelDisabled
+          onConfirm={() => {
+            setEnableInfo(false);
+            router.push("/sm-pay");
+          }}
+        />
+      )}
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
-        <p>빔리번호를 재설정할 수 있는 페이지입니다.</p>
+        <p>비밀번호를 재설정할 수 있는 페이지입니다.</p>
         <p>아래 안내에 따라 새로운 비밀번호를 입력해주세요.</p>
       </div>
       <div className="space-y-1">
@@ -91,12 +108,21 @@ const MemberView = ({ userId, agentId }: Props) => {
           회원 정보
         </LabelBullet>
         <Descriptions bordered columns={1}>
-          <DescriptionItem label="대행사명">주식회사 씨차례</DescriptionItem>
-          <DescriptionItem label="회원 구분">그룹장</DescriptionItem>
-          <DescriptionItem label="성명">홍길동</DescriptionItem>
-          <DescriptionItem label="부서명">마케팅 기획실</DescriptionItem>
+          <DescriptionItem label="대행사명">
+            {userInfo?.agent?.name}
+          </DescriptionItem>
+          <DescriptionItem label="회원 구분">
+            {userInfo?.user?.user.type &&
+              getUserAuthTypeLabel(userInfo.user.user.type)}
+          </DescriptionItem>
+          <DescriptionItem label="성명">
+            {userInfo?.user?.user?.name}
+          </DescriptionItem>
+          <DescriptionItem label="부서명">
+            {userInfo?.user?.department?.name}
+          </DescriptionItem>
           <DescriptionItem label="이메일 주소">
-            name@company.com
+            {userInfo?.user?.user?.loginId}
           </DescriptionItem>
         </Descriptions>
         <span className="text-gray-500 text-sm h-[60px] bg-[#f9fafb] flex items-center rounded mt-2 px-4">
