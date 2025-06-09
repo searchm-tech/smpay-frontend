@@ -39,7 +39,7 @@ const MENU_CONFIG = {
     baseUrl: "/auto-bidding",
     subMenus: {},
   },
-  "계정 관리": {
+  계정관리: {
     icon: Smile,
     baseUrl: "/account",
     subMenus: {
@@ -86,7 +86,7 @@ function processMenuItems(menus: TResponseMenu[]): FrontendMenuItem[] {
       const config = MENU_CONFIG[menu.name as keyof typeof MENU_CONFIG];
 
       if (!config) {
-        console.warn(`메뉴 설정을 찾을 수 없습니다: ${menu.name}`);
+        console.error(`메뉴 설정을 찾을 수 없습니다: ${menu.name}`);
         return null;
       }
 
@@ -165,7 +165,7 @@ export function filterMenuByUserType(
     "SM Pay 관리",
     "광고 성과 리포트",
     "자동 입찰",
-    "계정 관리",
+    "계정관리",
   ];
   return menus.filter((menu) => allowedMenus.includes(menu.title));
 }

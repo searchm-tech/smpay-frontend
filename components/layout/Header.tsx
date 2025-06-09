@@ -10,13 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/common/UserMenu";
 import ShortcutButton from "@/components/common/DownloadShortCut";
 
-import { getIsAdmin } from "@/lib/utils";
+import { getUserAuthTypeLabel } from "@/utils/status";
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
   const { data: session } = useSession();
 
-  const typeStr = getIsAdmin(session?.user.type || null) ? "관리자" : "회원";
+  const labelType =
+    session?.user && getUserAuthTypeLabel(session?.user.type || "");
 
   return (
     <header className="fixed top-0 left-0 z-10 w-full flex justify-between items-center space-x-4 text-sm py-3 px-4 h-[74px] bg-[#304153] text-white">
@@ -39,8 +40,10 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <ShortcutButton url="https://www.google.com" />
-        <Badge label={typeStr} color="#EB680E" />
+        {session?.user.uniqueCode && (
+          <ShortcutButton code={session.user.uniqueCode} />
+        )}
+        {labelType && <Badge label={labelType} color="#EB680E" />}
         <Link href="/support">고객센터</Link>
         <Separator orientation="vertical" className="bg-gray-300 w-[1px] h-3" />
         <Link href="/notice">공지사항</Link>

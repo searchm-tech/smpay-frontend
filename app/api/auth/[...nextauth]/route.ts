@@ -25,6 +25,7 @@ const handler = NextAuth({
           phoneNumber: c.phoneNumber,
           accessToken: c.accessToken,
           refreshToken: c.refreshToken,
+          uniqueCode: c.uniqueCode,
         };
       },
     }),
@@ -42,6 +43,7 @@ const handler = NextAuth({
         token.phoneNumber = user.phoneNumber;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.uniqueCode = user.uniqueCode;
       }
 
       // trigger 옵션이 'update'인 경우 (updateSession 호출 시)
@@ -64,6 +66,7 @@ const handler = NextAuth({
         type: token.type,
         name: token.name || "",
         phoneNumber: token.phoneNumber,
+        uniqueCode: token.uniqueCode,
       };
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;

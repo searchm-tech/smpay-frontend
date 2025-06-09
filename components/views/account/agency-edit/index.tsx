@@ -27,18 +27,22 @@ import { PhoneInput } from "@/components/composite/input-components";
 
 import LoadingUI from "@/components/common/Loading";
 
-import { useAgencyUpdate, useAgencyDetail } from "@/hooks/queries/agency";
+import {
+  useMutationAgencyBillUpdate,
+  useQueryAgencyDetail,
+} from "@/hooks/queries/agency";
 import { EMAIL_REGEX } from "@/constants/reg";
 import { TOOLTIP_AGENCY_CODE } from "@/constants/hover";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { formatBusinessNumber } from "@/utils/format";
 
 const formSchema = z.object({
-  invoice_manager: z.string().min(1, "계산서 발행 당담자명을 입력해주세요"),
-  invoice_manager_contact: z
+  agentBillName: z.string().min(1, "계산서 발행 당담자명을 입력해주세요"),
+  agentBillPhoneNumber: z
     .string()
     .min(1, "계산서 발행 당담자 연락처를 입력해주세요"),
-  invoice_manager_email: z
+  agentBillEmailAddress: z
     .string()
     .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
 });
@@ -50,58 +54,73 @@ const AgencyEditView = ({ id }: { id: string }) => {
 
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const { data, isLoading: isLoadingDetail } = useAgencyDetail(id);
+  const {
+    data: agencyDetail,
+    isLoading,
+    refetch,
+  } = useQueryAgencyDetail(Number(id));
+
+  const { mutate: updateAgencyBill, isPending: isPendingUpdateBill } =
+    useMutationAgencyBillUpdate({
+      onSuccess: () => {
+        setIsSuccess(true);
+        refetch();
+      },
+    });
+
+  console.log("agencyDetail", agencyDetail);
 
   const form = useHookForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      invoice_manager: "",
-      invoice_manager_contact: "",
-      invoice_manager_email: "",
+      agentBillName: "",
+      agentBillPhoneNumber: "",
+      agentBillEmailAddress: "",
     },
     mode: "onChange",
   });
 
-  const { mutate: updateAgency, isPending: isPendingUpdate } = useAgencyUpdate({
-    onSuccess: () => setIsSuccess(true),
-  });
-
   const onSubmit = (dataForm: FormValues) => {
-    if (!data) return;
+    if (!agencyDetail) return;
     if (
-      !dataForm.invoice_manager ||
-      !dataForm.invoice_manager_contact ||
-      !dataForm.invoice_manager_email
+      !dataForm.agentBillName ||
+      !dataForm.agentBillPhoneNumber ||
+      !dataForm.agentBillEmailAddress
     ) {
       return;
     }
 
-    const updatedData = {
-      ...data,
-      invoice_manager_contact: dataForm.invoice_manager_contact.replaceAll(
-        "-",
-        ""
-      ),
+    const bills = [
+      {
+        name: dataForm.agentBillName,
+        phoneNumber: dataForm.agentBillPhoneNumber,
+        emailAddress: dataForm.agentBillEmailAddress,
+      },
+    ];
+    const params = {
+      agentId: agencyDetail.agent.agentId,
+      bills,
     };
 
-    updateAgency(updatedData);
+    updateAgencyBill(params);
   };
   useEffect(() => {
-    if (data) {
+    if (agencyDetail && agencyDetail.agentBills.length > 0) {
+      const { name, phoneNumber, emailAddress } = agencyDetail.agentBills[0];
+
       form.reset({
-        invoice_manager: data.invoice_manager,
-        invoice_manager_contact: data.invoice_manager_contact.replaceAll(
-          "-",
-          ""
-        ),
-        invoice_manager_email: data.invoice_manager_email,
+        agentBillName: name,
+        agentBillPhoneNumber: phoneNumber,
+        agentBillEmailAddress: emailAddress,
       });
     }
-  }, [data, form]);
+  }, [agencyDetail, form]);
+
+  const { agent } = agencyDetail || {};
 
   return (
     <div className="py-4">
-      {(isLoadingDetail || isPendingUpdate) && <LoadingUI />}
+      {(isLoading || isPendingUpdateBill) && <LoadingUI />}
 
       {isSuccess && (
         <ConfirmDialog
@@ -119,7 +138,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Descriptions columns={1} bordered>
-            <DescriptionItem label="대행사명">{data?.agency}</DescriptionItem>
+            <DescriptionItem label="대행사명">{agent?.name}</DescriptionItem>
 
             <DescriptionItem
               label={
@@ -132,26 +151,29 @@ const AgencyEditView = ({ id }: { id: string }) => {
                 </div>
               }
             >
-              <div className="flex items-center gap-2">{data?.code}</div>
+              <div className="flex items-center gap-2">{agent?.uniqueCode}</div>
             </DescriptionItem>
 
-            <DescriptionItem label="대표자명">{data?.owner}</DescriptionItem>
+            <DescriptionItem label="대표자명">
+              {agent?.representativeName}
+            </DescriptionItem>
 
             <DescriptionItem label="사업자 등록 번호">
-              {data?.bussiness_num}
+              {agent?.businessRegistrationNumber &&
+                formatBusinessNumber(agent?.businessRegistrationNumber)}
             </DescriptionItem>
 
             <DescriptionItem label="회사 메일 도메인 *">
               <div className="flex items-center">
-                <span className="text-base">searchm@</span>
-                <span className="text-base">{data?.company_email_domain}</span>
+                <span className="text-base">ID@</span>
+                <span className="text-base">{agent?.domainName}</span>
               </div>
             </DescriptionItem>
 
             <DescriptionItem label="계산서 발행 당담자명">
               <FormField
                 control={form.control}
-                name="invoice_manager"
+                name="agentBillName"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -168,7 +190,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
             <DescriptionItem label="계산서 발행 당담자 연락처">
               <FormField
                 control={form.control}
-                name="invoice_manager_contact"
+                name="agentBillPhoneNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -185,7 +207,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
             <DescriptionItem label="계산서 발행 당담자 이메일">
               <FormField
                 control={form.control}
-                name="invoice_manager_email"
+                name="agentBillEmailAddress"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>

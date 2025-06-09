@@ -14,7 +14,7 @@ import { formatBusinessNumber, formatDate } from "@/utils/format";
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { FilterValue } from "antd/es/table/interface";
-import type { TAgency2, TAgencyStatus } from "@/types/agency";
+import type { TAgencyData, TAgencyStatus } from "@/types/agency";
 import type {
   TAgencyOrder,
   RequestAgencyStatus as TAgencyStatusParams,
@@ -32,7 +32,7 @@ export interface TableParamsAgency extends TableParams {
 }
 
 type TableSectionProps = {
-  dataSource: TAgency2[];
+  dataSource: TAgencyData[];
   isLoading: boolean;
   tableParams: TableParamsAgency;
   setTableParams: (params: TableParamsAgency) => void;
@@ -54,7 +54,7 @@ const TableSection = ({
   );
   const [dialog, setDialog] = useState<DialogTypes | null>(null);
 
-  const handleTableChange: TableProps<TAgency2>["onChange"] = (
+  const handleTableChange: TableProps<TAgencyData>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -93,7 +93,7 @@ const TableSection = ({
     });
   };
 
-  const columns: TableProps<TAgency2>["columns"] = [
+  const columns: TableProps<TAgencyData>["columns"] = [
     {
       title: "No",
       dataIndex: "agentId",
@@ -175,7 +175,7 @@ const TableSection = ({
 
   return (
     <section>
-      <Table<TAgency2>
+      <Table<TAgencyData>
         columns={columns}
         rowKey={(record) => record.agentId.toString()}
         dataSource={dataSource ?? []}

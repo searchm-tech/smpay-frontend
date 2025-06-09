@@ -38,13 +38,13 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     null
   );
 
-  const { data: response, isLoading } = useAdvertiserList({
-    ...tableParams,
-    filters: {
-      ...tableParams.filters,
-      ...(searchKeyword ? { search: [searchKeyword] } : {}),
-    },
-  });
+  // const { data: response, isLoading } = useAdvertiserList({
+  //   ...tableParams,
+  //   filters: {
+  //     ...tableParams.filters,
+  //     ...(searchKeyword ? { search: [searchKeyword] } : {}),
+  //   },
+  // });
 
   const columns: TableProps<AdvertiserData>["columns"] = [
     {
@@ -93,6 +93,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       pagination: {
         ...prev.pagination,
         current: 1,
+        pageSize: 10,
+        total: 0,
       },
     }));
   };
@@ -103,11 +105,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     }
   };
 
-  useEffect(() => {
-    if (response?.data) {
-      setAdvertiserList(response.data);
-    }
-  }, [response?.data]);
+  // useEffect(() => {
+  //   if (response?.data) {
+  //     setAdvertiserList(response.data);
+  //   }
+  // }, [response?.data]);
 
   return (
     <section className="mt-4">
@@ -135,7 +137,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
           columns={columns}
           dataSource={advertiserList}
           total={advertiserList.length}
-          loading={isLoading}
+          loading={false}
           rowSelection={{
             type: "radio",
             onChange: (selectedRowKeys) =>
@@ -146,7 +148,6 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             columnWidth: 50,
             columnTitle: "No",
             renderCell: (_, record) => {
-              console.log("record", record);
               return (
                 <Radio
                   checked={selectedRowKey === record.id}

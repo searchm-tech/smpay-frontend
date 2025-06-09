@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { SessionProvider } from "@/lib/providers/SessionProvider";
@@ -9,7 +9,11 @@ import "antd/dist/reset.css"; // antd 리셋 css
 
 import type { Metadata } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "SM Pay",
@@ -21,9 +25,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log("process.env.NEXTAUTH_URL", process.env.NEXTAUTH_URL);
   return (
     <html lang="ko">
-      <body className={inter.className}>
+      <body className={notoSansKr.className}>
         <SessionProvider>
           <QueryProvider>
             <Layout>{children}</Layout>

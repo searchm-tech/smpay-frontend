@@ -2,7 +2,7 @@ import { ApiError, del, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import type { ApiResponseData } from "./types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
-import type { AgencyData } from "./agency";
+
 import type {
   RequestAgencyGroupMasterDirect,
   RequestMemberDirect,
@@ -78,7 +78,7 @@ export const postAgentsUsersPwApi = async (
   }
 };
 
-// 회원 정보 조회
+// 회원 정보 조회 (SAG001)
 export const getUserInfoApi = async (
   params: RequestUserInfo
 ): Promise<TUserInfoResponse> => {
@@ -96,7 +96,7 @@ export const getUserInfoApi = async (
   }
 };
 
-// 관리자 회원 정보 조회
+// 관리자 본인 회원 정보 조회 (AAG016)
 export const getAdminUserInfoApi = async (
   userId: number
 ): Promise<TSMPayUser> => {
@@ -152,12 +152,11 @@ export const patchUserInfoApi = async (
 };
 
 // [관리자] 대행사 최상위 그룹장 회원 초대 메일 발송 (AAG013) API
-
 export async function postAgencyUserEmailApi(
   params: RequestGroupMasterInvite
-): Promise<AgencyData | null> {
+): Promise<null> {
   try {
-    const response: AgencyData = await post(
+    const response: null = await post(
       "/admin/api/v1/agents/users/email",
       params
     );

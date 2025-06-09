@@ -64,6 +64,12 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
               <LabelBullet>네이버 서비스 설정</LabelBullet>
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            <Link href="/advertiser-biz">
+              <LabelBullet>광고주별 비즈머니 조회</LabelBullet>
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer">

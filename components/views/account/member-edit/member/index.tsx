@@ -40,7 +40,6 @@ const MemberView = ({ userId, agentId }: Props) => {
   } = useQueryUserInfo({
     userId,
     agentId,
-    isAdmin: false,
   });
 
   const { mutate: patchUserInfo, isPending: isPatchUserInfoPending } =

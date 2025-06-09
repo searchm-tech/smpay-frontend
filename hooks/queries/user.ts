@@ -73,28 +73,28 @@ export const useMutationAgentsUsersPw = (
   });
 };
 
-// 회원 정보 조회 query
+// 회원 정보 조회 (SAG001) query
 export const useQueryUserInfo = (
-  params: RequestUserInfo & { isAdmin: boolean },
+  params: RequestUserInfo,
   options?: UseQueryOptions<TUserInfoResponse, Error>
 ) => {
   return useQuery({
     queryKey: ["userInfo", params],
     queryFn: () => getUserInfoApi(params),
-    enabled: !!params.agentId && !!params.userId && !params.isAdmin,
+    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };
 
 // 관리자 회원 정보 조회 query
 export const useQueryAdminUserInfo = (
-  params: { userId: number; isAdmin: boolean },
+  params: { userId: number },
   options?: UseQueryOptions<TSMPayUser, Error>
 ) => {
   return useQuery({
     queryKey: ["adminUserInfo", params],
     queryFn: () => getAdminUserInfoApi(params.userId),
-    enabled: !!params.userId && params.isAdmin,
+    enabled: !!params.userId,
     ...options,
   });
 };

@@ -26,7 +26,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/sign-in" ||
     pathname === "/password-reset" ||
     pathname === "/sign-out" ||
-    pathname === "/sign-up";
+    pathname === "/sign-up" ||
+    pathname === "/example";
 
   // const isNoNeedTokenPage = pathname !== "/sign-in"; // 비밀번호 설정 관련 페이지도 추가
 
