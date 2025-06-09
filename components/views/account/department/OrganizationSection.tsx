@@ -284,7 +284,7 @@ const OrganizationSection: React.FC = () => {
     if (!session?.user.agentId) return;
     const params: TDepartmentsPutParams = {
       agentId: session?.user.agentId.toString(),
-      departments: [], // convertTreeToParams(treeData),
+      departments: convertTreeToParams(treeData),
     };
     mutateDepartments(params);
   };
