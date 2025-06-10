@@ -19,6 +19,7 @@ import type {
   RequestUserInfo,
   RequestPatchUserInfo,
   ResponseGroupUser,
+  UserResponseDto,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API
@@ -330,6 +331,23 @@ export const delAgencyUserApi = async (params: {
   try {
     const response = await del<null>(
       `/admin/api/v1/agents/${params.agentId}/users/${params.userId}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// 회원 상태 조회(U007)
+export const getUserInfoDataApi = async (
+  loginId: string
+): Promise<UserResponseDto> => {
+  try {
+    const response = await get<UserResponseDto>(
+      `/api/v1/users/info?loginId=${loginId}`
     );
     return response;
   } catch (error) {
