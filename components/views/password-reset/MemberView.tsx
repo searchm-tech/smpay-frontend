@@ -12,6 +12,7 @@ import { PhoneInput } from "@/components/composite/input-components";
 
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
+import { DescriptionPwd } from "@/components/common/Box";
 
 import {
   useMutationAgentsUsersPw,
@@ -125,10 +126,7 @@ const MemberView = ({ userId, agentId }: Props) => {
             {userInfo?.user?.user?.loginId}
           </DescriptionItem>
         </Descriptions>
-        <span className="text-gray-500 text-sm h-[60px] bg-[#f9fafb] flex items-center rounded mt-2 px-4">
-          * 가입 시 입력한 이메일 주소의 아이디 부분이 사이트에서 ID로
-          사용됩니다.
-        </span>
+        <DescriptionPwd />
         <Descriptions bordered columns={1}>
           <DescriptionItem label="비밀번호 *">
             <Input

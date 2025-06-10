@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 import MailSendSection from "./MailSendSection";
 import DirectRegistSection from "./DirectRegistSection";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
-
-import { useSession } from "next-auth/react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TSMPayUser } from "@/types/user";
+
+import type { TSMPayUser } from "@/types/user";
 
 const MemberRegisterView = () => {
   const { data: session } = useSession();

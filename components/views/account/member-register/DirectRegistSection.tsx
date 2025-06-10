@@ -14,7 +14,7 @@ import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
-import { DescriptionBox } from "@/components/common/Box";
+import { DescriptionPwd } from "@/components/common/Box";
 
 import ModalDepartment from "./ModalDepartment";
 
@@ -169,18 +169,13 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     }
 
     if (!isAdmin) {
-      /**
-       * 관리자가 아닌 경우
-       * - 부서 선택 필수
-       * - 회원 구분 선택 필수
-       * - 회원 직접 등록  (아이디, 비밀번호 정보 메일 전송)
-       */
-
       if (!memberType || !departmentNode) {
         setDialog("err");
         return;
       }
 
+      // 관리자가 아닌 경우, 회원 직접 등록
+      // 일반 회원 직접 등록
       const data: RequestMemberDirect = {
         type: memberType as TAuthType,
         name,
@@ -192,16 +187,12 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       };
       mutateAddUserDirect(data);
     } else {
-      /**
-       * 관리자
-       * - 대행사 선택 필수
-       * - 대행사 최상위 그룹장 회원 가입 (직접 등록)
-       */
       if (!selectedAgency) {
         setDialog("err");
         return;
       }
 
+      // 시스템 관리자 일 경우, 최상위 그룹장 직접 등록
       const data: RequestAgencyGroupMasterDirect = {
         userType: "AGENCY_GROUP_MASTER",
         name,
@@ -334,17 +325,27 @@ const DirectRegistSection = ({ user }: TViewProps) => {
               placeholder="이메일 주소를 입력해주세요."
               value={emailId}
               onChange={handleEmailIdChange}
+              disabled={enableEmailId}
             />
             <Button variant="outline" onClick={handleNameCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>
+
+            {enableEmailId && (
+              <Button
+                onClick={() => {
+                  setEmailId("");
+                  setEnableEmailId(false);
+                }}
+              >
+                초기화
+              </Button>
+            )}
           </div>
         </DescriptionItem>
       </Descriptions>
 
-      <DescriptionBox>
-        * 가입 시 입력한 이메일 주소의 아이디 부분이 사이트에서 ID로 사용됩니다.
-      </DescriptionBox>
+      <DescriptionPwd />
 
       <Descriptions columns={1}>
         <DescriptionItem label="비밀번호 *">
