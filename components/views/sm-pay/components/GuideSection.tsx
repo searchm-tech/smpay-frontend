@@ -1,10 +1,13 @@
+"use client";
+
+import { TriangleAlert } from "lucide-react";
+
 import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
-import { TriangleAlert } from "lucide-react";
 
-export type ViewType = "guide" | "write" | "submit" | "reject";
+export type ViewType = "guide" | "write" | "submit" | "reject" | "overview";
 
 type GuidSectionProps = {
   viewType: ViewType;
@@ -126,9 +129,49 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         </GuideButton>
       </div>
     ),
+    overview: (
+      <div className="w-full flex items-start gap-2 text-[13px]">
+        <IconBadge name="CircleAlert" bgColor="#1062FF" size="sm" />
+
+        <div className="w-full flex items-center justify-between">
+          <div className="text-[#363C45] flex flex-col gap-1">
+            <span>SM Pay 신청 및 운영 절차를 안내해드려요.</span>
+            <span>
+              각 단계별로 필요한 작업과 담당자가 구분되어 있으니 참고해주세요.
+            </span>
+
+            <div className="flex gap-2 mt-2">
+              <GuideCard title="서비스 신청" description="(대행사 담당자)" />
+              <GuideCard title="심사" description="(최상위 그룹장)" />
+              <GuideCard title="운영 검토" description="(SM Pay)" />
+              <GuideCard title="광고주 동의" description="(광고주)" />
+              <GuideCard title="운영" description="" />
+            </div>
+          </div>
+
+          <GuideButton onClick={() => setIsOpen(true)}>
+            SM Pay 이용 가이드
+          </GuideButton>
+        </div>
+      </div>
+    ),
   };
 
   return <GuideBox className={className}>{GUID_CONTENT[viewType]}</GuideBox>;
 };
 
 export default GuidSection;
+
+type GuideCardProps = {
+  title: string;
+  description: string;
+};
+
+const GuideCard = ({ title, description }: GuideCardProps) => {
+  return (
+    <div className="border border-[#CDCDCD] rounded-[15px] p-2 min-h-11 w-[120px] bg-white text-center">
+      <p className="font-bold mb-1 ">{title}</p>
+      <p className="text-[#007AFF] text-[11px] font-normal">{description}</p>
+    </div>
+  );
+};

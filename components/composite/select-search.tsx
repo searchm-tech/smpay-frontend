@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -16,6 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import { cn } from "@/lib/utils";
 
 interface SelectSearchProps {
   options: { label: string; value: string }[];
@@ -37,7 +39,7 @@ export function SelectSearch({
   value,
   onValueChange,
   placeholder = "선택해주세요",
-  searchPlaceholder = "검색...",
+  searchPlaceholder = "검색어를 입력하세요.",
   emptyMessage = "검색 결과가 없습니다.",
   className,
 }: SelectSearchProps) {
@@ -61,14 +63,17 @@ export function SelectSearch({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[240px] p-0" align="start">
+      <PopoverContent
+        className="min-w-[300px] p-0 shadow-[1px_1px_5px_5px_rgba(84,95,113,0.1)]"
+        align="start"
+      >
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandEmpty>{emptyMessage}</CommandEmpty>
-          <CommandGroup className="max-h-[300px] overflow-auto">
+          <CommandGroup className="max-h-[250px]  overflow-auto">
             {options.map((option) => (
               <CommandItem
-                className="cursor-pointer"
+                className="cursor-pointer mb-1"
                 key={option.value}
                 value={option.value}
                 onSelect={() => {

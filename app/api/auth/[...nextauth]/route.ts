@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// TODO : accessToken, refreshToken 토큰 객체형태라서 추후 수정 필요
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // ✅ 추가

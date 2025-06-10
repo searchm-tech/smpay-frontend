@@ -17,8 +17,10 @@ const MENU_CONFIG = {
     baseUrl: "/sm-pay",
     subMenus: {
       "SM Pay 관리": "/sm-pay/management",
-      "충전 회수 현황": "/sm-pay/charge",
       "SM Pay 심사": "/sm-pay/judgement",
+      "SM Pay 운영 검토": "/sm-pay/admin/overview",
+      "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
+      "충전 회수 현황": "/sm-pay/admin/charge-status",
     },
   },
   "광고 성과 리포트": {

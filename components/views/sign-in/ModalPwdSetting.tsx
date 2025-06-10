@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import { Input } from "@/components/ui/input";
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -9,7 +10,7 @@ import {
 import { EMAIL_REGEX } from "@/constants/reg";
 
 import { useMutationPwdResetLink } from "@/hooks/queries/user";
-import LoadingUI from "@/components/common/Loading";
+import { getUserInfoDataApi } from "@/services/user";
 
 type Props = {
   onClose: () => void;
@@ -36,7 +37,22 @@ const ModalPwdSetting = ({ onClose }: Props) => {
       return;
     }
 
-    sendPwdResetLink(emailId);
+    getUserInfoDataApi(emailId)
+      .then((res) => {
+        if (res && res.status === "TEMP") {
+          setErrMessage("가입하지 않은 계정입니다.");
+          return;
+        } else if (res.status === "STOP") {
+          setErrMessage("정지된 계정입니다.");
+          return;
+        }
+
+        sendPwdResetLink(emailId);
+      })
+      .catch((err) => {
+        // TODO : 백엔드에서 에러 코드 전달 받을 예정
+        setErrMessage("가입하지 않은 이메일입니다.");
+      });
   };
 
   const handleClose = () => {

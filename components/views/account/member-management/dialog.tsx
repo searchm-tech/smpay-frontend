@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import {
@@ -26,11 +26,24 @@ interface DeleteDialogProps extends DialogProps {
 }
 
 const DeleteDialog = ({ params, onClose, onConfirm }: DeleteDialogProps) => {
+  const [failDialog, setFailDialog] = useState<string>("");
   const { mutate: deleteUser, isPending } = useMutationAgencyUserDelete({
     onSuccess: onConfirm,
+    onError: (error) => setFailDialog(error.message),
   });
 
   const handleSubmit = () => deleteUser(params);
+
+  if (failDialog) {
+    return (
+      <ConfirmDialog
+        open
+        onConfirm={onClose}
+        content={<div className="text-center">{failDialog}</div>}
+        cancelDisabled
+      />
+    );
+  }
 
   return (
     <Fragment>

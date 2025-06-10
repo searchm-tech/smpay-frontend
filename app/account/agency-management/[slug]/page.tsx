@@ -1,19 +1,14 @@
-import type { Metadata } from "next";
-import type { DashboardSubItem } from "@/types/menu";
 import ContentHeader from "@/components/common/ContentHeader";
 import AgencyEditView from "@/components/views/account/agency-edit";
 
+import type { Metadata } from "next";
+import type { DashboardSubItem } from "@/types/menu";
+
 type PageParams = Promise<{ slug: string }>;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: PageParams;
-}): Promise<Metadata> {
-  const { slug } = await params;
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: `대행사 정보 수정 - ${slug}`,
+    title: `대행사 정보 수정`,
   };
 }
 
@@ -23,8 +18,6 @@ export default async function AgencyManagementEditPage({
   params: PageParams;
 }) {
   const { slug } = await params;
-
-  console.log("slug", slug);
 
   return (
     <div>

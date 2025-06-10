@@ -103,7 +103,7 @@ const SignInView = ({ code }: SignInViewProps) => {
           ...user,
           accessToken: accessToken,
           refreshToken: refreshToken,
-          callbackUrl: "/sm-pay/management",
+          callbackUrl: "/sm-pay",
         });
 
         setAccessToken(accessToken.token);
@@ -120,12 +120,6 @@ const SignInView = ({ code }: SignInViewProps) => {
       setLoading(false);
     }
   }
-
-  // useEffect(() => {
-  //   if (!session) return;
-
-  //   router.push("/sm-pay/management");
-  // }, [session]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
