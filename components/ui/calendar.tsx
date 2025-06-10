@@ -111,7 +111,7 @@ function CalendarPopover({
         <Button
           variant="outline"
           className={cn(
-            "w-[240px] pl-3 text-left font-normal",
+            "w-[240px] pl-3 text-left font-normal border-[#8D8D8D] bg-transparent hover:bg-transparent hover:text-[#6F6F6F]",
             !date && "text-muted-foreground",
             className
           )}
