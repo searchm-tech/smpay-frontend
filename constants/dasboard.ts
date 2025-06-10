@@ -98,16 +98,16 @@ export const DASHBOARD_ITEMS_ADMIN = [
     isActive: true,
     items: [
       {
-        title: "SM Pay 관리",
-        url: "/sm-pay/management",
+        title: "SM Pay 운영 검토",
+        url: "/sm-pay/admin/overview",
       },
       {
-        title: "충전 회수 관리",
-        url: "/sm-pay/charge",
+        title: "광고주 운영 현황",
+        url: "/sm-pay/admin/adversiter-status",
       },
       {
-        title: "SM Pay 심사",
-        url: "/sm-pay/judgement",
+        title: "충전 회수 현황",
+        url: "/sm-pay/admin/charge-status",
       },
     ],
   },

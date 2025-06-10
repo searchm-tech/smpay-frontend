@@ -35,3 +35,15 @@ export function getIsAdmin(type?: TAuthType | null) {
   if (!type) return false;
   return ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(type || "");
 }
+
+// 최상위 그룹장 확인
+export function getIsGroupMaster(type?: TAuthType | null) {
+  if (!type) return false;
+  return type === "AGENCY_GROUP_MASTER";
+}
+
+// 그룹장, 그룹원 확인
+export function getIsGroupMember(type?: TAuthType | null) {
+  if (!type) return false;
+  return ["AGENCY_GROUP_MANAGER", "AGENCY_GROUP_MEMBER"].includes(type || "");
+}

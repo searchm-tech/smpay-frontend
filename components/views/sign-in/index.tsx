@@ -103,7 +103,7 @@ const SignInView = ({ code }: SignInViewProps) => {
           ...user,
           accessToken: accessToken,
           refreshToken: refreshToken,
-          callbackUrl: "/sm-pay/management",
+          callbackUrl: "/sm-pay",
         });
 
         setAccessToken(accessToken.token);
