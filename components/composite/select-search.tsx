@@ -57,7 +57,10 @@ export function SelectSearch({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-[240px] justify-between text-[#6F6F6F]", className)}
+          className={cn(
+            "w-[240px] justify-between text-[#6F6F6F] border-[#8D8D8D] bg-transparent hover:bg-transparent hover:text-[#6F6F6F]",
+            className
+          )}
         >
           {selectedOption ? selectedOption.label : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
