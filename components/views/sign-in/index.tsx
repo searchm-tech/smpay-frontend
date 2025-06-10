@@ -121,12 +121,6 @@ const SignInView = ({ code }: SignInViewProps) => {
     }
   }
 
-  // useEffect(() => {
-  //   if (!session) return;
-
-  //   router.push("/sm-pay/management");
-  // }, [session]);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const remembered =

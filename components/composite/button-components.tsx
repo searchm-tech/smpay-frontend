@@ -76,12 +76,9 @@ const HomeButton = ({
   href: string;
 }) => {
   return (
-    <a
-      href={href}
-      className="px-6 py-3 bg-gray-500 bg-primary text-white shadow-xs hover:bg-primary/90 rounded-md"
-    >
-      {children}
-    </a>
+    <Button>
+      <a href={href}>{children}</a>
+    </Button>
   );
 };
 
