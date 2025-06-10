@@ -1,56 +1,61 @@
 "use client";
 
-import GuidSection from "@/components/views/sm-pay/components/GuideSection";
-import TableSection from "./TableSection";
-import { useSmPayList } from "@/hooks/queries/sm-pay";
+import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import { useState } from "react";
-import { defaultTableParams } from "@/constants/table";
-import type { TableParams } from "@/types/table";
+
+import TableSection from "./TableSection";
+import GuidSection from "@/components/views/sm-pay/components/GuideSection";
+
+import type { TableProps } from "antd";
+import type { SmPayJudgementData } from "@/types/sm-pay";
+import SearchSection from "./SearchSection";
 
 const SmPayAdminOverviewView = () => {
-  const [tableParams, setTableParams] =
-    useState<TableParams>(defaultTableParams);
-  const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
+  const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [sortField, setSortField] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"ascend" | "descend" | undefined>(
+    undefined
+  );
 
-  const { data: response, isFetching: loadingData } = useSmPayList({
-    pagination: {
-      current: tableParams.pagination?.current || 1,
-      pageSize: tableParams.pagination?.pageSize || 10,
-    },
-    sort:
-      tableParams.sortField && tableParams.sortOrder
-        ? { field: tableParams.sortField, order: tableParams.sortOrder }
-        : undefined,
-    filters: {
-      ...(tableParams.filters as Record<string, string[]>),
-      ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
-    },
-  });
-
-  const handleStatusChange = (status: string) => {
-    setSelectedStatus(status);
-    setTableParams((prev) => ({
-      ...prev,
-      pagination: {
-        ...prev.pagination,
-        current: 1,
-        pageSize: 10,
-        total: response?.total || 0,
-      },
-    }));
+  const handleTableChange: TableProps<
+    SmPayJudgementData & { id: number }
+  >["onChange"] = (pagination, filters, sorter, extra) => {
+    setPage(pagination.current ?? 1);
+    setPageSize(pagination.pageSize ?? 10);
+    const sortObj = Array.isArray(sorter) ? sorter[0] : sorter;
+    setSortField(sortObj?.field as string);
+    setSortOrder(sortObj?.order as "ascend" | "descend" | undefined);
   };
+
+  const handleSearch = (text: string) => setSearch(text);
+
+  const { data: judgementData, isPending: loadingTable } =
+    useSmPayJudgementData({
+      pagination: { current: page, pageSize },
+      sort:
+        sortField && sortOrder
+          ? { field: sortField, order: sortOrder }
+          : undefined,
+      filters: {
+        search: search ? [search] : [""],
+      },
+    });
 
   return (
     <div>
       <GuidSection viewType="overview" />
+      <SearchSection onSearch={handleSearch} />
       <TableSection
-        tableParams={tableParams}
-        setTableParams={setTableParams}
-        total={response?.total || 0}
-        loadingData={loadingData}
-        smpayList={response?.data || []}
-        handleStatusChange={handleStatusChange}
-        selectedStatus={selectedStatus}
+        dataSource={judgementData?.data || []}
+        loading={loadingTable}
+        pagination={{
+          current: page,
+          pageSize: pageSize,
+          total: judgementData?.total || 0,
+        }}
+        onTableChange={handleTableChange}
       />
     </div>
   );

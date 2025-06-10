@@ -8,7 +8,7 @@ import TableSection from "./TableSection";
 
 import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "antd";
-import type { SmPayJudgementData, SmPayJudgementStatus } from "@/types/sm-pay";
+import type { SmPayJudgementData } from "@/types/sm-pay";
 
 const SmPayJudgementView = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("ALL");
