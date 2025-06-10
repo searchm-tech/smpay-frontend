@@ -28,6 +28,9 @@ import { TooltipHover } from "@/components/composite/tooltip-components";
 
 import LoadingUI from "@/components/common/Loading";
 
+import { checkAgencyDomainName, duplicateUniqueCode } from "@/services/agency";
+import { useMutationAgencyRegister } from "@/hooks/queries/agency";
+
 import {
   EMAIL_REGEX,
   BUSINESS_NUMBER_REGEX,
@@ -40,14 +43,12 @@ import { formatBusinessNumber } from "@/utils/format";
 
 import {
   ModalInfo,
-  type ModalInfoType,
   createAgencyRequestData,
   validateBillInfo,
+  type ModalInfoType,
 } from "./constants";
 
 import type { RequestAgencyRegister } from "@/types/api/agency";
-import { checkAgencyDomainName, duplicateUniqueCode } from "@/services/agency";
-import { useMutationAgencyRegister } from "@/hooks/queries/agency";
 
 export interface TRegisterInfo extends RequestAgencyRegister {
   agentBillName: string;
@@ -274,6 +275,7 @@ const AgencyRegisterView = () => {
                           className="max-w-[500px]"
                           placeholder="영문 4~16자"
                           {...field}
+                          disabled={isEnableCode}
                         />
                         <Button
                           type="button"
@@ -283,6 +285,17 @@ const AgencyRegisterView = () => {
                         >
                           {isEnableCode ? "중복 체크 완료" : "중복 체크"}
                         </Button>
+
+                        {isEnableCode && (
+                          <Button
+                            onClick={() => {
+                              setIsEnableCode(false);
+                              formData.setValue("uniqueCode", "");
+                            }}
+                          >
+                            초기화
+                          </Button>
+                        )}
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>
@@ -341,7 +354,11 @@ const AgencyRegisterView = () => {
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <span className="text-base">ID @</span>
-                        <Input className="max-w-[455px]" {...field} />
+                        <Input
+                          className="max-w-[455px]"
+                          {...field}
+                          disabled={isEnableEmailDomain}
+                        />
                         <Button
                           type="button"
                           variant="outline"
@@ -350,6 +367,17 @@ const AgencyRegisterView = () => {
                         >
                           {isEnableEmailDomain ? "중복 체크 완료" : "중복 체크"}
                         </Button>
+
+                        {isEnableEmailDomain && (
+                          <Button
+                            onClick={() => {
+                              setIsEnableEmailDomain(false);
+                              formData.setValue("domainName", "");
+                            }}
+                          >
+                            초기화
+                          </Button>
+                        )}
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>

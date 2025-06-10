@@ -118,6 +118,10 @@ const TableSection = ({
       sorter: true,
       align: "center",
       render: (value, record) => {
+        if (value === "TEMP") {
+          return <span className="text-gray-500">미가입</span>;
+        }
+
         return (
           <Select
             options={USER_STATUS_OPTS}

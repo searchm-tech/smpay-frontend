@@ -12,6 +12,7 @@ import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import Select from "@/components/composite/select-components";
 import LoadingUI from "@/components/common/Loading";
+import { DescriptionPwd } from "@/components/common/Box";
 
 import ModalDepartment from "./ModalDepartment";
 
@@ -280,19 +281,28 @@ const MailSendSection = ({ user }: TViewProps) => {
               placeholder="이메일 주소를 입력해주세요."
               value={emailId}
               onChange={handleEmailIdChange}
+              disabled={enableEmailId}
             />
             <Button variant="outline" onClick={handleNameCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>
+
+            {enableEmailId && (
+              <Button
+                onClick={() => {
+                  setEmailId("");
+                  setEnableEmailId(false);
+                }}
+              >
+                초기화
+              </Button>
+            )}
           </div>
         </DescriptionItem>
       </Descriptions>
 
       <div className="bg-[rgba(0,0,0,0.02)] h-[70px] flex items-center px-4 mt-2">
-        <span className="text-[#656C7B] text-base font-medium">
-          * 가입 시 입력한 이메일 주소의 아이디 부분이 사이트에서 ID로
-          사용됩니다.
-        </span>
+        <DescriptionPwd />
       </div>
 
       <div className="w-full flex justify-center gap-6 py-6">
