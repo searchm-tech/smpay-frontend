@@ -9,14 +9,14 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import ApproveModal from "./ApproveModal";
 import LoadingUI from "@/components/common/Loading";
 // import AdvertiserSection from "../../components/AdvertiserSection";
-import RuleSection from "../../components/RuleSection";
-import ScheduleSection from "../../components/ScheduleSection";
-import StandardSection from "../../components/StandardSection";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
-import GuidSection from "../../components/GuideSection";
+import RuleSection from "../../../components/RuleSection";
+import ScheduleSection from "../../../components/ScheduleSection";
+import StandardSection from "../../../components/StandardSection";
+import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
+import GuidSection from "../../../components/GuideSection";
 import RejectSendModal from "./RejectSendModal";
-import AccountDesc from "../../components/AccountDesc";
-import RejectModal from "../../components/RejectModal";
+import AccountDesc from "../../../components/AccountDesc";
+import RejectModal from "../../../components/RejectModal";
 import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
@@ -24,7 +24,7 @@ import {
 import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
 type SmPayJudgementDetailViewProps = {
   id: string;
 };
@@ -95,9 +95,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
           open
           title="광고주 심사 재개"
           onClose={() => setIsRestart(false)}
-          onConfirm={() => {
-            updateStatus({ id, status: "REVIEW_APPROVED" });
-          }}
+          onConfirm={() => updateStatus({ id, status: "REVIEW_APPROVED" })}
           content="광고주 상태를 다시 활성화 하시겠습니까?"
         />
       )}

@@ -10,8 +10,8 @@ import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import StopInfoModal from "../components/StopInfoModal";
-import RejectModal from "../components/RejectModal";
+import StopInfoModal from "../../components/StopInfoModal";
+import RejectModal from "../../components/RejectModal";
 
 import { MANAGEMENT_CONTENT, type SMPayManageStatus } from "@/constants/dialog";
 import { STATUS_ACTIONS, STATUS_LABELS } from "@/constants/status";
