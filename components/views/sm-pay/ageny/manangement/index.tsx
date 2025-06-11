@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FilterSection from "./FilterSection";
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
+import GuidSection from "../../components/GuideSection";
 
 import { useSmpayDataStore } from "@/store/useSmpayDataStore";
 import { useSmPayList } from "@/hooks/queries/sm-pay";
@@ -11,7 +12,7 @@ import { defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
 
-const SMPayManagementView = () => {
+const SMPayMasterManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
 
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
@@ -71,7 +72,8 @@ const SMPayManagementView = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      <GuidSection viewType="overview" />
       <SearchSection onSearch={onSearch} />
       <FilterSection
         selectedStatus={selectedStatus}
@@ -88,4 +90,4 @@ const SMPayManagementView = () => {
   );
 };
 
-export default SMPayManagementView;
+export default SMPayMasterManagementView;
