@@ -20,7 +20,11 @@ const MENU_CONFIG = {
       "SM Pay 심사": "/sm-pay/judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
-      "충전 회수 현황": "/sm-pay/admin/charge",
+      "충전 회수 현황": {
+        ADMIN: "/sm-pay/admin/charge",
+        AGENCY: "/sm-pay/agency/charge",
+        USER: "/sm-pay/user/charge",
+      },
     },
   },
   "광고 성과 리포트": {
@@ -81,7 +85,32 @@ export interface FrontendMenuItem {
   }[];
 }
 
-function processMenuItems(menus: TResponseMenu[]): FrontendMenuItem[] {
+// URL 매핑 헬퍼 함수
+function getMenuUrl(
+  config: any,
+  menuName: string,
+  userType: TAuthType | null
+): string {
+  if (typeof config === "string") {
+    return config;
+  }
+
+  if (typeof config === "object" && config !== null) {
+    // 권한별 URL이 정의된 경우
+    if (getIsAdmin(userType)) {
+      return config.ADMIN || config.USER || Object.values(config)[0];
+    } else {
+      return config.AGENCY || config.USER || Object.values(config)[0];
+    }
+  }
+
+  return "";
+}
+
+function processMenuItems(
+  menus: TResponseMenu[],
+  userType: TAuthType | null
+): FrontendMenuItem[] {
   return menus
     .sort((a, b) => a.displayOrder - b.displayOrder)
     .map((menu) => {
@@ -103,12 +132,16 @@ function processMenuItems(menus: TResponseMenu[]): FrontendMenuItem[] {
       if (menu.children && menu.children.length > 0) {
         frontendMenu.items = menu.children
           .sort((a, b) => a.displayOrder - b.displayOrder)
-          .map((child) => ({
-            title: child.name,
-            url:
-              config.subMenus[child.name as keyof typeof config.subMenus] ||
-              `${config.baseUrl}/${child.menuId}`,
-          }));
+          .map((child) => {
+            const subMenuConfig =
+              config.subMenus[child.name as keyof typeof config.subMenus];
+            return {
+              title: child.name,
+              url: subMenuConfig
+                ? getMenuUrl(subMenuConfig, child.name, userType)
+                : `${config.baseUrl}/${child.menuId}`,
+            };
+          });
       }
 
       return frontendMenu;
@@ -131,7 +164,8 @@ function flattenMenus(menus: TResponseMenu[]): TResponseMenu[] {
 }
 
 export function mapBackendMenuToFrontend(
-  backendMenu: TResponseMenu | TResponseMenu[]
+  backendMenu: TResponseMenu | TResponseMenu[],
+  userType: TAuthType | null
 ): FrontendMenuItem[] {
   // null이나 undefined 체크
   if (!backendMenu) {
@@ -149,7 +183,7 @@ export function mapBackendMenuToFrontend(
     (menu) => menu.parentId === null || menu.parentId === 0
   );
 
-  return processMenuItems(topLevelMenus);
+  return processMenuItems(topLevelMenus, userType);
 }
 
 // 사용자 타입별 메뉴 필터링

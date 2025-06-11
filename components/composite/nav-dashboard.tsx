@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn, getIsAdmin } from "@/lib/utils";
 import { useQueryMenu } from "@/hooks/queries/menu";
-import { dashboardItems } from "@/constants/dasboard";
+import { COMMON_ITEMS } from "@/constants/dasboard";
 import {
   mapBackendMenuToFrontend,
   filterMenuByUserType,
@@ -58,11 +58,13 @@ export function NavDashboard() {
     return "agency";
   }, [session]);
 
-  // 백엔드 메뉴가 있으면 사용, 없으면 기존 하드코딩된 메뉴 사용 - 나중에 이대로 테스트 해보고 적용
   const menuItems = useMemo(() => {
-    if (!session?.user) return dashboardItems["common"];
+    if (!session?.user) return COMMON_ITEMS;
     if (backendMenu && session?.user) {
-      const mappedMenus = mapBackendMenuToFrontend(backendMenu);
+      const mappedMenus = mapBackendMenuToFrontend(
+        backendMenu,
+        session.user.type
+      );
       const filteredMenus = filterMenuByUserType(
         mappedMenus,
         session.user.type
@@ -70,8 +72,8 @@ export function NavDashboard() {
       return filteredMenus;
     }
 
-    // 백엔드 메뉴가 없으면 기존 방식 사용
-    return dashboardItems[menuType];
+    // 백엔드 메뉴가 없으면 공통 메뉴
+    return COMMON_ITEMS;
   }, [backendMenu, session?.user, menuType]);
 
   return (

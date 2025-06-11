@@ -16,16 +16,16 @@ import {
   useSmPayScheduleInfo,
   useSmPayScheduleInfoUpdate,
 } from "@/hooks/queries/sm-pay";
+import { HOVER_SMPAY } from "@/constants/hover";
 
 import type { ScheduleInfo } from "@/types/sm-pay";
 
-import { HOVER_SMPAY } from "@/constants/hover";
-
 type ScheduleSectionProps = {
   id: string;
+  isReadonly?: boolean;
 };
 
-const ScheduleSection = ({ id }: ScheduleSectionProps) => {
+const ScheduleSection = ({ id, isReadonly }: ScheduleSectionProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [scheduleInfo, setScheduleInfo] = useState<ScheduleInfo | null>(null);
@@ -62,7 +62,24 @@ const ScheduleSection = ({ id }: ScheduleSectionProps) => {
     mutateUpdate({ id, params: scheduleInfo });
   };
 
-  //
+  const btnGroupComponent = isEditing ? (
+    <div className="flex gap-2">
+      <Button className="w-[100px]" onClick={() => setIsSaving(true)}>
+        변경완료
+      </Button>
+      <Button
+        className="w-[100px]"
+        variant="cancel"
+        onClick={handleClickCancel}
+      >
+        취소
+      </Button>
+    </div>
+  ) : (
+    <Button className="w-[100px]" onClick={handleClickEdit}>
+      변경하기
+    </Button>
+  );
 
   return (
     <section>
@@ -89,26 +106,8 @@ const ScheduleSection = ({ id }: ScheduleSectionProps) => {
           />
         </div>
 
-        {isEditing ? (
-          <div className="flex gap-2">
-            <Button className="w-[100px]" onClick={() => setIsSaving(true)}>
-              변경완료
-            </Button>
-            <Button
-              className="w-[100px]"
-              variant="cancel"
-              onClick={handleClickCancel}
-            >
-              취소
-            </Button>
-          </div>
-        ) : (
-          <Button className="w-[100px]" onClick={handleClickEdit}>
-            변경하기
-          </Button>
-        )}
+        {!isReadonly && btnGroupComponent}
       </div>
-
       {isEditing ? (
         <ScheduleEditDesc
           scheduleInfo={scheduleInfo}
