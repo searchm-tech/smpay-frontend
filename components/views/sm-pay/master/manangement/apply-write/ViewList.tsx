@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { SearchBox } from "@/components/common/Box";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import Table from "@/components/composite/table";
 import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 
-import { useAdvertiserList } from "@/hooks/queries/advertiser";
 import { useAdvertiserStore } from "@/store/useAdvertiserStore";
 
 import { defaultTableParams } from "@/constants/table";
@@ -20,6 +19,8 @@ import { cn } from "@/lib/utils";
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
+import EditModal from "./EditModal";
+import CreateModal from "./CreateModal";
 
 type ViewListProps = {
   onCancel: () => void;
@@ -37,6 +38,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
     null
   );
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   // const { data: response, isLoading } = useAdvertiserList({
   //   ...tableParams,
@@ -59,12 +62,28 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       align: "center",
       sorter: (a, b) => a.loginId.localeCompare(b.loginId),
     },
-
     {
       title: "광고주명",
       dataIndex: "advertiserName",
       align: "center",
       sorter: (a, b) => a.advertiserName.localeCompare(b.advertiserName),
+    },
+    {
+      title: "정보 변경",
+      dataIndex: "info_change",
+      align: "center",
+      render: (_, record) => {
+        if (record.id % 2 === 0) {
+          return (
+            <Button onClick={() => setOpenCreateModal(true)}>정보 등록</Button>
+          );
+        }
+        return (
+          <Button variant="cancel" onClick={() => setOpenEditModal(true)}>
+            정보 변경
+          </Button>
+        );
+      },
     },
     {
       title: "상태",
@@ -113,6 +132,10 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
   return (
     <section className="mt-4">
+      {openEditModal && <EditModal onClose={() => setOpenEditModal(false)} />}
+      {openCreateModal && (
+        <CreateModal onClose={() => setOpenCreateModal(false)} />
+      )}
       <div>
         <LabelBullet labelClassName="text-base font-bold">
           광고주 검색
@@ -131,7 +154,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
       <div className="mt-4">
         <LabelBullet labelClassName="text-base font-bold">
-          광고주 등록 내역
+          광고주 등록
         </LabelBullet>
         <Table<AdvertiserData>
           columns={columns}
