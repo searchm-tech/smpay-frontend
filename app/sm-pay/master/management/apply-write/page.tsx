@@ -1,12 +1,12 @@
 import ContentHeader from "@/components/common/ContentHeader";
+import SMPayMasterApplyWriteView from "@/components/views/sm-pay/master/manangement/apply-write";
 import type { DashboardSubItem } from "@/types/menu";
-import SMPayApplyWriteView from "@/components/views/sm-pay/manangement/apply-write";
 
 export default function SMPayApplyWritePage() {
   return (
     <div>
       <ContentHeader title="SM Pay 신청" items={breadcrumbItems} />
-      <SMPayApplyWriteView />
+      <SMPayMasterApplyWriteView />
     </div>
   );
 }
@@ -14,14 +14,14 @@ export default function SMPayApplyWritePage() {
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay",
-    url: "/sm-pay",
+    url: "/sm-pay/master/management",
   },
   {
     title: "SM Pay관리",
-    url: "/sm-pay/management",
+    url: "/sm-pay/master/management",
   },
   {
     title: "SM Pay 신청",
-    url: "/sm-pay/management/apply-write",
+    url: "/sm-pay/master/management/apply-write",
   },
 ];

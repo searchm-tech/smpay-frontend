@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { SearchInput } from "@/components/composite/input-components";
 import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/composite/button-components";
 import { SearchBox } from "@/components/common/Box";
-import { useRouter } from "next/navigation";
 
 interface SearchSectionProps {
   onSearch: (keyword: string) => void;
@@ -38,7 +38,9 @@ const SearchSection = ({ onSearch }: SearchSectionProps) => {
         <Button onClick={handleSearch}>검색</Button>
       </div>
 
-      <LinkButton onClick={() => router.push("/sm-pay/management/apply-write")}>
+      <LinkButton
+        onClick={() => router.push("/sm-pay/master/management/apply-write")}
+      >
         + SM Pay 신청
       </LinkButton>
     </SearchBox>

@@ -7,7 +7,7 @@ import ViewWrite from "./ViewWrite";
 
 import GuidSection, { type ViewType } from "../../../components/GuideSection";
 
-const SMPayApplyWriteView = () => {
+const SMPayMasterApplyWriteView = () => {
   const router = useRouter();
   const [selectedAdNum, setSelectedAdNum] = useState<number | null>(null);
   const [viewType, setViewType] = useState<ViewType>("guide");
@@ -44,7 +44,7 @@ const SMPayApplyWriteView = () => {
   );
 };
 
-export default SMPayApplyWriteView;
+export default SMPayMasterApplyWriteView;
 
 export type ViewProps = {
   onCancel: () => void;

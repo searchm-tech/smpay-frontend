@@ -95,7 +95,7 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
     ),
 
     guide: (
-      <div className="w-full flex items-center text-[13px]">
+      <section className="w-full flex items-center text-[13px]">
         <div className="w-full flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <IconBadge name="CircleAlert" bgColor="#1062FF" />
@@ -103,17 +103,25 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
           </div>
 
           <div className="pl-6 text-[#363C45] space-y-1.5 flex flex-col">
+            <span>• 로그인한 마케터에게 연동된 광고주만 조회됩니다.</span>
             <span>
-              SM Pay 신청 도움말 광고주가 동의하지 않아 심사가 진행되지 않은
-              경우, 광고주에게 재동의를 받았다면 신규 신청을 통해 다시 심사를
-              진행할 수 있습니다.
+              • 광고주 정보가 등록되지 않은 경우 &apos;정보 등록&apos; 버튼이
+              노출되며, 정보를 등록해야 신청이 가능합니다.
             </span>
             <span>
-              광고주의 동의 기한이 만료된 경우에는 &apos;SM Pay 관리&apos;
-              메뉴에서 광고주를 검색하여 동의 요청을 다시 보내주세요.
+              • 광고주 정보가 등록된 경우에는 &apos;정보 변경&apos; 버튼을 통해
+              수정할 수 있습니다.
             </span>
             <span>
-              신청이 비활성화 되어있는 광고주는 &apos;상태&apos;란을
+              • 광고주가 등의하지 않아 심사가 진행되지 않은 경우, 광고주에게
+              재등의를 받았다면 신규 신청을 통해 다시 심사를 진행할 수 있습니다.
+            </span>
+            <span>
+              • 광고주의 등의 기한이 만료된 경우에는 &apos;SM Pay 관리&apos;
+              메뉴에서 광고주를 검색하여 등의 요청을 다시 보내주세요.
+            </span>
+            <span>
+              • 신청이 비활성화 되어있는 광고주는 &apos;상태&apos;란을
               확인해주세요.
             </span>
           </div>
@@ -122,7 +130,7 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         <GuideButton onClick={() => setIsOpen(true)}>
           SM Pay 이용 가이드
         </GuideButton>
-      </div>
+      </section>
     ),
 
     "master-judgement": (

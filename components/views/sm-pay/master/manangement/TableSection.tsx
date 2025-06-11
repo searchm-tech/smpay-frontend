@@ -44,7 +44,7 @@ const TableSection = ({
   const [stopModalId, setStopModalId] = useState<number | null>(null);
 
   const handleMoveDetailPage = (id: number) => {
-    router.push(`/sm-pay/management/apply-detail/${id}`);
+    router.push(`/sm-pay/master/management/apply-detail/${id}`);
   };
 
   const handleTableChange: TableProps<SmPayData>["onChange"] = (
@@ -101,7 +101,7 @@ const TableSection = ({
       render: (text: string, record: SmPayData) => (
         <LinkTextButton
           onClick={() => {
-            router.push(`/sm-pay/management/apply-detail/${record.no}`);
+            router.push(`/sm-pay/master/management/apply-detail/${record.no}`);
           }}
         >
           {text}
