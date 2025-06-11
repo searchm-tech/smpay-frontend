@@ -24,8 +24,9 @@ import type { RuleInfo } from "@/types/sm-pay";
 
 type RuleSectionProps = {
   id: string;
+  isReadonly?: boolean;
 };
-const RuleSection = ({ id }: RuleSectionProps) => {
+const RuleSection = ({ id, isReadonly }: RuleSectionProps) => {
   const { data: ruleData, refetch } = useSmPayRuleInfo(id);
 
   const { mutate: updateRuleInfo, isPending: isUpdating } =
@@ -60,6 +61,27 @@ const RuleSection = ({ id }: RuleSectionProps) => {
     }
   }, [ruleData]);
 
+  const btnGroupComponent = isEditing ? (
+    <div className="flex gap-2">
+      <Button className="w-[100px]" onClick={() => setIsConfirm(true)}>
+        변경완료
+      </Button>
+      <Button
+        className="w-[100px]"
+        variant="cancel"
+        onClick={() => setIsEditing(false)}
+      >
+        취소
+      </Button>
+    </div>
+  ) : (
+    <div className="flex gap-2">
+      <Button className="w-[100px]" onClick={() => setIsEditing(true)}>
+        변경하기
+      </Button>
+    </div>
+  );
+
   return (
     <section>
       {isUpdating && <LoadingUI title="변경 중..." />}
@@ -91,28 +113,13 @@ const RuleSection = ({ id }: RuleSectionProps) => {
           />
         </div>
 
-        {isEditing ? (
-          <div className="flex gap-2">
-            <Button className="w-[100px]" onClick={() => setIsConfirm(true)}>
-              변경완료
-            </Button>
-            <Button
-              className="w-[100px]"
-              variant="cancel"
-              onClick={() => setIsEditing(false)}
-            >
-              취소
-            </Button>
-          </div>
-        ) : (
-          <Button className="w-[100px]" onClick={() => setIsEditing(true)}>
-            변경하기
+        {!isReadonly && btnGroupComponent}
+
+        {!isReadonly && (
+          <Button variant="outline" onClick={() => setIsHistory(true)}>
+            변경 이력 보기
           </Button>
         )}
-
-        <Button variant="outline" onClick={() => setIsHistory(true)}>
-          변경 이력 보기
-        </Button>
       </div>
       {!isEditing && <RuleDesc ruleInfo={ruleData?.data} />}
       {isEditing && (
