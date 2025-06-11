@@ -10,6 +10,7 @@ import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 
+// TODO : 제거 예정
 const SmPayJudgementView = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("ALL");
   const [search, setSearch] = useState<string>("");
