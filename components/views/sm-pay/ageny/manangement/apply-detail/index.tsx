@@ -3,10 +3,13 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import RuleSection from "../../components/RuleSection";
-import ScheduleSection from "../../components/ScheduleSection";
-import GuidSection from "../../components/GuideSection";
-import AccountDesc from "../../components/AccountDesc";
+import RuleSection from "../../../components/RuleSection";
+import ScheduleSection from "../../../components/ScheduleSection";
+import GuidSection from "../../../components/GuideSection";
+import AccountDesc from "../../../components/AccountDesc";
+import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
+
 import LoadingUI from "@/components/common/Loading";
 
 import { getSmPayStatusLabel } from "@/constants/status";
@@ -14,8 +17,6 @@ import { getSmPayStatusLabel } from "@/constants/status";
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
 
 interface SmPayApplyDetailViewProps {
   id: string;

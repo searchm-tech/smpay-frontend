@@ -114,19 +114,6 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <RuleSection id={"1"} isReadonly />
       <ScheduleSection id={"1"} />
 
-      {/* <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
-          승인
-        </Button>
-        <Button
-          variant="cancel"
-          className="w-[150px]"
-          onClick={() => setIsRejectSend(true)}
-        >
-          반려
-        </Button>
-      </div> */}
-
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">
           <Button className="w-[150px]" onClick={() => setIsRestart(true)}>
@@ -136,7 +123,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
           <Button
             variant="cancel"
             className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
+            onClick={() => router.push("/sm-pay/master/judgement")}
           >
             뒤로
           </Button>

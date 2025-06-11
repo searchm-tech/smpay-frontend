@@ -18,7 +18,7 @@ const SearchSection = ({ onSearch }: PropsSearchSection) => {
   };
 
   return (
-    <SearchBox className="justify-between">
+    <SearchBox>
       <div className="flex items-center gap-2">
         <SearchInput
           className="w-[425px]"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import ContentHeader from "@/components/common/ContentHeader";
-import ApplySubmitView from "@/components/views/sm-pay/manangement/apply-submit";
+import ApplySubmitView from "@/components/views/sm-pay/master/manangement/apply-submit";
 import type { DashboardSubItem } from "@/types/menu";
 
 type PageParams = {

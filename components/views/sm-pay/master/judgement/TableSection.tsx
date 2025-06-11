@@ -12,7 +12,7 @@ import { formatDate } from "@/utils/format";
 import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 import type { TableProps } from "antd";
-import RejectModal from "../../components/RejectModal";
+
 import StopInfoModal from "../../components/StopInfoModal";
 
 type PropsTableSection = {
@@ -34,7 +34,6 @@ const TableSection = ({
 }: PropsTableSection) => {
   const router = useRouter();
 
-  const [rejectModalId, setRejectModalId] = useState<string>("");
   const [stopModalId, setStopModalId] = useState<string>("");
 
   const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
@@ -104,25 +103,6 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (status: string, record: SmPayJudgementData) => {
-        if (status === "반려") {
-          return (
-            <LinkTextButton
-              onClick={() => setRejectModalId(record.id.toString())}
-            >
-              {status}
-            </LinkTextButton>
-          );
-        }
-        if (status === "일시중지") {
-          return (
-            <LinkTextButton
-              onClick={() => setStopModalId(record.id.toString())}
-            >
-              {status}
-            </LinkTextButton>
-          );
-        }
-
         return <span>{status}</span>;
       },
     },
@@ -140,20 +120,14 @@ const TableSection = ({
 
   return (
     <section>
-      {rejectModalId && (
-        <RejectModal
-          open
-          id={rejectModalId}
-          onClose={() => setRejectModalId("")}
-          onConfirm={() => router.push(`/sm-pay/judgement/${rejectModalId}`)}
-        />
-      )}
       {stopModalId && (
         <StopInfoModal
           open
           id={stopModalId}
           onClose={() => setStopModalId("")}
-          onConfirm={() => router.push(`/sm-pay/judgement/${stopModalId}`)}
+          onConfirm={() =>
+            router.push(`/sm-pay/master/judgement/${stopModalId}`)
+          }
         />
       )}
       <Table<SmPayJudgementData & { id: number }>

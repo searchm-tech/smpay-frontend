@@ -8,15 +8,15 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import ApproveModal from "./ApproveModal";
 import LoadingUI from "@/components/common/Loading";
-// import AdvertiserSection from "../../components/AdvertiserSection";
-import RuleSection from "../../components/RuleSection";
-import ScheduleSection from "../../components/ScheduleSection";
-import StandardSection from "../../components/StandardSection";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
-import GuidSection from "../../components/GuideSection";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
+import AdvertiserPerformanceSection from "../../../components/AdvertiserPerformanceSection";
+import IndicatorDetermineSection from "../../../components/IndicatorDetermineSection";
+import RuleSection from "../../../components/RuleSection";
+import ScheduleSection from "../../../components/ScheduleSection";
+import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
+import GuidSection from "../../../components/GuideSection";
 import RejectSendModal from "./RejectSendModal";
-import AccountDesc from "../../components/AccountDesc";
-import RejectModal from "../../components/RejectModal";
+import RejectModal from "../../../components/RejectModal";
 import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
@@ -24,7 +24,7 @@ import {
 import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
+
 type SmPayJudgementDetailViewProps = {
   id: string;
 };
@@ -95,26 +95,24 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
           open
           title="광고주 심사 재개"
           onClose={() => setIsRestart(false)}
-          onConfirm={() => {
-            updateStatus({ id, status: "REVIEW_APPROVED" });
-          }}
+          onConfirm={() => updateStatus({ id, status: "REVIEW_APPROVED" })}
           content="광고주 상태를 다시 활성화 하시겠습니까?"
         />
       )}
 
       <GuidSection
-        viewType="reject"
-        className="bg-[#FCECEC]"
+        viewType="master-judgement"
         onClick={handleOpenRejectModal}
       />
       <AdvertiseStatusDesc
         status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
       />
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
-      <AccountDesc smPayData={response.data} />
-      <RuleSection id={"1"} />
+      <AdvertiserPerformanceSection />
+      <IndicatorDetermineSection />
+
+      <RuleSection id={"1"} isReadonly />
       <ScheduleSection id={"1"} />
-      <StandardSection />
 
       {/* <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
@@ -138,7 +136,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
           <Button
             variant="cancel"
             className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
+            onClick={() => router.push("/sm-pay/agency/judgement")}
           >
             뒤로
           </Button>

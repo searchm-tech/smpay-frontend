@@ -39,10 +39,10 @@ const breadcrumbItems: DashboardSubItem[] = [
   },
   {
     title: "SM Pay 심사",
-    url: "/sm-pay/judgement",
+    url: "/sm-pay/master/judgement",
   },
   {
     title: "심사 요청 상세",
-    url: "/sm-pay/judgement/[slug]",
+    url: "/sm-pay/master/judgement/[slug]",
   },
 ];

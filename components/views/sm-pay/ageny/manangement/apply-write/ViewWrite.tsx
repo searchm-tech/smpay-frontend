@@ -8,14 +8,13 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { HelpIcon } from "@/components/composite/icon-components";
 
-import AdvertiserDesc from "../../components/AdvertiserDesc";
-import { RuleEditDesc } from "../../components/RuleDesc";
-import { ScheduleEditDesc } from "../../components/ScheduleDesc";
-import AdvertiserDesEdit from "../../components/AdvertiserDesEdit";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
+import { RuleEditDesc } from "../../../components/RuleDesc";
+import { ScheduleEditDesc } from "../../../components/ScheduleDesc";
+import AdvertiserDesEdit from "../../../components/AdvertiserDesEdit";
 
 import {
   useAdvertiserDetail,
-  useMutateUpdateAdvertiser,
   useMutateSendAdvertiserAgreement,
 } from "@/hooks/queries/advertiser";
 

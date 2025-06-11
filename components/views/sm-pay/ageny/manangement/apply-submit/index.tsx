@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import ScheduleSection from "../../components/ScheduleSection";
-import RuleSection from "../../components/RuleSection";
-import GuidSection from "../../components/GuideSection";
-import AccountDesc from "../../components/AccountDesc";
+import ScheduleSection from "../../../components/ScheduleSection";
+import RuleSection from "../../../components/RuleSection";
+import GuidSection from "../../../components/GuideSection";
+import AccountDesc from "../../../components/AccountDesc";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
 
 import {
   useSmPaySubmitDetail,
@@ -19,7 +20,7 @@ import {
 
 import { APPLY_SUBMIT_CONTENT } from "@/constants/dialog";
 import { type AdvertiserData } from "@/types/adveriser";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
+
 interface ApplySubmitViewProps {
   id: string;
 }

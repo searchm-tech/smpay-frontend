@@ -1,14 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
 import Table from "@/components/composite/table";
-
-import RejectModal from "../components/RejectModal";
-import StopInfoModal from "../components/StopInfoModal";
 
 import { formatDate } from "@/utils/format";
 
@@ -34,9 +30,6 @@ const TableSection = ({
   onTableChange,
 }: PropsTableSection) => {
   const router = useRouter();
-
-  const [rejectModalId, setRejectModalId] = useState<string>("");
-  const [stopModalId, setStopModalId] = useState<string>("");
 
   const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
     {
@@ -76,7 +69,7 @@ const TableSection = ({
       render: (text, record) => (
         <div className="flex items-center gap-2">
           <LinkTextButton
-            onClick={() => router.push(`/sm-pay/judgement/${record.id}`)}
+            onClick={() => router.push(`/sm-pay/master/judgement/${record.id}`)}
           >
             {text}
           </LinkTextButton>
@@ -105,25 +98,6 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (status: string, record: SmPayJudgementData) => {
-        if (status === "반려") {
-          return (
-            <LinkTextButton
-              onClick={() => setRejectModalId(record.id.toString())}
-            >
-              {status}
-            </LinkTextButton>
-          );
-        }
-        if (status === "일시중지") {
-          return (
-            <LinkTextButton
-              onClick={() => setStopModalId(record.id.toString())}
-            >
-              {status}
-            </LinkTextButton>
-          );
-        }
-
         return <span>{status}</span>;
       },
     },
@@ -141,22 +115,6 @@ const TableSection = ({
 
   return (
     <section>
-      {rejectModalId && (
-        <RejectModal
-          open
-          id={rejectModalId}
-          onClose={() => setRejectModalId("")}
-          onConfirm={() => router.push(`/sm-pay/judgement/${rejectModalId}`)}
-        />
-      )}
-      {stopModalId && (
-        <StopInfoModal
-          open
-          id={stopModalId}
-          onClose={() => setStopModalId("")}
-          onConfirm={() => router.push(`/sm-pay/judgement/${stopModalId}`)}
-        />
-      )}
       <Table<SmPayJudgementData & { id: number }>
         columns={columns}
         dataSource={dataSource}
