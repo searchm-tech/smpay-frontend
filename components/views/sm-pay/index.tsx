@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { getIsAdmin, getIsGroupMember, getIsGroupMaster } from "@/lib/utils";
+import { getIsAdmin, getIsAgency, getIsGroupMaster } from "@/lib/utils";
 
 const SmPayView = () => {
   const { data: session } = useSession();
@@ -14,7 +14,7 @@ const SmPayView = () => {
     if (session && session.user) {
       const isAdmin = getIsAdmin(session.user.type);
       const isGroupMaster = getIsGroupMaster(session.user.type);
-      const isGroupMember = getIsGroupMember(session.user.type);
+      const isAgency = getIsAgency(session.user.type);
 
       if (isAdmin) {
         router.push("/sm-pay/admin");
@@ -22,11 +22,11 @@ const SmPayView = () => {
       }
 
       if (isGroupMaster) {
-        router.push("/sm-pay/management");
+        router.push("/sm-pay/master/judgement");
         return;
       }
 
-      if (isGroupMember) {
+      if (isAgency) {
         router.push("/sm-pay/management");
         return;
       }
