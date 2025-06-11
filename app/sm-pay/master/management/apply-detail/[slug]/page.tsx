@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayApplyDetailView from "@/components/views/sm-pay/manangement/apply-detail";
+import SmPayApplyDetailView from "@/components/views/sm-pay/master/manangement/apply-detail";
 
 type PageParams = {
   slug: string;
