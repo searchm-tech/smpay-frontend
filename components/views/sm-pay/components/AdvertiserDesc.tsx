@@ -13,6 +13,7 @@ type AdvertiserDescProps = {
   isReadonly?: boolean;
 };
 
+// [최상위 그룹장] - 심사 요청 상세
 const AdvertiserDesc = ({
   advertiserDetail,
   onEdit,
@@ -31,22 +32,19 @@ const AdvertiserDesc = ({
         )}
       </div>
       <Descriptions columns={1}>
-        <DescriptionItem label="사업자명">
+        <DescriptionItem label="광고주명">
           <Label>{advertiserDetail?.businessName}</Label>
-        </DescriptionItem>
-        <DescriptionItem label="광고주 닉네임">
-          <Label>{advertiserDetail?.loginId}</Label>
         </DescriptionItem>
         <DescriptionItem label="대표자명">
           <Label>{advertiserDetail?.businessOwnerName}</Label>
         </DescriptionItem>
-        <DescriptionItem label="사업자 등록 번호">
+        <DescriptionItem label="사업자 등록번호">
           <Label>{advertiserDetail?.businessNumber}</Label>
         </DescriptionItem>
-        <DescriptionItem label="담당자 휴대폰 번호">
+        <DescriptionItem label="광고주 휴대폰 번호">
           <Label>{advertiserDetail?.businessOwnerPhone}</Label>
         </DescriptionItem>
-        <DescriptionItem label="담당자 이메일 주소">
+        <DescriptionItem label="광고주 이메일 주소">
           <Label>{advertiserDetail?.businessOwnerEmail}</Label>
         </DescriptionItem>
       </Descriptions>
