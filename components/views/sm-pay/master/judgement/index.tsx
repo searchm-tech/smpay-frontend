@@ -3,16 +3,15 @@
 import { useState } from "react";
 
 import SearchSection from "./SearchSection";
-import FilterSection from "./FilterSection";
+
 import TableSection from "./TableSection";
+import GuidSection from "../../components/GuideSection";
 
 import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 
-// TODO : 제거 예정
-const SmPayJudgementView = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("ALL");
+const SmPayMasterJudgementView = () => {
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -20,10 +19,6 @@ const SmPayJudgementView = () => {
   const [sortOrder, setSortOrder] = useState<"ascend" | "descend" | undefined>(
     undefined
   );
-
-  const handleFilterChange = (filter: string) => {
-    setSelectedFilter(filter);
-  };
 
   const handleSearch = (text: string) => setSearch(text);
 
@@ -46,19 +41,14 @@ const SmPayJudgementView = () => {
           : undefined,
       filters: {
         search: search ? [search] : [""],
-        status: selectedFilter ? [selectedFilter] : ["ALL"],
       },
     });
 
-  console.log("selectedFilter", selectedFilter);
-
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      <GuidSection viewType="overview" />
       <SearchSection onSearch={handleSearch} />
-      <FilterSection
-        selectedFilter={selectedFilter}
-        handleFilterChange={handleFilterChange}
-      />
+
       <TableSection
         dataSource={judgementData?.data || []}
         loading={loadingTable}
@@ -73,4 +63,4 @@ const SmPayJudgementView = () => {
   );
 };
 
-export default SmPayJudgementView;
+export default SmPayMasterJudgementView;

@@ -6,7 +6,7 @@ import {
   AlarmClock,
   Target,
 } from "lucide-react";
-import { getIsAdmin } from "@/lib/utils";
+import { getIsAdmin, getIsGroupMaster, getIsAgency } from "@/lib/utils";
 import type { TResponseMenu } from "@/types/api/menu";
 import type { TAuthType } from "@/types/user";
 
@@ -16,14 +16,15 @@ const MENU_CONFIG = {
     icon: AppWindow,
     baseUrl: "/sm-pay",
     subMenus: {
-      "SM Pay 관리": "/sm-pay/management",
-      "SM Pay 심사": "/sm-pay/judgement",
+      "SM Pay 관리": "/sm-pay/master/management",
+      "SM Pay 심사": "/sm-pay/master/judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
       "충전 회수 현황": {
+        // 충전 회수 현황은 전부 있음.
         ADMIN: "/sm-pay/admin/charge",
         AGENCY: "/sm-pay/agency/charge",
-        USER: "/sm-pay/user/charge",
+        MASTER: "/sm-pay/master/charge",
       },
     },
   },
@@ -98,9 +99,13 @@ function getMenuUrl(
   if (typeof config === "object" && config !== null) {
     // 권한별 URL이 정의된 경우
     if (getIsAdmin(userType)) {
-      return config.ADMIN || config.USER || Object.values(config)[0];
+      return config.ADMIN || config.MASTER || Object.values(config)[0];
+    } else if (getIsGroupMaster(userType)) {
+      return config.MASTER || config.AGENCY || Object.values(config)[0];
+    } else if (getIsAgency(userType)) {
+      return config.AGENCY || config.MEMBER || Object.values(config)[0];
     } else {
-      return config.AGENCY || config.USER || Object.values(config)[0];
+      return config.AGENCY || config.MEMBER || Object.values(config)[0];
     }
   }
 
