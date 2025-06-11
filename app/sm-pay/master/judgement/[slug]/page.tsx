@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayJudgementDetailView from "@/components/views/sm-pay/judgement/detail";
+import SmPayJudgementDetailView from "@/components/views/sm-pay/master/judgement/detail";
 
 type PageParams = Promise<{ slug: string }>;
 
@@ -23,8 +23,6 @@ export default async function JudgementDetailPage({
   params: PageParams;
 }) {
   const { slug } = await params;
-
-  console.log("slug", slug);
 
   return (
     <div>

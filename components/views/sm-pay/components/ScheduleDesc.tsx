@@ -47,7 +47,7 @@ export const ScheduleEditDesc = ({
 
   return (
     <Descriptions columns={1}>
-      <DescriptionItem label="일 최대 충전 한도">
+      <DescriptionItem label="충전 스케쥴">
         <span>1일 1회</span>
       </DescriptionItem>
       <DescriptionItem label="최초 충전 금액 설정">

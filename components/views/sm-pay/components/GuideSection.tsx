@@ -7,7 +7,13 @@ import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 
-export type ViewType = "guide" | "write" | "submit" | "reject" | "overview";
+export type ViewType =
+  | "guide"
+  | "write"
+  | "submit"
+  | "reject"
+  | "overview"
+  | "master-judgement";
 
 type GuidSectionProps = {
   viewType: ViewType;
@@ -44,6 +50,7 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         </div>
       </div>
     ),
+
     write: (
       <div className="flex items-start gap-2 text-[13px]">
         <IconBadge className="mt-1" name="CircleAlert" bgColor="#1062FF" />
@@ -116,6 +123,33 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
           SM Pay 이용 가이드
         </GuideButton>
       </div>
+    ),
+
+    "master-judgement": (
+      <section className="w-full flex items-center text-[13px]">
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <IconBadge name="CircleAlert" bgColor="#1062FF" />
+            <span>SM Pay 신청 도움말</span>
+          </div>
+
+          <div className="pl-6 text-[#363C45] space-y-1.5 flex flex-col">
+            <span>
+              • 광고주의 최근 성과와 판단 지표를 참고해 충전 규칙과 스케쥴을
+              설정해 주세요.
+            </span>
+            <span>
+              • [광고 성과 예측 시뮬레이션] 기능을 통해 설정된 규칙이 적용될
+              경우의 성과를 예측할 수 있으며, 선결제되는 광고비의 회수 가능성도
+              함께 고려해 심사해 주세요.
+            </span>
+          </div>
+        </div>
+
+        <GuideButton onClick={() => setIsOpen(true)}>
+          SM Pay 이용 가이드
+        </GuideButton>
+      </section>
     ),
     reject: (
       <div className="w-full flex items-center justify-between">
