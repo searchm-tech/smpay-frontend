@@ -1,4 +1,4 @@
-import SMPayManagementView from "@/components/views/sm-pay/manangement";
+import SMPayMasterManagementView from "@/components/views/sm-pay/master/manangement";
 import ContentHeader from "@/components/common/ContentHeader";
 
 import type { DashboardSubItem } from "@/types/menu";
@@ -7,7 +7,7 @@ export default function SMPayManagementPage() {
   return (
     <div>
       <ContentHeader title="SM Pay 관리" items={breadcrumbItems} />
-      <SMPayManagementView />
+      <SMPayMasterManagementView />
     </div>
   );
 }
@@ -15,10 +15,10 @@ export default function SMPayManagementPage() {
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay",
-    url: "/sm-pay",
+    url: "/sm-pay/master/management",
   },
   {
     title: "SM Pay 관리",
-    url: "/sm-pay/management",
+    url: "/sm-pay/master/management",
   },
 ];
