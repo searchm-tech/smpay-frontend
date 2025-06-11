@@ -22,6 +22,10 @@ export type DescriptionItemProps = {
   children: React.ReactNode;
   span?: number;
   className?: string;
+  styles?: {
+    content?: React.CSSProperties;
+    label?: React.CSSProperties;
+  };
 };
 
 export function DescriptionItem({
@@ -29,9 +33,15 @@ export function DescriptionItem({
   children,
   span,
   className,
+  styles,
 }: DescriptionItemProps) {
   return (
-    <AntdDescriptions.Item label={label} span={span} className={className}>
+    <AntdDescriptions.Item
+      label={label}
+      span={span}
+      className={className}
+      styles={styles}
+    >
       {children}
     </AntdDescriptions.Item>
   );

@@ -14,6 +14,7 @@ type AccountDescProps = {
   smPayData: SmPayData | null;
 };
 
+// TODO: 사용안 할 수 있음
 const AccountDesc = ({ smPayData }: AccountDescProps) => {
   if (!smPayData) return null;
 

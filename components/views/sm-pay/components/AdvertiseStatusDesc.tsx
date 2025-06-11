@@ -14,7 +14,7 @@ const AdvertiseStatusDesc = ({ status }: AdvertiseStatusDescProps) => {
     <section className="mb-4">
       <div className="flex items-center gap-4 py-2">
         <LabelBullet labelClassName="text-base font-bold">
-          광고주 상태
+          광고주 심사 상태
         </LabelBullet>
       </div>
 
