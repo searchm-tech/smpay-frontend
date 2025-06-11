@@ -97,7 +97,7 @@ const TableSection = ({
   };
 
   const handleMoveDetailPage = (id: number) => {
-    router.push(`/sm-pay/management/apply-detail/${id}`);
+    router.push(`/sm-pay/admin/adversiter-status/${id}`);
   };
 
   const columns: TableProps<SmPayData>["columns"] = [
