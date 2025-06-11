@@ -20,7 +20,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { cn, getIsAdmin } from "@/lib/utils";
+import { cn, getAuthType } from "@/lib/utils";
 import { useQueryMenu } from "@/hooks/queries/menu";
 import { COMMON_ITEMS } from "@/constants/dasboard";
 import {
@@ -52,10 +52,7 @@ export function NavDashboard() {
   const menuType = useMemo(() => {
     if (!session) return "agency";
     if (!session.user) return "agency";
-    if (getIsAdmin(session.user.type)) {
-      return "admin";
-    }
-    return "agency";
+    return getAuthType(session.user.type);
   }, [session]);
 
   const menuItems = useMemo(() => {
