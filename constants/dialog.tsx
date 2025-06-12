@@ -8,7 +8,8 @@ export type SMPayManageStatus =
   | "stop"
   | "resumption"
   | "cancel"
-  | "confirm";
+  | "confirm"
+  | "rerequset";
 
 export const MANAGEMENT_CONTENT: Record<
   SMPayManageStatus,
@@ -53,6 +54,11 @@ export const MANAGEMENT_CONTENT: Record<
   confirm: (
     <span className="flex justify-center text-base font-bold">
       SM Pay 심사 요청이 완료하였습니다.
+    </span>
+  ),
+  rerequset: (
+    <span className="flex justify-center text-base font-bold">
+      광고주의 동의 요청을 재발송 하시겠습니까?
     </span>
   ),
 };

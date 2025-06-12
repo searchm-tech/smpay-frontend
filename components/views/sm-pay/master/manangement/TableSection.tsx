@@ -120,7 +120,7 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (value: SmPayStatus, record: SmPayData) => {
-        if (value === "REJECTED") {
+        if (value === "REVIEW_REJECTED") {
           return (
             <LinkTextButton onClick={() => setRejectModalId(record.no)}>
               {STATUS_LABELS[value]}
@@ -158,10 +158,10 @@ const TableSection = ({
               </Button>
             )}
 
-            {availableActions.includes("resend") && (
+            {availableActions.includes("rerequset") && (
               <Button
                 variant="blueOutline"
-                onClick={() => setOpenDialog("resend")}
+                onClick={() => setOpenDialog("rerequset")}
               >
                 재발송
               </Button>
@@ -184,7 +184,7 @@ const TableSection = ({
                   setOpenDialog("request");
                 }}
               >
-                심사 요청
+                광고주 등의 전송
               </Button>
             )}
 

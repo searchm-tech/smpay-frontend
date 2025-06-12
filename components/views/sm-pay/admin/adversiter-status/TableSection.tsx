@@ -146,7 +146,7 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (value: SmPayStatus, record: SmPayData) => {
-        if (value === "REJECTED") {
+        if (value === "REVIEW_REJECTED") {
           return (
             <LinkTextButton onClick={() => setRejectModalId(record.no)}>
               {STATUS_LABELS[value]}
@@ -173,6 +173,7 @@ const TableSection = ({
       render: (_, record) => {
         const availableActions = STATUS_ACTIONS[record.status];
 
+        console.log(availableActions);
         return (
           <div className="flex items-center gap-2">
             {availableActions.includes("view") && (
