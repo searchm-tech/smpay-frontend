@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
-
 import ContentHeader from "@/components/common/ContentHeader";
 import ApplySubmitView from "@/components/views/sm-pay/master/manangement/apply-submit";
 import type { DashboardSubItem } from "@/types/menu";
+import type { Metadata } from "next";
 
 type PageParams = {
   slug: string;
@@ -23,8 +22,6 @@ export default function SmPayApplySubmitPage({
 }: {
   params: PageParams;
 }) {
-  console.log("slug", params.slug);
-
   return (
     <div>
       <ContentHeader title="신청서 제출" items={breadcrumbItems} />
