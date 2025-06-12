@@ -63,15 +63,18 @@ export interface SmPayData2 {
  */
 
 export type SmPayStatus =
-  | "ADVERTISER_AGREEMENT_REQUEST" // 광고주 동의 요청
-  | "ADVERTISER_DISAGREED" // 광고주 미동의
-  | "ADVERTISER_AGREEMENT_EXPIRED" // 광고주 동의기한 만료
-  | "ADVERTISER_AGREEMENT_COMPLETED" // 광고주 동의 완료
   | "REVIEW_PENDING" // 심사 대기
-  | "REVIEW_APPROVED" // 심사 승인
-  | "REJECTED" // 반려
+  | "REVIEW_REJECTED" // 심사 반려
+  | "OPERATION_REVIEW_PENDING" // 운영 검토 대기
+  | "OPERATION_REVIEW_REJECTED" // 운영 검토 거절
+  | "OPERATION_REVIEW_COMPLETED" // 운영 검토 완료
+  | "ADVERTISER_AGREEMENT_PENDING" // 광고주 동의 대기
+  | "ADVERTISER_AGREEMENT_EXPIRED" // 광고주 동의 기한 만료
+  | "REVIEW_CANCELLED" // 신청 취소
+  | "WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED" // 출금계좌 등록 실패
+  | "OPERATING" // 운영 중
   | "SUSPENDED" // 일시중지
-  | "TERMINATION_IN_PROGRESS" // 해지 신청 진행
+  | "TERMINATION_PENDING" // 해지 대기
   | "TERMINATED"; // 해지
 
 export type SmPayJudgementStatus =
@@ -84,13 +87,14 @@ export type SmPayJudgementStatus =
 
 // sm-pay 관리 > 테이블 상태 버튼
 export type ActionButton =
-  | "view"
-  | "cancel"
-  | "resend"
-  | "request"
-  | "stop"
-  | "terminate"
-  | "resume";
+  | "view" // 조회
+  | "cancel" // 신청 취소
+  | "resend" // 재신청
+  | "request" // 광고주 등의 전송
+  | "stop" // 일시중지
+  | "terminate" // 해지 신청
+  | "resume" // 재개
+  | "rerequset"; // 재발송
 
 export type RuleInfo = {
   id: number;

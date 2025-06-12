@@ -2,28 +2,34 @@ import { SmPayStatus } from "@/types/sm-pay";
 import { TAuthType, UserStatus } from "@/types/user";
 
 export const smPayStatusMap: Record<SmPayStatus, string> = {
-  ADVERTISER_AGREEMENT_REQUEST: "광고주 동의 요청",
-  ADVERTISER_DISAGREED: "광고주 미동의",
-  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의기한 만료",
-  ADVERTISER_AGREEMENT_COMPLETED: "광고주 동의 완료",
   REVIEW_PENDING: "심사 대기",
-  REVIEW_APPROVED: "심사 승인",
-  REJECTED: "반려",
+  REVIEW_REJECTED: "심사 반려",
+  OPERATION_REVIEW_PENDING: "운영 검토 대기",
+  OPERATION_REVIEW_REJECTED: "운영 검토 거절",
+  OPERATION_REVIEW_COMPLETED: "운영 검토 완료",
+  ADVERTISER_AGREEMENT_PENDING: "광고주 동의 대기",
+  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
+  REVIEW_CANCELLED: "신청 취소",
+  WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED: "출금계좌 등록 실패",
+  OPERATING: "운영 중",
   SUSPENDED: "일시중지",
-  TERMINATION_IN_PROGRESS: "해지 신청 진행",
+  TERMINATION_PENDING: "해지 대기",
   TERMINATED: "해지",
 } as const;
 
 export const smPayStatusColorMap: Record<SmPayStatus, string> = {
-  ADVERTISER_AGREEMENT_REQUEST: "text-blue-500",
-  ADVERTISER_DISAGREED: "text-red-500",
-  ADVERTISER_AGREEMENT_EXPIRED: "text-gray-500",
-  ADVERTISER_AGREEMENT_COMPLETED: "text-green-500",
   REVIEW_PENDING: "text-yellow-500",
-  REVIEW_APPROVED: "text-green-500",
-  REJECTED: "text-red-500",
+  REVIEW_REJECTED: "text-red-500",
+  OPERATION_REVIEW_PENDING: "text-blue-500",
+  OPERATION_REVIEW_REJECTED: "text-red-500",
+  OPERATION_REVIEW_COMPLETED: "text-green-500",
+  ADVERTISER_AGREEMENT_PENDING: "text-blue-500",
+  ADVERTISER_AGREEMENT_EXPIRED: "text-gray-500",
+  REVIEW_CANCELLED: "text-gray-400",
+  WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED: "text-red-400",
+  OPERATING: "text-green-600",
   SUSPENDED: "text-orange-500",
-  TERMINATION_IN_PROGRESS: "text-red-400",
+  TERMINATION_PENDING: "text-red-400",
   TERMINATED: "text-red-600",
 } as const;
 
