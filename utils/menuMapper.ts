@@ -16,15 +16,15 @@ const MENU_CONFIG = {
     icon: AppWindow,
     baseUrl: "/sm-pay",
     subMenus: {
-      "SM Pay 관리": "/sm-pay/master/management",
-      "SM Pay 심사": "/sm-pay/master/judgement",
+      "SM Pay 관리": "/sm-pay//management",
+      "SM Pay 심사": "/sm-pay//judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
       "충전 회수 현황": {
         // 충전 회수 현황은 전부 있음.
         ADMIN: "/sm-pay/admin/charge",
-        AGENCY: "/sm-pay/agency/charge",
-        MASTER: "/sm-pay/master/charge",
+        AGENCY: "/sm-pay/agency/charge", // 대기
+        MASTER: "/sm-pay//charge", // 대기
       },
     },
   },
