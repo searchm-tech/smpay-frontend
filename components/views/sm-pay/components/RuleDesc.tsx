@@ -18,7 +18,7 @@ const RuleDesc = ({ ruleInfo }: RuleDescProps) => {
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="충전 규칙 설정">
-        <div className="text-sm flex flex-col gap-2">
+        <div className="text-sm flex flex-col gap-2 py-4">
           <div>
             기준 ROAS가 <span className="font-bold">{ruleInfo.roas}% 이상</span>
             이면 충전 금액을{" "}
@@ -60,7 +60,7 @@ export const RuleEditDesc = ({
   return (
     <Descriptions columns={1}>
       <DescriptionItem label="충전 규칙 설정">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 py-4">
           <div className="flex items-center gap-2">
             <span className="min-w-[100px]">기준 ROAS가</span>
             <NumberInput

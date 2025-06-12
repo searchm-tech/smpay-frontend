@@ -1,9 +1,7 @@
-
 import { LabelBullet } from "@/components/composite/label-bullet";
 import Table from "@/components/composite/table";
 import { Button } from "@/components/ui/button";
 import { type ColumnsType } from "antd/es/table";
-
 
 type PerformanceData = {
   id: number;
@@ -99,9 +97,3 @@ const AdvertiserPerformanceSection = () => {
 };
 
 export default AdvertiserPerformanceSection;
-
-const SubDescText = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <span className="w-1/2 text-sm text-red-500 font-bold">* {children}</span>
-  );
-};

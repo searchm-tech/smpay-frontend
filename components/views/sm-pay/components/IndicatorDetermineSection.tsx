@@ -2,6 +2,7 @@ import { CircleCheckBig, X } from "lucide-react";
 import {
   DescriptionItem,
   Descriptions,
+  SubDescItem,
 } from "@/components/composite/description-components";
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -39,7 +40,7 @@ const IndicatorDetermineSection = ({ statusInfo }: Props) => {
             <div className="flex items-center gap-4 font-bold w-1/2">
               1개월 24일 <CircleCheckBig color="#34C759" />
             </div>
-            <SubDescText>(3개월 이상)</SubDescText>
+            <SubDescItem>(3개월 이상)</SubDescItem>
           </div>
         </DescriptionItem>
         <DescriptionItem
@@ -50,7 +51,7 @@ const IndicatorDetermineSection = ({ statusInfo }: Props) => {
             <div className="flex items-center gap-4 font-bold w-1/2">
               425% <X color="#FF3B30" />
             </div>
-            <SubDescText>(400% 이상)</SubDescText>
+            <SubDescItem>(400% 이상)</SubDescItem>
           </div>
         </DescriptionItem>
         <DescriptionItem
@@ -62,7 +63,7 @@ const IndicatorDetermineSection = ({ statusInfo }: Props) => {
               {Number("9200000").toLocaleString()}원{" "}
               <CircleCheckBig color="#34C759" />
             </div>
-            <SubDescText>(300만원 이상)</SubDescText>
+            <SubDescItem>(300만원 이상)</SubDescItem>
           </div>
         </DescriptionItem>
         <DescriptionItem
@@ -73,7 +74,7 @@ const IndicatorDetermineSection = ({ statusInfo }: Props) => {
             <div className="flex items-center gap-4 font-bold w-1/2">
               1,200,000원 <X color="#FF3B30" />
             </div>
-            <SubDescText>(10만원 이상)</SubDescText>
+            <SubDescItem>(10만원 이상)</SubDescItem>
           </div>
         </DescriptionItem>
       </Descriptions>
@@ -82,13 +83,3 @@ const IndicatorDetermineSection = ({ statusInfo }: Props) => {
 };
 
 export default IndicatorDetermineSection;
-
-type SubDescTextProps = {
-  children: React.ReactNode;
-};
-
-export const SubDescText = ({ children }: SubDescTextProps) => {
-  return (
-    <span className="w-1/2 text-sm text-red-500 font-bold">* {children}</span>
-  );
-};

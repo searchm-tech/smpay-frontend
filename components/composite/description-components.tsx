@@ -87,7 +87,19 @@ export function Descriptions({
   );
 }
 
+type SubDescItemProps = {
+  children: React.ReactNode;
+};
+export const SubDescItem = ({ children }: SubDescItemProps) => {
+  return (
+    <span className="w-1/2 text-sm h-[53px] bg-[#F8F8FA] flex items-center pl-2">
+      {children}
+    </span>
+  );
+};
+
 Descriptions.Item = DescriptionItem;
+Descriptions.SubDescItem = SubDescItem;
 
 // 사용 예시:
 /*
