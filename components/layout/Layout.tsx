@@ -42,18 +42,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     router.push("/sign-in");
   };
 
-  const smPathList = [
-    "/sm-pay/agency/management",
-    "/sm-pay/master/management",
-    "/sm-pay/agency/management/apply-detail",
-    "/sm-pay/master/management/apply-detail",
-    "/sm-pay/agency/management/apply-submit",
-    "/sm-pay/master/management/apply-submit",
-    "/sm-pay/adversiter-status",
-    "/sm-pay/charge",
-    "/sm-pay/overview",
-  ];
-
   // useEffect(() => {
   //   if (isNoNeedTokenPage && !session) {
   //     console.log(isNoNeedTokenPage && !session);
@@ -62,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // }, [isNoNeedTokenPage, session]);
 
   useEffect(() => {
-    if (!isNoNavPage && smPathList.includes(pathname)) {
+    if (!isNoNavPage && pathname.includes("/sm-pay")) {
       const hideGuideModal = localStorage.getItem("hideGuideModal");
       const now = new Date().getTime();
 
