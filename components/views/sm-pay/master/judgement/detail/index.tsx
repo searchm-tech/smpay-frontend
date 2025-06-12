@@ -6,8 +6,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import ApproveModal from "./ApproveModal";
 import LoadingUI from "@/components/common/Loading";
+import ApproveModal from "./ApproveModal";
+import RejectSendModal from "./RejectSendModal";
+import OperationMemoSection from "./OperationMemoSection";
+import JudgementMemoSection from "./JudgementMemoSection";
+
 import AdvertiserDesc from "../../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../../components/IndicatorDetermineSection";
@@ -15,8 +19,8 @@ import RuleSection from "../../../components/RuleSection";
 import ScheduleSection from "../../../components/ScheduleSection";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 import GuidSection from "../../../components/GuideSection";
-import RejectSendModal from "./RejectSendModal";
 import RejectModal from "../../../components/RejectModal";
+
 import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
@@ -114,10 +118,14 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <RuleSection id={"1"} isReadonly />
       <ScheduleSection id={"1"} />
 
+      <JudgementMemoSection />
+
+      <OperationMemoSection />
+
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">
-          <Button className="w-[150px]" onClick={() => setIsRestart(true)}>
-            재개
+          <Button className="minw-[150px]" onClick={() => setIsRestart(true)}>
+            광고 성과 예측 시뮬레이션
           </Button>
 
           <Button
@@ -125,7 +133,15 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
             className="w-[150px]"
             onClick={() => router.push("/sm-pay/master/judgement")}
           >
-            뒤로
+            심사 승인
+          </Button>
+
+          <Button
+            variant="secondary"
+            className="w-[150px]"
+            onClick={() => router.push("/sm-pay/master/judgement")}
+          >
+            심사 반려
           </Button>
         </div>
       )}
