@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
@@ -11,7 +11,9 @@ import { HelpIcon } from "@/components/composite/icon-components";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
-import AdvertiserDesEdit from "../../components/AdvertiserDesEdit";
+import IndicatorsJudementSection from "../../components/IndicatorsJudementSection";
+import JudgementMemoSection from "./JudgementMemoSection";
+import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 import {
   useAdvertiserDetail,
@@ -19,6 +21,7 @@ import {
 } from "@/hooks/queries/advertiser";
 
 import { HOVER_SMPAY } from "@/constants/hover";
+import { getSmPayStatusLabel } from "@/constants/status";
 import {
   ApplyWriteModal,
   type ApplyWriteModalStatus,
@@ -33,8 +36,6 @@ type ViewWrieProps = {
 };
 
 const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
-  const [isChanged, setIsChanged] = useState(false);
-
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
     null
   );
@@ -53,9 +54,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     maxCharge: 0,
   });
 
-  const { data: response, refetch } = useAdvertiserDetail(
-    selectedAdNum as number
-  );
+  const { data: response } = useAdvertiserDetail(selectedAdNum as number);
 
   const { mutate: mutateSendAdAgree, isPending: loadingSend } =
     useMutateSendAdvertiserAgreement({
@@ -68,11 +67,6 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
   const handleScheduleInfoChange = (value: ScheduleInfo) => {
     setScheduleInfo({ ...scheduleInfo, ...value });
-  };
-
-  const onFinishEditAdvertiser = () => {
-    refetch();
-    setIsChanged(false);
   };
 
   const handleConfrimModal = () => {
@@ -102,24 +96,20 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           onClose={() => setWriteModal(null)}
           onConfirm={handleConfrimModal}
           content={ApplyWriteModal[writeModal]}
+          cancelDisabled={writeModal === "send-success"}
         />
       )}
 
       <div className="mt-4">
-        {isChanged && response?.data && (
-          <AdvertiserDesEdit
-            advertiserDetail={response.data}
-            onFinishEdit={onFinishEditAdvertiser}
-            onCancel={() => setIsChanged(false)}
-          />
+        <AdvertiseStatusDesc
+          status={response?.data ? getSmPayStatusLabel("REVIEW_PENDING") : ""}
+        />
+
+        {response?.data && (
+          <AdvertiserDesc advertiserDetail={response.data} isReadonly />
         )}
 
-        {!isChanged && response?.data && (
-          <AdvertiserDesc
-            advertiserDetail={response.data}
-            onEdit={() => setIsChanged(true)}
-          />
-        )}
+        <IndicatorsJudementSection />
       </div>
 
       <section>
@@ -155,6 +145,8 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           handleScheduleInfoChange={handleScheduleInfoChange}
         />
       </section>
+
+      <JudgementMemoSection />
 
       <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]" onClick={handleSendAdAgree}>

@@ -179,7 +179,7 @@ export const RuleEditDesc = ({
       </DescriptionItem>
 
       <DescriptionItem label="설정 결과">
-        <div className="text-sm flex flex-col gap-2">
+        <div className="text-sm flex flex-col gap-2 py-4">
           <p>
             기준 ROAS가 <span className="font-bold">{ruleInfo.roas}% 이상</span>
             이면 충전 금액을{" "}
