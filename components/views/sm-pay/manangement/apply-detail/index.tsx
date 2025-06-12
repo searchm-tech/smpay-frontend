@@ -85,13 +85,12 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       <JudgementMemoShowSection />
 
       <div className="flex justify-center gap-4 py-5">
-        <Button className="w-[150px]">확인</Button>
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => router.push("/sm-pay/master/management")}
+          onClick={() => router.push("/sm-pay/management")}
         >
-          취소
+          뒤로
         </Button>
       </div>
     </div>
