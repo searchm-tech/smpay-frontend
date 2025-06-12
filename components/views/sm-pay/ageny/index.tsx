@@ -8,7 +8,6 @@ import { getIsAdmin, getIsAgency, getIsGroupMaster } from "@/lib/utils";
 const SmPayView = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  console.log("session", session);
 
   useEffect(() => {
     if (session && session.user) {
@@ -27,7 +26,7 @@ const SmPayView = () => {
       }
 
       if (isAgency) {
-        router.push("/sm-pay/management");
+        router.push("/sm-pay/agency/management");
         return;
       }
     }
