@@ -237,7 +237,9 @@ const TableSection = ({
           content={MANAGEMENT_CONTENT[openDialog]}
           onConfirm={() => {
             if (openDialog === "request" && applySubmitId) {
-              router.push(`/sm-pay/management/apply-submit/${applySubmitId}`);
+              router.push(
+                `/sm-pay/master/management/apply-submit/${applySubmitId}`
+              );
             }
           }}
         />
@@ -249,7 +251,7 @@ const TableSection = ({
           id={rejectModalId?.toString() || ""}
           onClose={() => setRejectModalId(null)}
           onConfirm={() => {
-            router.push("/sm-pay/management/apply-detail/1");
+            router.push("/sm-pay/master/management/apply-detail/1");
           }}
         />
       )}
@@ -260,7 +262,7 @@ const TableSection = ({
           id={stopModalId?.toString() || ""}
           onClose={() => setStopModalId(null)}
           onConfirm={() => {
-            router.push("/sm-pay/management/apply-detail/1");
+            router.push("/sm-pay/master/management/apply-detail/1");
           }}
         />
       )}

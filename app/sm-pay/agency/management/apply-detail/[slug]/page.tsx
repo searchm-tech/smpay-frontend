@@ -1,3 +1,4 @@
+// TODO : 대행사와 최상위 그룹장이 동일하게 사용하는지에 따라 변겨 예정
 import ContentHeader from "@/components/common/ContentHeader";
 import SmPayApplyDetailView from "@/components/views/sm-pay/master/manangement/apply-detail";
 
@@ -30,11 +31,11 @@ export default function SmPayApplyDetailPage({
     },
     {
       title: "SM Pay 관리",
-      url: "/sm-pay/master/management",
+      url: "/sm-pay/agency/management",
     },
     {
       title: "신청 내역 상세",
-      url: `/sm-pay/master/management/apply-detail/${params.slug}`,
+      url: `/sm-pay/agency/management/apply-detail/${params.slug}`,
     },
   ];
 

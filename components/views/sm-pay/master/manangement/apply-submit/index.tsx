@@ -60,7 +60,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
       {isSuccess && (
         <ConfirmDialog
           open
-          onConfirm={() => router.push("/sm-pay/management")}
+          onConfirm={() => router.push("/sm-pay/master/management")}
           cancelDisabled
           content={APPLY_SUBMIT_CONTENT["success-apply"]}
         />
@@ -91,7 +91,7 @@ const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => router.push("/sm-pay/management")}
+          onClick={() => router.push("/sm-pay/master/management")}
         >
           취소
         </Button>
