@@ -43,7 +43,7 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
           content="인가권한이 없는 화면입니다."
           onConfirm={() => {
             setRoleError(false);
-            window.location.href = "/sm-pay/management";
+            window.location.href = "/sm-pay";
           }}
           cancelDisabled
         />
