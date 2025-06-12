@@ -8,24 +8,53 @@ interface SmPayGuideModalProps {
 
 const processSteps = [
   {
-    label: "대행사",
-    color: "bg-[#4CD964]",
-    items: ["선결제 충전 규칙 설정", "SM Pay 신청서 작성"],
+    label: "대행사 담당자",
+    color: "bg-[#34C759]",
+    title: "서비스 신청",
+    items: [
+      "• 광고주가 SM Pay 서비스를 이용 할 수 있도록 대행사 담당자가 신청서를 작성합니다.",
+    ],
   },
   {
-    label: "광고주",
-    color: "bg-[#4A90E2]",
-    items: ["출금 정보 작성 및 인증", "정보 활용 동의"],
-  },
-  {
-    label: "대행사",
-    color: "bg-[#4CD964]",
-    items: ["신청서 제출"],
+    label: "취상위 그룹장",
+    color: "bg-[#068325]",
+    title: "광고주 심사",
+    items: [
+      "• 신청된 내용을 바탕으로 대행사 내부에서 적합성 여부를 심사합니다.",
+    ],
   },
   {
     label: "SM Pay",
-    color: "bg-[#F5A623]",
-    items: ["광고주 심사"],
+    color: "bg-[#FF9500]",
+    title: "운영 검토",
+    items: [
+      "• 대행사가 심사 결과를 기반으로 SM Pay 관리자가 내용을 확인 후 운영 여부를 최종 판단합니다.",
+    ],
+  },
+  {
+    label: "대행사 담당자",
+    color: "bg-[#34C759]",
+    title: "광고주 동의 요청",
+    items: [
+      "• 검토가 완료되면 대행사 담당자는 광고주에게 동의 및 인증을 요청합니다.",
+    ],
+  },
+  {
+    label: "광고주",
+    color: "bg-[#007AFF]",
+    title: "출금 정보 작성 및 전자 서명 동의",
+    items: [
+      "• 광고주는 아래 항목을 직접 입력 및 인증해야합니다.",
+      "• 개인정보 수집 및 이용 동의",
+      "• 충전 및 매출 계좌 정보 입력",
+      "• ARS 본인 인증",
+    ],
+  },
+  {
+    label: "SM Pay",
+    color: "bg-[#FF9500]",
+    title: "운영 시작",
+    items: ["• 모든 절차가 완료되면 SM Pay 서비스 운영이 시작됩니다."],
   },
 ];
 
@@ -49,7 +78,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
-      <div className="relative bg-white rounded-lg min-w-[800px] max-h-[95vh] overflow-y-auto">
+      <div className="relative bg-white rounded-lg min-w-[90vw] max-h-[95vh] overflow-y-auto">
         <div className="p-8">
           <h2 className="text-2xl font-bold text-center mb-12">
             SM Pay - 온라인 광고 결제 솔루션
@@ -57,8 +86,8 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
 
           <br />
 
-          <div className="space-y-8">
-            <div className="space-y-2">
+          <div className="space-y-8 text-center">
+            <div className="space-y-2 font-bold">
               <p className="text-gray-700 leading-relaxed">
                 SM PAY는 광고비 선결제 서비스로, SM PAY가 광고비를 선결제하여
                 광고를 집행하고, 후불로 자동 납부되는 서비스입니다.
@@ -88,8 +117,14 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
                 <br />
               </p>
               <p className="text-gray-700 leading-relaxed">
-                광고비 선충전은 하루 1회 이루어지며, 설정 후 익일부터 선결제가
-                진행됩니다.
+                <span className="border-b text-blue-500 border-blue-500">
+                  광고비 선충전은 1일 1회
+                </span>{" "}
+                이루어지며,
+                <span className="border-b text-blue-500 border-blue-500">
+                  설정 후 익일부터 선결제가 진행
+                </span>
+                됩니다.
                 <br />
                 단, 광고주 매출계좌의 잔액 부족으로 3회 이상 최수 실패 시
                 선결제는 일시중지됩니다.
@@ -97,32 +132,43 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
             </div>
 
             <div className="flex justify-center">
-              <Badge>SM Pay 신청 프로세스</Badge>
+              <Badge>SM Pay 신청 절차</Badge>
             </div>
 
-            <div className="flex justify-between items-start px-4 mt-8">
+            <div className="flex justify-center items-start px-4 mt-8 gap-4">
               {processSteps.map((step, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center gap-4 relative"
-                >
-                  <div className="w-[120px] h-[120px] rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-                    img
-                  </div>
+                <>
                   <div
-                    className={`px-6 py-1 rounded-full text-white ${step.color}`}
+                    key={index}
+                    className="flex flex-col items-center gap-4 min-h-[350px]"
                   >
-                    {step.label}
+                    <div className="w-[120px] h-[120px] rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                      img
+                    </div>
+
+                    <div
+                      className={`px-6 py-1 text-white ${step.color} w-[180px] rounded-[5px] text-center`}
+                    >
+                      {step.label}
+                    </div>
+
+                    <div className="text-sm font-medium">• {step.title}</div>
+
+                    <div className="text-sm text-center space-y-1 flex-1">
+                      <div className="flex gap-2 text-[11px] font-normal">
+                        <div className="w-[180px] text-left ">
+                          {step.items.map((item, i) => (
+                            <p key={i} className="text-gray-600">
+                              {item}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-sm text-center space-y-1">
-                    {step.items.map((item, i) => (
-                      <p key={i} className="text-gray-600">
-                        {item}
-                      </p>
-                    ))}
-                  </div>
+
                   {index < processSteps.length - 1 && (
-                    <div className="absolute -right-8 top-14 text-gray-300">
+                    <div className="flex items-center text-gray-300 mx-2 mt-16">
                       <svg
                         width="24"
                         height="24"
@@ -139,7 +185,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
                       </svg>
                     </div>
                   )}
-                </div>
+                </>
               ))}
             </div>
           </div>
