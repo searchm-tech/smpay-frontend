@@ -19,7 +19,7 @@ const JudgementMemoSection = () => {
     <section>
       <div className="flex items-center gap-2 py-2">
         <LabelBullet labelClassName="text-base font-bold">
-          운영 검토 시 참고용 메모
+          심사자 참고용 메모
         </LabelBullet>
 
         <TooltipHover
@@ -36,3 +36,24 @@ const JudgementMemoSection = () => {
 };
 
 export default JudgementMemoSection;
+
+export const JudgementMemoShowSection = () => {
+  return (
+    <section>
+      <div className="flex items-center gap-2 py-2">
+        <LabelBullet labelClassName="text-base font-bold">
+          심사자 참고용 메모
+        </LabelBullet>
+
+        <TooltipHover
+          triggerContent={<HelpIcon />}
+          content={HOVER_SMPAY["rule"]}
+        />
+      </div>
+
+      <div className="min-h-[150px] bg-[#F8F8FA] p-4 font-thin text-base">
+        {parse(test)}
+      </div>
+    </section>
+  );
+};

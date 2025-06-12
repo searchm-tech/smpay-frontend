@@ -17,6 +17,7 @@ export async function generateMetadata({
   };
 }
 
+// TODO : 삭제 예정 - apply-submit
 export default function SmPayApplySubmitPage({
   params,
 }: {
