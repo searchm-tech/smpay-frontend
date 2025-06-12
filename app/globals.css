@@ -169,3 +169,7 @@
     line-height: 1.5;
   } /* 작은 본문 */
 }
+
+.ant-descriptions-item-content {
+  padding: 0 0 0 20px !important;
+}
