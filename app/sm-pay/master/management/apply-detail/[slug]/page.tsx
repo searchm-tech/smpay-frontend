@@ -1,9 +1,8 @@
-// TODO : agency/sm-pay/management/[slug]  변경
+import ContentHeader from "@/components/common/ContentHeader";
+import SmPayApplyDetailView from "@/components/views/sm-pay/master/manangement/apply-detail";
 
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
-import ContentHeader from "@/components/common/ContentHeader";
-import SmPayApplyDetailView from "@/components/views/sm-pay/master/manangement/apply-detail";
 
 type PageParams = {
   slug: string;
@@ -31,11 +30,11 @@ export default function SmPayApplyDetailPage({
     },
     {
       title: "SM Pay 관리",
-      url: "/sm-pay/management",
+      url: "/sm-pay/master/management",
     },
     {
       title: "신청 내역 상세",
-      url: `/sm-pay/management/apply-detail/${params.slug}`,
+      url: `/sm-pay/master/management/apply-detail/${params.slug}`,
     },
   ];
 

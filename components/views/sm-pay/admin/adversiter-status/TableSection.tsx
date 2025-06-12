@@ -127,7 +127,7 @@ const TableSection = ({
       render: (text: string, record: SmPayData) => (
         <LinkTextButton
           onClick={() => {
-            router.push(`/sm-pay/management/apply-detail/${record.no}`);
+            router.push(`/sm-pay/admin/adversiter-status/${record.no}`);
           }}
         >
           {text}

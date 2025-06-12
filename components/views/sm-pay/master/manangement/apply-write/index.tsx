@@ -29,7 +29,7 @@ const SMPayMasterApplyWriteView = () => {
             setSelectedAdNum(value);
             setViewType("write");
           }}
-          onCancel={() => router.push("/sm-pay/management")}
+          onCancel={() => router.push("/sm-pay/master/management")}
         />
       )}
 

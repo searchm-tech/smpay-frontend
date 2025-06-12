@@ -37,10 +37,10 @@ const breadcrumbItems: DashboardSubItem[] = [
   },
   {
     title: "SM Pay관리",
-    url: "/sm-pay/management",
+    url: "/sm-pay/master/management",
   },
   {
     title: "신청서 제출",
-    url: "/sm-pay/management/apply-submit",
+    url: "/sm-pay/master/management/apply-submit",
   },
 ];

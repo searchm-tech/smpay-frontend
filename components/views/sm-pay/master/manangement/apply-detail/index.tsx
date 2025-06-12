@@ -63,7 +63,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => router.push("/sm-pay/management")}
+          onClick={() => router.push("/sm-pay/master/management")}
         >
           취소
         </Button>
