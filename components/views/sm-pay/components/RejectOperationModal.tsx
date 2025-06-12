@@ -25,7 +25,7 @@ const data = {
   ),
 };
 
-interface props extends ModalProps {
+interface Props extends ModalProps {
   id: string;
 }
 const RejectModal = ({
@@ -34,7 +34,7 @@ const RejectModal = ({
   onConfirm,
   confirmDisabled = false,
   id,
-}: props) => {
+}: Props) => {
   const { data: rejectReason } = useSmPayRejectReason(id);
 
   return (
@@ -48,14 +48,13 @@ const RejectModal = ({
       confirmDisabled={confirmDisabled}
     >
       <div className="min-w-[900px]">
-        <p>다음과 같은 사유로 SM Pay 서비스 심사를 반려되었습니다.</p>
+        <p>다음과 같은 사유로 SM Pay 신청이 거절되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
           <Descriptions columns={1}>
-            <DescriptionItem label="심사 변리 일시">
+            <DescriptionItem label="운영 검토 거절 일시">
               {data.date}
             </DescriptionItem>
-            <DescriptionItem label="심사자">최상위 그룹장</DescriptionItem>
-            <DescriptionItem label="반려 사유">
+            <DescriptionItem label="거절 사유">
               {parse(rejectReason.data)}
             </DescriptionItem>
           </Descriptions>

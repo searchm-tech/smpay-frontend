@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import { TableProps } from "antd";
 import { formatDate } from "@/utils/format";
-import { SmPayData, SmPayStatus } from "@/types/sm-pay";
+import { ActionButton, SmPayData, SmPayStatus } from "@/types/sm-pay";
 import { LinkTextButton } from "@/components/composite/button-components";
 import { useRouter } from "next/navigation";
-import { SMPayManageStatus } from "@/constants/dialog";
-import { STATUS_ACTIONS, STATUS_LABELS } from "@/constants/status";
+
+import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
 
 import type { TableParams } from "@/types/table";
 import type { FilterValue } from "antd/es/table/interface";
@@ -71,7 +71,7 @@ const TableSection = ({
   const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
     useState<string>();
 
-  const [openDialog, setOpenDialog] = useState<SMPayManageStatus | null>(null);
+  const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
@@ -171,9 +171,8 @@ const TableSection = ({
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
-        const availableActions = STATUS_ACTIONS[record.status];
+        const availableActions = STATUS_ACTION_BUTTONS[record.status];
 
-        console.log(availableActions);
         return (
           <div className="flex items-center gap-2">
             {availableActions.includes("view") && (
@@ -194,49 +193,58 @@ const TableSection = ({
               </Button>
             )}
 
-            {availableActions.includes("resume") && (
-              <Button
-                variant="blueOutline"
-                onClick={() => setOpenDialog("resumption")}
-              >
-                재개
-              </Button>
-            )}
-
-            {availableActions.includes("request") && (
-              <Button
-                variant="blueOutline"
-                onClick={() => {
-                  setApplySubmitId(record.no);
-                  setOpenDialog("request");
-                }}
-              >
-                심사 요청
-              </Button>
-            )}
-
-            {availableActions.includes("terminate") && (
+            {availableActions.includes("suspend") && (
               <Button
                 variant="redOutline"
-                onClick={() => setOpenDialog("terminate")}
-              >
-                해지
-              </Button>
-            )}
-
-            {availableActions.includes("stop") && (
-              <Button
-                variant="redOutline"
-                onClick={() => setOpenDialog("stop")}
+                onClick={() => setOpenDialog("suspend")}
               >
                 일시 중지
               </Button>
             )}
 
-            {availableActions.includes("cancel") && (
+            {availableActions.includes("termination_request") && (
               <Button
                 variant="redOutline"
-                onClick={() => setOpenDialog("cancel")}
+                onClick={() => setOpenDialog("termination_request")}
+              >
+                해지 신청
+              </Button>
+            )}
+
+            {availableActions.includes("resume") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => setOpenDialog("resume")}
+              >
+                재개
+              </Button>
+            )}
+
+            {availableActions.includes("advertiser_agreement_send") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => {
+                  setApplySubmitId(record.no);
+                  setOpenDialog("advertiser_agreement_send");
+                }}
+              >
+                광고주 등의 전송
+              </Button>
+            )}
+
+            {availableActions.includes("reapply") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => console.log(record.no)}
+              >
+                재신청
+              </Button>
+            )}
+
+            {availableActions.includes("application_cancel") && (
+              <Button
+                variant="redOutline"
+                onClick={() => setOpenDialog("application_cancel")}
               >
                 신청 취소
               </Button>

@@ -24,6 +24,7 @@ import type {
   RuleInfo,
   ScheduleInfo,
   SmPayJudgementStatus,
+  SmPayStatus,
 } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
@@ -106,7 +107,7 @@ export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
   const statusCounts = mockData.reduce((acc, item) => {
     acc[item.status] = (acc[item.status] || 0) + 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<SmPayStatus, number>);
 
   // 전체 카운트 계산
   const totalCount = mockData.length;
@@ -121,63 +122,88 @@ export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
       },
       {
         id: 1,
-        name: "광고주 동의 요청",
-        status: "ADVERTISER_AGREEMENT_REQUEST",
-        count: statusCounts["ADVERTISER_AGREEMENT_REQUEST"] || 0,
-      },
-      {
-        id: 2,
-        name: "광고주 미동의",
-        status: "ADVERTISER_DISAGREED",
-        count: statusCounts["ADVERTISER_DISAGREED"] || 0,
-      },
-      {
-        id: 3,
-        name: "광고주 동의기한 만료",
-        status: "ADVERTISER_AGREEMENT_EXPIRED",
-        count: statusCounts["ADVERTISER_AGREEMENT_EXPIRED"] || 0,
-      },
-      {
-        id: 4,
-        name: "광고주 동의 완료",
-        status: "ADVERTISER_AGREEMENT_COMPLETED",
-        count: statusCounts["ADVERTISER_AGREEMENT_COMPLETED"] || 0,
-      },
-      {
-        id: 5,
         name: "심사 대기",
         status: "REVIEW_PENDING",
         count: statusCounts["REVIEW_PENDING"] || 0,
       },
       {
+        id: 2,
+        name: "심사 반려",
+        status: "REVIEW_REJECTED",
+        count: statusCounts["REVIEW_REJECTED"] || 0,
+      },
+      {
+        id: 3,
+        name: "운영 검토 대기",
+        status: "OPERATION_REVIEW_PENDING",
+        count: statusCounts["OPERATION_REVIEW_PENDING"] || 0,
+      },
+      {
+        id: 4,
+        name: "운영 검토 거절",
+        status: "OPERATION_REVIEW_REJECTED",
+        count: statusCounts["OPERATION_REVIEW_REJECTED"] || 0,
+      },
+      {
+        id: 5,
+        name: "운영 검토 완료",
+        status: "OPERATION_REVIEW_COMPLETED",
+        count: statusCounts["OPERATION_REVIEW_COMPLETED"] || 0,
+      },
+      {
         id: 6,
-        name: "심사 승인",
-        status: "REVIEW_APPROVED",
-        count: statusCounts["REVIEW_APPROVED"] || 0,
+        name: "광고주 동의 대기",
+        status: "ADVERTISER_AGREEMENT_PENDING",
+        count: statusCounts["ADVERTISER_AGREEMENT_PENDING"] || 0,
       },
       {
         id: 7,
-        name: "반려",
-        status: "REJECTED",
-        count: statusCounts["REJECTED"] || 0,
+        name: "광고주 동의 기한 만료",
+        status: "ADVERTISER_AGREEMENT_EXPIRED",
+        count: statusCounts["ADVERTISER_AGREEMENT_EXPIRED"] || 0,
       },
       {
         id: 8,
+        name: "신청 취소",
+        status: "APPLICATION_CANCELLED",
+        count: statusCounts["APPLICATION_CANCELLED"] || 0,
+      },
+      {
+        id: 9,
+        name: "출금계좌 등록 실패",
+        status: "WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED",
+        count: statusCounts["WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED"] || 0,
+      },
+      {
+        id: 10,
+        name: "운영 중",
+        status: "OPERATING",
+        count: statusCounts["OPERATING"] || 0,
+      },
+      {
+        id: 11,
         name: "일시중지",
         status: "SUSPENDED",
         count: statusCounts["SUSPENDED"] || 0,
       },
       {
-        id: 9,
-        name: "해지 신청 진행",
-        status: "TERMINATION_IN_PROGRESS",
-        count: statusCounts["TERMINATION_IN_PROGRESS"] || 0,
+        id: 12,
+        name: "해지 대기",
+        status: "TERMINATION_PENDING",
+        count: statusCounts["TERMINATION_PENDING"] || 0,
       },
       {
-        id: 10,
+        id: 13,
         name: "해지",
         status: "TERMINATED",
         count: statusCounts["TERMINATED"] || 0,
+      },
+
+      {
+        id: 14,
+        name: "심사 취소",
+        status: "APPLICATION_CANCELLED",
+        count: statusCounts["APPLICATION_CANCELLED"] || 0,
       },
     ],
     success: true,

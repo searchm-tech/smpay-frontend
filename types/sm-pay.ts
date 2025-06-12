@@ -39,29 +39,7 @@ export interface SmPayData2 {
   createdAt: string;
 }
 
-/**
- * SM Pay 상태별 가능한 액션 정의 (피그마 기준)
- *
- * 1. 심사 대기: 조회, 신청 취소
- * 2. 심사 반려: 조회, 재신청
- * 3. 운영 검토 대기: 조회, 신청 취소
- * 4. 운영 검토 거절: 조회, 재신청
- * 5. 운영 검토 완료: 조회, 광고주 등의 전송
- * 6. 광고주 등의 대기: 조회, 신청 취소
- * 7. 광고주 등의 기한 만료: 조회, 재발송
- * 8. 신청 취소: 조회, 재신청
- * 9. 출금계좌 등록 실패: 조회
- * 10. 운영 중: 조회, 일시중지, 해지 신청
- * 11. 일시중지: 조회, 해지 신청, 재개
- * 12. 해지 대기: 조회
- * 13. 해지: 조회
- *
- * 액션 색상 구분:
- * - 초록색(조회): 기본 조회 기능
- * - 빨간색(신청 취소, 해지 신청): 취소/해지 관련
- * - 파란색(재신청, 광고주 등의 전송, 재발송, 재개): 진행/재시작 관련
- */
-
+// SMPay 관리 상태
 export type SmPayStatus =
   | "REVIEW_PENDING" // 심사 대기
   | "REVIEW_REJECTED" // 심사 반려
@@ -70,7 +48,7 @@ export type SmPayStatus =
   | "OPERATION_REVIEW_COMPLETED" // 운영 검토 완료
   | "ADVERTISER_AGREEMENT_PENDING" // 광고주 동의 대기
   | "ADVERTISER_AGREEMENT_EXPIRED" // 광고주 동의 기한 만료
-  | "REVIEW_CANCELLED" // 신청 취소
+  | "APPLICATION_CANCELLED" // 신청 취소
   | "WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED" // 출금계좌 등록 실패
   | "OPERATING" // 운영 중
   | "SUSPENDED" // 일시중지
@@ -85,16 +63,16 @@ export type SmPayJudgementStatus =
   | "TERMINATED" // 해지
   | "TERMINATION_IN_PROGRESS"; // 해지 신청 진행
 
-// sm-pay 관리 > 테이블 상태 버튼
+// 이미지 기준으로 올바르게 매칭된 액션 버튼 타입
 export type ActionButton =
   | "view" // 조회
-  | "cancel" // 신청 취소
-  | "resend" // 재신청
-  | "request" // 광고주 등의 전송
-  | "stop" // 일시중지
-  | "terminate" // 해지 신청
+  | "application_cancel" // 신청 취소
+  | "reapply" // 재신청
+  | "advertiser_agreement_send" // 광고주 동의 전송
+  | "suspend" // 일시중지
+  | "termination_request" // 해지 신청
   | "resume" // 재개
-  | "rerequset"; // 재발송
+  | "resend"; // 재발송
 
 export type RuleInfo = {
   id: number;
