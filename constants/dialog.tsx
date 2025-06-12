@@ -73,7 +73,10 @@ export const ApplyWriteModal = {
   ),
   "send-success": (
     <div className="flex flex-col items-center pb-4 font-medium">
-      <span>광고주의 이메일과 SMS 동의요청이 발송되었습니다.</span>
+      <span>심사 요청이 완료되었습니다.</span>
+      <div className="mt-4">
+        <p>담장자와 최상위 그룹장에게 심사요청 안내메일이 발송되었습니다.</p>
+      </div>
     </div>
   ),
   "disable-business-number": (

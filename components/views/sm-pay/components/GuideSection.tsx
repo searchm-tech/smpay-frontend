@@ -51,47 +51,32 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
       </div>
     ),
 
+    // TODO : write, master-judgement랑 동일
     write: (
-      <div className="flex items-start gap-2 text-[13px]">
-        <IconBadge className="mt-1" name="CircleAlert" bgColor="#1062FF" />
-        <div className="flex flex-col gap-3 text-[#363C45]">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span>SM Pay는</span>
-            <span className={rounded}>
-              <span className="text-[#4A90E2]">대행사</span>의 신청 작성
-            </span>
-            <span>→</span>
-            <span className={rounded}>
-              <span className="text-[#4A90E2]">광고주</span>의 출금 정보 작성 및
-              정보 활용 동의
-            </span>
-            <span>→</span>
-            <span className={rounded}>
-              <span className="text-[#4A90E2]">대행사</span>의 신청서 제출
-            </span>
-            <span>→</span>
-            <span className={rounded}>
-              <span className="text-[#4A90E2]">심사</span>
-            </span>{" "}
-            순으로 진행됩니다.
+      <section className="w-full flex items-center text-[13px]">
+        <div className="w-full flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <IconBadge name="CircleAlert" bgColor="#1062FF" />
+            <span>SM Pay 신청 도움말</span>
           </div>
-          <div className="space-y-1.5 flex flex-col">
+
+          <div className="pl-6 text-[#363C45] space-y-1.5 flex flex-col">
             <span>
-              작성하신 동의 요청서는 광고주의 이메일과 SMS로 발송되며,
-              담당자에게도 이메일로 함께 전송되어 정상 발송 여부를 확인하실 수
-              있습니다.
+              • 광고주의 최근 성과와 판단 지표를 참고해 충전 규칙과 스케쥴을
+              설정해 주세요.
             </span>
             <span>
-              동의 요청서의 인증 만료 기한은 7일이며, 기한이 만료된 경우에는
-              &apos;SM Pay 관리 페이지&apos;에서 재발송하실 수 있습니다.
-            </span>
-            <span>
-              광고주가 동의하지 않은 경우, 신규 신청을 통해서만 SM Pay를 다시
-              신청할 수 있습니다.
+              • [광고 성과 예측 시뮬레이션] 기능을 통해 설정된 규칙이 적용될
+              경우의 성과를 예측할 수 있으며, 선결제되는 광고비의 회수 가능성도
+              함께 고려해 심사해 주세요.
             </span>
           </div>
         </div>
-      </div>
+
+        <GuideButton onClick={() => setIsOpen(true)}>
+          SM Pay 이용 가이드
+        </GuideButton>
+      </section>
     ),
 
     guide: (
