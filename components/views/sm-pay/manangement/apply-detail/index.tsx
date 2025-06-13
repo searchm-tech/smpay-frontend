@@ -1,7 +1,9 @@
 "use client";
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
+import LoadingUI from "@/components/common/Loading";
 
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
@@ -9,20 +11,16 @@ import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
-
-import LoadingUI from "@/components/common/Loading";
-
-import { getSmPayStatusLabel } from "@/constants/status";
-
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-
-import type { AdvertiserData } from "@/types/adveriser";
-import { useState } from "react";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
 import { OperationMemoShowSection } from "../../components/OperationMemoSection";
 import { JudgementMemoShowSection } from "../../components/JudgementMemoSection";
+
+import { getSmPayStatusLabel } from "@/constants/status";
+import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
+
+import type { AdvertiserData } from "@/types/adveriser";
 
 interface SmPayApplyDetailViewProps {
   id: string;
