@@ -23,8 +23,8 @@ const MENU_CONFIG = {
       "충전 회수 현황": {
         // 충전 회수 현황은 전부 있음.
         ADMIN: "/sm-pay/admin/charge",
-        AGENCY: "/sm-pay/agency/charge", // 대기
-        MASTER: "/sm-pay//charge", // 대기
+        AGENCY: "/sm-pay/charge",
+        MASTER: "/sm-pay/charge",
       },
     },
   },
