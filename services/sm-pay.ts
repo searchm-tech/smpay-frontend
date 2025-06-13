@@ -246,33 +246,6 @@ export const getSmPayRuleInfo = async (
   };
 };
 
-export const updateSmPayRuleInfo = async (
-  id: string,
-  data: RuleInfo
-): Promise<SmPayRuleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-
-  const updatedData = mockRuleInfo.map((item) => {
-    if (item.id === numId) {
-      return { ...item, ...data };
-    }
-    return item;
-  });
-
-  const findData = updatedData.find((item) => item.id === numId);
-
-  if (!findData) {
-    return { data: null, success: false };
-  }
-
-  return {
-    data: findData,
-    success: true,
-  };
-};
-
 export const getSmPayScheduleInfo = async (
   id: string
 ): Promise<SmPayScheduleInfoResponse> => {

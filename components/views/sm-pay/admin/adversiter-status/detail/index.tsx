@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-import RuleSection from "../../../components/RuleSection";
+
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
@@ -65,7 +66,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       />
       <AgencyInfoDesc />
 
-      <RuleSection id={id} isReadonly />
+      <RuleSection id={id} type="show" />
       <ScheduleSection id={id} isReadonly />
       <OperationAccountStatusDesc />
 

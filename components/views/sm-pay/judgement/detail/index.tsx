@@ -8,6 +8,7 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
@@ -17,7 +18,7 @@ import RejectSendModal from "./RejectSendModal";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
-import RuleSection from "../../components/RuleSection";
+
 import ScheduleSection from "../../components/ScheduleSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import GuidSection from "../../components/GuideSection";
@@ -117,8 +118,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
-
-      <RuleSection id={"1"} isReadonly />
+      <RuleSection id={"1"} type="show" />
       <ScheduleSection id={"1"} />
 
       <JudgementMemoSection type="show" />

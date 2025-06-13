@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
-import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
@@ -75,7 +75,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <IndicatorDetermineSectionNoSubDesc />
 
-      <RuleSection id={"1"} isReadonly />
+      <RuleSection id={"1"} type="show" />
 
       <ScheduleSection id={"1"} isReadonly />
 

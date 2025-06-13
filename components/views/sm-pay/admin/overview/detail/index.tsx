@@ -5,13 +5,14 @@ import { useState } from "react";
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-import RuleSection from "../../../components/RuleSection";
+
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
@@ -71,7 +72,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       />
       <AgencyInfoDesc />
 
-      <RuleSection id={id} isReadonly />
+      <RuleSection id={id} type="show" />
       <ScheduleSection id={id} isReadonly />
       <OperationAccountStatusDesc />
 

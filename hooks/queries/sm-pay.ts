@@ -15,7 +15,6 @@ import {
   getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
-  updateSmPayRuleInfo,
   updateSmPayScheduleInfo,
   updateSmPayStatus,
 } from "@/services/sm-pay";
@@ -70,20 +69,6 @@ export const useSmPayRuleInfo = (id: string) => {
       data: null,
       success: false,
     },
-  });
-};
-
-type RuleInfoParams = {
-  id: string;
-  params: RuleInfo;
-};
-
-export const useSmPayRuleInfoUpdate = (
-  options?: UseMutationOptions<SmPayRuleInfoResponse, Error, RuleInfoParams>
-) => {
-  return useMutation<SmPayRuleInfoResponse, Error, RuleInfoParams>({
-    mutationFn: ({ id, params }) => updateSmPayRuleInfo(id, params),
-    ...options,
   });
 };
 

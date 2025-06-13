@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
 import { LabelBullet } from "@/components/composite/label-bullet";
@@ -11,7 +12,7 @@ import { TooltipHover } from "@/components/composite/tooltip-components";
 import { HelpIcon } from "@/components/composite/icon-components";
 
 import AdvertiserDesc from "../../components/AdvertiserDesc";
-import { RuleEditDesc } from "../../components/RuleDesc";
+
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
@@ -113,22 +114,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         <IndicatorsJudementSection />
       </div>
 
-      <section>
-        <div className="flex items-center gap-2 py-2">
-          <LabelBullet labelClassName="text-base font-bold">
-            충전 규칙 설정
-          </LabelBullet>
-
-          <TooltipHover
-            triggerContent={<HelpIcon />}
-            content={TOOLTIP_CONTENT["charge_rule_setting"]}
-          />
-        </div>
-        <RuleEditDesc
-          ruleInfo={ruleInfo}
-          handleRuleInfoChange={handleRuleInfoChange}
-        />
-      </section>
+      <RuleSection id={"1"} type="write" />
 
       <section>
         <div className="flex items-center gap-2 py-2">
