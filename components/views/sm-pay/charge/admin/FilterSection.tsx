@@ -9,12 +9,6 @@ import { CalendarPopover } from "@/components/ui/calendar";
 import { SelectSearch } from "@/components/composite/select-search";
 import Select from "@/components/composite/select-components";
 
-const optsSelect = [
-  { label: "일별조회", value: "daily" },
-  { label: "주별조회", value: "weekly" },
-  { label: "월별조회", value: "monthly" },
-];
-
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
 
@@ -22,24 +16,6 @@ const FilterSection = () => {
   const [selectedGroupValue, setSelectedGroupValue] = useState<string>();
   const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
     useState<string>();
-
-  const optionAgency = [
-    { label: "주식회사 써치엠 | 홍길동", value: "1" },
-    { label: "주식회사 써치엠 | 김철수", value: "2" },
-    { label: "주식회사 써치엠 | 이영희", value: "3" },
-  ];
-
-  const optionGroups = [
-    { label: "홍길동 | abc@gmail.com", value: "1" },
-    { label: "김철수 | abc@gmail.com", value: "2" },
-    { label: "이영희 | abc@gmail.com", value: "3" },
-  ];
-
-  const optionAdvertiser = [
-    { label: "1234567890 | 카타민", value: "1234567890" },
-    { label: "1234567891 | 카타민", value: "1234567891" },
-    { label: "1234567892 | 카타민", value: "1234567892" },
-  ];
 
   return (
     <section className="pt-2 pb-5 border-b border-[#656565]">
@@ -115,3 +91,27 @@ const FilterSection = () => {
 };
 
 export default FilterSection;
+
+const optsSelect = [
+  { label: "일별조회", value: "daily" },
+  { label: "주별조회", value: "weekly" },
+  { label: "월별조회", value: "monthly" },
+];
+
+const optionAgency = [
+  { label: "주식회사 써치엠 | 홍길동", value: "1" },
+  { label: "주식회사 써치엠 | 김철수", value: "2" },
+  { label: "주식회사 써치엠 | 이영희", value: "3" },
+];
+
+const optionGroups = [
+  { label: "홍길동 | abc@gmail.com", value: "1" },
+  { label: "김철수 | abc@gmail.com", value: "2" },
+  { label: "이영희 | abc@gmail.com", value: "3" },
+];
+
+const optionAdvertiser = [
+  { label: "1234567890 | 카타민", value: "1234567890" },
+  { label: "1234567891 | 카타민", value: "1234567891" },
+  { label: "1234567892 | 카타민", value: "1234567892" },
+];
