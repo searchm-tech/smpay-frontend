@@ -11,7 +11,7 @@ import { HelpIcon } from "@/components/composite/icon-components";
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
-import IndicatorsJudementSection from "../../components/IndicatorsJudementSection";
+import IndicatorsJudementSection from "./IndicatorsJudementSection";
 import JudgementMemoSection from "./JudgementMemoSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
