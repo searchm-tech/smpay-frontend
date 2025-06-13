@@ -4,8 +4,9 @@ import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 import TableSection from "./TableSection";
 import { useSmPayList } from "@/hooks/queries/sm-pay";
 import { useState } from "react";
-import { defaultTableParams } from "@/constants/table";
+
 import type { TableParams } from "@/types/table";
+import { defaultTableParams } from "@/constants/table";
 
 const SmPayAdminAdversiterStatusView = () => {
   const [tableParams, setTableParams] =

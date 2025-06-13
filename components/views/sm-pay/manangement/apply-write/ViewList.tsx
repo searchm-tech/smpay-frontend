@@ -9,18 +9,19 @@ import Table from "@/components/composite/table";
 import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 
+import EditModal from "./EditModal";
+import CreateModal from "./CreateModal";
+
 import { useAdvertiserStore } from "@/store/useAdvertiserStore";
 
-import { defaultTableParams } from "@/constants/table";
 import { ADVERTISER_STATUS_MAP } from "@/constants/status";
+import { ColumnTooltip, defaultTableParams } from "@/constants/table";
 
 import { cn } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
 import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
-import EditModal from "./EditModal";
-import CreateModal from "./CreateModal";
 
 type ViewListProps = {
   onCancel: () => void;
@@ -40,14 +41,6 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   );
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
-
-  // const { data: response, isLoading } = useAdvertiserList({
-  //   ...tableParams,
-  //   filters: {
-  //     ...tableParams.filters,
-  //     ...(searchKeyword ? { search: [searchKeyword] } : {}),
-  //   },
-  // });
 
   const columns: TableProps<AdvertiserData>["columns"] = [
     {
@@ -86,7 +79,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       },
     },
     {
-      title: "상태",
+      title: ColumnTooltip.status,
       dataIndex: "status",
       align: "center",
       render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
@@ -123,12 +116,6 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       handleSearch();
     }
   };
-
-  // useEffect(() => {
-  //   if (response?.data) {
-  //     setAdvertiserList(response.data);
-  //   }
-  // }, [response?.data]);
 
   return (
     <section className="mt-4">

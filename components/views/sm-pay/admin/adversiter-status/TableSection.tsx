@@ -5,14 +5,15 @@ import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 
-import { formatDate } from "@/utils/format";
-
 import { LinkTextButton } from "@/components/composite/button-components";
 import FilterItem from "@/components/common/FilterItem";
 
 import { useSmPayStatus } from "@/hooks/queries/sm-pay";
 
+import { formatDate } from "@/utils/format";
+
 import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+import { ColumnTooltip } from "@/constants/table";
 import { advertiser, optionAgency } from "./constants";
 
 import type { TableParams } from "@/types/table";
@@ -110,13 +111,14 @@ const TableSection = ({
       ),
     },
     {
-      title: "광고주명",
+      title: ColumnTooltip.advertiserName,
       dataIndex: "advertiserName",
       align: "center",
       sorter: true,
     },
     {
-      title: "상태",
+      title: ColumnTooltip.status,
+      width: 120,
       dataIndex: "status",
       align: "center",
       sorter: true,
