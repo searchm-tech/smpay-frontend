@@ -17,7 +17,7 @@ import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDe
 import { OperationMemoShowSection } from "../../components/OperationMemoSection";
 import { JudgementMemoShowSection } from "../../components/JudgementMemoSection";
 
-import { getSmPayStatusLabel } from "@/constants/status";
+import { STATUS_LABELS } from "@/constants/status";
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
@@ -64,7 +64,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
 

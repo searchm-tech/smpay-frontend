@@ -25,9 +25,9 @@ import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
 } from "@/hooks/queries/sm-pay";
-import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import { STATUS_LABELS } from "@/constants/status";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -109,7 +109,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         onClick={handleOpenRejectModal}
       />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
       <AdvertiserPerformanceSection />

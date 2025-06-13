@@ -1,49 +1,24 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
-import { TableProps } from "antd";
+
 import { formatDate } from "@/utils/format";
-import { ActionButton, SmPayData, SmPayStatus } from "@/types/sm-pay";
+
 import { LinkTextButton } from "@/components/composite/button-components";
-import { useRouter } from "next/navigation";
-
-import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
-
-import type { TableParams } from "@/types/table";
-import type { FilterValue } from "antd/es/table/interface";
-import { useSmPayStatus } from "@/hooks/queries/sm-pay";
 import FilterItem from "@/components/common/FilterItem";
 
-const optionAgency = [
-  { label: "주식회사 써치엠 | 홍길동", value: "1" },
-  { label: "주식회사 써치엠 | 김철수", value: "2" },
-  { label: "주식회사 써치엠 | 이영희", value: "3" },
-  { label: "주식회사 써치엠 | 이영희", value: "4" },
-  { label: "주식회사 써치엠 | 이영희", value: "5" },
-  { label: "주식회사 써치엠 | 이영희", value: "6" },
-  { label: "주식회사 써치엠 | 이영희", value: "7" },
-  { label: "주식회사 써치엠 | 이영희", value: "8" },
-  { label: "주식회사 써치엠 | 이영희", value: "9" },
-  { label: "주식회사 써치엠 | 이영희", value: "10" },
-  { label: "주식회사 써치엠 | 이영희", value: "11" },
-  { label: "주식회사 써치엠 | 이영희", value: "12" },
-  { label: "주식회사 써치엠 | 이영희", value: "13" },
-  { label: "주식회사 써치엠 | 이영희", value: "14" },
-  { label: "주식회사 써치엠 | 이영희", value: "15" },
-  { label: "주식회사 써치엠 | 이영희", value: "16" },
-  { label: "주식회사 써치엠 | 이영희", value: "17" },
-  { label: "주식회사 써치엠 | 이영희", value: "18" },
-  { label: "주식회사 써치엠 | 이영희", value: "19" },
-  { label: "주식회사 써치엠 | 이영희", value: "20" },
-];
+import { useSmPayStatus } from "@/hooks/queries/sm-pay";
 
-const advertiser = [
-  { label: "1234567890 | 카타민 (광고주명)", value: "1234567890" },
-  { label: "1234567891 | 카타민 (광고주명)", value: "1234567891" },
-  { label: "1234567892 | 카타민 (광고주명)", value: "1234567892" },
-];
+import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+import { advertiser, optionAgency } from "./constants";
+
+import type { TableParams } from "@/types/table";
+import type { ActionButton, SmPayData, SmPayStatus } from "@/types/sm-pay";
+import type { TableProps } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -147,6 +122,14 @@ const TableSection = ({
       sorter: true,
       render: (value: SmPayStatus, record: SmPayData) => {
         if (value === "REVIEW_REJECTED") {
+          return (
+            <LinkTextButton onClick={() => setRejectModalId(record.no)}>
+              {STATUS_LABELS[value]}
+            </LinkTextButton>
+          );
+        }
+
+        if (value === "OPERATION_REVIEW_REJECTED") {
           return (
             <LinkTextButton onClick={() => setRejectModalId(record.no)}>
               {STATUS_LABELS[value]}

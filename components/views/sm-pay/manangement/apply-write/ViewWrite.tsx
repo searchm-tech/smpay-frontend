@@ -21,7 +21,7 @@ import {
 } from "@/hooks/queries/advertiser";
 
 import { HOVER_SMPAY } from "@/constants/hover";
-import { getSmPayStatusLabel } from "@/constants/status";
+import { STATUS_LABELS } from "@/constants/status";
 import {
   ApplyWriteModal,
   type ApplyWriteModalStatus,
@@ -102,7 +102,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
       <div className="mt-4">
         <AdvertiseStatusDesc
-          status={response?.data ? getSmPayStatusLabel("REVIEW_PENDING") : ""}
+          status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
         {response?.data && (

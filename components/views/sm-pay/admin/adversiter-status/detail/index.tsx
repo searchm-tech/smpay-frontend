@@ -17,9 +17,9 @@ import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import { STATUS_LABELS } from "@/constants/status";
 
 type Props = {
   id: string;
@@ -60,7 +60,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
       <GuidSection viewType="reject" onClick={() => setRejectModalOpen(true)} />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AgencyInfoDesc />
 

@@ -21,10 +21,6 @@ export const SM_PAY_STATUS_MAP: Record<SmPayStatus, string> = {
   TERMINATED: "해지",
 } as const;
 
-export const getSmPayStatusLabel = (status: SmPayStatus): string => {
-  return SM_PAY_STATUS_MAP[status] || status;
-};
-
 export const ADVERTISER_STATUS_MAP: Record<AdvertiserStatus, string> = {
   AVAILABLE: "신청 가능",
   AGREEMENT_REQUEST: "광고주 동의 요청",
@@ -41,7 +37,11 @@ export const getAdvertiserStatusLabel = (status: AdvertiserStatus): string => {
   return ADVERTISER_STATUS_MAP[status] || status;
 };
 
-// SmPayStatus 상태별 사용 가능한 ActionButton 매핑
+/**
+ * 테이블 상태에 따른 버튼 기능들
+ * - admin : 광고주 운영 현황
+ * - 대행새 : SM Pay 관리
+ */
 export const STATUS_ACTION_BUTTONS: Record<SmPayStatus, ActionButton[]> = {
   REVIEW_PENDING: ["view", "application_cancel"], // 심사 대기: 조회, 신청 취소
   REVIEW_REJECTED: ["view", "reapply"], // 심사 반려: 조회, 재신청
@@ -58,6 +58,11 @@ export const STATUS_ACTION_BUTTONS: Record<SmPayStatus, ActionButton[]> = {
   TERMINATED: ["view"], // 해지: 조회
 } as const;
 
+/**
+ * 테이블 상태 라벨
+ * - admin : 광고주 운영 현황
+ * - 대행새 : SM Pay 관리
+ */
 export const STATUS_LABELS: Record<SmPayStatus, string> = {
   ADVERTISER_AGREEMENT_PENDING: "광고주 동의 대기",
   ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
