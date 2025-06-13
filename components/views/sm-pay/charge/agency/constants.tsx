@@ -1,6 +1,3 @@
-import { StringNullableChain } from "lodash";
-import { SmPayStatus } from "@/types/sm-pay";
-
 export interface TransactionData {
   id: string;
   key: string;

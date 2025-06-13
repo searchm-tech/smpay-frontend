@@ -48,13 +48,6 @@ const FilterSection = () => {
       <div className="flex gap-2">
         <Select
           options={optsSelect}
-          placeholder="구분 : 일별조회"
-          onChange={(newValue) => {
-            console.log("newValue", newValue);
-          }}
-        />
-        <Select
-          options={optsSelect}
           placeholder="구분 : 월별조회"
           onChange={(newValue) => {
             console.log("newValue", newValue);
