@@ -25,6 +25,7 @@ interface ApplySubmitViewProps {
   id: string;
 }
 
+// TODO : 삭제 예정 - apply-submit
 const ApplySubmitView = ({ id }: ApplySubmitViewProps) => {
   const router = useRouter();
   const { data, isPending } = useSmPaySubmitDetail(id);

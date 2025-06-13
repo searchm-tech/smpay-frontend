@@ -21,9 +21,7 @@ type GuidSectionProps = {
   onClick?: () => void;
 };
 
-const rounded =
-  "inline-flex items-center h-[25px] px-2 bg-white border border-[#CDCDCD] rounded-[15px]";
-
+// TODO : 없는 애들이 있음. 나중에 삭제
 const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
   const { setIsOpen } = useGuideModalStore();
 

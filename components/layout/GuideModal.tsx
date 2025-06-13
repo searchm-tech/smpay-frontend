@@ -1,6 +1,6 @@
-// components/modals/SmPayGuideModal.tsx
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { ReactNode } from "react";
 
 interface SmPayGuideModalProps {
   onClose: () => void;
@@ -78,7 +78,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
-      <div className="relative bg-white rounded-lg min-w-[90vw] max-h-[95vh] overflow-y-auto">
+      <div className="relative bg-white rounded-lg max-h-[95vh] overflow-y-auto">
         <div className="p-8">
           <h2 className="text-2xl font-bold text-center mb-12">
             SM Pay - 온라인 광고 결제 솔루션
@@ -135,19 +135,19 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
               <Badge>SM Pay 신청 절차</Badge>
             </div>
 
-            <div className="flex justify-center items-start px-4 mt-8 gap-4">
+            <div className="flex justify-center items-start px-4 mt-8">
               {processSteps.map((step, index) => (
                 <>
                   <div
                     key={index}
                     className="flex flex-col items-center gap-4 min-h-[350px]"
                   >
-                    <div className="w-[120px] h-[120px] rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                    <div className="w-[100px] h-[100px] rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
                       img
                     </div>
 
                     <div
-                      className={`px-6 py-1 text-white ${step.color} w-[180px] rounded-[5px] text-center`}
+                      className={`px-6 py-1 text-white ${step.color} w-[160px] rounded-[5px] text-center`}
                     >
                       {step.label}
                     </div>
@@ -220,7 +220,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
 
 export default SmPayGuideModal;
 
-const Badge = ({ children }: { children: React.ReactNode }) => {
+const Badge = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex justify-center items-center text-white font-medium rounded-[20px] bg-[#545F71] w-[180px] h-[40px]">
       {children}

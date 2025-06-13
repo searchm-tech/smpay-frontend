@@ -19,14 +19,23 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        greenOutline:
-          "text-green-600 border border-green-600 hover:bg-green-50",
-        redOutline: "text-red-500 border border-red-300 hover:bg-red-50",
-        blueOutline: "text-blue-600 border border-blue-600 hover:bg-blue-50",
         brandOutline:
           "text-neutral-800 border border-neutral-800 hover:border-brand-orange hover:text-brand-orange",
         cancel:
           "bg-[#EEF1F4] text-[#545F71] border border-[#EEF1F4] hover:bg-[#e1e5e8]",
+        orange: "bg-[#EB680E] text-white hover:bg-[#FFB380]",
+        orangeOutline:
+          "border border-[#EB680E] text-[#EB680E] bg-white hover:bg-[#FFB380] hover:text-white",
+        gray: "bg-[#8D8D8D] text-white hover:bg-[#D2D2D2]",
+        red: "bg-[#C92121] text-white hover:bg-[#a81a1a]",
+        blue: "bg-[#2177C9] text-white hover:bg-[#1760a8]",
+        green: "bg-[#0CA635] text-white hover:bg-[#098c2a]",
+        redOutline:
+          "border border-[#C92121] text-[#C92121] bg-white hover:bg-[#C92121]/10 hover:text-[#C92121]",
+        blueOutline:
+          "border border-[#2177C9] text-[#2177C9] bg-white hover:bg-[#2177C9]/10 hover:text-[#2177C9]",
+        greenOutline:
+          "border border-[#0CA635] text-[#0CA635] bg-white hover:bg-[#0CA635]/10 hover:text-[#0CA635]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

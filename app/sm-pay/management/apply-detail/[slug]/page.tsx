@@ -18,6 +18,7 @@ export async function generateMetadata({
   };
 }
 
+// TODO : 신청 내역 상세가 아니라 관리 상세로 management/[slug]로 변경 필요
 export default function SmPayApplyDetailPage({
   params,
 }: {
@@ -33,14 +34,14 @@ export default function SmPayApplyDetailPage({
       url: "/sm-pay/management",
     },
     {
-      title: "신청 내역 상세",
+      title: "SM Pay 관리 상세",
       url: `/sm-pay/management/apply-detail/${params.slug}`,
     },
   ];
 
   return (
     <div>
-      <ContentHeader title="신청 내역 상세" items={breadcrumbItems} />
+      <ContentHeader title="SM Pay 관리 상세" items={breadcrumbItems} />
       <SmPayApplyDetailView id={params.slug} />
     </div>
   );
