@@ -33,10 +33,6 @@ export const smPayStatusColorMap: Record<SmPayStatus, string> = {
   TERMINATED: "text-red-600",
 } as const;
 
-export const getSmPayStatusLabel = (status: SmPayStatus): string => {
-  return smPayStatusMap[status] || status;
-};
-
 export const getSmPayStatusColor = (status: SmPayStatus): string => {
   return smPayStatusColorMap[status] || "text-gray-500";
 };

@@ -7,7 +7,7 @@ import {
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 type StatusInfo = {
   status: string;
@@ -27,7 +27,7 @@ const OperationAccountStatusDesc = ({ statusInfo }: Props) => {
         </LabelBullet>
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
+          content={TOOLTIP_CONTENT["operation_account_status"]}
         />
       </div>
 

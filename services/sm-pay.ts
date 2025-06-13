@@ -1,7 +1,6 @@
 import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
 import {
   mockData,
-  mockRuleHistory,
   mockRuleInfo,
   mockScheduleInfo,
   mockSmPayJudgementData,
@@ -13,7 +12,6 @@ import type {
   SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
-  SmPayRuleHistoryResponse,
   SmPayRejectReasonResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
@@ -246,33 +244,6 @@ export const getSmPayRuleInfo = async (
   };
 };
 
-export const updateSmPayRuleInfo = async (
-  id: string,
-  data: RuleInfo
-): Promise<SmPayRuleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-
-  const updatedData = mockRuleInfo.map((item) => {
-    if (item.id === numId) {
-      return { ...item, ...data };
-    }
-    return item;
-  });
-
-  const findData = updatedData.find((item) => item.id === numId);
-
-  if (!findData) {
-    return { data: null, success: false };
-  }
-
-  return {
-    data: findData,
-    success: true,
-  };
-};
-
 export const getSmPayScheduleInfo = async (
   id: string
 ): Promise<SmPayScheduleInfoResponse> => {
@@ -309,28 +280,6 @@ export const updateSmPayScheduleInfo = async (
   }
 
   return { data: findData, success: true };
-};
-
-export const getSmPayRuleHistory = async (
-  id: string
-): Promise<SmPayRuleHistoryResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    data: mockRuleHistory,
-    success: true,
-  };
-};
-
-export const updateSmPayApplySubmit = async (
-  id: string
-): Promise<BooleanResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    data: true,
-    success: true,
-  };
 };
 
 export const getSmPayRejectReason = async (

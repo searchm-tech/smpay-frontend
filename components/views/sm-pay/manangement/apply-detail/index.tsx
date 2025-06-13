@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
-import RuleSection from "../../components/RuleSection";
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
@@ -14,10 +17,8 @@ import AdvertiserDesc from "../../components/AdvertiserDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
-import { OperationMemoShowSection } from "../../components/OperationMemoSection";
-import { JudgementMemoShowSection } from "../../components/JudgementMemoSection";
 
-import { getSmPayStatusLabel } from "@/constants/status";
+import { STATUS_LABELS } from "@/constants/status";
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
@@ -64,7 +65,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
 
@@ -74,13 +75,13 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <IndicatorDetermineSectionNoSubDesc />
 
-      <RuleSection id={"1"} isReadonly />
+      <RuleSection id={"1"} type="show" />
 
       <ScheduleSection id={"1"} isReadonly />
 
-      <OperationMemoShowSection />
+      <JudgementMemoSection type="show" />
 
-      <JudgementMemoShowSection />
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

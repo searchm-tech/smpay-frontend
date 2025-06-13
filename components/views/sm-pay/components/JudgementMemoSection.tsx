@@ -1,8 +1,15 @@
+import { useState } from "react";
 import parse from "html-react-parser";
+
+import { Textarea } from "@/components/ui/textarea";
+
+import MemoBox from "@/components/common/MemoBox";
+
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HOVER_SMPAY } from "@/constants/hover";
+
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 const test = `
  <div>
@@ -14,7 +21,13 @@ const test = `
   </div>
 `;
 
-const JudgementMemoSection = () => {
+type Props = {
+  type?: "show" | "write";
+};
+
+const JudgementMemoSection = ({ type }: Props) => {
+  const [memo, setMemo] = useState("");
+
   return (
     <section>
       <div className="flex items-center gap-2 py-2">
@@ -24,36 +37,24 @@ const JudgementMemoSection = () => {
 
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
+          content={TOOLTIP_CONTENT.judge_reference_memo}
         />
       </div>
 
-      <div className="min-h-[150px] bg-[#F8F8FA] p-4 font-thin text-base">
-        {parse(test)}
-      </div>
+      {type === "write" && (
+        <Textarea
+          value={memo}
+          size={10}
+          onChange={(e) => setMemo(e.target.value)}
+          placeholder="SM Pay 운영 검토 시 참고해야 할 사항을 500자 이내로 입력해주세요."
+        />
+      )}
+
+      {type === "show" && <MemoBox text={memo} />}
     </section>
   );
 };
 
 export default JudgementMemoSection;
 
-export const JudgementMemoShowSection = () => {
-  return (
-    <section>
-      <div className="flex items-center gap-2 py-2">
-        <LabelBullet labelClassName="text-base font-bold">
-          심사자 참고용 메모
-        </LabelBullet>
 
-        <TooltipHover
-          triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
-        />
-      </div>
-
-      <div className="min-h-[150px] bg-[#F8F8FA] p-4 font-thin text-base">
-        {parse(test)}
-      </div>
-    </section>
-  );
-};

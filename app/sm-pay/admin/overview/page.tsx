@@ -21,7 +21,7 @@ const breadcrumbItems: DashboardSubItem[] = [
     url: "/sm-pay/admin/overview",
   },
   {
-    title: "운영 검토 요청 tkd",
+    title: "운영 검토 요청 목록",
     url: "/sm-pay/admin/overview",
   },
 ];

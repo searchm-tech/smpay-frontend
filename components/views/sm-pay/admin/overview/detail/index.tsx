@@ -4,19 +4,22 @@ import { useState } from "react";
 
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
+
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-import RuleSection from "../../../components/RuleSection";
+
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
-import JudgeReferenceMemo from "../../../components/JudgeReferenceMemo";
-import OperationReferenceMemo from "../../../components/OperationReferenceMemo";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
-import { getSmPayStatusLabel } from "@/utils/status";
+import { STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
 
@@ -65,16 +68,16 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       )}
 
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AgencyInfoDesc />
 
-      <RuleSection id={id} isReadonly />
+      <RuleSection id={id} type="show" />
       <ScheduleSection id={id} isReadonly />
       <OperationAccountStatusDesc />
 
-      <JudgeReferenceMemo />
-      <OperationReferenceMemo />
+      <JudgementMemoSection type="show" />
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

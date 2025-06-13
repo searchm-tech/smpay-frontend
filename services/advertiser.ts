@@ -101,55 +101,6 @@ export const fetchAdvertiserDetail = async (id: number) => {
 };
 
 /**
- * 광고주 상세 정보 수정 api
- * @param id
- * @param data
- * @returns
- */
-export const updateAdvertiser = async (id: number, data: AdvertiserData) => {
-  // 서버 응답을 시뮬레이션하기 위한 지연
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const index = mockAdvertiserData.findIndex(
-    (item: AdvertiserData) => item.id === id
-  );
-  if (index === -1) {
-    return {
-      success: false,
-      message: "광고주를 찾을 수 없습니다.",
-    };
-  }
-
-  const updatedAdvertiser = { ...mockAdvertiserData[index], ...data };
-  mockAdvertiserData[index] = updatedAdvertiser;
-
-  return {
-    success: true,
-    data: updatedAdvertiser,
-  };
-};
-
-/**
- * 광고주 사업자 등록 번호 중복 체크 api
- * @param businessNumber
- * @returns
- */
-export const checkAdvertiser = async (businessNumber: string) => {
-  // 서버 응답을 시뮬레이션하기 위한 지연
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const findAdvertiser = mockAdvertiserData.find(
-    (item: AdvertiserData) => item.businessNumber === businessNumber
-  );
-
-  return {
-    success: true,
-    data: findAdvertiser,
-    message: findAdvertiser ? "중복된 사업자등록번호입니다." : undefined,
-  };
-};
-
-/**
  * 광고주 동의 요청 발송 api
  * @param id
  * @returns

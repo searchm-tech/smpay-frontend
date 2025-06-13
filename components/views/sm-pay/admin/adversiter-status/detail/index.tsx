@@ -6,20 +6,22 @@ import { useRouter } from "next/navigation";
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-import RuleSection from "../../../components/RuleSection";
+
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
-import JudgeReferenceMemo from "../../../components/JudgeReferenceMemo";
-import OperationReferenceMemo from "../../../components/OperationReferenceMemo";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-import { getSmPayStatusLabel } from "@/utils/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import { STATUS_LABELS } from "@/constants/status";
 
 type Props = {
   id: string;
@@ -60,16 +62,16 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
       <GuidSection viewType="reject" onClick={() => setRejectModalOpen(true)} />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AgencyInfoDesc />
 
-      <RuleSection id={id} isReadonly />
+      <RuleSection id={id} type="show" />
       <ScheduleSection id={id} isReadonly />
       <OperationAccountStatusDesc />
 
-      <JudgeReferenceMemo />
-      <OperationReferenceMemo />
+      <JudgementMemoSection type="show" />
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

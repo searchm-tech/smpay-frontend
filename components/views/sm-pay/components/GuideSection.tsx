@@ -12,8 +12,8 @@ export type ViewType =
   | "write"
   | "submit"
   | "reject"
-  | "overview"
-  | "master-judgement";
+  | "master-judgement"
+  | "smpay-guide";
 
 type GuidSectionProps = {
   viewType: ViewType;
@@ -154,7 +154,8 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         </GuideButton>
       </div>
     ),
-    overview: (
+
+    "smpay-guide": (
       <div className="w-full flex items-start gap-2 text-[13px]">
         <IconBadge name="CircleAlert" bgColor="#1062FF" size="sm" />
 

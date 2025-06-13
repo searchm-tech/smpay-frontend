@@ -7,15 +7,18 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
+
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-import OperationMemoSection from "./OperationMemoSection";
-import JudgementMemoSection from "./JudgementMemoSection";
 
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
-import RuleSection from "../../components/RuleSection";
+
 import ScheduleSection from "../../components/ScheduleSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import GuidSection from "../../components/GuideSection";
@@ -25,7 +28,8 @@ import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
 } from "@/hooks/queries/sm-pay";
-import { getSmPayStatusLabel } from "@/utils/status";
+
+import { STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
 
@@ -109,18 +113,17 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         onClick={handleOpenRejectModal}
       />
       <AdvertiseStatusDesc
-        status={response.data ? getSmPayStatusLabel(response.data.status) : ""}
+        status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
-
-      <RuleSection id={"1"} isReadonly />
+      <RuleSection id={"1"} type="show" />
       <ScheduleSection id={"1"} />
 
-      <JudgementMemoSection />
+      <JudgementMemoSection type="show" />
 
-      <OperationMemoSection />
+      <OperationMemoSection type="write" />
 
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">

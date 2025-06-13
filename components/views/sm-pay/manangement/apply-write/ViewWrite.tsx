@@ -3,16 +3,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { HelpIcon } from "@/components/composite/icon-components";
 
 import AdvertiserDesc from "../../components/AdvertiserDesc";
-import { RuleEditDesc } from "../../components/RuleDesc";
+
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
-import JudgementMemoSection from "./JudgementMemoSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 import {
@@ -20,8 +22,8 @@ import {
   useMutateSendAdvertiserAgreement,
 } from "@/hooks/queries/advertiser";
 
-import { HOVER_SMPAY } from "@/constants/hover";
-import { getSmPayStatusLabel } from "@/constants/status";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
+import { STATUS_LABELS } from "@/constants/status";
 import {
   ApplyWriteModal,
   type ApplyWriteModalStatus,
@@ -102,7 +104,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
       <div className="mt-4">
         <AdvertiseStatusDesc
-          status={response?.data ? getSmPayStatusLabel("REVIEW_PENDING") : ""}
+          status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
         {response?.data && (
@@ -112,22 +114,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         <IndicatorsJudementSection />
       </div>
 
-      <section>
-        <div className="flex items-center gap-2 py-2">
-          <LabelBullet labelClassName="text-base font-bold">
-            충전 규칙 설정
-          </LabelBullet>
-
-          <TooltipHover
-            triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["rule"]}
-          />
-        </div>
-        <RuleEditDesc
-          ruleInfo={ruleInfo}
-          handleRuleInfoChange={handleRuleInfoChange}
-        />
-      </section>
+      <RuleSection id={"1"} type="write" />
 
       <section>
         <div className="flex items-center gap-2 py-2">
@@ -136,7 +123,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["prepayment"]}
+            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
           />
         </div>
 
@@ -146,7 +133,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         />
       </section>
 
-      <JudgementMemoSection />
+      <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]" onClick={handleSendAdAgree}>

@@ -1,14 +1,15 @@
 "use client";
 
-import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import { useState } from "react";
 
 import TableSection from "./TableSection";
+import SearchSection from "./SearchSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
+
+import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";
-import SearchSection from "./SearchSection";
 
 const SmPayAdminOverviewView = () => {
   const [search, setSearch] = useState<string>("");
@@ -45,7 +46,7 @@ const SmPayAdminOverviewView = () => {
 
   return (
     <div>
-      <GuidSection viewType="overview" />
+      <GuidSection viewType="smpay-guide" />
       <SearchSection onSearch={handleSearch} />
       <TableSection
         dataSource={judgementData?.data || []}

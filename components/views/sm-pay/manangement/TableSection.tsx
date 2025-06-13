@@ -16,6 +16,7 @@ import RejectOperationModal from "../components/RejectOperationModal";
 
 import { MANAGEMENT_CONTENT } from "@/constants/dialog";
 import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
@@ -30,7 +31,6 @@ interface TableSectionProps {
   smpayList: SmPayData[];
 }
 
-//  TODO : amdin/adversiter-status 와 동일한 컴포넌트 입니다. 추후 리팩토링 필요
 const TableSection = ({
   tableParams,
   setTableParams,
@@ -114,13 +114,13 @@ const TableSection = ({
       ),
     },
     {
-      title: "광고주명",
+      title: ColumnTooltip.advertiserName,
       dataIndex: "advertiserName",
       align: "center",
       sorter: true,
     },
     {
-      title: "상태",
+      title: ColumnTooltip.status,
       dataIndex: "status",
       align: "center",
       sorter: true,

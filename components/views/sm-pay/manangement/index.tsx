@@ -73,7 +73,7 @@ const SMPayManagementView = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <GuidSection viewType="overview" />
+      <GuidSection viewType="smpay-guide" />
       <SearchSection onSearch={onSearch} />
       <FilterSection
         selectedStatus={selectedStatus}
