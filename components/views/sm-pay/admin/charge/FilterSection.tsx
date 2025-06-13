@@ -19,27 +19,8 @@ const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
 
   const [selectedAgencyValue, setSelectedAgencyValue] = useState<string>();
-  const [selectedGroupValue, setSelectedGroupValue] = useState<string>();
   const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
     useState<string>();
-
-  const optionAgency = [
-    { label: "주식회사 써치엠 | 홍길동", value: "1" },
-    { label: "주식회사 써치엠 | 김철수", value: "2" },
-    { label: "주식회사 써치엠 | 이영희", value: "3" },
-  ];
-
-  const optionGroups = [
-    { label: "홍길동 | abc@gmail.com", value: "1" },
-    { label: "김철수 | abc@gmail.com", value: "2" },
-    { label: "이영희 | abc@gmail.com", value: "3" },
-  ];
-
-  const optionAdvertiser = [
-    { label: "1234567890 | 카타민", value: "1234567890" },
-    { label: "1234567891 | 카타민", value: "1234567891" },
-    { label: "1234567892 | 카타민", value: "1234567892" },
-  ];
 
   return (
     <section className="pt-2 pb-5 border-b border-[#656565]">
@@ -55,34 +36,20 @@ const FilterSection = () => {
 
         <SelectSearch
           className="w-[200px]"
-          options={optionGroups}
-          value={selectedGroupValue}
-          onValueChange={setSelectedGroupValue}
-          placeholder="그룹원을 선택하세요"
-          searchPlaceholder="그릅원을 입력하세요."
-        />
-
-        <SelectSearch
-          className="w-[200px]"
           options={optionAdvertiser}
           value={selectedAdvertiserValue}
           onValueChange={setSelectedAdvertiserValue}
           placeholder="광고주를 선택하세요"
           searchPlaceholder="광고 ID, 광고 계정을 입력하세요"
         />
+
+        <Button variant="cancel">초기화</Button>
+        <Button variant="green">미수/충전실패 광고주 검색</Button>
       </div>
 
       <Separator className="my-4" variant="dotted" />
 
       <div className="flex gap-2">
-        <Select
-          className="w-[200px]"
-          options={optsSelect}
-          placeholder="구분 : 일별조회"
-          onChange={(newValue) => {
-            console.log("newValue", newValue);
-          }}
-        />
         <Select
           className="w-[200px]"
           options={optsSelect}
@@ -121,3 +88,15 @@ const FilterSection = () => {
 };
 
 export default FilterSection;
+
+const optionAgency = [
+  { label: "주식회사 써치엠 | 홍길동", value: "1" },
+  { label: "주식회사 써치엠 | 김철수", value: "2" },
+  { label: "주식회사 써치엠 | 이영희", value: "3" },
+];
+
+const optionAdvertiser = [
+  { label: "1234567890 | 카타민", value: "1234567890" },
+  { label: "1234567891 | 카타민", value: "1234567891" },
+  { label: "1234567892 | 카타민", value: "1234567892" },
+];
