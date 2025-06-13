@@ -42,7 +42,7 @@ const SmPayAdminAdversiterStatusView = () => {
 
   return (
     <div>
-      <GuidSection viewType="overview" />
+      <GuidSection viewType="smpay-guide" />
       <TableSection
         tableParams={tableParams}
         setTableParams={setTableParams}

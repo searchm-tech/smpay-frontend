@@ -322,17 +322,6 @@ export const getSmPayRuleHistory = async (
   };
 };
 
-export const updateSmPayApplySubmit = async (
-  id: string
-): Promise<BooleanResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    data: true,
-    success: true,
-  };
-};
-
 export const getSmPayRejectReason = async (
   id: string
 ): Promise<SmPayRejectReasonResponse> => {

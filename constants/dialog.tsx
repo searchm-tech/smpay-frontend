@@ -91,25 +91,6 @@ export const ApplyWriteModal = {
   ),
 };
 
-// sm-pay/apply-submit
-export type ApplySubmitDialogStatus = "req-apply" | "success-apply";
-
-export const APPLY_SUBMIT_CONTENT: Record<
-  ApplySubmitDialogStatus,
-  React.ReactNode | string
-> = {
-  "req-apply": (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 심사 요청을 하시겠습니까?</span>
-    </div>
-  ),
-  "success-apply": (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 심사 요청이 완료하였습니다.</span>
-    </div>
-  ),
-};
-
 // advertiser-verification
 export type AdVerifyDialogStatus = "certification" | "submit"; // submit : 광고주 이메일 sms 동의 요청 발송 message, certification : 계좌 인증 완료
 

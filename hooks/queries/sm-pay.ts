@@ -15,7 +15,6 @@ import {
   getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
-  updateSmPayApplySubmit,
   updateSmPayRuleInfo,
   updateSmPayScheduleInfo,
   updateSmPayStatus,
@@ -127,15 +126,6 @@ export const useSmPayRuleHistory = (id: string) => {
       data: [],
       success: false,
     },
-  });
-};
-
-export const useSmPayApplySubmit = (
-  options?: UseMutationOptions<BooleanResponse, Error, string>
-) => {
-  return useMutation<BooleanResponse, Error, string>({
-    mutationFn: (id) => updateSmPayApplySubmit(id),
-    ...options,
   });
 };
 
