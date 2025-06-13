@@ -20,12 +20,7 @@ const MENU_CONFIG = {
       "SM Pay 심사": "/sm-pay//judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
-      "충전 회수 현황": {
-        // 충전 회수 현황은 전부 있음.
-        ADMIN: "/sm-pay/admin/charge",
-        AGENCY: "/sm-pay/charge",
-        MASTER: "/sm-pay/charge",
-      },
+      "충전 회수 현황": "/sm-pay/charge",
     },
   },
   "광고 성과 리포트": {

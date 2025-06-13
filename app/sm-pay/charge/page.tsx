@@ -1,5 +1,5 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayChargeView from "@/components/views/sm-pay/charge";
+import SmPayChargeView from "@/components/views/sm-pay/charge/agency";
 
 import type { DashboardSubItem } from "@/types/menu";
 
