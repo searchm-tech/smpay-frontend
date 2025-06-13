@@ -5,6 +5,8 @@ import { useState } from "react";
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
@@ -12,7 +14,6 @@ import RuleSection from "../../../components/RuleSection";
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import JudgeReferenceMemo from "../../../components/JudgeReferenceMemo";
-import OperationReferenceMemo from "../../../components/OperationReferenceMemo";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
@@ -75,7 +76,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       <OperationAccountStatusDesc />
 
       <JudgeReferenceMemo />
-      <OperationReferenceMemo />
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

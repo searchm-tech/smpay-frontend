@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
 import RuleSection from "../../../components/RuleSection";
 import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import JudgeReferenceMemo from "../../../components/JudgeReferenceMemo";
-import OperationReferenceMemo from "../../../components/OperationReferenceMemo";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
@@ -69,7 +70,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       <OperationAccountStatusDesc />
 
       <JudgeReferenceMemo />
-      <OperationReferenceMemo />
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

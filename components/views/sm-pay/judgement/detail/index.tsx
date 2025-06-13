@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
+
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-import OperationMemoSection from "./OperationMemoSection";
+
 import JudgementMemoSection from "./JudgementMemoSection";
 
 import AdvertiserDesc from "../../components/AdvertiserDesc";
@@ -26,8 +29,9 @@ import {
   useSmPayStatusUpdate,
 } from "@/hooks/queries/sm-pay";
 
-import type { AdvertiserData } from "@/types/adveriser";
 import { STATUS_LABELS } from "@/constants/status";
+
+import type { AdvertiserData } from "@/types/adveriser";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -120,7 +124,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
       <JudgementMemoSection />
 
-      <OperationMemoSection />
+      <OperationMemoSection type="write" />
 
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">

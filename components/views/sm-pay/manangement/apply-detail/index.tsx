@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
@@ -14,7 +16,7 @@ import AdvertiserDesc from "../../components/AdvertiserDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
-import { OperationMemoShowSection } from "../../components/OperationMemoSection";
+
 import { JudgementMemoShowSection } from "../../components/JudgementMemoSection";
 
 import { STATUS_LABELS } from "@/constants/status";
@@ -78,9 +80,9 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <ScheduleSection id={"1"} isReadonly />
 
-      <OperationMemoShowSection />
-
       <JudgementMemoShowSection />
+
+      <OperationMemoSection type="show" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

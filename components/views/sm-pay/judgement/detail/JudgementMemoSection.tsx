@@ -19,7 +19,7 @@ const JudgementMemoSection = () => {
     <section>
       <div className="flex items-center gap-2 py-2">
         <LabelBullet labelClassName="text-base font-bold">
-          운영 검토 시 참고용 메모
+          심사자 참고용 메모
         </LabelBullet>
 
         <TooltipHover
