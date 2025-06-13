@@ -1,7 +1,6 @@
 import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
 import {
   mockData,
-  mockRuleHistory,
   mockRuleInfo,
   mockScheduleInfo,
   mockSmPayJudgementData,
@@ -13,7 +12,6 @@ import type {
   SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
-  SmPayRuleHistoryResponse,
   SmPayRejectReasonResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
@@ -282,17 +280,6 @@ export const updateSmPayScheduleInfo = async (
   }
 
   return { data: findData, success: true };
-};
-
-export const getSmPayRuleHistory = async (
-  id: string
-): Promise<SmPayRuleHistoryResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    data: mockRuleHistory,
-    success: true,
-  };
 };
 
 export const getSmPayRejectReason = async (

@@ -16,8 +16,6 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import HistoryModal from "./HistoryModal";
-
 import { useSmPayRuleInfo } from "@/hooks/queries/sm-pay";
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
@@ -30,8 +28,6 @@ type RuleSectionProps = {
 };
 const RuleSection = ({ id, type }: RuleSectionProps) => {
   const { data: ruleData } = useSmPayRuleInfo(id);
-
-  const [isHistory, setIsHistory] = useState(false);
 
   const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
     id: 0,
@@ -54,14 +50,6 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
 
   return (
     <section>
-      {isHistory && (
-        <HistoryModal
-          open={isHistory}
-          onClose={() => setIsHistory(false)}
-          id={id}
-        />
-      )}
-
       <div className="flex items-center gap-2 py-2">
         <LabelBullet labelClassName="text-base font-bold">
           충전 규칙 설정

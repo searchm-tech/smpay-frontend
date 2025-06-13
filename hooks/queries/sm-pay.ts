@@ -9,7 +9,6 @@ import {
   getSmPayJudgementData,
   getSmPayJudgementStatus,
   getSmPayRejectReason,
-  getSmPayRuleHistory,
   getSmPayRuleInfo,
   getSmPayScheduleInfo,
   getSmPayStatus,
@@ -23,7 +22,6 @@ import type {
   SmPayRejectReasonResponse,
   TableParams,
   SmPayResponse,
-  SmPayRuleHistoryResponse,
   SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
   SmPaySubmitDetailResponse,
@@ -99,18 +97,6 @@ export const useSmPayScheduleInfoUpdate = (
   return useMutation<SmPayScheduleInfoResponse, Error, ScheduleInfoParams>({
     mutationFn: ({ id, params }) => updateSmPayScheduleInfo(id, params),
     ...options,
-  });
-};
-
-export const useSmPayRuleHistory = (id: string) => {
-  return useQuery<SmPayRuleHistoryResponse>({
-    queryKey: ["/smpay/rule-history", id],
-    queryFn: () => getSmPayRuleHistory(id),
-    enabled: !!id,
-    initialData: {
-      data: [],
-      success: false,
-    },
   });
 };
 

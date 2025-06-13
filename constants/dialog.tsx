@@ -55,9 +55,7 @@ export const MANAGEMENT_CONTENT: Record<
 export type ApplyWriteModalStatus =
   | "req-update"
   | "res-update"
-  | "send-success"
-  | "disable-business-number"
-  | "able-business-number";
+  | "send-success";
 
 export const ApplyWriteModal = {
   "req-update": (
@@ -77,16 +75,6 @@ export const ApplyWriteModal = {
       <div className="mt-4">
         <p>담장자와 최상위 그룹장에게 심사요청 안내메일이 발송되었습니다.</p>
       </div>
-    </div>
-  ),
-  "disable-business-number": (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>중복된 사업자등록번호입니다.</span>
-    </div>
-  ),
-  "able-business-number": (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>사용가능한 사업자등록번호입니다.</span>
     </div>
   ),
 };

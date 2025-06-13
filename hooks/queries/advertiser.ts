@@ -7,8 +7,6 @@ import {
 import {
   fetchAdvertisers,
   fetchAdvertiserDetail,
-  checkAdvertiser,
-  updateAdvertiser,
   SendAdvertiserAgreementParams,
   sendAdvertiserAgreement,
   getAdvertiserList,
@@ -40,48 +38,6 @@ export const useAdvertiserDetail = (id: number) => {
   return useQuery({
     queryKey: ["advertiser", id],
     queryFn: () => fetchAdvertiserDetail(id),
-  });
-};
-
-/**
- * 사업자등록번호 중복 체크
- * @param options
- * @returns
- */
-
-interface CheckAdvertiserResponse {
-  success: boolean;
-  message?: string;
-  data?: AdvertiserData;
-}
-
-export const useMutateCheckAdvertiser = (
-  options?: UseMutationOptions<CheckAdvertiserResponse, Error, string>
-) => {
-  return useMutation({
-    mutationFn: (businessNumber: string) => checkAdvertiser(businessNumber),
-    ...options,
-  });
-};
-
-/**
- * 광고주 상세 정보 수정
- * @param options
- * @returns
- */
-
-interface UpdateAdvertiserResponse {
-  success: boolean;
-  message?: string;
-  data?: AdvertiserData;
-}
-
-export const useMutateUpdateAdvertiser = (
-  options?: UseMutationOptions<UpdateAdvertiserResponse, Error, AdvertiserData>
-) => {
-  return useMutation({
-    mutationFn: (data: AdvertiserData) => updateAdvertiser(data.id, data),
-    ...options,
   });
 };
 
