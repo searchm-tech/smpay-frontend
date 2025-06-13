@@ -20,7 +20,7 @@ import {
   useMutateSendAdvertiserAgreement,
 } from "@/hooks/queries/advertiser";
 
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 import { STATUS_LABELS } from "@/constants/status";
 import {
   ApplyWriteModal,
@@ -120,7 +120,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["rule"]}
+            content={TOOLTIP_CONTENT["charge_rule_setting"]}
           />
         </div>
         <RuleEditDesc
@@ -136,7 +136,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["prepayment"]}
+            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
           />
         </div>
 

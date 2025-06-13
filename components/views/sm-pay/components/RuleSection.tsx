@@ -14,7 +14,7 @@ import RuleDesc, {
 import HistoryModal from "./HistoryModal";
 import LoadingUI from "@/components/common/Loading";
 
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 import {
   useSmPayRuleInfo,
@@ -109,7 +109,7 @@ const RuleSection = ({ id, isReadonly }: RuleSectionProps) => {
 
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["rule"]}
+            content={TOOLTIP_CONTENT["charge_rule_setting"]}
           />
         </div>
 

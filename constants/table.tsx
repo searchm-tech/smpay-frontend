@@ -1,5 +1,5 @@
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { TOOLTIP_CONTENT, TooltipContentKey } from "./hover";
+import { TOOLTIP_CONTENT, type TooltipContentKey } from "./hover";
 import { HelpIcon } from "@/components/composite/icon-components";
 
 const defaultTableParams = {
@@ -19,7 +19,12 @@ const ACTIVE_STATUS = [
 
 export { defaultTableParams, ACTIVE_STATUS };
 
-export const ColumnTooltip: Record<TooltipContentKey, React.ReactNode> = {
+type PartialTooltipKey = Extract<
+  TooltipContentKey,
+  "status" | "info_change" | "advertiserName"
+>;
+
+export const ColumnTooltip: Record<PartialTooltipKey, React.ReactNode> = {
   status: (
     <div className="flex items-center gap-2 justify-center">
       <span>상태</span>
@@ -35,6 +40,15 @@ export const ColumnTooltip: Record<TooltipContentKey, React.ReactNode> = {
       <TooltipHover
         triggerContent={<HelpIcon />}
         content={TOOLTIP_CONTENT.advertiserName}
+      />
+    </div>
+  ),
+  info_change: (
+    <div className="flex items-center gap-2 justify-center">
+      <span>정보 변경</span>
+      <TooltipHover
+        triggerContent={<HelpIcon />}
+        content={TOOLTIP_CONTENT.info_change}
       />
     </div>
   ),

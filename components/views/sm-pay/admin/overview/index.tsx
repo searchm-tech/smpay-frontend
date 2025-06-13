@@ -1,11 +1,12 @@
 "use client";
 
-import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import { useState } from "react";
 
 import TableSection from "./TableSection";
 import SearchSection from "./SearchSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
+
+import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";

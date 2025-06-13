@@ -2,7 +2,7 @@ import parse from "html-react-parser";
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 const test = `
  <div>
@@ -24,7 +24,7 @@ const JudgementMemoSection = () => {
 
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
+          content={TOOLTIP_CONTENT.judge_reference_memo}
         />
       </div>
 
@@ -47,7 +47,7 @@ export const JudgementMemoShowSection = () => {
 
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
+          content={TOOLTIP_CONTENT.judge_reference_memo}
         />
       </div>
 

@@ -2,7 +2,7 @@ import MemoBox from "@/components/common/MemoBox";
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 type Props = {
   text?: string;
@@ -16,7 +16,7 @@ const OperationReferenceMemo = ({ text }: Props) => {
         </LabelBullet>
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["prepayment"]}
+          content={TOOLTIP_CONTENT["operation_reference_memo"]}
         />
       </div>
       <MemoBox

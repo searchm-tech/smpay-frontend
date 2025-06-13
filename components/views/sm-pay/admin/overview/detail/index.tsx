@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
+
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
@@ -16,8 +17,9 @@ import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
-import type { AdvertiserData } from "@/types/adveriser";
 import { STATUS_LABELS } from "@/constants/status";
+
+import type { AdvertiserData } from "@/types/adveriser";
 
 type Props = {
   id: string;

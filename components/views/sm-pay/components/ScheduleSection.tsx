@@ -16,7 +16,7 @@ import {
   useSmPayScheduleInfo,
   useSmPayScheduleInfoUpdate,
 } from "@/hooks/queries/sm-pay";
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 import type { ScheduleInfo } from "@/types/sm-pay";
 
@@ -102,7 +102,7 @@ const ScheduleSection = ({ id, isReadonly }: ScheduleSectionProps) => {
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_SMPAY["prepayment"]}
+            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
           />
         </div>
 

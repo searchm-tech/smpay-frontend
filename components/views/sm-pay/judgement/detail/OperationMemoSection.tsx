@@ -3,7 +3,7 @@ import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { Textarea } from "@/components/ui/textarea";
-import { HOVER_SMPAY } from "@/constants/hover";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 const OperationMemoSection = () => {
   const [memo, setMemo] = useState("");
@@ -16,7 +16,7 @@ const OperationMemoSection = () => {
 
         <TooltipHover
           triggerContent={<HelpIcon />}
-          content={HOVER_SMPAY["rule"]}
+          content={TOOLTIP_CONTENT["operation_reference_memo"]}
         />
       </div>
 

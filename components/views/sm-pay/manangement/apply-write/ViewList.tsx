@@ -62,7 +62,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       sorter: (a, b) => a.advertiserName.localeCompare(b.advertiserName),
     },
     {
-      title: "정보 변경",
+      title: ColumnTooltip.info_change,
       dataIndex: "info_change",
       align: "center",
       render: (_, record) => {
