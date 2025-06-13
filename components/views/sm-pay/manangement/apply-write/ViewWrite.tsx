@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { TooltipHover } from "@/components/composite/tooltip-components";
@@ -12,7 +14,6 @@ import AdvertiserDesc from "../../components/AdvertiserDesc";
 import { RuleEditDesc } from "../../components/RuleDesc";
 import { ScheduleEditDesc } from "../../components/ScheduleDesc";
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
-import JudgementMemoSection from "./JudgementMemoSection";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 import {
@@ -146,7 +147,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         />
       </section>
 
-      <JudgementMemoSection />
+      <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">
         <Button className="w-[150px]" onClick={handleSendAdAgree}>

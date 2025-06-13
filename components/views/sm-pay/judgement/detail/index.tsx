@@ -9,11 +9,10 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-
-import JudgementMemoSection from "./JudgementMemoSection";
 
 import AdvertiserDesc from "../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
@@ -122,7 +121,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <RuleSection id={"1"} isReadonly />
       <ScheduleSection id={"1"} />
 
-      <JudgementMemoSection />
+      <JudgementMemoSection type="show" />
 
       <OperationMemoSection type="write" />
 

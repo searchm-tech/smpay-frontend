@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 
 import RuleSection from "../../components/RuleSection";
 import ScheduleSection from "../../components/ScheduleSection";
@@ -16,8 +17,6 @@ import AdvertiserDesc from "../../components/AdvertiserDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
-
-import { JudgementMemoShowSection } from "../../components/JudgementMemoSection";
 
 import { STATUS_LABELS } from "@/constants/status";
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
@@ -80,7 +79,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <ScheduleSection id={"1"} isReadonly />
 
-      <JudgementMemoShowSection />
+      <JudgementMemoSection type="show" />
 
       <OperationMemoSection type="show" />
 
