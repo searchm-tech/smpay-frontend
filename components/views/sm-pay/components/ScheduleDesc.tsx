@@ -1,76 +1,94 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { NumberInput } from "@/components/composite/input-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
 import type { ScheduleInfo } from "@/types/sm-pay";
+import { LabelBullet } from "@/components/composite/label-bullet";
+import { TooltipHover } from "@/components/composite/tooltip-components";
+import { HelpIcon } from "@/components/composite/icon-components";
+import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 type ScheduleDescProps = {
   scheduleInfo?: ScheduleInfo | null;
+  type?: "show" | "write";
 };
 
-const ScheduleDesc = ({ scheduleInfo }: ScheduleDescProps) => {
-  if (!scheduleInfo) return <Fragment />;
+const ScheduleDesc = ({ scheduleInfo, type }: ScheduleDescProps) => {
+  const [schedule, setSchedule] = useState<ScheduleInfo>({
+    id: 0,
+    firstCharge: 0,
+    maxCharge: 0,
+  });
+
+  const handleScheduleInfoChange = (value: ScheduleInfo) => {
+    setSchedule({ ...scheduleInfo, ...value });
+  };
 
   return (
-    <Descriptions columns={1}>
-      <DescriptionItem label="일 최대 충전 한도">
-        <span>1일 1회</span>
-      </DescriptionItem>
-      <DescriptionItem label="최초 충전 금액 설정">
-        <span className="text-blue-600">
-          {scheduleInfo.firstCharge.toLocaleString()}원
-        </span>
-      </DescriptionItem>
-      <DescriptionItem label="일 최대 충전 한도">
-        <span className="text-blue-600">
-          {scheduleInfo.maxCharge.toLocaleString()}원
-        </span>
-      </DescriptionItem>
-    </Descriptions>
+    <section>
+      <div className="flex items-center gap-2 py-2">
+        <LabelBullet labelClassName="text-base font-bold">
+          선결제 스케쥴 설정
+        </LabelBullet>
+        <TooltipHover
+          triggerContent={<HelpIcon />}
+          content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
+        />
+      </div>
+
+      {type === "show" && (
+        <Descriptions columns={1}>
+          <DescriptionItem label="일 최대 충전 한도">
+            <span>1일 1회</span>
+          </DescriptionItem>
+          <DescriptionItem label="최초 충전 금액 설정">
+            <span className="text-blue-600">
+              {scheduleInfo?.firstCharge.toLocaleString()}원
+            </span>
+          </DescriptionItem>
+          <DescriptionItem label="일 최대 충전 한도">
+            <span className="text-blue-600">
+              {scheduleInfo?.maxCharge.toLocaleString()}원
+            </span>
+          </DescriptionItem>
+        </Descriptions>
+      )}
+
+      {type === "write" && (
+        <Descriptions columns={1}>
+          <DescriptionItem label="충전 스케쥴">
+            <span>1일 1회</span>
+          </DescriptionItem>
+          <DescriptionItem label="최초 충전 금액 설정">
+            <NumberInput
+              className="max-w-[500px]"
+              value={schedule?.firstCharge}
+              onChange={(e) =>
+                handleScheduleInfoChange({
+                  ...schedule,
+                  firstCharge: Number(e),
+                })
+              }
+            />
+          </DescriptionItem>
+          <DescriptionItem label="일 최대 충전 한도">
+            <NumberInput
+              className="max-w-[500px]"
+              value={scheduleInfo?.maxCharge}
+              onChange={(e) =>
+                handleScheduleInfoChange({
+                  ...schedule,
+                  maxCharge: Number(e),
+                })
+              }
+            />
+          </DescriptionItem>
+        </Descriptions>
+      )}
+    </section>
   );
 };
 
 export default ScheduleDesc;
-
-type ScheduleEditDescProps = {
-  scheduleInfo: ScheduleInfo | null;
-  handleScheduleInfoChange: (value: ScheduleInfo) => void;
-};
-
-export const ScheduleEditDesc = ({
-  scheduleInfo,
-  handleScheduleInfoChange,
-}: ScheduleEditDescProps) => {
-  if (!scheduleInfo) return <Fragment />;
-
-  return (
-    <Descriptions columns={1}>
-      <DescriptionItem label="충전 스케쥴">
-        <span>1일 1회</span>
-      </DescriptionItem>
-      <DescriptionItem label="최초 충전 금액 설정">
-        <NumberInput
-          className="max-w-[500px]"
-          value={scheduleInfo.firstCharge}
-          onChange={(e) =>
-            handleScheduleInfoChange({
-              ...scheduleInfo,
-              firstCharge: Number(e),
-            })
-          }
-        />
-      </DescriptionItem>
-      <DescriptionItem label="일 최대 충전 한도">
-        <NumberInput
-          className="max-w-[500px]"
-          value={scheduleInfo.maxCharge}
-          onChange={(e) =>
-            handleScheduleInfoChange({ ...scheduleInfo, maxCharge: Number(e) })
-          }
-        />
-      </DescriptionItem>
-    </Descriptions>
-  );
-};

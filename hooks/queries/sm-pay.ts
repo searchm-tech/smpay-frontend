@@ -10,7 +10,6 @@ import {
   getSmPayJudgementStatus,
   getSmPayRejectReason,
   getSmPayRuleInfo,
-  getSmPayScheduleInfo,
   getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
@@ -62,18 +61,6 @@ export const useSmPayRuleInfo = (id: string) => {
   return useQuery<SmPayRuleInfoResponse>({
     queryKey: ["/smpay/rule-info", id],
     queryFn: () => getSmPayRuleInfo(id),
-    enabled: !!id,
-    initialData: {
-      data: null,
-      success: false,
-    },
-  });
-};
-
-export const useSmPayScheduleInfo = (id: string) => {
-  return useQuery<SmPayScheduleInfoResponse>({
-    queryKey: ["/smpay/schedule-info", id],
-    queryFn: () => getSmPayScheduleInfo(id),
     enabled: !!id,
     initialData: {
       data: null,

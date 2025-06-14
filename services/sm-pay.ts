@@ -244,21 +244,6 @@ export const getSmPayRuleInfo = async (
   };
 };
 
-export const getSmPayScheduleInfo = async (
-  id: string
-): Promise<SmPayScheduleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-  const data = mockScheduleInfo.find((item) => item.id === numId);
-
-  if (!data) {
-    return { data: null, success: false };
-  }
-
-  return { data, success: true };
-};
-
 export const updateSmPayScheduleInfo = async (
   id: string,
   data: ScheduleInfo

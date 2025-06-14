@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleDesc";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
 
-import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 
@@ -78,7 +78,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       </div>
 
       <RuleSection id={id} type="show" />
-      <ScheduleSection id={id} isReadonly />
+      <ScheduleDesc type="show" />
       <OperationAccountStatusDesc />
 
       <JudgementMemoSection type="show" />

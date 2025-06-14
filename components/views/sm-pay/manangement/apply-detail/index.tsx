@@ -8,8 +8,8 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleDesc";
 
-import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
 import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
@@ -77,7 +77,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <RuleSection id={"1"} type="show" />
 
-      <ScheduleSection id={"1"} isReadonly />
+      <ScheduleDesc type="show" />
 
       <JudgementMemoSection type="show" />
 

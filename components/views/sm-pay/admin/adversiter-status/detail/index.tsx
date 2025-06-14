@@ -10,9 +10,10 @@ import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AccountDesc from "@/components/views/sm-pay/components/AccountDesc";
+import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleDesc";
 
 import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
-import ScheduleSection from "../../../components/ScheduleSection";
 import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
@@ -21,7 +22,6 @@ import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
 import { STATUS_LABELS } from "@/constants/status";
-import AccountDesc from "../../../components/AccountDesc";
 
 type Props = {
   id: string;
@@ -68,7 +68,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       <AccountDesc smPayData={null} />
 
       <RuleSection id={id} type="show" />
-      <ScheduleSection id={id} isReadonly />
+      <ScheduleDesc type="show" />
       <OperationAccountStatusDesc />
 
       <JudgementMemoSection type="show" />
