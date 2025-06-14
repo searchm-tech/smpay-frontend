@@ -6,7 +6,7 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
-import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleDesc";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
@@ -109,7 +109,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
       <RuleSection id={"1"} type="write" />
 
-      <ScheduleDesc type="write" />
+      <ScheduleSection type="write" />
       <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">

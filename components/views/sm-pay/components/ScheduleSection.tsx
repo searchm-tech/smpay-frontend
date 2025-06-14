@@ -1,21 +1,23 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { NumberInput } from "@/components/composite/input-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
-import type { ScheduleInfo } from "@/types/sm-pay";
+import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HelpIcon } from "@/components/composite/icon-components";
+
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-type ScheduleDescProps = {
+import type { ScheduleInfo } from "@/types/sm-pay";
+
+type Props = {
   scheduleInfo?: ScheduleInfo | null;
   type?: "show" | "write";
 };
 
-const ScheduleDesc = ({ scheduleInfo, type }: ScheduleDescProps) => {
+const ScheduleSection = ({ scheduleInfo, type }: Props) => {
   const [schedule, setSchedule] = useState<ScheduleInfo>({
     id: 0,
     firstCharge: 0,
@@ -91,4 +93,4 @@ const ScheduleDesc = ({ scheduleInfo, type }: ScheduleDescProps) => {
   );
 };
 
-export default ScheduleDesc;
+export default ScheduleSection;

@@ -11,7 +11,7 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleDesc";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
@@ -119,7 +119,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
       <RuleSection id={"1"} type="show" />
-      <ScheduleDesc type="show" />
+      <ScheduleSection type="show" />
 
       <JudgementMemoSection type="show" />
 
