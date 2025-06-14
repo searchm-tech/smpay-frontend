@@ -68,7 +68,9 @@ export type TooltipContentKey =
   | "prepayment_schedule_setting"
   | "operation_account_status"
   | "judge_reference_memo"
-  | "operation_reference_memo";
+  | "operation_reference_memo"
+  | "charge_account"
+  | "sales_account";
 export const TOOLTIP_CONTENT: Record<
   TooltipContentKey,
   string | React.ReactNode
@@ -199,6 +201,24 @@ export const TOOLTIP_CONTENT: Record<
       <p className="font-normal text-sm text-gray-700">
         SM Pay가 최종적으로 운영 검토 시 참고해야 할 사항을 입력해주세요.
       </p>
+    </div>
+  ),
+  charge_account: (
+    <div className="flex items-start gap-2 bg-white">
+      <HelpIcon />
+      <span className="text-sm text-gray-700">
+        충전계좌는 네이버 광고비 충전 전용 계좌를 뜻합니다.
+      </span>
+    </div>
+  ),
+
+  sales_account: (
+    <div className="flex items-start gap-2 bg-white">
+      <HelpIcon />
+      <span className="text-sm text-gray-700">
+        매출계좌는 판매정산 대금이 플랫폼사로부터 입금되는 계좌, 또는 후불
+        광고비에 대해 출금이 이루어질 광고주 명의의 계좌를 뜻합니다.
+      </span>
     </div>
   ),
 };

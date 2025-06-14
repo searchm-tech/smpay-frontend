@@ -14,10 +14,7 @@ type AccountDescProps = {
   smPayData: SmPayData | null;
 };
 
-// TODO: 사용안 할 수 있음
 const AccountDesc = ({ smPayData }: AccountDescProps) => {
-  if (!smPayData) return null;
-
   return (
     <section className="flex gap-2">
       <div className="w-1/2">
@@ -27,19 +24,19 @@ const AccountDesc = ({ smPayData }: AccountDescProps) => {
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
+            content={TOOLTIP_CONTENT["charge_account"]}
           />
         </div>
 
         <Descriptions columns={1}>
           <DescriptionItem label="충전 계좌 은행">
-            {smPayData.chargeAccountBank}
+            {smPayData?.chargeAccountBank}
           </DescriptionItem>
           <DescriptionItem label="충전 계좌 번호">
-            {smPayData.chargeAccountNumber}
+            {smPayData?.chargeAccountNumber}
           </DescriptionItem>
           <DescriptionItem label="충전 계좌 예금주명">
-            {smPayData.chargeAccountHolderName}
+            {smPayData?.chargeAccountHolderName}
           </DescriptionItem>
         </Descriptions>
       </div>
@@ -51,18 +48,18 @@ const AccountDesc = ({ smPayData }: AccountDescProps) => {
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
+            content={TOOLTIP_CONTENT["sales_account"]}
           />
         </div>
         <Descriptions columns={1}>
           <DescriptionItem label="매출 계좌 은행">
-            {smPayData.salesAccountBank}
+            {smPayData?.salesAccountBank}
           </DescriptionItem>
           <DescriptionItem label="매출 계좌 번호">
-            {smPayData.salesAccountNumber}
+            {smPayData?.salesAccountNumber}
           </DescriptionItem>
           <DescriptionItem label="매출 계좌 예금주명">
-            {smPayData.salesAccountHolderName}
+            {smPayData?.salesAccountHolderName}
           </DescriptionItem>
         </Descriptions>
       </div>

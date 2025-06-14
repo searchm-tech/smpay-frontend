@@ -115,7 +115,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       <AdvertiseStatusDesc
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
+      <AdvertiserDesc advertiserDetail={advertiserData} />
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
       <RuleSection id={"1"} type="show" />

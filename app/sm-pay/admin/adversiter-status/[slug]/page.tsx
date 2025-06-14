@@ -25,7 +25,7 @@ export default function SmPayAdminAdversiterStatusPage({
 }) {
   return (
     <div>
-      <ContentHeader title="광고주 운영 현황" items={breadcrumbItems} />
+      <ContentHeader title="광고주 운영 현황 상세" items={breadcrumbItems} />
       <SmPayAdminAdversiterStatusDetailView id={params.slug} />
     </div>
   );

@@ -15,7 +15,7 @@ import {
 } from "@/components/composite/description-components";
 
 import { TEST_BANK_OPTIONS } from "../constants";
-import { HOVER_ADVERIFY } from "@/constants/hover";
+import { HOVER_ADVERIFY, TOOLTIP_CONTENT } from "@/constants/hover";
 
 import type { AccountInfo } from "@/types/vertification";
 import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
@@ -110,7 +110,7 @@ const InfoSection = ({
           </LabelBullet>
           <TooltipHover
             triggerContent={<HelpIcon />}
-            content={HOVER_ADVERIFY["charge"]}
+            content={TOOLTIP_CONTENT["charge_account"]}
           />
         </div>
 

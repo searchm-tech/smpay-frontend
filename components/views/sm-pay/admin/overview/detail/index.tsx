@@ -22,6 +22,7 @@ import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 import { STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import AdvertiserDesc from "../../../components/AdvertiserDesc";
 
 type Props = {
   id: string;
@@ -70,7 +71,11 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       <AdvertiseStatusDesc
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AgencyInfoDesc />
+
+      <div className="flex justify-center gap-1 w-full">
+        <AgencyInfoDesc />
+        <AdvertiserDesc advertiserDetail={null} />
+      </div>
 
       <RuleSection id={id} type="show" />
       <ScheduleSection id={id} isReadonly />

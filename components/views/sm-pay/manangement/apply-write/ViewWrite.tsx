@@ -107,9 +107,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
-        {response?.data && (
-          <AdvertiserDesc advertiserDetail={response.data} isReadonly />
-        )}
+        {response?.data && <AdvertiserDesc advertiserDetail={response.data} />}
 
         <IndicatorsJudementSection />
       </div>

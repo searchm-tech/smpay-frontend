@@ -67,7 +67,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       <AdvertiseStatusDesc
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
+      <AdvertiserDesc advertiserDetail={advertiserData} />
 
       <AccountDesc smPayData={response.data} />
 
