@@ -10,7 +10,7 @@ import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
-import AccountDesc from "@/components/views/sm-pay/components/AccountDesc";
+import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
 import OperationAccountStatusDesc from "@/components/views/sm-pay/components/OperationAccountStatusDesc";
@@ -65,7 +65,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserDesc advertiserDetail={null} />
-      <AccountDesc smPayData={null} />
+      <AccountSection smPayData={null} />
 
       <RuleSection id={id} type="show" />
       <ScheduleSection type="show" />

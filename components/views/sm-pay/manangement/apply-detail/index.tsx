@@ -11,14 +11,15 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 
 import GuidSection from "../../components/GuideSection";
-import AccountDesc from "../../components/AccountDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
 
 import { STATUS_LABELS } from "@/constants/status";
+
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
@@ -69,7 +70,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       />
       <AdvertiserDesc advertiserDetail={advertiserData} />
 
-      <AccountDesc smPayData={response.data} />
+      <AccountSection smPayData={response.data} />
 
       <AdvertiserPerformanceSection />
 

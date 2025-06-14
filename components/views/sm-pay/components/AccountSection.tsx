@@ -10,11 +10,11 @@ import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 import type { SmPayData } from "@/types/sm-pay";
 
-type AccountDescProps = {
+type Props = {
   smPayData: SmPayData | null;
 };
 
-const AccountDesc = ({ smPayData }: AccountDescProps) => {
+const AccountSection = ({ smPayData }: Props) => {
   return (
     <section className="flex gap-2">
       <div className="w-1/2">
@@ -67,4 +67,4 @@ const AccountDesc = ({ smPayData }: AccountDescProps) => {
   );
 };
 
-export default AccountDesc;
+export default AccountSection;
