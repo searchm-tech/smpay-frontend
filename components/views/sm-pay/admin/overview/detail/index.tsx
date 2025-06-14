@@ -8,21 +8,20 @@ import { Button } from "@/components/ui/button";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleSection";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import OperationAccountStatusDesc from "@/components/views/sm-pay/components/OperationAccountStatusDesc";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-
-import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
-import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import { STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
-import AdvertiserDesc from "../../../components/AdvertiserDesc";
 
 type Props = {
   id: string;

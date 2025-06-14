@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import { ConfirmDialog } from "@/components/composite/modal-components";
+
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-
-import { ConfirmDialog } from "@/components/composite/modal-components";
+import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
 
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 import {
   useAdvertiserDetail,
@@ -102,7 +102,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
           status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
-        {response?.data && <AdvertiserDesc advertiserDetail={response.data} />}
+        <AdvertiserDesc advertiserDetail={response?.data || null} />
 
         <IndicatorsJudementSection />
       </div>

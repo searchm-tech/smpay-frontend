@@ -12,15 +12,15 @@ import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
 
-import AdvertiserDesc from "../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
 
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import GuidSection from "../../components/GuideSection";
 import RejectModal from "../../components/RejectModal";
 

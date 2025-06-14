@@ -12,9 +12,9 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
 import AccountDesc from "@/components/views/sm-pay/components/AccountDesc";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import OperationAccountStatusDesc from "@/components/views/sm-pay/components/OperationAccountStatusDesc";
 
-import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
-import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 

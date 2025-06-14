@@ -8,12 +8,12 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import ScheduleDesc from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
 
 import GuidSection from "../../components/GuideSection";
 import AccountDesc from "../../components/AccountDesc";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
