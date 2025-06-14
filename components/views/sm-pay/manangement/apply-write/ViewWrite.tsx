@@ -7,9 +7,9 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
 
@@ -98,11 +98,11 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
       )}
 
       <div className="mt-4">
-        <AdvertiseStatusDesc
+        <AdvertiseStatusSection
           status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
-        <AdvertiserDesc advertiserDetail={response?.data || null} />
+        <AdvertiserSection advertiserDetail={response?.data || null} />
 
         <IndicatorsJudementSection />
       </div>

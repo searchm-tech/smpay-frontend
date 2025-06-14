@@ -6,11 +6,11 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { Label } from "@/components/ui/label";
 import type { AdvertiserData } from "@/types/adveriser";
 
-type AdvertiserDescProps = {
+type Props = {
   advertiserDetail: AdvertiserData | null;
 };
 
-const AdvertiserDesc = ({ advertiserDetail }: AdvertiserDescProps) => {
+const AdvertiserSection = ({ advertiserDetail }: Props) => {
   return (
     <section className="w-full">
       <div className="flex items-center gap-4 pb-4">
@@ -39,4 +39,4 @@ const AdvertiserDesc = ({ advertiserDetail }: AdvertiserDescProps) => {
   );
 };
 
-export default AdvertiserDesc;
+export default AdvertiserSection;

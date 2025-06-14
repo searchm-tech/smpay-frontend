@@ -12,8 +12,8 @@ import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
-import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
@@ -112,10 +112,10 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         viewType="master-judgement"
         onClick={handleOpenRejectModal}
       />
-      <AdvertiseStatusDesc
+      <AdvertiseStatusSection
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} />
+      <AdvertiserSection advertiserDetail={advertiserData} />
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
       <RuleSection id={"1"} type="show" />

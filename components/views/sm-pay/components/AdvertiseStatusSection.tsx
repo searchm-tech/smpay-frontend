@@ -9,7 +9,7 @@ type Props = {
   status: string;
 };
 
-const AdvertiseStatusDesc = ({ status }: Props) => {
+const AdvertiseStatusSection = ({ status }: Props) => {
   return (
     <section className="mb-4">
       <div className="flex items-center gap-4 py-2">
@@ -27,4 +27,4 @@ const AdvertiseStatusDesc = ({ status }: Props) => {
   );
 };
 
-export default AdvertiseStatusDesc;
+export default AdvertiseStatusSection;

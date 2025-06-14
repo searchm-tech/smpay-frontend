@@ -8,9 +8,9 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import AdvertiseStatusDesc from "@/components/views/sm-pay/components/AdvertiseStatusDesc";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiserDesc from "@/components/views/sm-pay/components/AdvertiserDesc";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 
 import GuidSection from "../../components/GuideSection";
@@ -65,10 +65,10 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
         />
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />
-      <AdvertiseStatusDesc
+      <AdvertiseStatusSection
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} />
+      <AdvertiserSection advertiserDetail={advertiserData} />
 
       <AccountSection smPayData={response.data} />
 
