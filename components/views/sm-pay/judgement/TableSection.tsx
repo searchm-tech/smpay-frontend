@@ -13,7 +13,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 import type { TableProps } from "antd";
 
-import StopInfoModal from "../components/StopInfoModal";
+import { StopInfoModal } from "../manangement/dialog";
 
 type PropsTableSection = {
   dataSource: SmPayJudgementData[];
