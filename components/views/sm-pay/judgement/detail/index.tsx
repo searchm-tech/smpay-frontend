@@ -18,7 +18,6 @@ import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSe
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
 
-import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
 
 import GuidSection from "../../components/GuideSection";
@@ -114,7 +113,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserSection advertiserDetail={advertiserData} />
-      <AdvertiserPerformanceSection />
+
       <IndicatorDetermineSection />
       <RuleSection id={"1"} type="show" />
       <ScheduleSection type="show" />

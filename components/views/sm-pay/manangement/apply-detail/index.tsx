@@ -12,7 +12,6 @@ import AdvertiseStatusSection from "@/components/views/sm-pay/components/Adverti
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AccountSection from "@/components/views/sm-pay/components/AccountSection";
-import AdvertiserPerformanceSection from "@/components/views/sm-pay/components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "@/components/views/sm-pay/components/IndicatorDetermineSection";
 
 import { RejectDialog } from "../../manangement/dialog";
@@ -70,8 +69,6 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       <AdvertiserSection advertiserDetail={advertiserData} />
 
       <AccountSection smPayData={response.data} />
-
-      <AdvertiserPerformanceSection />
 
       <IndicatorDetermineSectionNoSubDesc />
 
