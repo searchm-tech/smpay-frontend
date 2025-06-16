@@ -119,13 +119,12 @@ const UIShowCase = () => {
               open={isOpenNormalModal}
               onClose={() => setIsOpenNormalModal(false)}
               title="모달 제목"
-              children={
-                <div>
-                  <div>모달 내용</div>
-                  <div>모달 내용</div>
-                </div>
-              }
-            />
+            >
+              <div>
+                <div>모달 내용</div>
+                <div>모달 내용</div>
+              </div>
+            </Modal>
           </Fragment>
 
           <Fragment>
