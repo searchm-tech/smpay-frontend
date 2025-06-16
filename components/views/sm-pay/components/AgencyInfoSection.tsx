@@ -23,7 +23,7 @@ type Props = {
   agencyInfo?: AgencyInfo;
   advertiserInfo?: AdvertiserInfo;
 };
-const AgencyInfoDesc = ({ agencyInfo, advertiserInfo }: Props) => {
+const AgencyInfoSectio = ({ agencyInfo, advertiserInfo }: Props) => {
   return (
     <section className="w-full">
       <div className="flex items-center gap-4 py-2">
@@ -56,4 +56,4 @@ const AgencyInfoDesc = ({ agencyInfo, advertiserInfo }: Props) => {
   );
 };
 
-export default AgencyInfoDesc;
+export default AgencyInfoSectio;

@@ -11,11 +11,11 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-import OperationAccountStatusDesc from "@/components/views/sm-pay/components/OperationAccountStatusDesc";
+import AgencyInfoSection from "@/components/views/sm-pay/components/AgencyInfoSection";
+import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
-import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
 
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
@@ -72,13 +72,13 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       />
 
       <div className="flex justify-center gap-1 w-full">
-        <AgencyInfoDesc />
+        <AgencyInfoSection />
         <AdvertiserSection advertiserDetail={null} />
       </div>
 
       <RuleSection id={id} type="show" />
       <ScheduleSection type="show" />
-      <OperationAccountStatusDesc />
+      <OperationAccountStatusSection />
 
       <JudgementMemoSection type="show" />
       <OperationMemoSection type="show" />

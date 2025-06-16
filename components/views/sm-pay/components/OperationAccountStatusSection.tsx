@@ -18,7 +18,7 @@ type Props = {
   statusInfo?: StatusInfo;
 };
 
-const OperationAccountStatusDesc = ({ statusInfo }: Props) => {
+const OperationAccountStatusSection = ({ statusInfo }: Props) => {
   return (
     <section>
       <div className="flex items-center gap-4 py-2">
@@ -75,4 +75,4 @@ const OperationAccountStatusDesc = ({ statusInfo }: Props) => {
   );
 };
 
-export default OperationAccountStatusDesc;
+export default OperationAccountStatusSection;
