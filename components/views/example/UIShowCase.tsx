@@ -1,21 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { format } from "date-fns";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { BRAND_COLORS, TAILWIND_COLOR_CLASSES } from "@/constants/colors";
-import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils";
+import { BRAND_COLORS, TAILWIND_COLOR_CLASSES } from "@/constants/colors"; // TODO : 사용할 지 안하는지 확인 후 제거
+import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils"; // TODO : 사용할 지 안하는지 확인 후 제거
 import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { SearchInput } from "@/components/composite/input-components";
 import { CalendarPopover } from "@/components/ui/calendar";
+import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 
 const UIShowCase = () => {
   const [searchValue, setSearchValue] = useState("");
   const [date, setDate] = useState<Date | undefined>();
+  const [isOpenNormalModal, setIsOpenNormalModal] = useState(false);
+  const [isOpenConfirmDialog, setIsOpenConfirmDialog] = useState(false);
+  const [isOpenConfirmDialogOnlyConfirm, setIsOpenConfirmDialogOnlyConfirm] =
+    useState(false);
 
   return (
     <div className="p-6 space-y-8">
@@ -98,6 +102,55 @@ const UIShowCase = () => {
               date ? format(date, "yyyy-MM-dd") : "날짜를 선택해주세요"
             }
           />
+        </CardContent>
+      </Card>
+
+      {/* Modal */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Modal</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-2">
+          <Fragment>
+            <Button onClick={() => setIsOpenNormalModal(true)}>
+              일반 모달
+            </Button>
+            <Modal
+              open={isOpenNormalModal}
+              onClose={() => setIsOpenNormalModal(false)}
+              title="모달 제목"
+              children={
+                <div>
+                  <div>모달 내용</div>
+                  <div>모달 내용</div>
+                </div>
+              }
+            />
+          </Fragment>
+
+          <Fragment>
+            <Button onClick={() => setIsOpenConfirmDialog(true)}>
+              다이얼로그
+            </Button>
+            <ConfirmDialog
+              open={isOpenConfirmDialog}
+              content="다이얼로 내용"
+              onConfirm={() => setIsOpenConfirmDialog(false)}
+              onClose={() => setIsOpenConfirmDialog(false)}
+            />
+          </Fragment>
+
+          <Fragment>
+            <Button onClick={() => setIsOpenConfirmDialogOnlyConfirm(true)}>
+              확인만 있는 다이얼로그 [cancelDisabled]
+            </Button>
+            <ConfirmDialog
+              open={isOpenConfirmDialogOnlyConfirm}
+              content="확인만 있는 다이얼로그 내용"
+              onConfirm={() => setIsOpenConfirmDialogOnlyConfirm(false)}
+              cancelDisabled
+            />
+          </Fragment>
         </CardContent>
       </Card>
     </div>

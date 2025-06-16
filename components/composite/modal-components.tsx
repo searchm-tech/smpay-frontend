@@ -95,15 +95,15 @@ export const Modal = ({
   return (
     <AlertDialog open={open}>
       <AlertDialogContent
-        className="p-0 rounded-lg w-full"
+        className="p-0 w-full"
         style={{
           maxWidth: typeof width === "number" ? `${width}px` : width,
           minWidth: "500px",
         }}
       >
-        <AlertDialogHeader className="px-8 border-b border-[#CCCCCC] py-4">
+        <AlertDialogHeader className="px-8 py-4 bg-[#EB680E] text-white">
           <AlertDialogTitle className="flex justify-between items-center my-0">
-            <span>{title}</span>
+            <span className="font-bold">{title}</span>
             {!iconDisabled && (
               <X
                 className="w-[22px] h-[22px] cursor-pointer"
@@ -116,7 +116,16 @@ export const Modal = ({
         <div className={cn("px-8 py-4", contentClassName)}>{children}</div>
 
         {!footerDisabled && (
-          <AlertDialogFooter className="py-4 bg-[#E2E2E2] rounded-b-lg">
+          <AlertDialogFooter className="py-4">
+            {!cancelDisabled && (
+              <AlertDialogCancel
+                className="min-w-[150px] min-h-[35px]"
+                onClick={onClose}
+              >
+                {cancelText}
+              </AlertDialogCancel>
+            )}
+
             {!confirmDisabled && (
               <AlertDialogAction
                 className="min-w-[150px] min-h-[35px]"
@@ -124,15 +133,6 @@ export const Modal = ({
               >
                 {confirmText}
               </AlertDialogAction>
-            )}
-
-            {!cancelDisabled && (
-              <AlertDialogCancel
-                className="min-w-[150px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
-                onClick={onClose}
-              >
-                {cancelText}
-              </AlertDialogCancel>
             )}
           </AlertDialogFooter>
         )}
