@@ -4,14 +4,22 @@ import React, { Fragment, useState } from "react";
 import { format } from "date-fns";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
-import { BRAND_COLORS, TAILWIND_COLOR_CLASSES } from "@/constants/colors"; // TODO : 사용할 지 안하는지 확인 후 제거
-import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils"; // TODO : 사용할 지 안하는지 확인 후 제거
 import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { SearchInput } from "@/components/composite/input-components";
 import { CalendarPopover } from "@/components/ui/calendar";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Table from "@/components/composite/table";
+
+// import { BRAND_COLORS, TAILWIND_COLOR_CLASSES } from "@/constants/colors"; // TODO : 사용할 지 안하는지 확인 후 제거
+// import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils"; // TODO : 사용할 지 안하는지 확인 후 제거
+
+import type { TableProps } from "antd";
 
 const UIShowCase = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -20,6 +28,40 @@ const UIShowCase = () => {
   const [isOpenConfirmDialog, setIsOpenConfirmDialog] = useState(false);
   const [isOpenConfirmDialogOnlyConfirm, setIsOpenConfirmDialogOnlyConfirm] =
     useState(false);
+
+  const [tableParams, setTableParams] = useState({
+    pageSize: 10,
+    current: 1,
+    total: dataSource.length,
+  });
+
+  const columns: TableProps<TestType>["columns"] = [
+    {
+      title: "CUSTOMER ID",
+      dataIndex: "customerId",
+      align: "center",
+      sorter: (a, b) => a.customerId.localeCompare(b.customerId),
+    },
+    {
+      title: "로그인 ID",
+      dataIndex: "loginId",
+      align: "center",
+      sorter: (a, b) => a.loginId.localeCompare(b.loginId),
+    },
+    {
+      title: "광고주명",
+      dataIndex: "advertiserName",
+      align: "center",
+      sorter: (a, b) => a.advertiserName.localeCompare(b.advertiserName),
+    },
+    {
+      title: "최종 수정 일시",
+      dataIndex: "updatedAt",
+      align: "center",
+      sorter: (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    },
+  ];
 
   return (
     <div className="p-6 space-y-8">
@@ -152,8 +194,96 @@ const UIShowCase = () => {
           </Fragment>
         </CardContent>
       </Card>
+
+      {/* Switch */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Control</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-28">
+          <div className="flex items-center gap-2">
+            <span>Switch</span>
+            <Switch />
+            <Switch checked={true} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span>Checkbox</span>
+            <Checkbox />
+            <Checkbox checked={true} />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span>Radio</span>
+            <RadioGroup value="1" className="flex items-center gap-2">
+              <RadioGroupItem value="1" />
+              <RadioGroupItem value="2" />
+            </RadioGroup>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Table */}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Table</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 w-full">
+          <Table<TestType>
+            dataSource={dataSource}
+            columns={columns}
+            pagination={{
+              pageSize: tableParams.pageSize,
+              current: tableParams.current,
+              total: tableParams.total,
+            }}
+            onChange={(pagination) => {
+              setTableParams({
+                ...tableParams,
+                ...pagination,
+              });
+            }}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
 export default UIShowCase;
+
+const dataSource: TestType[] = Array.from({
+  length: 100,
+}).map((_, i) => ({
+  id: i + 1,
+  name: `광고주 ${i + 1}`,
+  customerId: `CUST_${(i + 1).toString().padStart(5, "0")}`,
+  loginId: `user_${(i + 1).toString().padStart(3, "0")}`,
+  advertiserName: `광고주 ${i + 1}`,
+  updatedAt: new Date().toISOString().slice(0, 10),
+  businessName: `사업자명 ${i + 1}`,
+  businessNumber: `${(123 + i).toString().padStart(3, "0")}-${(88 + i)
+    .toString()
+    .padStart(2, "0")}-${(12345 + i).toString().padStart(5, "0")}`,
+  businessOwnerName: `대표자${i + 1}`,
+  businessOwnerPhone: `010-${Math.floor(1000 + i)
+    .toString()
+    .padStart(4, "0")}-${Math.floor(1000 + i * 2)
+    .toString()
+    .padStart(4, "0")}`,
+  businessOwnerEmail: `owner${i + 1}@business${i + 1}.com`,
+}));
+
+export interface TestType {
+  id: number;
+  name: string;
+  customerId: string;
+  loginId: string;
+  advertiserName: string;
+  updatedAt: string;
+  businessName: string;
+  businessNumber: string;
+  businessOwnerName: string;
+  businessOwnerPhone: string;
+  businessOwnerEmail: string;
+}

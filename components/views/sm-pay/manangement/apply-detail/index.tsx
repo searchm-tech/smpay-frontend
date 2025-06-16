@@ -12,11 +12,12 @@ import AdvertiseStatusSection from "@/components/views/sm-pay/components/Adverti
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AccountSection from "@/components/views/sm-pay/components/AccountSection";
+import AdvertiserPerformanceSection from "@/components/views/sm-pay/components/AdvertiserPerformanceSection";
+import { IndicatorDetermineSectionNoSubDesc } from "@/components/views/sm-pay/components/IndicatorDetermineSection";
+
+import { RejectDialog } from "../../manangement/dialog";
 
 import GuidSection from "../../components/GuideSection";
-import RejectModal from "../../components/RejectModal";
-import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
-import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
 
 import { STATUS_LABELS } from "@/constants/status";
 
@@ -56,12 +57,10 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
     <div>
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {isReject && (
-        <RejectModal
+        <RejectDialog
           id={id}
-          open
           onClose={() => setIsReject(false)}
           onConfirm={() => setIsReject(false)}
-          confirmDisabled={true}
         />
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />

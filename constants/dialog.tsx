@@ -1,55 +1,5 @@
 import { ActionButton } from "@/types/sm-pay";
 
-export const MANAGEMENT_CONTENT: Record<
-  ActionButton,
-  string | React.ReactNode
-> = {
-  view: <></>,
-  application_cancel: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 신청을 취소하시겠습니까?</span>
-    </div>
-  ),
-  reapply: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>기존 신청내역은 수정할 수 없습니다.</span>
-      <span>새로 작성하여 다시 신청하시겠습니까?</span>
-      {/* 확인 클릭 시 해당 광고주 신청서작성(E0231) 페이지 이동 */}
-    </div>
-  ),
-  advertiser_agreement_send: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>광고주에게 SM Pay 동의 요청을 전송하시겠습니까?</span>
-    </div>
-  ),
-  suspend: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 서비스를 일시중지 하시겠습니까?</span>
-      <span>나중에 언제든지 다시 제개할 수 있습니다.</span>
-    </div>
-  ),
-  termination_request: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 서비스를 해지 신청하시겠습니까?</span>
-      {/* 
-      미수급이 있을 경우
-      <span>
-        해당 광고주는 미수금이 남아 있어, 미수금 회수 완료 후 해지 처리됩니다.
-      </span> */}
-    </div>
-  ),
-  resume: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>SM Pay 서비스를 다시 시작하겠습니까?</span>
-    </div>
-  ),
-  resend: (
-    <div className="flex flex-col items-center pb-4 font-medium">
-      <span>광고주 동의 요청을 재발송 하시겠습니까?</span>
-    </div>
-  ),
-};
-
 // sm-pay/apply-write
 
 export type ApplyWriteModalStatus =

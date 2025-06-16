@@ -7,15 +7,24 @@ import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 
 import Table from "@/components/composite/table";
-import { ConfirmDialog } from "@/components/composite/modal-components";
+
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import StopInfoModal from "../components/StopInfoModal";
-import RejectModal from "../components/RejectModal";
+import {
+  ApplyCancelDialog,
+  ReapplyDialog,
+  RejectDialog,
+  SuspendDialog,
+  ResumeDialog,
+  TerminationRequestDialog,
+  ResendDialog,
+  StopInfoModal,
+  AdvertiserAgreementSendDialog,
+} from "./dialog";
 import RejectOperationModal from "../components/RejectOperationModal";
 
-import { MANAGEMENT_CONTENT } from "@/constants/dialog";
 import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+
 import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
@@ -41,6 +50,10 @@ const TableSection = ({
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
+  const [resumeId, setResumeId] = useState<number | null>(null);
+  const [terminationRequestId, setTerminationRequestId] = useState<
+    number | null
+  >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
   const [rejectOperationModalId, setRejectOperationModalId] = useState<
@@ -133,6 +146,7 @@ const TableSection = ({
           );
         }
 
+        // TODO : management가 아니라 -> [시스템관리자] 광고주 운영 현황
         if (value === "OPERATION_REVIEW_REJECTED") {
           return (
             <LinkTextButton
@@ -194,7 +208,7 @@ const TableSection = ({
             {availableActions.includes("termination_request") && (
               <Button
                 variant="redOutline"
-                onClick={() => setOpenDialog("termination_request")}
+                onClick={() => setTerminationRequestId(record.no)}
               >
                 해지 신청
               </Button>
@@ -203,7 +217,7 @@ const TableSection = ({
             {availableActions.includes("resume") && (
               <Button
                 variant="blueOutline"
-                onClick={() => setOpenDialog("resume")}
+                onClick={() => setResumeId(record.no)}
               >
                 재개
               </Button>
@@ -214,7 +228,6 @@ const TableSection = ({
                 variant="blueOutline"
                 onClick={() => {
                   setApplySubmitId(record.no);
-                  setOpenDialog("advertiser_agreement_send");
                 }}
               >
                 광고주 등의 전송
@@ -224,7 +237,7 @@ const TableSection = ({
             {availableActions.includes("reapply") && (
               <Button
                 variant="blueOutline"
-                onClick={() => console.log(record.no)}
+                onClick={() => setOpenDialog("reapply")}
               >
                 재신청
               </Button>
@@ -254,26 +267,66 @@ const TableSection = ({
 
   return (
     <section>
-      {openDialog && (
-        <ConfirmDialog
-          open
+      {openDialog === "application_cancel" && (
+        <ApplyCancelDialog
           onClose={() => setOpenDialog(null)}
-          content={MANAGEMENT_CONTENT[openDialog]}
           onConfirm={() => {
-            if (openDialog === "advertiser_agreement_send" && applySubmitId) {
-              router.push(`/sm-pay//management/apply-submit/${applySubmitId}`);
-            }
+            setOpenDialog(null);
+          }}
+        />
+      )}
+
+      {openDialog === "reapply" && (
+        <ReapplyDialog
+          onClose={() => setOpenDialog(null)}
+          onConfirm={() => router.push(`/sm-pay/management/apply-write`)}
+        />
+      )}
+
+      {openDialog === "suspend" && (
+        <SuspendDialog
+          onClose={() => setOpenDialog(null)}
+          onConfirm={() => {
+            setOpenDialog(null);
+          }}
+        />
+      )}
+
+      {terminationRequestId && (
+        <TerminationRequestDialog
+          id={terminationRequestId?.toString() || ""}
+          onClose={() => setTerminationRequestId(null)}
+          onConfirm={() => {
+            setTerminationRequestId(null);
+          }}
+        />
+      )}
+
+      {openDialog === "resend" && (
+        <ResendDialog
+          onClose={() => setOpenDialog(null)}
+          onConfirm={() => {
+            setOpenDialog(null);
           }}
         />
       )}
 
       {rejectModalId && (
-        <RejectModal
-          open
+        <RejectDialog
           id={rejectModalId?.toString() || ""}
           onClose={() => setRejectModalId(null)}
           onConfirm={() => {
             router.push(`/sm-pay/management/apply-detail/${rejectModalId}`);
+          }}
+        />
+      )}
+
+      {resumeId && (
+        <ResumeDialog
+          id={resumeId?.toString() || ""}
+          onClose={() => setResumeId(null)}
+          onConfirm={() => {
+            setResumeId(null);
           }}
         />
       )}
@@ -296,6 +349,16 @@ const TableSection = ({
           onClose={() => setRejectOperationModalId(null)}
           onConfirm={() => {
             router.push(`/sm-pay/management/apply-detail/${rejectModalId}`);
+          }}
+        />
+      )}
+
+      {applySubmitId && (
+        <AdvertiserAgreementSendDialog
+          id={applySubmitId?.toString() || ""}
+          onClose={() => setApplySubmitId(null)}
+          onConfirm={() => {
+            router.push(`/sm-pay/management/apply-detail/${applySubmitId}`);
           }}
         />
       )}

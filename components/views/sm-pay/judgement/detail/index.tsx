@@ -22,7 +22,7 @@ import AdvertiserPerformanceSection from "../../components/AdvertiserPerformance
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
 
 import GuidSection from "../../components/GuideSection";
-import RejectModal from "../../components/RejectModal";
+import { RejectDialog } from "../../manangement/dialog";
 
 import {
   useSmPaySubmitDetail,
@@ -90,12 +90,10 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       />
 
       {isReject && (
-        <RejectModal
+        <RejectDialog
           id={id}
-          open
           onClose={() => setIsReject(false)}
           onConfirm={() => setIsReject(false)}
-          confirmDisabled={true}
         />
       )}
       {isRestart && (
