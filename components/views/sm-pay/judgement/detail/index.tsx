@@ -11,16 +11,16 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
 
-import AdvertiserDesc from "../../components/AdvertiserDesc";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
 
-import ScheduleSection from "../../components/ScheduleSection";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 import GuidSection from "../../components/GuideSection";
 import RejectModal from "../../components/RejectModal";
 
@@ -112,14 +112,14 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         viewType="master-judgement"
         onClick={handleOpenRejectModal}
       />
-      <AdvertiseStatusDesc
+      <AdvertiseStatusSection
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
+      <AdvertiserSection advertiserDetail={advertiserData} />
       <AdvertiserPerformanceSection />
       <IndicatorDetermineSection />
       <RuleSection id={"1"} type="show" />
-      <ScheduleSection id={"1"} />
+      <ScheduleSection type="show" />
 
       <JudgementMemoSection type="show" />
 

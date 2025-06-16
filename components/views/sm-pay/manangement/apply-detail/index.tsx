@@ -8,17 +8,18 @@ import LoadingUI from "@/components/common/Loading";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
+import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 
-import ScheduleSection from "../../components/ScheduleSection";
 import GuidSection from "../../components/GuideSection";
-import AccountDesc from "../../components/AccountDesc";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
-import AdvertiserDesc from "../../components/AdvertiserDesc";
 import RejectModal from "../../components/RejectModal";
 import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
 import { IndicatorDetermineSectionNoSubDesc } from "../../components/IndicatorDetermineSection";
 
 import { STATUS_LABELS } from "@/constants/status";
+
 import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
 
 import type { AdvertiserData } from "@/types/adveriser";
@@ -64,12 +65,12 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
         />
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />
-      <AdvertiseStatusDesc
+      <AdvertiseStatusSection
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserDesc advertiserDetail={advertiserData} isReadonly />
+      <AdvertiserSection advertiserDetail={advertiserData} />
 
-      <AccountDesc smPayData={response.data} />
+      <AccountSection smPayData={response.data} />
 
       <AdvertiserPerformanceSection />
 
@@ -77,7 +78,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <RuleSection id={"1"} type="show" />
 
-      <ScheduleSection id={"1"} isReadonly />
+      <ScheduleSection type="show" />
 
       <JudgementMemoSection type="show" />
 

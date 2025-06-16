@@ -3,26 +3,21 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
 
+import { ConfirmDialog } from "@/components/composite/modal-components";
+
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 
-import { LabelBullet } from "@/components/composite/label-bullet";
-import { ConfirmDialog } from "@/components/composite/modal-components";
-import { TooltipHover } from "@/components/composite/tooltip-components";
-import { HelpIcon } from "@/components/composite/icon-components";
-
-import AdvertiserDesc from "../../components/AdvertiserDesc";
-
-import { ScheduleEditDesc } from "../../components/ScheduleDesc";
 import IndicatorsJudementSection from "./IndicatorsJudementSection";
-import AdvertiseStatusDesc from "../../components/AdvertiseStatusDesc";
 
 import {
   useAdvertiserDetail,
   useMutateSendAdvertiserAgreement,
 } from "@/hooks/queries/advertiser";
 
-import { TOOLTIP_CONTENT } from "@/constants/hover";
 import { STATUS_LABELS } from "@/constants/status";
 import {
   ApplyWriteModal,
@@ -103,36 +98,18 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
       )}
 
       <div className="mt-4">
-        <AdvertiseStatusDesc
+        <AdvertiseStatusSection
           status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
         />
 
-        {response?.data && (
-          <AdvertiserDesc advertiserDetail={response.data} isReadonly />
-        )}
+        <AdvertiserSection advertiserDetail={response?.data || null} />
 
         <IndicatorsJudementSection />
       </div>
 
       <RuleSection id={"1"} type="write" />
 
-      <section>
-        <div className="flex items-center gap-2 py-2">
-          <LabelBullet labelClassName="text-base font-bold">
-            선결제 스케쥴 설정
-          </LabelBullet>
-          <TooltipHover
-            triggerContent={<HelpIcon />}
-            content={TOOLTIP_CONTENT["prepayment_schedule_setting"]}
-          />
-        </div>
-
-        <ScheduleEditDesc
-          scheduleInfo={scheduleInfo}
-          handleScheduleInfoChange={handleScheduleInfoChange}
-        />
-      </section>
-
+      <ScheduleSection type="write" />
       <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">

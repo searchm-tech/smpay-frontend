@@ -1,20 +1,20 @@
+import { Label } from "@/components/ui/label";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { Label } from "@/components/ui/label";
 
-type AdvertiseStatusDescProps = {
+type Props = {
   status: string;
 };
 
-const AdvertiseStatusDesc = ({ status }: AdvertiseStatusDescProps) => {
+const AdvertiseStatusSection = ({ status }: Props) => {
   return (
     <section className="mb-4">
       <div className="flex items-center gap-4 py-2">
         <LabelBullet labelClassName="text-base font-bold">
-          광고주 심사 상태
+          광고주 상태
         </LabelBullet>
       </div>
 
@@ -27,4 +27,4 @@ const AdvertiseStatusDesc = ({ status }: AdvertiseStatusDescProps) => {
   );
 };
 
-export default AdvertiseStatusDesc;
+export default AdvertiseStatusSection;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { type ChangeEvent, useState, forwardRef, useEffect } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 
@@ -84,6 +84,8 @@ interface SearchInputProps {
   className?: string;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
+const searchClass =
+  "absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground";
 
 const SearchInput = ({
   value,
@@ -93,16 +95,28 @@ const SearchInput = ({
   onKeyDown,
 }: SearchInputProps) => {
   return (
-    <div className={cn("relative w-full bg-white rounded-md", className)}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+    <div className={cn("relative w-full bg-white", className)}>
       <Input
         type="text"
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
         placeholder={placeholder || "검색어를 입력해주세요."}
-        className="pl-8"
+        className="pr-8"
       />
+
+      {value ? (
+        <X
+          className={cn(searchClass, "cursor-pointer")}
+          onClick={() =>
+            onChange?.({
+              target: { value: "" },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
+        />
+      ) : (
+        <Search className={searchClass} />
+      )}
     </div>
   );
 };

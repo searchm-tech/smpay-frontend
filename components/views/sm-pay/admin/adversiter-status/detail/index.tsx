@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button";
 import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
+import AccountSection from "@/components/views/sm-pay/components/AccountSection";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
+import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
-import AgencyInfoDesc from "../../../components/AgencyInfoDesc";
-
-import ScheduleSection from "../../../components/ScheduleSection";
-import OperationAccountStatusDesc from "../../../components/OperationAccountStatusDesc";
-import AdvertiseStatusDesc from "../../../components/AdvertiseStatusDesc";
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 
@@ -61,14 +61,15 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       )}
 
       <GuidSection viewType="reject" onClick={() => setRejectModalOpen(true)} />
-      <AdvertiseStatusDesc
+      <AdvertiseStatusSection
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AgencyInfoDesc />
+      <AdvertiserSection advertiserDetail={null} />
+      <AccountSection smPayData={null} />
 
       <RuleSection id={id} type="show" />
-      <ScheduleSection id={id} isReadonly />
-      <OperationAccountStatusDesc />
+      <ScheduleSection type="show" />
+      <OperationAccountStatusSection />
 
       <JudgementMemoSection type="show" />
       <OperationMemoSection type="show" />

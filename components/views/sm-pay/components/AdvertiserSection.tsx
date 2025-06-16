@@ -3,33 +3,20 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { AdvertiserData } from "@/types/adveriser";
 
-type AdvertiserDescProps = {
+type Props = {
   advertiserDetail: AdvertiserData | null;
-  onEdit?: () => void;
-  isReadonly?: boolean;
 };
 
-// [최상위 그룹장] - 심사 요청 상세
-const AdvertiserDesc = ({
-  advertiserDetail,
-  onEdit,
-  isReadonly = false,
-}: AdvertiserDescProps) => {
+const AdvertiserSection = ({ advertiserDetail }: Props) => {
   return (
-    <section>
+    <section className="w-full">
       <div className="flex items-center gap-4 pb-4">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 기본 정보
         </LabelBullet>
-        {!isReadonly && (
-          <Button className="w-[100px]" onClick={onEdit}>
-            변경하기
-          </Button>
-        )}
       </div>
       <Descriptions columns={1}>
         <DescriptionItem label="광고주명">
@@ -52,4 +39,4 @@ const AdvertiserDesc = ({
   );
 };
 
-export default AdvertiserDesc;
+export default AdvertiserSection;

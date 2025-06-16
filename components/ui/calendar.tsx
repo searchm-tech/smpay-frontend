@@ -31,10 +31,7 @@ function Calendar({
         caption: "flex justify-center pt-1 relative items-center w-full",
         caption_label: "text-sm font-medium",
         nav: "flex items-center gap-1",
-        nav_button: cn(
-          buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100"
-        ),
+        nav_button: cn("size-7 bg-[#F26A1B] text-white p-0 hover:bg-[#d95c13]"),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-x-1",
@@ -70,10 +67,10 @@ function Calendar({
       components={
         {
           IconLeft: ({ ...props }) => (
-            <ChevronLeft className="size-4" {...props} />
+            <ChevronLeft className="size-4 text-white" {...props} />
           ),
           IconRight: ({ ...props }) => (
-            <ChevronRight className="size-4" {...props} />
+            <ChevronRight className="size-4 text-white" {...props} />
           ),
         } as unknown as Partial<CustomComponents>
       }
