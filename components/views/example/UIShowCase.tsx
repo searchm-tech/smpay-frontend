@@ -50,9 +50,9 @@ const UIShowCase = () => {
           <CardTitle>Input</CardTitle>
         </CardHeader>
         <CardContent className="flex gap-2">
-          <Input className="w-[250px]" value="일반 input" />
-          <Input className="w-[250px]" value="비활성화 input" disabled />
-          <Input className="w-[250px]" value="에러 input (미작업)" />
+          <Input className="w-[250px]" placeholder="일반 input" />
+          <Input className="w-[250px]" placeholder="비활성화 input" disabled />
+          <Input className="w-[250px]" placeholder="에러 input (미작업)" />
         </CardContent>
       </Card>
 
