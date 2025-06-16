@@ -29,7 +29,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "13rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
-const SIDEBAR_WIDTH_ICON = "3rem";
+const SIDEBAR_WIDTH_ICON = "60px";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextProps = {
@@ -522,7 +522,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden px-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] text-white bg-[#3C4D60] hover:bg-[#2c4257] hover:text-white focus-visible:ring-2 active:bg-[#2c4257] active:text-white disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[#2c4257] data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-[#2c4257] data-[state=open]:hover:text-white group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden px-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] text-white bg-[#3C4D60] hover:bg-[#2c4257] hover:text-white focus-visible:ring-2 active:bg-[#2c4257] active:text-white disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[#2c4257] data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-[#2c4257] data-[state=open]:hover:text-white group-data-[collapsible=icon]:w-[60px] group-data-[collapsible=icon]:min-w-[60px] group-data-[collapsible=icon]:max-w-[60px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:!p-0 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {

@@ -45,13 +45,6 @@ export const Dialog = ({
           </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction
-            className="min-w-[100px] min-h-[35px]"
-            onClick={onConfirm}
-          >
-            {confirmText}
-          </AlertDialogAction>
-
           {!cancelDisabled && (
             <AlertDialogCancel
               className="min-w-[100px] min-h-[35px] bg-[#EEF1F4] border-[#EEF1F4]"
@@ -60,6 +53,13 @@ export const Dialog = ({
               취소
             </AlertDialogCancel>
           )}
+
+          <AlertDialogAction
+            className="min-w-[100px] min-h-[35px]"
+            onClick={onConfirm}
+          >
+            {confirmText}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -97,8 +97,10 @@ export function NavDashboard() {
                     }
                   >
                     {item.icon && <item.icon />}
-                    <span className="font-medium">{item.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    <span className="font-medium group-data-[collapsible=icon]:hidden">
+                      {item.title}
+                    </span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -140,7 +142,9 @@ export function NavDashboard() {
                   onClick={() => handleClick(item.url, false)}
                 >
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    {item.title}
+                  </span>
                 </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
