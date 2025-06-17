@@ -14,11 +14,10 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
+import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-
-import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
 
 import GuidSection from "../../components/GuideSection";
 import { RejectDialog } from "../../manangement/dialog";
@@ -114,7 +113,8 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       />
       <AdvertiserSection advertiserDetail={advertiserData} />
 
-      <IndicatorDetermineSection />
+      <IndicatorsJudementSection />
+
       <RuleSection id={"1"} type="show" />
       <ScheduleSection type="show" />
 

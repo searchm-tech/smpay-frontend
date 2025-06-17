@@ -11,7 +11,7 @@ type Props = {
 
 const AdvertiseStatusSection = ({ status }: Props) => {
   return (
-    <section className="mb-4">
+    <section>
       <div className="flex items-center gap-4 py-2">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 상태

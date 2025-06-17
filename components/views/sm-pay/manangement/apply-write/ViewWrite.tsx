@@ -10,8 +10,7 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-
-import IndicatorsJudementSection from "./IndicatorsJudementSection";
+import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 
 import {
   useAdvertiserDetail,
