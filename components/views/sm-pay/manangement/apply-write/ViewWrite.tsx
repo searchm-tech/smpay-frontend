@@ -10,8 +10,8 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-
-import IndicatorsJudementSection from "./IndicatorsJudementSection";
+import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
+import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 
 import {
   useAdvertiserDetail,
@@ -50,6 +50,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     firstCharge: 0,
     maxCharge: 0,
   });
+  const [isSimulation, setIsSimulation] = useState(true);
 
   const { data: response } = useAdvertiserDetail(selectedAdNum as number);
 
@@ -97,6 +98,13 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         />
       )}
 
+      {isSimulation && (
+        <AdvertiserSimulationModal
+          open={isSimulation}
+          onClose={() => setIsSimulation(false)}
+        />
+      )}
+
       <div className="mt-4">
         <AdvertiseStatusSection
           status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
@@ -113,6 +121,14 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
       <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">
+        <Button
+          className="minw-[150px]"
+          variant="orangeOutline"
+          onClick={() => setIsSimulation(true)}
+        >
+          광고 성과 예측 시뮬레이션
+        </Button>
+
         <Button className="w-[150px]" onClick={handleSendAdAgree}>
           광고주 동의 요청 발송
         </Button>

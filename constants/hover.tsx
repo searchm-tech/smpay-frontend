@@ -1,17 +1,8 @@
 import { HelpIcon } from "@/components/composite/icon-components";
 
-export type HoverSMPayKey = "rule" | "prepayment";
+export type HoverSMPayKey = "prepayment";
 
 export const HOVER_SMPAY: Record<HoverSMPayKey, string | React.ReactNode> = {
-  rule: (
-    <div className="flex items-start gap-2 bg-white">
-      <HelpIcon />
-      <span className="text-sm text-gray-700">
-        매출계정은 판매정산 대금이 풀랫폼사로부터 입금되는 계좌, 또는 후불
-        광고비에 대해 출금이 이루어질 광고주 명의의 계좌를 뜻합니다.
-      </span>
-    </div>
-  ),
   prepayment: (
     <div className="flex items-start gap-2 bg-white">
       <HelpIcon />
@@ -70,7 +61,8 @@ export type TooltipContentKey =
   | "judge_reference_memo"
   | "operation_reference_memo"
   | "charge_account"
-  | "sales_account";
+  | "sales_account"
+  | "advertiser_performance";
 export const TOOLTIP_CONTENT: Record<
   TooltipContentKey,
   string | React.ReactNode
@@ -219,6 +211,26 @@ export const TOOLTIP_CONTENT: Record<
         매출계좌는 판매정산 대금이 플랫폼사로부터 입금되는 계좌, 또는 후불
         광고비에 대해 출금이 이루어질 광고주 명의의 계좌를 뜻합니다.
       </span>
+    </div>
+  ),
+
+  advertiser_performance: (
+    <div className="flex items-start gap-2 bg-white">
+      <HelpIcon />
+      <div className="flex flex-col gap-2 font-normal text-sm text-gray-700">
+        <p>
+          광고 성과 및 회수 가능성 등을 종합적으로 고려할 수 있도록 제공되는
+          참고용 심사 지표입니다.
+        </p>
+        <p>신청 및 승인 여부 결정 시 참고 해 주세요.</p>
+        <p>
+          <span>
+            운영 기간은 개월 단위로 계산되며, 일 단위는 절사되며, 1개월은 28일로
+            간주합니다.
+          </span>
+          <span>예: 1개월 3일 → 1개월로 간주</span>
+        </p>
+      </div>
     </div>
   ),
 };

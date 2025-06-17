@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,15 +13,13 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
+import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
+import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
+import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
-
-import AdvertiserPerformanceSection from "../../components/AdvertiserPerformanceSection";
-import IndicatorDetermineSection from "../../components/IndicatorDetermineSection";
-
-import GuidSection from "../../components/GuideSection";
-import { RejectDialog } from "../../manangement/dialog";
+import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 
 import {
   useSmPaySubmitDetail,
@@ -40,12 +37,11 @@ type SmPayJudgementDetailViewProps = {
 const status = "reject";
 
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
-  const router = useRouter();
-
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
   const [isRestart, setIsRestart] = useState(false);
+  const [isSimulation, setIsSimulation] = useState(false);
   const { data: response, isPending } = useSmPaySubmitDetail(id);
 
   const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
@@ -78,16 +74,18 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   return (
     <div>
       {(isPending || isUpdating) && <LoadingUI />}
-      <ApproveModal
-        open={isApproved}
-        onClose={() => setIsApproved(false)}
-        onConfirm={() => setIsApproved(false)}
-      />
-      <RejectSendModal
-        open={isRejectSend}
-        onClose={() => setIsRejectSend(false)}
-        onConfirm={() => setIsRejectSend(false)}
-      />
+      {isApproved && (
+        <ApproveModal
+          onClose={() => setIsApproved(false)}
+          onConfirm={() => setIsApproved(false)}
+        />
+      )}
+      {isRejectSend && (
+        <RejectSendModal
+          onClose={() => setIsRejectSend(false)}
+          onConfirm={() => setIsRejectSend(false)}
+        />
+      )}
 
       {isReject && (
         <RejectDialog
@@ -106,6 +104,13 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         />
       )}
 
+      {isSimulation && (
+        <AdvertiserSimulationModal
+          open={isSimulation}
+          onClose={() => setIsSimulation(false)}
+        />
+      )}
+
       <GuidSection
         viewType="master-judgement"
         onClick={handleOpenRejectModal}
@@ -114,8 +119,9 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserSection advertiserDetail={advertiserData} />
-      <AdvertiserPerformanceSection />
-      <IndicatorDetermineSection />
+
+      <IndicatorsJudementSection />
+
       <RuleSection id={"1"} type="show" />
       <ScheduleSection type="show" />
 
@@ -125,22 +131,22 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">
-          <Button className="minw-[150px]" onClick={() => setIsRestart(true)}>
+          <Button
+            className="minw-[150px]"
+            variant="orangeOutline"
+            onClick={() => setIsSimulation(true)}
+          >
             광고 성과 예측 시뮬레이션
           </Button>
 
-          <Button
-            variant="cancel"
-            className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
-          >
+          <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
             심사 승인
           </Button>
 
           <Button
             variant="secondary"
             className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
+            onClick={() => setIsRejectSend(true)}
           >
             심사 반려
           </Button>

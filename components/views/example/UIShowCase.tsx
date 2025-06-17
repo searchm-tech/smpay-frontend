@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import Table from "@/components/composite/table";
 import Select from "@/components/composite/select-components";
 import { SearchInput } from "@/components/composite/input-components";
 import { CalendarPopover } from "@/components/ui/calendar";
@@ -14,7 +16,6 @@ import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import Table from "@/components/composite/table";
 
 // import { BRAND_COLORS, TAILWIND_COLOR_CLASSES } from "@/constants/colors"; // TODO : 사용할 지 안하는지 확인 후 제거
 // import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils"; // TODO : 사용할 지 안하는지 확인 후 제거
@@ -23,6 +24,7 @@ import type { TableProps } from "antd";
 
 const UIShowCase = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [textareaValue, setTextareaValue] = useState("");
   const [date, setDate] = useState<Date | undefined>();
   const [isOpenNormalModal, setIsOpenNormalModal] = useState(false);
   const [isOpenConfirmDialog, setIsOpenConfirmDialog] = useState(false);
@@ -108,6 +110,20 @@ const UIShowCase = () => {
             className="w-[250px]"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Search Input</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-2">
+          <Textarea
+            className="w-[250px]"
+            rows={8}
+            value={textareaValue}
+            onChange={(e) => setTextareaValue(e.target.value)}
           />
         </CardContent>
       </Card>
@@ -226,9 +242,9 @@ const UIShowCase = () => {
       {/* Table */}
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Table</CardTitle>
+          <CardTitle>Table (Antd UI)</CardTitle>
         </CardHeader>
-        <CardContent className="p-0 w-full">
+        <CardContent className="px-4 w-full">
           <Table<TestType>
             dataSource={dataSource}
             columns={columns}
