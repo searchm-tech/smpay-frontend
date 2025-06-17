@@ -20,6 +20,7 @@ import Table from "@/components/composite/table";
 // import { getColorClasses, getStatusColor, cn } from "@/lib/color-utils"; // TODO : 사용할 지 안하는지 확인 후 제거
 
 import type { TableProps } from "antd";
+import { Textarea } from "@/components/ui/textarea";
 
 const UIShowCase = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -109,6 +110,15 @@ const UIShowCase = () => {
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Search Input</CardTitle>
+        </CardHeader>
+        <CardContent className="flex gap-2">
+          <Textarea className="w-[250px]" />
         </CardContent>
       </Card>
 
