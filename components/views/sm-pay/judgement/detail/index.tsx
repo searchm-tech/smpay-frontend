@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -38,8 +37,6 @@ type SmPayJudgementDetailViewProps = {
 const status = "reject";
 
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
-  const router = useRouter();
-
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
@@ -77,16 +74,18 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   return (
     <div>
       {(isPending || isUpdating) && <LoadingUI />}
-      <ApproveModal
-        open={isApproved}
-        onClose={() => setIsApproved(false)}
-        onConfirm={() => setIsApproved(false)}
-      />
-      <RejectSendModal
-        open={isRejectSend}
-        onClose={() => setIsRejectSend(false)}
-        onConfirm={() => setIsRejectSend(false)}
-      />
+      {isApproved && (
+        <ApproveModal
+          onClose={() => setIsApproved(false)}
+          onConfirm={() => setIsApproved(false)}
+        />
+      )}
+      {isRejectSend && (
+        <RejectSendModal
+          onClose={() => setIsRejectSend(false)}
+          onConfirm={() => setIsRejectSend(false)}
+        />
+      )}
 
       {isReject && (
         <RejectDialog
@@ -140,18 +139,14 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
             광고 성과 예측 시뮬레이션
           </Button>
 
-          <Button
-            variant="cancel"
-            className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
-          >
+          <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
             심사 승인
           </Button>
 
           <Button
             variant="secondary"
             className="w-[150px]"
-            onClick={() => router.push("/sm-pay/judgement")}
+            onClick={() => setIsRejectSend(true)}
           >
             심사 반려
           </Button>
