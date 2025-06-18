@@ -1,6 +1,5 @@
 import Table from "@/components/composite/table";
 import type {
-  TAdvertiser,
   TAdvertiserBizMoney,
   TAdvertiserBizMoneyOrderType,
 } from "@/types/adveriser";

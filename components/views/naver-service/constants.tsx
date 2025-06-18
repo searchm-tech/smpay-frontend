@@ -19,7 +19,7 @@ export const dialogContent = {
       <p>API 라이선스를 수정하면,</p>
       <p>이 계정에 등록된 광고주 정보가 초기화됩니다.</p>
       <br />
-      <p>동기화에는 최대 30분이 소요될 수 있습니다.</p>
+      <p>동기화에는 최대 1시간이 소요될 수 있습니다.</p>
       <p>계속하시겠습니까?</p>
     </div>
   ),
@@ -29,8 +29,14 @@ export const dialogContent = {
       <p>API 라이선스를 삭제하면,</p>
       <p>이 계정에 등록된 광고주 정보가 초기화됩니다.</p>
       <br />
-      <p>동기화에는 최대 30분이 소요될 수 있습니다.</p>
+      <p>동기화에는 최대 1시간이 소요될 수 있습니다.</p>
       <p>계속하시겠습니까?</p>
+    </div>
+  ),
+
+  "success-delete": (
+    <div className="text-center">
+      <p>삭제가 성공적으로 완료되었습니다.</p>
     </div>
   ),
 
@@ -39,7 +45,7 @@ export const dialogContent = {
   "success-sync": (
     <div className="text-center">
       <p>등록되었습니다.</p>
-      <p>광고주 등록 후 30분 이내에 광고 데이터 동기화가 완료됩니다.</p>
+      <p>광고주 등록 후 1시간 이내에 광고 데이터 동기화가 완료됩니다.</p>
     </div>
   ),
 };

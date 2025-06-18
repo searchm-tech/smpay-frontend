@@ -28,17 +28,6 @@ export interface SmPayData {
   salesAccountBankName: string;
 }
 
-export interface SmPayData2 {
-  id: number;
-  owner: string;
-  accountId: string;
-  accountName: string;
-  businessName: string;
-  bussiness_num: string;
-  status: SmPayStatus;
-  createdAt: string;
-}
-
 // SMPay 관리 상태
 export type SmPayStatus =
   | "REVIEW_PENDING" // 심사 대기

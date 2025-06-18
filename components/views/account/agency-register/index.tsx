@@ -222,7 +222,7 @@ const AgencyRegisterView = () => {
       {modalInfo && (
         <ConfirmDialog
           open
-          title={ModalInfo[modalInfo].title}
+          title={ModalInfo[modalInfo].title} // TODO : 노출 되는지 확인 필요
           content={ModalInfo[modalInfo].content}
           onConfirm={handleModal}
           onClose={() => setModalInfo(null)}

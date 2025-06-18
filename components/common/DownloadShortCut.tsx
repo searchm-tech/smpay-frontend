@@ -34,7 +34,6 @@ const ShortcutButton = ({ code }: Props) => {
         <ConfirmDialog
           open
           content={error}
-          title="알림"
           cancelDisabled
           onConfirm={() => setError("")}
         />

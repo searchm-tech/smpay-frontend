@@ -97,7 +97,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       {isRestart && (
         <ConfirmDialog
           open
-          title="광고주 심사 재개"
+          title="광고주 심사 재개" // TODO : 노출 되는지 확인 필요
           onClose={() => setIsRestart(false)}
           onConfirm={() => updateStatus({ id, status: "REVIEW_APPROVED" })}
           content="광고주 상태를 다시 활성화 하시겠습니까?"
