@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import LoadingUI from "@/components/common/Loading";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
-import LoadingUI from "@/components/common/Loading";
 
 import { formatDate } from "@/utils/format";
 import { dialogContent, syncTypeMap } from "../constants";
 import { SyncFailDialog, type SyncFail } from "../dialog";
+
+import { postAdvertiserSyncBizMoney } from "@/services/advertiser";
+import { getAdvertiserSyncJobList } from "@/services/license";
 
 import {
   useMuateDeleteAdvertiserSync,
@@ -22,11 +26,8 @@ import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
 import type { TableParamsAdvertiser } from ".";
-import {
-  getAdvertiserSyncCompleteList,
-  postAdvertiserSyncBizMoney,
-} from "@/services/advertiser";
-import type { ResponseAdvertiserSyncCompleteList } from "@/types/api/advertiser";
+
+import { InProgressFlag, LossPrivilegeFlag } from "./constants";
 
 type TableSectionProps = {
   user?: UserWithUniqueCode;
@@ -38,7 +39,6 @@ type TableSectionProps = {
   refetch: () => void;
 };
 
-// TODO : IN_PROGRESS 일 경우, 아예 체크 박스 방지 (외부 api이랑 연동 중이라는 뜻이므로...)
 const TableSection = ({
   user,
   dataSource,
@@ -79,15 +79,59 @@ const TableSection = ({
   const [isSuccessSync, setIsSuccessSync] = useState<boolean>(false);
   const [failDialogInfo, setFailDialogInfo] = useState<SyncFail | null>(null);
 
+  const allSelectableRows = dataSource.filter(
+    (r) => r.jobStatus !== "IN_PROGRESS"
+  );
+  const allSelected =
+    allSelectableRows.length > 0 &&
+    selectedRowKeys.length === allSelectableRows.length;
+  const indeterminate =
+    selectedRowKeys.length > 0 &&
+    selectedRowKeys.length < allSelectableRows.length;
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (newSelectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(newSelectedRowKeys);
     },
     getCheckboxProps: (record: TAdvertiser) => ({
-      disabled: record.isBizMoneySync, // Column configuration not to be checked
+      disabled: record.jobStatus === "IN_PROGRESS", // Column configuration not to be checked
       name: record.name,
     }),
+    renderCell: (
+      checked: boolean,
+      record: TAdvertiser,
+      index: number,
+      originNode: React.ReactNode
+    ) => (
+      <Checkbox
+        checked={checked}
+        onCheckedChange={() => {
+          const key = record.advertiserId;
+          const isChecked = selectedRowKeys.includes(key);
+          let newSelectedRowKeys: React.Key[];
+          if (isChecked) {
+            newSelectedRowKeys = selectedRowKeys.filter((k) => k !== key);
+          } else {
+            newSelectedRowKeys = [...selectedRowKeys, key];
+          }
+          setSelectedRowKeys(newSelectedRowKeys);
+        }}
+        disabled={record.jobStatus === "IN_PROGRESS"}
+      />
+    ),
+    columnTitle: (
+      <Checkbox
+        checked={allSelected ? true : indeterminate ? "indeterminate" : false}
+        onCheckedChange={(checked) => {
+          if (checked) {
+            setSelectedRowKeys(allSelectableRows.map((r) => r.advertiserId));
+          } else {
+            setSelectedRowKeys([]);
+          }
+        }}
+      />
+    ),
   };
 
   const columns: TableProps<TAdvertiser>["columns"] = [
@@ -95,6 +139,16 @@ const TableSection = ({
       title: "CUSTOMER ID",
       dataIndex: "customerId",
       align: "center",
+      render: (value: number, record: TAdvertiser) => {
+        return (
+          <div className="flex gap-1 items-center justify-center">
+            <span>{value}</span>
+
+            {record.jobStatus === "IN_PROGRESS" && <InProgressFlag />}
+            {record.isLossPrivilege && <LossPrivilegeFlag />}
+          </div>
+        );
+      },
     },
     {
       title: "광고주 로그인 ID",
@@ -126,21 +180,6 @@ const TableSection = ({
       sorter: true,
       align: "center",
       render: (value: TSyncType, record: TAdvertiser) => {
-        if (value === "FAIL") {
-          return (
-            <p
-              className="text-[#007AFF] cursor-pointer"
-              onClick={() => {
-                setFailDialogInfo({
-                  date: record.registerOrUpdateDt,
-                  reason: record.description,
-                });
-              }}
-            >
-              동기화 실패
-            </p>
-          );
-        }
         return <p>{syncTypeMap[value]}</p>;
       },
     },
@@ -263,9 +302,10 @@ const TableSection = ({
   // 광고주 동기화 완료 목록  -> 비즈머니 동기화 작업 실행
   const fetchAdvertiserSyncCompleteList = async () => {
     if (!user) return;
-    getAdvertiserSyncCompleteList({
+    getAdvertiserSyncJobList({
       agentId: user.agentId,
       userId: user.userId,
+      type: "DONE",
     }).then(async (res) => {
       const list = res.map((item) => item.advertiserId);
       if (list.length > 0) {
@@ -288,7 +328,6 @@ const TableSection = ({
       {isSuccessSync && (
         <ConfirmDialog
           open
-          title="광고주 등록 완료"
           confirmText="확인"
           cancelDisabled
           onConfirm={() => {
@@ -302,7 +341,6 @@ const TableSection = ({
       {errorMessage && (
         <ConfirmDialog
           open
-          title="광고주 등록 실패"
           confirmText="확인"
           cancelDisabled
           onConfirm={() => setMessage("")}
@@ -336,12 +374,16 @@ const TableSection = ({
         <Button className="w-[150px]" onClick={handleSyncAllAdvertiser}>
           전체 등록
         </Button>
-        <Button className="w-[150px]" onClick={handleSyncAdvertiser}>
+        <Button
+          className="w-[150px]"
+          variant="outline"
+          onClick={handleSyncAdvertiser}
+        >
           선택 등록
         </Button>
         <Button
           className="w-[150px]"
-          variant="secondary"
+          variant="cancel"
           onClick={handleDeleteAdvertiserSync}
         >
           등록 해제

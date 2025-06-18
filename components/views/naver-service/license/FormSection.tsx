@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,7 +12,10 @@ import {
 
 import { ApiError } from "@/lib/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMuateCreateLicense } from "@/hooks/queries/license";
+import {
+  useMuateLicense,
+  useQueryAdvertiserSyncJobList,
+} from "@/hooks/queries/license";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Descriptions } from "@/components/composite/description-components";
@@ -43,15 +46,30 @@ type Props = {
   licenseInfo: TLicenseInfo | null;
   refetch: () => void;
   user?: UserWithUniqueCode;
+  moveToAdvertiser: () => void;
 };
 
-const FormSection = ({ licenseInfo, refetch, user }: Props) => {
+const FormSection = ({
+  licenseInfo,
+  refetch,
+  user,
+  moveToAdvertiser,
+}: Props) => {
+  const isUpdate = !!licenseInfo;
+
+  const { refetch: refetchAdvertiserSyncJobList } =
+    useQueryAdvertiserSyncJobList({
+      agentId: user?.agentId ?? 0,
+      userId: user?.userId ?? 0,
+      type: "IN_PROGRESS",
+    });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_LICENSE_INFO,
   });
 
-  const { mutate: createLicense, isPending } = useMuateCreateLicense({
+  const { mutate: createLicense, isPending } = useMuateLicense({
     onSuccess: () => setIsSuccessCreate(true),
     onError: (error) => {
       if (error instanceof ApiError) {
@@ -60,37 +78,46 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
     },
   });
 
-  const [errMessage, setErrMessage] = useState("");
+  const [errMessage, setErrMessage] = useState<string | ReactNode>("");
   const [isSuccessCreate, setIsSuccessCreate] = useState(false);
   const [deleteInfo, setDeleteInfo] = useState<TLicenseInfo | null>(null);
   const [editInfo, setEditInfo] = useState<TLicenseInfo | null>(null);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const isUpdate = !!licenseInfo; // 수정 여부 확인
+    refetchAdvertiserSyncJobList().then((res) => {
+      if (res.data && res.data?.length > 0) {
+        setErrMessage(
+          "광고 데이터 동기화가 진행 중입니다. 동기화 완료 후 API 라이선스 정보를 변경할 수 있습니다."
+        );
+        return;
+      }
 
-    if (isUpdate) {
-      // 수정 모달 띄우기
-      setEditInfo({
-        ...licenseInfo,
-        customerId: Number(data.customerId),
-        apiKey: data.accessKey,
-        secretKey: data.secretKey,
-      });
-    } else {
-      // 등록 적용
-      if (!user) return;
-      const { agentId, userId } = user;
+      if (isUpdate) {
+        // 수정 모달 띄우기
+        setEditInfo({
+          ...licenseInfo,
+          customerId: Number(data.customerId),
+          apiKey: data.accessKey,
+          secretKey: data.secretKey,
+        });
+      } else {
+        // 등록 적용
+        if (!user) return;
+        const { agentId, userId } = user;
 
-      const params: TRequestLicenseCreate = {
-        userId: userId,
-        agentId: agentId,
-        customerId: Number(data.customerId),
-        apiKey: data.accessKey,
-        secretKey: data.secretKey,
-      };
+        const params: TRequestLicenseCreate = {
+          userId: userId,
+          agentId: agentId,
+          customerId: Number(data.customerId),
+          apiKey: data.accessKey,
+          secretKey: data.secretKey,
+        };
 
-      createLicense(params);
-    }
+        createLicense(params);
+      }
+    });
+
+    return;
   };
 
   useEffect(() => {
@@ -100,6 +127,8 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
         accessKey: licenseInfo.apiKey,
         secretKey: licenseInfo.secretKey,
       });
+    } else {
+      form.reset(DEFAULT_LICENSE_INFO);
     }
   }, [licenseInfo, form]);
 
@@ -110,35 +139,30 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
       {isSuccessCreate && (
         <SuccessCreateLicenseDialog
           onConfirm={() => {
-            setIsSuccessCreate(false);
             refetch();
+            moveToAdvertiser();
           }}
         />
       )}
       {!!editInfo && (
         <CheckUpdateLicenseDialog
           licenseInfo={editInfo}
-          onClose={() => {
-            setEditInfo(null);
-            refetch();
-          }}
+          refetch={refetch}
+          onClose={() => setEditInfo(null)}
         />
       )}
 
       {!!deleteInfo && (
         <DeleteLicenseDialog
           licenseInfo={deleteInfo}
-          onClose={() => {
-            setDeleteInfo(null);
-            refetch();
-          }}
+          refetch={refetch}
+          onClose={() => setDeleteInfo(null)}
         />
       )}
 
       {errMessage && (
         <ConfirmDialog
           open
-          title="라이선스 등록 실패"
           confirmText="확인"
           cancelDisabled
           content={<p>{errMessage}</p>}
@@ -157,7 +181,20 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
+                        <Input
+                          className="max-w-[500px]"
+                          {...field}
+                          onPaste={(e) => {
+                            e.preventDefault();
+                            const paste = e.clipboardData.getData("text");
+                            const noSpace = paste.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                          onChange={(e) => {
+                            const noSpace = e.target.value.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                        />
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>
@@ -173,7 +210,20 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
+                        <Input
+                          className="max-w-[500px]"
+                          {...field}
+                          onPaste={(e) => {
+                            e.preventDefault();
+                            const paste = e.clipboardData.getData("text");
+                            const noSpace = paste.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                          onChange={(e) => {
+                            const noSpace = e.target.value.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                        />
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>
@@ -189,7 +239,20 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
                   <FormItem>
                     <FormControl>
                       <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
+                        <Input
+                          className="max-w-[500px]"
+                          {...field}
+                          onPaste={(e) => {
+                            e.preventDefault();
+                            const paste = e.clipboardData.getData("text");
+                            const noSpace = paste.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                          onChange={(e) => {
+                            const noSpace = e.target.value.replace(/\s+/g, "");
+                            field.onChange(noSpace);
+                          }}
+                        />
                         <FormMessage variant="error" />
                       </div>
                     </FormControl>
@@ -199,18 +262,18 @@ const FormSection = ({ licenseInfo, refetch, user }: Props) => {
             </Descriptions.Item>
           </Descriptions>
 
-          {licenseInfo ? (
+          {isUpdate ? (
             <div className="flex justify-center items-center mt-8 gap-2">
               <Button className="w-[150px]" type="submit">
                 수정
               </Button>
               <Button
                 type="button"
-                variant="outline"
+                variant="cancel"
                 className="w-[150px]"
                 onClick={() => setDeleteInfo(licenseInfo)}
               >
-                취소
+                삭제
               </Button>
             </div>
           ) : (

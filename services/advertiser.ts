@@ -3,7 +3,7 @@ import { mockAdvertiserData } from "./mock/advertiser";
 import { buildQueryParams } from "@/lib/utils";
 
 import type { AdvertiserListResponse, TableParams } from "./types";
-import type { AdvertiserData, TAdvertiserBizMoney } from "@/types/adveriser";
+import type { AdvertiserData } from "@/types/adveriser";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import type {
   RequestAdvertiserList,
@@ -200,25 +200,6 @@ export const delAdvertiserSync = async (params: RequestAdvertiserSync) => {
     const response: null = await del(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertiser/sync`,
       { data: { advertiserIds } }
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// 광고주 데이터 동기화 완료 리스트 조회 (SAG016)
-export const getAdvertiserSyncCompleteList = async (params: {
-  agentId: number;
-  userId: number;
-}) => {
-  try {
-    const { agentId, userId } = params;
-    const response: ResponseAdvertiserSyncCompleteList[] = await get(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers-sync-list`
     );
     return response;
   } catch (error) {

@@ -11,9 +11,10 @@ import type { TLicenseInfo } from "../";
 type Props = {
   licenseInfo: TLicenseInfo | null;
   refetch: () => void;
+  moveToAdvertiser: () => void;
 };
 
-const LicenseView = ({ licenseInfo, refetch }: Props) => {
+const LicenseView = ({ licenseInfo, refetch, moveToAdvertiser }: Props) => {
   const { data: session } = useSession();
 
   return (
@@ -24,6 +25,7 @@ const LicenseView = ({ licenseInfo, refetch }: Props) => {
         licenseInfo={licenseInfo}
         refetch={refetch}
         user={session?.user}
+        moveToAdvertiser={moveToAdvertiser}
       />
 
       <Separator className="my-4 mt-12 mx-auto" variant="dotted" />

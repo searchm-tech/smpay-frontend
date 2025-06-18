@@ -11,9 +11,9 @@ import { TabSwitch } from "@/components/composite/tab-switch";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
-import { getAgentsUserLicense } from "@/services/license";
-
 import { dialogContent } from "./constants";
+import { useQueryLicense } from "@/hooks/queries/license";
+import { ApiError } from "@/lib/api";
 
 export type TLicenseInfo = {
   userId: number;
@@ -26,8 +26,12 @@ export type TLicenseInfo = {
 const NaverServiceView = () => {
   const { data: session } = useSession();
 
+  const { isLoading, refetch } = useQueryLicense({
+    agentId: session?.user?.agentId ?? 0,
+    userId: session?.user?.userId ?? 0,
+  });
+
   const [isAdvertiserStep, setIsAdvertiserStep] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
   const [isNoLicenseDialogOpen, setIsNoLicenseDialogOpen] = useState(false);
 
@@ -45,34 +49,28 @@ const NaverServiceView = () => {
     }
   };
 
-  const fetchLicenseInfo = async () => {
-    if (!session?.user) return;
-    const { agentId, userId } = session.user;
-    try {
-      setIsLoading(true);
-      const res = await getAgentsUserLicense(
-        agentId.toString(),
-        userId.toString()
-      );
-      setLicenseInfo({
-        userId: res.userId,
-        agentId: agentId,
-        customerId: res.customerId,
-        apiKey: res.accessLicense,
-        secretKey: res.secretKey,
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+  // 등록, 수정, 삭제 완료 후, 라이선스 정보 재호출
+  const refetchLicense = () => {
+    refetch().then((res) => {
+      if (res.data) {
+        setLicenseInfo({
+          userId: res.data.userId,
+          agentId: session?.user?.agentId ?? 0,
+          customerId: res.data.customerId,
+          apiKey: res.data.accessLicense,
+          secretKey: res.data.secretKey,
+        });
+        const { error } = res;
+        if (error instanceof ApiError && error.code === "104") {
+          setLicenseInfo(null);
+        }
+      }
+    });
   };
 
   useEffect(() => {
-    if (session?.user) {
-      fetchLicenseInfo();
-    }
-  }, [session?.user]);
+    refetchLicense();
+  }, []);
 
   return (
     <div>
@@ -80,7 +78,6 @@ const NaverServiceView = () => {
       {isNoLicenseDialogOpen && (
         <ConfirmDialog
           open
-          title="라이선스 미등록"
           confirmText="확인"
           cancelDisabled
           onConfirm={() => setIsNoLicenseDialogOpen(false)}
@@ -95,7 +92,11 @@ const NaverServiceView = () => {
         rightLabel="광고주 등록"
       />
       {!isAdvertiserStep && (
-        <LicenseView licenseInfo={licenseInfo} refetch={fetchLicenseInfo} />
+        <LicenseView
+          licenseInfo={licenseInfo}
+          refetch={refetchLicense}
+          moveToAdvertiser={() => setIsAdvertiserStep(true)}
+        />
       )}
       {isAdvertiserStep && <AdvertiserView user={session?.user} />}
     </div>

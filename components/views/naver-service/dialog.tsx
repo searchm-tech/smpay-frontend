@@ -6,11 +6,14 @@ import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import { Descriptions } from "@/components/composite/description-components";
 
 import {
-  useMuateCreateLicense,
+  useMuateLicense,
   useMuateDeleteLicense,
 } from "@/hooks/queries/license";
+
 import { ApiError } from "@/lib/api";
+
 import { formatDate } from "@/utils/format";
+
 import { dialogContent } from "./constants";
 
 import type { TLicenseInfo } from ".";
@@ -22,7 +25,6 @@ export const SuccessCreateLicenseDialog = ({ onConfirm }: Props) => {
   return (
     <ConfirmDialog
       open
-      title="라이선스 등록 성공"
       confirmText="광고주 등록"
       cancelDisabled
       content={dialogContent["success-create"]}
@@ -34,16 +36,19 @@ export const SuccessCreateLicenseDialog = ({ onConfirm }: Props) => {
 type PropsWithInfo = {
   licenseInfo: TLicenseInfo;
   onClose: () => void;
+  refetch: () => void;
 };
 
 export const CheckUpdateLicenseDialog = ({
   onClose,
   licenseInfo,
+  refetch,
 }: PropsWithInfo) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errMessage, setErrMessage] = useState("");
 
-  const { mutate: createLicense, isPending } = useMuateCreateLicense({
+  // 라이선스 등록 + 수정
+  const { mutate: mutateLicense, isPending } = useMuateLicense({
     onSuccess: () => setIsSuccess(true),
     onError: (error) => {
       if (error instanceof ApiError) {
@@ -60,7 +65,6 @@ export const CheckUpdateLicenseDialog = ({
     return (
       <ConfirmDialog
         open
-        title="라이선스 수정 실패"
         cancelDisabled
         content={<p className="text-center">{errMessage}</p>}
         onConfirm={() => {
@@ -75,12 +79,14 @@ export const CheckUpdateLicenseDialog = ({
     return (
       <ConfirmDialog
         open
-        title=""
         cancelDisabled
         content={
           <p className="text-center">수정이 성공적으로 완료되었습니다.</p>
         }
-        onConfirm={onClose}
+        onConfirm={() => {
+          refetch();
+          onClose();
+        }}
       />
     );
   }
@@ -88,9 +94,8 @@ export const CheckUpdateLicenseDialog = ({
   return (
     <ConfirmDialog
       open
-      cancelDisabled
       content={dialogContent["check-update"]}
-      onConfirm={() => createLicense(licenseInfo)}
+      onConfirm={() => mutateLicense(licenseInfo)}
       onClose={onClose}
     />
   );
@@ -99,28 +104,42 @@ export const CheckUpdateLicenseDialog = ({
 export const DeleteLicenseDialog = ({
   onClose,
   licenseInfo,
+  refetch,
 }: PropsWithInfo) => {
-  const { mutate: deleteLicense, isPending } = useMuateDeleteLicense({
-    onSuccess: () => onClose,
-  });
+  const {
+    mutate: deleteLicense,
+    isPending,
+    isSuccess,
+  } = useMuateDeleteLicense();
 
-  const handleDelete = () => {
-    deleteLicense(licenseInfo);
+  const handleConfirmSuccess = () => {
     onClose();
+    refetch();
   };
 
   if (isPending) {
     return <LoadingUI title="라이선스 삭제 중..." />;
   }
+
+  if (isSuccess) {
+    return (
+      <ConfirmDialog
+        open
+        confirmText="삭제"
+        cancelDisabled
+        onConfirm={handleConfirmSuccess}
+        content={dialogContent["success-delete"]}
+      />
+    );
+  }
+
   return (
     <ConfirmDialog
       open
-      title="라이선스 삭제"
       confirmText="삭제"
-      cancelDisabled
-      onConfirm={handleDelete}
+      onConfirm={() => deleteLicense(licenseInfo)}
       onClose={onClose}
-      content={<p className="text-center">삭제가 성공적으로 완료되었습니다.</p>}
+      content={dialogContent["check-delete"]}
     />
   );
 };
