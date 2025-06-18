@@ -81,7 +81,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       {dialog && (
         <ConfirmDialog
           open
-          title="비밀번호 변경"
+          title="비밀번호 변경" // TODO : 노출 되는지 확인 필요
           content={dialog}
           onClose={() => setDialog("")}
           onConfirm={() => setDialog("")}
@@ -90,7 +90,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       {enableInfo && (
         <ConfirmDialog
           open
-          title="회원정보 변경"
+          title="회원정보 변경" // TODO : 노출 되는지 확인 필요
           content="부서 설정이 되어있지 않습니다. 관리자에게 문의해주세요."
           cancelDisabled
           onConfirm={() => {

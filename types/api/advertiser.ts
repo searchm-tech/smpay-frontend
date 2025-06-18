@@ -4,7 +4,7 @@ import type {
   TAdvertiser,
   TAdvertiserBizMoney,
   TAdvertiserBizMoneyOrderType,
-  TAdvertiserSyncCompleteStatus,
+  TAdvertiserStatus,
   TAdvertiserSyncCompleteSync,
 } from "@/types/adveriser";
 
@@ -54,7 +54,7 @@ export type ResponseAdvertiserSyncCompleteList = {
   businessRegistrationNumber: string;
   phoneNumber: string;
   emailAddress: string;
-  status: TAdvertiserSyncCompleteStatus;
+  status: TAdvertiserStatus;
   name: string;
   roleId: number;
   sync: TAdvertiserSyncCompleteSync;

@@ -74,7 +74,7 @@ const ModalPwdSetting = ({ onClose }: Props) => {
       {!isSuccess && (
         <Modal
           open
-          title="비밀번호 재설정"
+          title="비밀번호 재설정" // TODO : 노출 되는지 확인 필요
           onConfirm={handleSubmit}
           onClose={onClose}
         >

@@ -203,7 +203,7 @@ const MailSendSection = ({ user }: TViewProps) => {
           open
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
-          title={dialog === "success" ? "전송 완료" : "오류"}
+          title={dialog === "success" ? "전송 완료" : "오류"} // TODO : 노출 되는지 확인 필요
           content={DialogContent[dialog]}
         />
       )}
@@ -212,7 +212,7 @@ const MailSendSection = ({ user }: TViewProps) => {
           open
           onClose={() => setDialogEmail(null)}
           onConfirm={() => setDialogEmail(null)}
-          title="중복 체크"
+          title="중복 체크" // TODO : 노출 되는지 확인 필요
           content={DialogContentEmail[dialogEmail]}
         />
       )}
@@ -222,7 +222,7 @@ const MailSendSection = ({ user }: TViewProps) => {
           open
           onClose={() => setFailDialog("")}
           onConfirm={() => setFailDialog("")}
-          title="오류"
+          title="오류" // TODO : 노출 되는지 확인 필요
           content={failDialog}
         />
       )}
