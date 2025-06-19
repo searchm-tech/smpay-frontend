@@ -103,7 +103,7 @@ export type SmPayJudgementData = {
   customerId: string; // CUSTOMER ID
   advertiserId: string; // 광고주 로그인 ID
   advertiserStatus: "new" | undefined; // 광고주 상태 (new 태그)
-  userName: string; // 사업자명
+  advertiserName: string; // 광고주명
   nickname: string; // 광고주 닉네임
   status:
     | "심사 요청"

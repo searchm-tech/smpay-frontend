@@ -103,10 +103,11 @@ export const mockSmPayJudgementData: SmPayJudgementData[] = Array.from({
   customerId: `CID${String(i + 1).padStart(5, "0")}`,
   advertiserId: `AID${String(i + 1).padStart(5, "0")}`,
   advertiserStatus: i % 5 === 0 ? "new" : undefined,
-  userName: `사업자${i + 1}`,
+  userName: `사업자${i + 1}`, // TODO : 불필요한 데이터 삭제 필요
   nickname: `광고주${i + 1}`,
   status: judgementStatusList[
     i % judgementStatusList.length
   ] as SmPayJudgementData["status"],
   updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // 하루씩 이전 날짜
+  advertiserName: `광고주 ${i + 1}`,
 }));
