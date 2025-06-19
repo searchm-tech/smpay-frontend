@@ -120,7 +120,7 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
                 <span className="border-b text-blue-500 border-blue-500">
                   광고비 선충전은 1일 1회
                 </span>{" "}
-                이루어지며,
+                이루어지며,{" "}
                 <span className="border-b text-blue-500 border-blue-500">
                   설정 후 익일부터 선결제가 진행
                 </span>

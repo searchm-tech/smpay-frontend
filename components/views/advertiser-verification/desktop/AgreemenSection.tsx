@@ -1,7 +1,12 @@
+import { useState } from "react";
+
 import { RadioGroupItem, RadioGroup } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { LinkTextButton } from "@/components/composite/button-components";
 import { Radio } from "@/components/composite/radio-component";
+import { Modal } from "@/components/composite/modal-components";
+
+import { dialogContent } from "../constants";
 
 import type { AgreementInfo } from "@/types/vertification";
 
@@ -11,6 +16,10 @@ type AgreemenSectionProps = {
 };
 
 const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
+  const [openDialog, setOpenDialog] = useState<"private" | "debit" | null>(
+    null
+  );
+
   const handleAllAgree = () => {
     if (agreement.agreePrivacy && agreement.agreeService) {
       setAgreement({
@@ -27,6 +36,23 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
 
   return (
     <section className="mt-6 w-full inline-block">
+      {openDialog && (
+        <Modal
+          open
+          onClose={() => setOpenDialog(null)}
+          title={
+            openDialog === "private"
+              ? "개인정보 수집·활용 동의"
+              : "자동이체 출금 동의"
+          }
+          cancelDisabled
+          confirmDisabled
+        >
+          <div className="h-[70vh] break-keep leading-relaxed">
+            {dialogContent[openDialog]}
+          </div>
+        </Modal>
+      )}
       <Radio
         checked={agreement.agreePrivacy && agreement.agreeService}
         onClick={handleAllAgree}
@@ -49,9 +75,14 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
             }
           />
           <span className="text-base">
-            [필수] 개인 정보 수집 이용에 동의합니다.
+            [필수] 개인정보 수집·활용에 동의합니다.
           </span>
-          <LinkTextButton className="ml-4">내용보기</LinkTextButton>
+          <LinkTextButton
+            className="ml-4"
+            onClick={() => setOpenDialog("private")}
+          >
+            내용보기
+          </LinkTextButton>
         </div>
         <div className="flex items-center gap-2">
           <RadioGroupItem
@@ -65,10 +96,13 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
               })
             }
           />
-          <span className="text-base">
-            [필수] SM Pay 부가 서비스 이용에 동의합니다.
-          </span>
-          <LinkTextButton className="ml-4">내용보기</LinkTextButton>
+          <span className="text-base">[필수] 자동이체 출금에 동의합니다.</span>
+          <LinkTextButton
+            className="ml-4"
+            onClick={() => setOpenDialog("debit")}
+          >
+            내용보기
+          </LinkTextButton>
         </div>
       </RadioGroup>
     </section>

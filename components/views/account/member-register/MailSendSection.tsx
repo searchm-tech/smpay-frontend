@@ -49,8 +49,6 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
-  console.log(agencyList);
-
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
       onSuccess: () => resetSuccess(),
