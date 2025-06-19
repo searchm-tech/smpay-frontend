@@ -69,6 +69,7 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
     salesAccountBank: `우리은행`,
     salesAccountBankCode: `123-45-${(i + 1).toString().padStart(5, "0")}`,
     salesAccountBankName: `우리은행`,
+    nickname: `닉네임${i + 1}`,
   })
 );
 

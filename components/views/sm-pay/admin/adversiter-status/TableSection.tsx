@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
-
+import { useSidebar } from "@/components/ui/sidebar";
 import { LinkTextButton } from "@/components/composite/button-components";
+
 import FilterItem from "@/components/common/FilterItem";
 
 import { useSmPayStatus } from "@/hooks/queries/sm-pay";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { formatDate } from "@/utils/format";
+import { cn } from "@/lib/utils";
 
 import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
 import { ColumnTooltip } from "@/constants/table";
@@ -42,6 +45,9 @@ const TableSection = ({
 }: TableSectionProps) => {
   const router = useRouter();
   const { data: statusData } = useSmPayStatus();
+
+  const { width } = useWindowSize();
+  const { state } = useSidebar();
 
   const [selectedAgencyValue, setSelectedAgencyValue] = useState<string>();
   const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
@@ -82,6 +88,8 @@ const TableSection = ({
       dataIndex: "no",
       align: "center",
       sorter: true,
+      fixed: "left",
+      width: 100,
     },
     {
       title: "담당자",
@@ -98,6 +106,21 @@ const TableSection = ({
     {
       title: "로그인 ID",
       dataIndex: "loginId",
+      align: "center",
+      sorter: true,
+      render: (text: string, record: SmPayData) => (
+        <LinkTextButton
+          onClick={() => {
+            router.push(`/sm-pay/admin/adversiter-status/${record.no}`);
+          }}
+        >
+          {text}
+        </LinkTextButton>
+      ),
+    },
+    {
+      title: "광고주 닉네임",
+      dataIndex: "nickname",
       align: "center",
       sorter: true,
       render: (text: string, record: SmPayData) => (
@@ -248,6 +271,20 @@ const TableSection = ({
     },
   ];
 
+  const tableWidthClass = useMemo(() => {
+    // expanded 1440 -> 1160px
+    if (state === "expanded" && width <= 1440) {
+      return "max-w-[1200px]";
+    }
+
+    // collapsed 1440 -> 1330px
+    if (state === "collapsed" && width <= 1440) {
+      return "max-w-[1360px]";
+    }
+
+    return "w-full";
+  }, [width, state]);
+
   return (
     <section className="pt-4">
       <div className="flex gap-2 border-1 border-b border-dashed border-gray-300 pb-4">
@@ -281,20 +318,22 @@ const TableSection = ({
           />
         ))}
       </div>
-
-      <Table<SmPayData>
-        columns={columns}
-        rowKey="id"
-        dataSource={smpayList}
-        pagination={{
-          ...tableParams.pagination,
-          total,
-          position: ["bottomCenter"],
-          showSizeChanger: true,
-        }}
-        loading={loadingData}
-        onChange={handleTableChange}
-      />
+      <div className={cn(tableWidthClass, "overflow-x-auto ")}>
+        <Table<SmPayData>
+          columns={columns}
+          rowKey="id"
+          dataSource={smpayList}
+          pagination={{
+            ...tableParams.pagination,
+            total,
+            position: ["bottomCenter"],
+            showSizeChanger: true,
+          }}
+          loading={loadingData}
+          onChange={handleTableChange}
+          scroll={{ x: 2000 }}
+        />
+      </div>
     </section>
   );
 };
