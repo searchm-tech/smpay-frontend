@@ -10,6 +10,7 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
+import ContentHeader from "@/components/common/ContentHeader";
 
 import { dialogContent } from "./constants";
 import { useQueryLicense } from "@/hooks/queries/license";
@@ -61,6 +62,7 @@ const NaverServiceView = () => {
           secretKey: res.data.secretKey,
         });
         const { error } = res;
+        // 데이터가 없을 시, 에러를 response 함.
         if (error instanceof ApiError && error.code === "104") {
           setLicenseInfo(null);
         }
@@ -74,6 +76,10 @@ const NaverServiceView = () => {
 
   return (
     <div>
+      <ContentHeader
+        title={isAdvertiserStep ? "네이버 광고주 등록" : "API 라이선스 등록"}
+        items={[]}
+      />
       {isLoading && <LoadingUI title="라이선스 정보 로딩 중..." />}
       {isNoLicenseDialogOpen && (
         <ConfirmDialog

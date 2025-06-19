@@ -32,7 +32,7 @@ const SearchSection = ({ onSearch }: SearchSectionProps) => {
             onChange={(e) => setKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <Button>검색</Button>
+          <Button onClick={handleSearch}>검색</Button>
         </div>
       </SearchBox>
     </section>
