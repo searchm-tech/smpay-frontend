@@ -116,8 +116,18 @@ const FormSection = ({
         createLicense(params);
       }
     });
+  };
 
-    return;
+  const handleDelete = (data: TLicenseInfo) => {
+    refetchAdvertiserSyncJobList().then((res) => {
+      if (res.data && res.data?.length > 0) {
+        setErrMessage(
+          "광고 데이터 동기화가 진행 중입니다. 동기화 완료 후 API 라이선스 정보를 변경할 수 있습니다."
+        );
+        return;
+      }
+      setDeleteInfo(data);
+    });
   };
 
   useEffect(() => {
@@ -271,7 +281,7 @@ const FormSection = ({
                 type="button"
                 variant="cancel"
                 className="w-[150px]"
-                onClick={() => setDeleteInfo(licenseInfo)}
+                onClick={() => handleDelete(licenseInfo)}
               >
                 삭제
               </Button>
