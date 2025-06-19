@@ -57,7 +57,7 @@ const SMPayManagementView = () => {
   };
 
   // TODO : 페이지네이션 관련 테스트 확인 필요
-  const onSearch = (keyword: string) => {
+  const handleSearch = (keyword: string) => {
     setSearch(keyword);
     setSelectedStatus("ALL");
     setTableParams((prev) => ({
@@ -74,7 +74,7 @@ const SMPayManagementView = () => {
   return (
     <div className="flex flex-col gap-4">
       <GuidSection viewType="smpay-guide" />
-      <SearchSection onSearch={onSearch} />
+      <SearchSection onSearch={handleSearch} />
       <FilterSection
         selectedStatus={selectedStatus}
         onStatusChange={handleStatusChange}

@@ -40,9 +40,21 @@ const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
     userId: session?.user.userId,
   });
 
+  const handleSearch = (keyword: string) => {
+    setSearch(keyword);
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        ...tableParams.pagination,
+        current: 1,
+        pageSize: 10,
+      },
+    });
+  };
+
   return (
     <div>
-      <SearchSection onSearch={setSearch} />
+      <SearchSection onSearch={handleSearch} />
 
       <TableSection
         user={user}
