@@ -52,7 +52,7 @@ type GuideButtonProps = {
 const GuideButton = ({
   children,
   onClick,
-  color = "#78A4E8",
+  color = "#1062FF",
 }: GuideButtonProps) => {
   return (
     <Button

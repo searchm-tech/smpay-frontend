@@ -5,7 +5,7 @@ import type { DashboardSubItem } from "@/types/menu";
 export default function SmPayAdminOverviewPage() {
   return (
     <div>
-      <ContentHeader title="운영 검토 요청" items={breadcrumbItems} />
+      <ContentHeader title="운영 검토 요청 목록" items={breadcrumbItems} />
       <SmPayAdminOverviewView />
     </div>
   );
