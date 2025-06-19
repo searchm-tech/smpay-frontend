@@ -3,7 +3,10 @@ import { type ChangeEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { PhoneInput } from "@/components/composite/input-components";
+import {
+  InputWithSuffix,
+  PhoneInput,
+} from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import {
   DescriptionItem,
@@ -34,7 +37,7 @@ import { DialogContent, type DialogContentType } from "./constant";
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
 import type { TViewProps } from ".";
-
+import type { TAgency } from "@/types/agency";
 import type {
   RequestAgencyGroupMasterDirect,
   RequestMemberDirect,
@@ -60,7 +63,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
 
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
-  const [selectedAgency, setSelectedAgency] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState<TAgency | null>(null);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
 
@@ -81,7 +84,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   const resetSuccess = () => {
     setDialog("success");
     setDepartmentNode(null);
-    setSelectedAgency("");
+    setSelectedAgency(null);
     setMemberType("");
     setEmailId("");
     setName("");
@@ -103,7 +106,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!EMAIL_REGEX.test(emailId)) {
+    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
       setDialog("check-email-regex");
       return;
     }
@@ -145,8 +148,13 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       setDialog("nameCheck");
       return;
     }
-    if (!EMAIL_REGEX.test(emailId)) {
-      setDialog("emailRegex");
+    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
+      setDialog("check-email-regex");
+      return;
+    }
+
+    if (!selectedAgency) {
+      setDialog("agency-select");
       return;
     }
 
@@ -179,7 +187,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       const data: RequestMemberDirect = {
         type: memberType as TAuthType,
         name,
-        emailAddress: emailId,
+        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
         password,
         phoneNumber: phone,
         agentId: user.agentId,
@@ -196,12 +204,22 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       const data: RequestAgencyGroupMasterDirect = {
         userType: "AGENCY_GROUP_MASTER",
         name,
-        emailAddress: emailId,
+        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
         password,
         phoneNumber: phone,
         agentId: Number(selectedAgency),
       };
       mutateAddGroupMasterDirect(data);
+    }
+  };
+
+  const handleAgencySelect = (value: string) => {
+    const findAgency = agencyList.find(
+      (agency) => agency.agentId.toString() === value
+    );
+
+    if (findAgency) {
+      setSelectedAgency(findAgency);
     }
   };
 
@@ -280,8 +298,8 @@ const DirectRegistSection = ({ user }: TViewProps) => {
           {isAdmin ? (
             <Select
               className="max-w-[500px]"
-              value={selectedAgency}
-              onChange={(value) => setSelectedAgency(value)}
+              value={selectedAgency?.agentId.toString()}
+              onChange={handleAgencySelect}
               options={agencyList.map((agency) => ({
                 label: `${agency.name} | ${agency.representativeName}`,
                 value: agency.agentId.toString(),
@@ -320,12 +338,17 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         </DescriptionItem>
         <DescriptionItem label="이메일 주소 *">
           <div className="flex items-center gap-2">
-            <Input
+            <InputWithSuffix
               className="max-w-[500px]"
-              placeholder="이메일 주소를 입력해주세요."
+              placeholder={
+                selectedAgency
+                  ? "이메일 주소를 입력해주세요."
+                  : "대행사를 선택해주세요."
+              }
               value={emailId}
               onChange={handleEmailIdChange}
-              disabled={enableEmailId}
+              disabled={!selectedAgency || enableEmailId}
+              suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
             />
             <Button variant="outline" onClick={handleNameCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}

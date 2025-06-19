@@ -11,6 +11,8 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import Select from "@/components/composite/select-components";
+import { InputWithSuffix } from "@/components/composite/input-components";
+
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
 
@@ -35,6 +37,7 @@ import { getIsAdmin } from "@/lib/utils";
 
 import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAuthType } from "@/types/user";
+import type { TAgency } from "@/types/agency";
 import type { TViewProps } from ".";
 import type {
   RequestGroupMasterInvite,
@@ -45,6 +48,8 @@ const MailSendSection = ({ user }: TViewProps) => {
   const isAdmin = getIsAdmin(user.type);
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
+
+  console.log(agencyList);
 
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
@@ -60,7 +65,7 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
-  const [selectedAgency, setSelectedAgency] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState<TAgency | null>(null);
   const [memberType, setMemberType] = useState("");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
@@ -77,7 +82,7 @@ const MailSendSection = ({ user }: TViewProps) => {
   const resetSuccess = () => {
     setDialog("success");
     setDepartmentNode(null);
-    setSelectedAgency("");
+    setSelectedAgency(null);
     setMemberType("");
     setEmailId("");
     setName("");
@@ -100,7 +105,7 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!EMAIL_REGEX.test(emailId)) {
+    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
       setDialog("check-email-regex");
       return;
     }
@@ -140,6 +145,11 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
+    if (!selectedAgency) {
+      setDialog("agency-select");
+      return;
+    }
+
     if (!isAdmin) {
       /**
        * 관리자가 아닌 경우
@@ -156,7 +166,7 @@ const MailSendSection = ({ user }: TViewProps) => {
       const params: RequestSignupEmail = {
         type: memberType as TAuthType,
         name,
-        emailAddress: emailId,
+        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
         agentId: user.agentId,
         departmentId: Number(departmentNode?.id),
       };
@@ -176,10 +186,20 @@ const MailSendSection = ({ user }: TViewProps) => {
         agentId: Number(selectedAgency),
         userType: "AGENCY_GROUP_MASTER", // user.type,
         name,
-        emailAddress: emailId,
+        emailAddress: `${emailId}@${selectedAgency.domainName}`,
       };
 
       mutateGroupMasterSendMail(params);
+    }
+  };
+
+  const handleAgencySelect = (value: string) => {
+    const findAgency = agencyList.find(
+      (agency) => agency.agentId.toString() === value
+    );
+
+    if (findAgency) {
+      setSelectedAgency(findAgency);
     }
   };
 
@@ -235,8 +255,8 @@ const MailSendSection = ({ user }: TViewProps) => {
           {isAdmin ? (
             <Select
               className="max-w-[500px]"
-              value={selectedAgency}
-              onChange={(value) => setSelectedAgency(value)}
+              value={selectedAgency?.agentId.toString()}
+              onChange={handleAgencySelect}
               options={agencyList.map((agency) => ({
                 label: `${agency.name} | ${agency.representativeName}`,
                 value: agency.agentId.toString(),
@@ -276,12 +296,17 @@ const MailSendSection = ({ user }: TViewProps) => {
 
         <DescriptionItem label="발송될 이메일 주소 *">
           <div className="flex items-center gap-2">
-            <Input
+            <InputWithSuffix
               className="max-w-[500px]"
-              placeholder="이메일 주소를 입력해주세요."
+              placeholder={
+                selectedAgency
+                  ? "이메일 주소를 입력해주세요."
+                  : "대행사를 선택해주세요."
+              }
               value={emailId}
               onChange={handleEmailIdChange}
-              disabled={enableEmailId}
+              disabled={!selectedAgency || enableEmailId}
+              suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
             />
             <Button variant="outline" onClick={handleNameCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}

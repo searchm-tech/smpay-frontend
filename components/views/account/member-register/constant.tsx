@@ -75,6 +75,7 @@ export const DialogContent = {
     "비밀번호가 영문, 숫자, 특수문자가 모두 들어간 8-16자가 아닙니다.",
   "password-confirm": "비밀번호가 일치하지 않습니다.",
   "phone-regex": "전화번호가 올바르지 않습니다.",
+  "agency-select": "대행사를 선택해주세요.",
 };
 
 export type DialogContentType = keyof typeof DialogContent;
@@ -82,6 +83,7 @@ export type DialogContentType = keyof typeof DialogContent;
 export const DialogContentEmail = {
   "available-email": "사용 가능한 이메일 주소입니다.",
   "duplicate-email": "이미 존재하는 이메일 주소입니다.",
+  "agency-select": "대행사를 선택해주세요.",
 };
 
 export type DialogContentTypeEmail = keyof typeof DialogContentEmail;
