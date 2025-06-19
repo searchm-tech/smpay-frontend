@@ -70,6 +70,6 @@ export const useQueryLicense = (params: TRequestLicense) => {
     queryKey: ["license", params.agentId, params.userId],
     queryFn: () =>
       getAgentsUserLicense(params.agentId.toString(), params.userId.toString()),
-    enabled: !!params.agentId && !!params.userId,
+    enabled: params.agentId > 0 && params.userId > 0,
   });
 };

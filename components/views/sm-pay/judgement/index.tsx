@@ -11,6 +11,7 @@ import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 
+// TODO : 다른 동일하게 tableParam으로 변경 필요
 const SmPayJudgementView = () => {
   const [search, setSearch] = useState<string>("");
   const [page, setPage] = useState<number>(1);
@@ -20,7 +21,13 @@ const SmPayJudgementView = () => {
     undefined
   );
 
-  const handleSearch = (text: string) => setSearch(text);
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    setPage(1);
+    setPageSize(10);
+    setSortField("");
+    setSortOrder(undefined);
+  };
 
   const handleTableChange: TableProps<
     SmPayJudgementData & { id: number }
