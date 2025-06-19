@@ -13,10 +13,9 @@ import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSectio
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
+import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
 import { RejectDialog } from "../../manangement/dialog";
-
-import GuidSection from "../../components/GuideSection";
 
 import { STATUS_LABELS } from "@/constants/status";
 
