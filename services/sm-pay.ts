@@ -340,7 +340,7 @@ export const getSmPayJudgementData = async (
             item.departmentName.toLowerCase().includes(searchTerm) ||
             item.customerId.toLowerCase().includes(searchTerm) ||
             item.advertiserId.toLowerCase().includes(searchTerm) ||
-            item.userName.toLowerCase().includes(searchTerm) ||
+            item.advertiserName.toLowerCase().includes(searchTerm) ||
             item.nickname.toLowerCase().includes(searchTerm)
         );
       } else if (
