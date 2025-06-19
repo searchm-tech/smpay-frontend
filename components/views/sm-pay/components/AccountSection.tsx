@@ -18,7 +18,7 @@ const AccountSection = ({ smPayData }: Props) => {
   return (
     <section className="flex gap-2">
       <div className="w-1/2">
-        <div className="flex items-center gap-2 py-2">
+        <div className="flex items-center gap-2 py-4">
           <LabelBullet labelClassName="text-base font-bold">
             충전 계좌 정보
           </LabelBullet>

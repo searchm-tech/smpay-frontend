@@ -50,7 +50,7 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
 
   return (
     <section>
-      <div className="flex items-center gap-2 py-2">
+      <div className="flex items-center gap-2 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           충전 규칙 설정
         </LabelBullet>

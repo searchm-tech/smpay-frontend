@@ -71,8 +71,22 @@ const TableSection = ({
       key: "advertiserId",
       align: "center",
       sorter: true,
+    },
+    {
+      title: "광고주 닉네임",
+      dataIndex: "nickname",
+      key: "nickname",
+      align: "center",
+      sorter: true,
+    },
+    {
+      title: "광고주명",
+      dataIndex: "advertiserName",
+      key: "advertiserName",
+      align: "center",
+      sorter: true,
       render: (text, record) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <LinkTextButton
             onClick={() => router.push(`/sm-pay/judgement/${record.id}`)}
           >
@@ -81,20 +95,6 @@ const TableSection = ({
           {record.advertiserStatus === "new" && <Badge label="new" />}
         </div>
       ),
-    },
-    {
-      title: "사업자명",
-      dataIndex: "userName",
-      key: "userName",
-      align: "center",
-      sorter: true,
-    },
-    {
-      title: "광고주 닉네임",
-      dataIndex: "nickname",
-      key: "nickname",
-      align: "center",
-      sorter: true,
     },
     {
       title: "상태",

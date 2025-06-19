@@ -50,7 +50,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
     : null;
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {rejectModalOpen && (
         <RejectModal
@@ -62,6 +62,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
       <GuidSection viewType="reject" onClick={() => setRejectModalOpen(true)} />
       <AdvertiseStatusSection
+        isHistory
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserSection advertiserDetail={null} />

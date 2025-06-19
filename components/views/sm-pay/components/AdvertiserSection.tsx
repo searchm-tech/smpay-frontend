@@ -13,7 +13,7 @@ type Props = {
 const AdvertiserSection = ({ advertiserDetail }: Props) => {
   return (
     <section className="w-full">
-      <div className="flex items-center gap-4 pb-4">
+      <div className="flex items-center gap-4 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           광고주 기본 정보
         </LabelBullet>

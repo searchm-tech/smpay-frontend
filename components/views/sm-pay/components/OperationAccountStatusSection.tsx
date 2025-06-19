@@ -21,7 +21,7 @@ type Props = {
 const OperationAccountStatusSection = ({ statusInfo }: Props) => {
   return (
     <section>
-      <div className="flex items-center gap-4 py-2">
+      <div className="flex items-center gap-4 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           SM Pay 운영 계좌 현황
         </LabelBullet>
