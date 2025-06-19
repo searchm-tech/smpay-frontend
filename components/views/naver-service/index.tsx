@@ -56,7 +56,7 @@ const NaverServiceView = () => {
       if (res.data) {
         setLicenseInfo({
           userId: res.data.userId,
-          agentId: session?.user?.agentId ?? 0,
+          agentId: session?.user.agentId ?? 0,
           customerId: res.data.customerId,
           apiKey: res.data.accessLicense,
           secretKey: res.data.secretKey,
@@ -71,8 +71,9 @@ const NaverServiceView = () => {
   };
 
   useEffect(() => {
+    if (!session?.user) return;
     refetchLicense();
-  }, []);
+  }, [session?.user]);
 
   return (
     <div>

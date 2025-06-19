@@ -9,6 +9,7 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { formatDate } from "@/utils/format";
 import { dialogContent, syncTypeMap } from "../constants";
+import { InProgressFlag, LossPrivilegeFlag } from "./constants";
 import { SyncFailDialog, type SyncFail } from "../dialog";
 
 import { postAdvertiserSyncBizMoney } from "@/services/advertiser";
@@ -26,8 +27,6 @@ import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
 import type { TableParamsAdvertiser } from ".";
-
-import { InProgressFlag, LossPrivilegeFlag } from "./constants";
 
 type TableSectionProps = {
   user?: UserWithUniqueCode;
@@ -152,7 +151,7 @@ const TableSection = ({
     },
     {
       title: "광고주 로그인 ID",
-      dataIndex: "advertiserId",
+      dataIndex: "id",
       align: "center",
     },
     {
