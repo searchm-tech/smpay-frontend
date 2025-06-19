@@ -173,7 +173,36 @@ export const TOOLTIP_CONTENT: Record<
   operation_account_status: (
     <div className="flex items-start gap-2 bg-white">
       <HelpIcon />
-      <p className="font-normal text-sm text-gray-700">내용 없음</p>
+      <div className="flex flex-col gap-2 font-normal text-sm text-gray-700">
+        <div>
+          <p>
+            • 현재 운영 잔액
+            <br />
+            SM Pay에 충전된 총 잔액입니다.
+          </p>
+          <p>
+            • 현재 일 소진 금액
+            <br />
+            현재 운영 중인 모든 광고주의 일일 평균 소진 금액입니다.
+          </p>
+          <p>
+            • 승인 시 예상 일 소진 금액
+            <br />
+            승인 예정 광고주가 추가될 경우 증가하는 일일 소진 금액입니다.
+          </p>
+          <p>
+            • 예상 일 소진 금액을
+            <br />
+            현재 운영 중 + 승인 예정 광고주의 일일 총 소진 금액입니다.
+          </p>
+          <p>
+            • 예상 일 소진 기준 운영 가능 일수
+            <br />
+            현재 잔액으로 운영 가능한 일수를 예측한 값입니다.
+            <br />= 운영 잔액 ÷ 예상 일 소진 금액 (소수점 1자리까지 표시)
+          </p>
+        </div>
+      </div>
     </div>
   ),
 
