@@ -68,6 +68,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       )}
 
       <AdvertiseStatusSection
+        isHistory
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
 

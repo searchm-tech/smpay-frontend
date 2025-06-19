@@ -30,7 +30,7 @@ const ScheduleSection = ({ scheduleInfo, type }: Props) => {
 
   return (
     <section>
-      <div className="flex items-center gap-2 py-2">
+      <div className="flex items-center gap-2 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           선결제 스케쥴 설정
         </LabelBullet>

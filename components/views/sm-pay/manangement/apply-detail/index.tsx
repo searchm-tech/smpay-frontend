@@ -64,6 +64,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
       )}
       <GuidSection viewType="reject" onClick={() => setIsReject(true)} />
       <AdvertiseStatusSection
+        isHistory
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserSection advertiserDetail={advertiserData} />

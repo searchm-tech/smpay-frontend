@@ -26,7 +26,7 @@ type Props = {
 const AgencyInfoSectio = ({ agencyInfo, advertiserInfo }: Props) => {
   return (
     <section className="w-full">
-      <div className="flex items-center gap-4 py-2">
+      <div className="flex items-center gap-4 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           대행사 및 대행사 담당자 기본 정보
         </LabelBullet>
