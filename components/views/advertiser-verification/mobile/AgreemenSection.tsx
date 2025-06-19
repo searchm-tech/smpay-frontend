@@ -1,8 +1,10 @@
-import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { AgreementInfo } from "@/types/vertification";
+import { DebitInfoDialog, PrivateInfoDialog } from "./dialog";
+import type { AgreementInfo } from "@/types/vertification";
 
 type AgreemenSectionProps = {
   agreement: AgreementInfo;
@@ -10,6 +12,10 @@ type AgreemenSectionProps = {
 };
 
 const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
+  const [openPrivateInfoDialog, setOpenPrivateInfoDialog] = useState(false);
+  const [openDebitInfoDialog, setOpenDebitInfoDialog] = useState(false);
+  const [isAllAgreeFlow, setIsAllAgreeFlow] = useState(false);
+
   const handleAllAgree = () => {
     if (agreement.agreePrivacy && agreement.agreeService) {
       setAgreement({
@@ -17,15 +23,39 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
         agreeService: false,
       });
     } else {
-      setAgreement({
-        agreePrivacy: true,
-        agreeService: true,
-      });
+      setIsAllAgreeFlow(true);
+      setOpenPrivateInfoDialog(true);
     }
+  };
+
+  const handleClosePrivate = () => {
+    setAgreement({
+      ...agreement,
+      agreePrivacy: true,
+    });
+    setOpenPrivateInfoDialog(false);
+    if (isAllAgreeFlow) {
+      setOpenDebitInfoDialog(true);
+    }
+  };
+
+  const handleCloseDebit = () => {
+    setAgreement({
+      ...agreement,
+      agreeService: true,
+    });
+    setOpenDebitInfoDialog(false);
+    setIsAllAgreeFlow(false);
   };
 
   return (
     <section className="mt-8 w-full px-4">
+      {openPrivateInfoDialog && (
+        <PrivateInfoDialog onClose={handleClosePrivate} />
+      )}
+
+      {openDebitInfoDialog && <DebitInfoDialog onClose={handleCloseDebit} />}
+
       <div className="flex items-center space-x-2">
         <Switch
           size="sm"
@@ -42,12 +72,17 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
           <Switch
             size="sm"
             checked={agreement.agreePrivacy}
-            onCheckedChange={() =>
-              setAgreement({
-                ...agreement,
-                agreePrivacy: !agreement.agreePrivacy,
-              })
-            }
+            onCheckedChange={() => {
+              if (agreement.agreePrivacy) {
+                setAgreement({
+                  ...agreement,
+                  agreePrivacy: false,
+                });
+              } else {
+                setIsAllAgreeFlow(false);
+                setOpenPrivateInfoDialog(true);
+              }
+            }}
           />
           <span className="text-[14px] font-medium">
             [필수] 개인 정보 수집 이용에 동의합니다.
@@ -60,12 +95,17 @@ const AgreemenSection = ({ agreement, setAgreement }: AgreemenSectionProps) => {
           <Switch
             size="sm"
             checked={agreement.agreeService}
-            onCheckedChange={() =>
-              setAgreement({
-                ...agreement,
-                agreeService: !agreement.agreeService,
-              })
-            }
+            onCheckedChange={() => {
+              if (agreement.agreeService) {
+                setAgreement({
+                  ...agreement,
+                  agreeService: false,
+                });
+              } else {
+                setIsAllAgreeFlow(false);
+                setOpenDebitInfoDialog(true);
+              }
+            }}
           />
           <span className="text-[14px] font-medium">
             [필수] SM Pay 부가 서비스 이용에 동의합니다.
