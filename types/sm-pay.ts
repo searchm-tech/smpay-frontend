@@ -26,6 +26,7 @@ export interface SmPayData {
   salesAccountBank: string;
   salesAccountBankCode: string;
   salesAccountBankName: string;
+  nickname: string;
 }
 
 // SMPay 관리 상태
