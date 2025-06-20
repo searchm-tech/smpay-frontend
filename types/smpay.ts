@@ -17,6 +17,7 @@ export type SmPayAdvertiserApplyStatus =
 
 // SMPay 신청 > 광고주 목록 광고주 데이터 DTO
 export type SmPayAdvertiserApplyDto = {
+  advertiserId: number;
   advertiserCustomerId: number;
   advertiserLoginId: string;
   advertiserNickName: number;

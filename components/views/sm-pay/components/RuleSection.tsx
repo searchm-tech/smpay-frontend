@@ -16,8 +16,6 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import { useSmPayRuleInfo } from "@/hooks/queries/sm-pay";
-
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 import type { RuleInfo } from "@/types/sm-pay";
@@ -25,29 +23,15 @@ import type { RuleInfo } from "@/types/sm-pay";
 type RuleSectionProps = {
   id: string;
   type: "show" | "write";
+  ruleInfo?: RuleInfo;
+  handleRuleInfoChange?: (value: RuleInfo) => void;
 };
-const RuleSection = ({ id, type }: RuleSectionProps) => {
-  const { data: ruleData } = useSmPayRuleInfo(id);
-
-  const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
-    id: 0,
-    roas: 0,
-    increase: 0,
-    increaseType: "flat",
-    decrease: 0,
-    decreaseType: "flat",
-  });
-
-  const handleRuleInfoChange = (ruleInfo: RuleInfo) => {
-    setRuleInfo(ruleInfo);
-  };
-
-  useEffect(() => {
-    if (ruleData?.data) {
-      setRuleInfo(ruleData.data);
-    }
-  }, [ruleData]);
-
+const RuleSection = ({
+  id,
+  type,
+  ruleInfo,
+  handleRuleInfoChange,
+}: RuleSectionProps) => {
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -67,21 +51,21 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
             <div className="text-sm flex flex-col gap-2 py-4">
               <div>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo.roas}% 이상</span>
+                <span className="font-bold">{ruleInfo?.roas}% 이상</span>
                 이면 충전 금액을{" "}
                 <span className="text-blue-600">
-                  {ruleInfo.increaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo.increase}%씩 증액
+                  {ruleInfo?.increaseType === "flat" ? "정액으로" : "정률로"}
+                  {ruleInfo?.increase}%씩 증액
                 </span>
                 하고
               </div>
               <div>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo.roas}% 미만</span>
+                <span className="font-bold">{ruleInfo?.roas}% 미만</span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">
-                  {ruleInfo.decreaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo.decrease}%씩 감액
+                  {ruleInfo?.decreaseType === "flat" ? "정액으로" : "정률로"}
+                  {ruleInfo?.decrease}%씩 감액
                 </span>
                 합니다.
               </div>
@@ -98,12 +82,14 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
                 <span className="min-w-[100px]">기준 ROAS가</span>
                 <NumberInput
                   className="w-[100px]"
-                  value={ruleInfo.roas}
+                  value={ruleInfo?.roas}
                   onChange={(e) =>
+                    handleRuleInfoChange &&
                     handleRuleInfoChange({
-                      ...ruleInfo,
-                      roas: Number(e),
-                    })
+                      ...(ruleInfo || {}),
+                      id: ruleInfo?.id || 0,
+                      roas: Number(e) || 0,
+                    } as RuleInfo)
                   }
                 />
                 <span>%</span>
@@ -122,12 +108,14 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
                       <RadioGroupItem
                         value="flat"
                         id="above-flat"
-                        checked={ruleInfo.increaseType === "flat"}
+                        checked={ruleInfo?.increaseType === "flat"}
                         onClick={() =>
+                          handleRuleInfoChange &&
                           handleRuleInfoChange({
-                            ...ruleInfo,
+                            ...(ruleInfo || {}),
+                            id: ruleInfo?.id || 0,
                             increaseType: "flat",
-                          })
+                          } as RuleInfo)
                         }
                       />
                       <Label htmlFor="above-flat">정액으로</Label>
@@ -136,22 +124,29 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
                       <RadioGroupItem
                         value="rate"
                         id="above-rate"
-                        checked={ruleInfo.increaseType === "rate"}
+                        checked={ruleInfo?.increaseType === "rate"}
                         onClick={() =>
+                          handleRuleInfoChange &&
                           handleRuleInfoChange({
-                            ...ruleInfo,
+                            ...(ruleInfo || {}),
+                            id: ruleInfo?.id || 0,
                             increaseType: "rate",
-                          })
+                          } as RuleInfo)
                         }
                       />
-                      <Label htmlFor="above-fixed">정액으로</Label>
+                      <Label htmlFor="above-rate">정률로</Label>
                     </div>
                   </RadioGroup>
                   <NumberInput
                     className="w-[100px]"
-                    value={ruleInfo.increase}
+                    value={ruleInfo?.increase}
                     onChange={(e) =>
-                      handleRuleInfoChange({ ...ruleInfo, increase: Number(e) })
+                      handleRuleInfoChange &&
+                      handleRuleInfoChange({
+                        ...(ruleInfo || {}),
+                        id: ruleInfo?.id || 0,
+                        increase: Number(e) || 0,
+                      } as RuleInfo)
                     }
                   />
                   <span>%씩</span>
@@ -172,12 +167,14 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
                       <RadioGroupItem
                         value="flat"
                         id="below-flat"
-                        checked={ruleInfo.decreaseType === "flat"}
+                        checked={ruleInfo?.decreaseType === "flat"}
                         onClick={() =>
+                          handleRuleInfoChange &&
                           handleRuleInfoChange({
-                            ...ruleInfo,
+                            ...(ruleInfo || {}),
+                            id: ruleInfo?.id || 0,
                             decreaseType: "flat",
-                          })
+                          } as RuleInfo)
                         }
                       />
                       <Label htmlFor="below-flat">정액으로</Label>
@@ -186,22 +183,29 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
                       <RadioGroupItem
                         value="rate"
                         id="below-rate"
-                        checked={ruleInfo.decreaseType === "rate"}
+                        checked={ruleInfo?.decreaseType === "rate"}
                         onClick={() =>
+                          handleRuleInfoChange &&
                           handleRuleInfoChange({
-                            ...ruleInfo,
+                            ...(ruleInfo || {}),
+                            id: ruleInfo?.id || 0,
                             decreaseType: "rate",
-                          })
+                          } as RuleInfo)
                         }
                       />
-                      <Label htmlFor="below-rate">정액으로</Label>
+                      <Label htmlFor="below-rate">정률로</Label>
                     </div>
                   </RadioGroup>
                   <NumberInput
                     className="w-[100px]"
-                    value={ruleInfo.decrease}
+                    value={ruleInfo?.decrease}
                     onChange={(e) =>
-                      handleRuleInfoChange({ ...ruleInfo, decrease: Number(e) })
+                      handleRuleInfoChange &&
+                      handleRuleInfoChange({
+                        ...(ruleInfo || {}),
+                        id: ruleInfo?.id || 0,
+                        decrease: Number(e) || 0,
+                      } as RuleInfo)
                     }
                   />
                   <span>%씩</span>
@@ -215,24 +219,24 @@ const RuleSection = ({ id, type }: RuleSectionProps) => {
             <div className="text-sm flex flex-col gap-2 py-4">
               <p>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo.roas}% 이상</span>
+                <span className="font-bold">{ruleInfo?.roas}% 이상</span>
                 이면 충전 금액을{" "}
                 <span className="text-blue-600">
-                  {ruleInfo.increaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo.increase}%씩 증액
+                  {ruleInfo?.increaseType === "flat" ? "정액으로" : "정률로"}
+                  {ruleInfo?.increase}%씩 증액
                 </span>
                 하고
               </p>
               <p>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo.roas}% 미만</span>
+                <span className="font-bold">{ruleInfo?.roas}% 미만</span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">
                   {" "}
-                  {ruleInfo.decreaseType === "flat"
+                  {ruleInfo?.decreaseType === "flat"
                     ? "정액으로"
                     : "정률로"}{" "}
-                  {ruleInfo.decrease}%씩 감액
+                  {ruleInfo?.decrease}%씩 감액
                 </span>
                 합니다.
               </p>

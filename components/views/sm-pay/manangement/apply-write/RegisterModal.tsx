@@ -67,13 +67,13 @@ const RegisterModal = ({ onClose, onConfirm, advertiserId }: Props) => {
 
   const handleSubmit = (data: FormValues) => {
     updateAdvertiserDetail({
-      advertiserId,
+      advertiserId: 2768,
       params: {
         name: data.name,
         representativeName: data.representativeName,
         representativeNumber: data.representativeNumber.replace(/-/g, ""),
         phoneNumber: data.phoneNumber,
-        emailAddress: data.email,
+        email: data.email,
       },
     });
   };

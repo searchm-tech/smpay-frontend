@@ -13,18 +13,16 @@ import AdvertiseStatusSection from "@/components/views/sm-pay/components/Adverti
 import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 
-import {
-  useAdvertiserDetail,
-  useMutateSendAdvertiserAgreement,
-} from "@/hooks/queries/advertiser";
+import { useMutateSendAdvertiserAgreement } from "@/hooks/queries/advertiser";
 
-import { STATUS_LABELS } from "@/constants/status";
+import { SmPayAdvertiserStatusLabel, STATUS_LABELS } from "@/constants/status";
 import {
   ApplyWriteModal,
   type ApplyWriteModalStatus,
 } from "@/constants/dialog";
 
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import { useSmPayAdvertiserDetail } from "@/hooks/queries/sm-pay";
 
 type ViewWrieProps = {
   selectedAdNum: number | null;
@@ -33,6 +31,9 @@ type ViewWrieProps = {
 };
 
 const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
+  const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
+    useSmPayAdvertiserDetail(selectedAdNum ? selectedAdNum : 0);
+
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
     null
   );
@@ -50,9 +51,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     firstCharge: 0,
     maxCharge: 0,
   });
-  const [isSimulation, setIsSimulation] = useState(true);
-
-  const { data: response } = useAdvertiserDetail(selectedAdNum as number);
+  const [isSimulation, setIsSimulation] = useState(false);
 
   const { mutate: mutateSendAdAgree, isPending: loadingSend } =
     useMutateSendAdvertiserAgreement({
@@ -87,6 +86,9 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
   return (
     <section className="mt-4">
       {loadingSend && <LoadingUI title="... 동의 요청 중" />}
+      {isLoadingAdvertiserDetail && (
+        <LoadingUI title="... 광고주 정보 조회 중" />
+      )}
 
       {writeModal && (
         <ConfirmDialog
@@ -107,17 +109,30 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
       <div className="mt-4">
         <AdvertiseStatusSection
-          status={response?.data ? STATUS_LABELS["REVIEW_PENDING"] : ""}
+          status={
+            advertiserDetail?.status
+              ? SmPayAdvertiserStatusLabel[advertiserDetail?.status]
+              : ""
+          }
         />
 
-        <AdvertiserSection advertiserDetail={response?.data || null} />
+        <AdvertiserSection advertiserDetail={advertiserDetail || null} />
 
-        <IndicatorsJudementSection />
+        <IndicatorsJudementSection advertiserId={selectedAdNum as number} />
       </div>
 
-      <RuleSection id={"1"} type="write" />
+      <RuleSection
+        id="1"
+        type="write"
+        ruleInfo={ruleInfo}
+        handleRuleInfoChange={handleRuleInfoChange}
+      />
 
-      <ScheduleSection type="write" />
+      <ScheduleSection
+        scheduleInfo={scheduleInfo}
+        type="write"
+        handleScheduleInfoChange={handleScheduleInfoChange}
+      />
       <JudgementMemoSection type="write" />
 
       <div className="flex justify-center gap-4 py-5">

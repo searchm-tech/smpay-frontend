@@ -7,14 +7,21 @@ import {
   RequestSmPayAdvertiserApply,
   RequestSmPayAdvertiserDetail,
   RequestSmPayAdvertiserDetailPut,
+  RequestSmPayAdvertiserStatIndicator,
   RequestSmPayAdvertiserStatus,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserDetail,
+  ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayStatusCount,
 } from "@/types/api/smpay";
 
-// 광고주 상태 갯수 조회(SAG020) API
+//
+
+/**
+ * 광고주 상태 갯수 조회(SAG020) API
+ * - 화면 : [대행사] SM Pay 관리 > 상태 개수 영역
+ */
 export const getSmPayStatusCountList = async (
   params: RequestAgentUser
 ): Promise<ResponseSmPayStatusCount> => {
@@ -76,7 +83,6 @@ export const getSmPayAdvertiserApplyList = async ({
   user,
   queryParams,
 }: RequestSmPayAdvertiserApply): Promise<ResponseSmPayAdvertiserApply> => {
-  console.log("user", user);
   const { agentId, userId } = user;
   const paramsResult = buildQueryParams({
     page: queryParams.page,
@@ -137,4 +143,27 @@ export const putSmPayAdvertiserDetail = async ({
     params
   );
   return response;
+};
+
+/**
+ * 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028)
+ * - 화면 : IndicatorsJudementSection
+ */
+export const getSmPayAdvertiserStatIndicator = async ({
+  user,
+  advertiserId,
+}: RequestSmPayAdvertiserStatIndicator): Promise<ResponseSmPayAdvertiserStatIndicator> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ResponseSmPayAdvertiserStatIndicator>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/stat-indicator`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
 };

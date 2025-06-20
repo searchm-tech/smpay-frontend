@@ -3,7 +3,6 @@ import type {
   SmPayJudgementStatus,
   SmPayStatus,
 } from "@/types/sm-pay";
-import type { AdvertiserStatus } from "@/types/adveriser";
 
 export const SM_PAY_STATUS_LIST: { label: string; value: string }[] = [
   { label: "전체", value: "ALL" },
@@ -51,6 +50,7 @@ export const STATUS_ACTION_BUTTONS: Record<SmPayStatus, ActionButton[]> = {
  * 테이블 상태 라벨
  * - admin : 광고주 운영 현황
  * - 대행새 : SM Pay 관리
+ * - TODO : 이전 버전이므로 삭제 필요
  */
 export const STATUS_LABELS: Record<SmPayStatus, string> = {
   ADVERTISER_AGREEMENT_PENDING: "광고주 동의 대기",

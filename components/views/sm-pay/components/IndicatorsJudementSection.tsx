@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import type { TableProps } from "antd";
+import { useSmPayAdvertiserStatIndicator } from "@/hooks/queries/sm-pay";
 
 type StatusInfo = {
   status: string;
@@ -20,10 +21,18 @@ type StatusInfo = {
 
 type Props = {
   statusInfo?: StatusInfo;
+  advertiserId: number;
 };
 
-const IndicatorsJudementSection = ({ statusInfo }: Props) => {
+const IndicatorsJudementSection = ({ advertiserId }: Props) => {
+  console.log(advertiserId);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { data: advertiserStatIndicator } =
+    useSmPayAdvertiserStatIndicator(advertiserId);
+
+  console.log(advertiserStatIndicator);
+
   return (
     <section>
       {isModalOpen && <IndicatorModal onClose={() => setIsModalOpen(false)} />}
@@ -43,13 +52,13 @@ const IndicatorsJudementSection = ({ statusInfo }: Props) => {
           label={<span className="font-bold">심사 항목</span>}
           styles={descriptionStyle}
         >
-          권장 기준
+          <span className="font-bold">권장 기준</span>
         </DescriptionItem>
         <DescriptionItem
           label={<span className="font-bold">광고주 데이터</span>}
           styles={descriptionStyle}
         >
-          적합 여부
+          <span className="font-bold">적합 여부</span>
         </DescriptionItem>
         <DescriptionItem
           styles={descriptionStyle}
@@ -73,9 +82,18 @@ const IndicatorsJudementSection = ({ statusInfo }: Props) => {
         <DescriptionItem
           // TODO :  적합 여부에 따라 색상 변경
           styles={incongruityStyle}
-          label={<span className="font-bold">1개월</span>}
+          label={
+            <span className="font-bold">
+              {advertiserStatIndicator?.operationPeriod || 0}개월
+            </span>
+          }
         >
-          <X color="#FF3B30" />
+          {advertiserStatIndicator?.operationPeriod &&
+          advertiserStatIndicator?.operationPeriod >= 3 ? (
+            <CircleCheckBig color="#34C759" />
+          ) : (
+            <X color="#FF3B30" />
+          )}
         </DescriptionItem>
         <DescriptionItem
           styles={descriptionStyle}
@@ -87,9 +105,18 @@ const IndicatorsJudementSection = ({ statusInfo }: Props) => {
         <DescriptionItem
           // TODO :  적합 여부에 따라 색상 변경
           styles={conformityStyle}
-          label={<span className="font-bold">425%</span>}
+          label={
+            <span className="font-bold">
+              {advertiserStatIndicator?.dailyAverageRoas || 0}%
+            </span>
+          }
         >
-          <CircleCheckBig color="#34C759" />
+          {advertiserStatIndicator?.dailyAverageRoas &&
+          advertiserStatIndicator?.dailyAverageRoas >= 400 ? (
+            <CircleCheckBig color="#34C759" />
+          ) : (
+            <X color="#FF3B30" />
+          )}
         </DescriptionItem>
 
         <DescriptionItem
@@ -103,11 +130,19 @@ const IndicatorsJudementSection = ({ statusInfo }: Props) => {
           styles={conformityStyle}
           label={
             <span className="font-bold">
-              {Number("9245000").toLocaleString()}원
+              {Number(
+                advertiserStatIndicator?.monthlyConvAmt || 0
+              ).toLocaleString()}
+              원
             </span>
           }
         >
-          <CircleCheckBig color="#34C759" />
+          {advertiserStatIndicator?.monthlyConvAmt &&
+          advertiserStatIndicator?.monthlyConvAmt >= 3000000 ? (
+            <CircleCheckBig color="#34C759" />
+          ) : (
+            <X color="#FF3B30" />
+          )}
         </DescriptionItem>
 
         <DescriptionItem
@@ -120,11 +155,19 @@ const IndicatorsJudementSection = ({ statusInfo }: Props) => {
           styles={conformityStyle}
           label={
             <span className="font-bold">
-              {Number("1200000").toLocaleString()}원
+              {Number(
+                advertiserStatIndicator?.dailySalesAmt || 0
+              ).toLocaleString()}
+              원
             </span>
           }
         >
-          <CircleCheckBig color="#34C759" />
+          {advertiserStatIndicator?.dailySalesAmt &&
+          advertiserStatIndicator?.dailySalesAmt >= 100000 ? (
+            <CircleCheckBig color="#34C759" />
+          ) : (
+            <X color="#FF3B30" />
+          )}
         </DescriptionItem>
       </Descriptions>
     </section>

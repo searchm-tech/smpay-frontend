@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-query";
 import {
   fetchAdvertisers,
-  fetchAdvertiserDetail,
   SendAdvertiserAgreementParams,
   sendAdvertiserAgreement,
   getAdvertiserList,
@@ -31,13 +30,6 @@ export const useAdvertiserList = (params: FetchAdvertiserParams) => {
   return useQuery({
     queryKey: ["advertisers", params],
     queryFn: () => fetchAdvertisers(params),
-  });
-};
-
-export const useAdvertiserDetail = (id: number) => {
-  return useQuery({
-    queryKey: ["advertiser", id],
-    queryFn: () => fetchAdvertiserDetail(id),
   });
 };
 

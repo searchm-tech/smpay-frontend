@@ -1,14 +1,12 @@
 import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
 import {
   mockData,
-  mockRuleInfo,
   mockScheduleInfo,
   mockSmPayJudgementData,
 } from "./mock/sm-pay";
 import type {
   TableParams,
   SmPayResponse,
-  SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
@@ -234,24 +232,6 @@ export const getSmPaySubmitDetail = async (
   };
 };
 
-export const getSmPayRuleInfo = async (
-  id: string
-): Promise<SmPayRuleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-  const data = mockRuleInfo.find((item) => item.id === numId);
-
-  if (!data) {
-    return { data: null, success: false };
-  }
-
-  return {
-    data,
-    success: true,
-  };
-};
-
 export const updateSmPayScheduleInfo = async (
   id: string,
   data: ScheduleInfo
@@ -437,4 +417,3 @@ export const getSmPayJudgementStatus =
   };
 
 // ---------- 실제 API -------------------
-

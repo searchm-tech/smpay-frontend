@@ -9,7 +9,6 @@ import {
   getSmPayJudgementData,
   getSmPayJudgementStatus,
   getSmPayRejectReason,
-  getSmPayRuleInfo,
   getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
@@ -21,7 +20,6 @@ import type {
   SmPayRejectReasonResponse,
   TableParams,
   SmPayResponse,
-  SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
   SmPaySubmitDetailResponse,
   SmPayJudgementDataResponse,
@@ -29,7 +27,7 @@ import type {
   SmPayStatusResponse,
   SmPayJudgementStatusResponse,
 } from "@/services/types";
-import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
+import type { ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   ResponseSmPayAdvertiserStatus,
@@ -38,12 +36,16 @@ import type {
   QueryParams,
   SmPayAdvertiserApplyQuery,
   PutSmPayAdvertiserDetail,
+  ResponseSmPayAdvertiserDetail,
+  ResponseSmPayAdvertiserStatIndicator,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "@/hooks/useAuthQuery";
 import { useAuthMutation } from "../useAuthMutation";
 import {
   getSmPayAdvertiserApplyList,
+  getSmPayAdvertiserDetail,
+  getSmPayAdvertiserStatIndicator,
   getSmPayAdvertiserStatusList,
   getSmPayStatusCountList,
   putSmPayAdvertiserDetail,
@@ -69,17 +71,6 @@ export const useSmPaySubmitDetail = (id: string) => {
   return useQuery<SmPaySubmitDetailResponse>({
     queryKey: ["/smpay/submit-detail", id],
     queryFn: () => getSmPaySubmitDetail(id),
-    enabled: !!id,
-    initialData: {
-      data: null,
-      success: false,
-    },
-  });
-};
-export const useSmPayRuleInfo = (id: string) => {
-  return useQuery<SmPayRuleInfoResponse>({
-    queryKey: ["/smpay/rule-info", id],
-    queryFn: () => getSmPayRuleInfo(id),
     enabled: !!id,
     initialData: {
       data: null,
@@ -209,5 +200,23 @@ export const useSmPayAdvertiserUpdate = (
         params: variables.params,
       }),
     ...options,
+  });
+};
+
+// 광고주 detail 조회(SAG024) query
+export const useSmPayAdvertiserDetail = (advertiserId: number) => {
+  return useAuthQuery<ResponseSmPayAdvertiserDetail>({
+    queryKey: ["/smpay/advertiser-detail", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserDetail({ user, advertiserId }),
+  });
+};
+
+// 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) query
+export const useSmPayAdvertiserStatIndicator = (advertiserId: number) => {
+  return useAuthQuery<ResponseSmPayAdvertiserStatIndicator>({
+    queryKey: ["/smpay/advertiser-stat-indicator", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserStatIndicator({ user, advertiserId }),
   });
 };

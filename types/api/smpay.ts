@@ -104,5 +104,20 @@ export type PutSmPayAdvertiserDetail = {
   representativeName: string;
   representativeNumber: string;
   phoneNumber: string;
-  emailAddress: string;
+  email: string;
+};
+
+// 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) request type
+export type RequestSmPayAdvertiserStatIndicator = {
+  user: RequestAgentUser;
+  advertiserId: number;
+};
+
+// 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) response type
+export type ResponseSmPayAdvertiserStatIndicator = {
+  operationPeriod: number; // 운영 기간
+  dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
+  monthlyConvAmt: number; // 월별 전환액 1000.0,
+  dailySalesAmt: number; // 일별 매출액 100.0,
+  recommendRoas: number; // 권장 ROAS  0.8,
 };

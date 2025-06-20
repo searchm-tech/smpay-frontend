@@ -86,21 +86,6 @@ export const fetchAdvertisers = async (
 };
 
 /**
- * 광고주 상세 조회 api
- * @param id
- * @returns
- */
-export const fetchAdvertiserDetail = async (id: number) => {
-  // 서버 응답을 시뮬레이션하기 위한 지연
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    data: mockAdvertiserData.find((item: AdvertiserData) => item.id === id),
-    success: true,
-  };
-};
-
-/**
  * 광고주 동의 요청 발송 api
  * @param id
  * @returns

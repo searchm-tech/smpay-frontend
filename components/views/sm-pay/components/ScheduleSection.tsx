@@ -15,19 +15,15 @@ import type { ScheduleInfo } from "@/types/sm-pay";
 type Props = {
   scheduleInfo?: ScheduleInfo | null;
   type?: "show" | "write";
+  handleScheduleInfoChange?: (value: ScheduleInfo) => void;
 };
 
-const ScheduleSection = ({ scheduleInfo, type }: Props) => {
-  const [schedule, setSchedule] = useState<ScheduleInfo>({
-    id: 0,
-    firstCharge: 0,
-    maxCharge: 0,
-  });
-
-  const handleScheduleInfoChange = (value: ScheduleInfo) => {
-    setSchedule({ ...scheduleInfo, ...value });
-  };
-
+const ScheduleSection = ({
+  scheduleInfo,
+  type,
+  handleScheduleInfoChange,
+}: Props) => {
+  console.log(scheduleInfo);
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -66,12 +62,13 @@ const ScheduleSection = ({ scheduleInfo, type }: Props) => {
           <DescriptionItem label="최초 충전 금액 설정">
             <NumberInput
               className="max-w-[500px]"
-              value={schedule?.firstCharge}
+              value={scheduleInfo?.firstCharge}
               onChange={(e) =>
+                handleScheduleInfoChange &&
                 handleScheduleInfoChange({
-                  ...schedule,
-                  firstCharge: Number(e),
-                })
+                  ...(scheduleInfo || {}),
+                  firstCharge: Number(e) || 0,
+                } as ScheduleInfo)
               }
             />
           </DescriptionItem>
@@ -80,10 +77,11 @@ const ScheduleSection = ({ scheduleInfo, type }: Props) => {
               className="max-w-[500px]"
               value={scheduleInfo?.maxCharge}
               onChange={(e) =>
+                handleScheduleInfoChange &&
                 handleScheduleInfoChange({
-                  ...schedule,
-                  maxCharge: Number(e),
-                })
+                  ...(scheduleInfo || {}),
+                  maxCharge: Number(e) || 0,
+                } as ScheduleInfo)
               }
             />
           </DescriptionItem>

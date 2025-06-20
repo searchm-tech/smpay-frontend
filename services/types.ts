@@ -63,11 +63,6 @@ export interface SmPaySubmitDetailResponse {
   success: boolean;
 }
 
-export interface SmPayRuleInfoResponse {
-  data: RuleInfo | null;
-  success: boolean;
-}
-
 export interface SmPayScheduleInfoResponse {
   data: ScheduleInfo | null;
   success: boolean;

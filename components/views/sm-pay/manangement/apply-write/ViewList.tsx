@@ -136,7 +136,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       {editData && (
         <EditModal
           onClose={() => setEditData(null)}
-          advertiserId={editData.advertiserCustomerId}
+          advertiserId={editData.advertiserId}
         />
       )}
       {registData && (
@@ -146,7 +146,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             setRegistData(null);
             handleSearch();
           }}
-          advertiserId={registData.advertiserCustomerId}
+          advertiserId={registData.advertiserId}
         />
       )}
       <div>
@@ -170,7 +170,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
           광고주 등록
         </LabelBullet>
         <Table<TAdvertiser>
-          rowKey={(record) => record.advertiserCustomerId}
+          rowKey={(record) => record.advertiserId}
           columns={columns}
           dataSource={advertiserApplyRes?.content ?? []}
           total={advertiserApplyRes?.totalCount ?? 0}
@@ -187,9 +187,9 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             renderCell: (_, record) => {
               return (
                 <Radio
-                  checked={selectedRowKey === record.advertiserCustomerId}
+                  checked={selectedRowKey === record.advertiserId}
                   disabled={isRowDisabled(record)}
-                  onClick={() => setSelectedRowKey(record.advertiserCustomerId)}
+                  onClick={() => setSelectedRowKey(record.advertiserId)}
                 />
               );
             },
