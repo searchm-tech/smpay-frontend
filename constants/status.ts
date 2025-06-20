@@ -5,21 +5,26 @@ import type {
 } from "@/types/sm-pay";
 import type { AdvertiserStatus } from "@/types/adveriser";
 
-export const SM_PAY_STATUS_MAP: Record<SmPayStatus, string> = {
-  REVIEW_PENDING: "심사 대기",
-  REVIEW_REJECTED: "심사 반려",
-  OPERATION_REVIEW_PENDING: "운영 검토 대기",
-  OPERATION_REVIEW_REJECTED: "운영 검토 거절",
-  OPERATION_REVIEW_COMPLETED: "운영 검토 완료",
-  ADVERTISER_AGREEMENT_PENDING: "광고주 동의 대기",
-  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
-  APPLICATION_CANCELLED: "심사 취소",
-  WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED: "출금계좌 등록 실패",
-  OPERATING: "운영 중",
-  SUSPENDED: "일시중지",
-  TERMINATION_PENDING: "해지 대기",
-  TERMINATED: "해지",
-} as const;
+export const SM_PAY_STATUS_LIST: { label: string; value: string }[] = [
+  { label: "전체", value: "ALL" },
+  { label: "심사 대기", value: "REVIEW_PENDING" },
+  { label: "심사 반려", value: "REVIEW_REJECTED" },
+  { label: "운영 검토 대기", value: "OPERATION_REVIEW_PENDING" },
+  { label: "운영 검토 거절", value: "OPERATION_REVIEW_REJECTED" },
+  { label: "운영 검토 완료", value: "OPERATION_REVIEW_COMPLETED" },
+  { label: "광고주 동의 대기", value: "ADVERTISER_AGREEMENT_PENDING" },
+  { label: "광고주 동의 기한 만료", value: "ADVERTISER_AGREEMENT_EXPIRED" },
+  { label: "심사 취소", value: "APPLICATION_CANCELLED" },
+  {
+    label: "출금계좌 등록 실패",
+    value: "WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED",
+  },
+  { label: "운영 중", value: "OPERATING" },
+  { label: "일시중지", value: "SUSPENDED" },
+  { label: "해지 대기", value: "TERMINATION_PENDING" },
+  { label: "해지", value: "TERMINATED" },
+  { label: "비활성", value: "STOP" },
+];
 
 /**
  * 테이블 상태에 따른 버튼 기능들
@@ -81,3 +86,41 @@ export const USER_STATUS_OPTS = [
   { label: "활성", value: "NORMAL" },
   { label: "비활성", value: "STOP" },
 ];
+
+export enum SmPayAdvertiserStatus {
+  UNSYNC_ADVERTISER = "UNSYNC_ADVERTISER",
+  APPLICABLE = "APPLICABLE",
+  WAIT_REVIEW = "WAIT_REVIEW",
+  REJECT = "REJECT",
+  OPERATION_REVIEW = "OPERATION_REVIEW",
+  OPERATION_REJECT = "OPERATION_REJECT",
+  OPERATION_REVIEW_SUCCESS = "OPERATION_REVIEW_SUCCESS",
+  ADVERTISER_AGREE_WAIT = "ADVERTISER_AGREE_WAIT",
+  ADVERTISER_AGREE_TIME_EXPIRE = "ADVERTISER_AGREE_TIME_EXPIRE",
+  CANCEL = "CANCEL",
+  REGISTER_WITHDRAW_ACCOUNT_FAIL = "REGISTER_WITHDRAW_ACCOUNT_FAIL",
+  OPERATION = "OPERATION",
+  PAUSE = "PAUSE",
+  TERMINATE_WAIT = "TERMINATE_WAIT",
+  TERMINATE = "TERMINATE",
+}
+
+export const SmPayAdvertiserStatusLabel: {
+  [key in SmPayAdvertiserStatus]: string;
+} = {
+  [SmPayAdvertiserStatus.UNSYNC_ADVERTISER]: "광고주 비동기화",
+  [SmPayAdvertiserStatus.APPLICABLE]: "신청 가능",
+  [SmPayAdvertiserStatus.WAIT_REVIEW]: "심사 대기",
+  [SmPayAdvertiserStatus.REJECT]: "심사 반려",
+  [SmPayAdvertiserStatus.OPERATION_REVIEW]: "운영 검토 대기",
+  [SmPayAdvertiserStatus.OPERATION_REJECT]: "운영 검토 거절",
+  [SmPayAdvertiserStatus.OPERATION_REVIEW_SUCCESS]: "운영 검토 완료",
+  [SmPayAdvertiserStatus.ADVERTISER_AGREE_WAIT]: "광고주 동의 대기",
+  [SmPayAdvertiserStatus.ADVERTISER_AGREE_TIME_EXPIRE]: "광고주 동의 기한 만료",
+  [SmPayAdvertiserStatus.CANCEL]: "신청 취소",
+  [SmPayAdvertiserStatus.REGISTER_WITHDRAW_ACCOUNT_FAIL]: "출금 계좌 등록 실패",
+  [SmPayAdvertiserStatus.OPERATION]: "운영중",
+  [SmPayAdvertiserStatus.PAUSE]: "일시중지",
+  [SmPayAdvertiserStatus.TERMINATE_WAIT]: "해지 대기",
+  [SmPayAdvertiserStatus.TERMINATE]: "해지",
+};

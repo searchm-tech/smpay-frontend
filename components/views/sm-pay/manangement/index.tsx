@@ -7,10 +7,14 @@ import TableSection from "./TableSection";
 import GuidSection from "../components/GuideSection";
 
 import { useSmpayDataStore } from "@/store/useSmpayDataStore";
-import { useSmPayList } from "@/hooks/queries/sm-pay";
+import {
+  useSmPayAdvertiserStatusList,
+  useSmPayList,
+} from "@/hooks/queries/sm-pay";
 import { defaultTableParams } from "@/constants/table";
 
 import type { TableParams } from "@/types/table";
+import { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
 const SMPayManagementView = () => {
   const { smpayList, setSmpayList } = useSmpayDataStore();
@@ -35,6 +39,13 @@ const SMPayManagementView = () => {
       ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
       ...(search ? { search: [search] } : {}),
     },
+  });
+
+  const { data: advertiserStatusRes } = useSmPayAdvertiserStatusList({
+    page: tableParams.pagination?.current || 1,
+    size: tableParams.pagination?.pageSize || 10,
+    keyword: search,
+    orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
   });
 
   useEffect(() => {
@@ -84,7 +95,7 @@ const SMPayManagementView = () => {
         setTableParams={setTableParams}
         total={response?.total || 0}
         loadingData={loadingData}
-        smpayList={smpayList}
+        dataSource={advertiserStatusRes?.content || []}
       />
     </div>
   );
