@@ -11,6 +11,7 @@ import {
   getSmPayRejectReason,
   getSmPayRuleInfo,
   getSmPayStatus,
+  getSmPayStatusCountList,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
   updateSmPayScheduleInfo,
@@ -30,6 +31,9 @@ import type {
   SmPayJudgementStatusResponse,
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
+import type { RequestAgentUser } from "@/types/api/common";
+import type { ResponseSmPayStatusCount } from "@/types/api/smpay";
+import { useSession } from "next-auth/react";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -39,6 +43,7 @@ export const useSmPayList = (params: TableParams) => {
   });
 };
 
+// 삭제 예정
 export const useSmPayStatus = () => {
   return useQuery<SmPayStatusResponse>({
     queryKey: ["/smpay/status"],
@@ -139,5 +144,19 @@ export const useSmPayJudgementStatus = () => {
   return useQuery<SmPayJudgementStatusResponse>({
     queryKey: ["/smpay/judgement-status"],
     queryFn: () => getSmPayJudgementStatus(),
+  });
+};
+
+// ------------- 실제 react-query -----------
+
+// 광고주 상태 갯수 조회(SAG020) query
+
+export const useSmPayStatusCountList = () => {
+  const { data: session } = useSession();
+
+  return useQuery<ResponseSmPayStatusCount>({
+    queryKey: ["/smpay/status-count-list", session?.user],
+    queryFn: () => getSmPayStatusCountList(session?.user!),
+    enabled: !!session?.user,
   });
 };

@@ -24,6 +24,9 @@ import type {
   SmPayJudgementStatus,
   SmPayStatus,
 } from "@/types/sm-pay";
+import smPayApi, { ApiError, get } from "@/lib/api";
+import { ResponseSmPayStatusCount } from "@/types/api/smpay";
+import { RequestAgentUser } from "@/types/api/common";
 
 export const fetchSmPayData = async (
   params: TableParams
@@ -427,3 +430,23 @@ export const getSmPayJudgementStatus =
       success: true,
     };
   };
+
+// ---------- 실제 API -------------------
+
+// 광고주 상태 갯수 조회(SAG020) API
+export const getSmPayStatusCountList = async (
+  params: RequestAgentUser
+): Promise<ResponseSmPayStatusCount> => {
+  const { agentId, userId } = params;
+  try {
+    const response = await get<ResponseSmPayStatusCount>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-count-list`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
