@@ -5,6 +5,7 @@ import { buildQueryParams } from "@/lib/utils";
 import { RequestAgentUser } from "@/types/api/common";
 import {
   RequestSmPayAdvertiserApply,
+  RequestSmPayAdvertiserDailyStat,
   RequestSmPayAdvertiserDetail,
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatIndicator,
@@ -15,6 +16,8 @@ import {
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayStatusCount,
 } from "@/types/api/smpay";
+
+import { DailyStat } from "@/types/smpay";
 
 //
 
@@ -158,6 +161,31 @@ export const getSmPayAdvertiserStatIndicator = async ({
   try {
     const response = await get<ResponseSmPayAdvertiserStatIndicator>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/stat-indicator`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// /core/service/api/v1/agents/1/users/1/advertisers/1/daily-stat
+
+/**
+ * 광고주 일 별 성과 조회(28일)(SAG027)
+ * - 화면 : IndicatorModal
+ */
+export const getSmPayAdvertiserDailyStat = async ({
+  user,
+  advertiserId,
+}: RequestSmPayAdvertiserDailyStat): Promise<DailyStat[]> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<DailyStat[]>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/daily-stat`
     );
     return response;
   } catch (error) {

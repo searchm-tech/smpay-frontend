@@ -121,3 +121,9 @@ export type ResponseSmPayAdvertiserStatIndicator = {
   dailySalesAmt: number; // 일별 매출액 100.0,
   recommendRoas: number; // 권장 ROAS  0.8,
 };
+
+// 광고주 일 별 성과 조회(28일)(SAG027) request type
+export type RequestSmPayAdvertiserDailyStat = {
+  user: RequestAgentUser;
+  advertiserId: number;
+};

@@ -40,7 +40,7 @@ import type {
   ResponseSmPayAdvertiserStatIndicator,
 } from "@/types/api/smpay";
 
-import { useAuthQuery } from "@/hooks/useAuthQuery";
+import { useAuthQuery } from "../useAuthQuery";
 import { useAuthMutation } from "../useAuthMutation";
 import {
   getSmPayAdvertiserApplyList,
@@ -49,7 +49,9 @@ import {
   getSmPayAdvertiserStatusList,
   getSmPayStatusCountList,
   putSmPayAdvertiserDetail,
+  getSmPayAdvertiserDailyStat,
 } from "@/services/smpay";
+import type { DailyStat } from "@/types/smpay";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -218,5 +220,14 @@ export const useSmPayAdvertiserStatIndicator = (advertiserId: number) => {
     queryKey: ["/smpay/advertiser-stat-indicator", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserStatIndicator({ user, advertiserId }),
+  });
+};
+
+// 광고주 일 별 성과 조회(28일)(SAG027) query
+export const useSmPayAdvertiserDailyStat = (advertiserId: number) => {
+  return useAuthQuery<DailyStat[]>({
+    queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserDailyStat({ user, advertiserId }),
   });
 };

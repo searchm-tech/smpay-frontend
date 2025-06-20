@@ -12,7 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import type { TableProps } from "antd";
-import { useSmPayAdvertiserStatIndicator } from "@/hooks/queries/sm-pay";
+import {
+  useSmPayAdvertiserStatIndicator,
+  useSmPayAdvertiserDailyStat,
+} from "@/hooks/queries/sm-pay";
+import type { DailyStat } from "@/types/smpay";
+import LoadingUI from "@/components/common/Loading";
 
 type StatusInfo = {
   status: string;
@@ -31,11 +36,15 @@ const IndicatorsJudementSection = ({ advertiserId }: Props) => {
   const { data: advertiserStatIndicator } =
     useSmPayAdvertiserStatIndicator(advertiserId);
 
-  console.log(advertiserStatIndicator);
-
   return (
     <section>
-      {isModalOpen && <IndicatorModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <TableModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          advertiserId={advertiserId}
+        />
+      )}
       <div className="flex items-center gap-4 py-4">
         <LabelBullet labelClassName="text-base font-bold">
           광고 성과 기반 참고용 심사 지표
@@ -190,25 +199,25 @@ const descriptionStyle = {
   content: { backgroundColor: "rgba(0, 0, 0, 0.02)" },
 };
 
-type ModalProps = {
+type TableModalProps = {
+  open: boolean;
   onClose: () => void;
-  
+  advertiserId: number;
 };
 
-const IndicatorModal = ({ onClose }: ModalProps) => {
-  // TODO : 데이터 관련 api 호출
+const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
+  const { data, isPending } = useSmPayAdvertiserDailyStat(advertiserId);
   return (
-    <Modal
-      open
-      title="일별 성과 조회"
-      cancelDisabled
-      onClose={onClose}
-      onConfirm={onClose}
-    >
-      <div className="w-[90vw] max-h-[70vh] overflow-y-auto">
-        <Table<DataType & { id: number }>
-          dataSource={data.map((item, index) => ({ ...item, id: index + 1 }))}
+    <Modal open={open} onClose={onClose} title="상세 지표 보기" width={1200}>
+      {isPending && <LoadingUI />}
+      <div className="w-full max-h-[70vh] overflow-y-auto">
+        <Table<DailyStat & { id: number }>
+          dataSource={data?.map((item: DailyStat, index: number) => ({
+            ...item,
+            id: index + 1,
+          }))}
           columns={columns}
+          rowKey={(record) => record.id}
           pagination={false}
         />
       </div>
@@ -216,19 +225,12 @@ const IndicatorModal = ({ onClose }: ModalProps) => {
   );
 };
 
-const columns: TableProps<DataType & { id: number }>["columns"] = [
+const columns: TableProps<DailyStat & { id: number }>["columns"] = [
   {
     title: "NO",
     dataIndex: "id",
     key: "id",
     width: 50,
-  },
-  {
-    title: "광고주명",
-    dataIndex: "advertiserName",
-    key: "advertiserName",
-    width: 120,
-    fixed: "left",
   },
   {
     title: "날짜",
@@ -238,20 +240,20 @@ const columns: TableProps<DataType & { id: number }>["columns"] = [
   },
   {
     title: "노출수",
-    dataIndex: "impressions",
-    key: "impressions",
+    dataIndex: "impCnt",
+    key: "impCnt",
     align: "right",
     render: (value: number) => value.toLocaleString(),
-    sorter: (a, b) => a.impressions - b.impressions,
+    sorter: (a, b) => a.impCnt - b.impCnt,
     width: 100,
   },
   {
     title: "클릭수",
-    dataIndex: "clicks",
-    key: "clicks",
+    dataIndex: "clkCnt",
+    key: "clkCnt",
     align: "right",
     render: (value: number) => value.toLocaleString(),
-    sorter: (a, b) => a.clicks - b.clicks,
+    sorter: (a, b) => a.clkCnt - b.clkCnt,
     width: 100,
   },
   {
@@ -265,84 +267,65 @@ const columns: TableProps<DataType & { id: number }>["columns"] = [
   },
   {
     title: "광고비",
-    dataIndex: "adCost",
-    key: "adCost",
+    dataIndex: "salesAmt",
+    key: "salesAmt",
     align: "right",
     render: (value: number) => value.toLocaleString() + "원",
-    sorter: (a, b) => a.adCost - b.adCost,
+    sorter: (a, b) => a.salesAmt - b.salesAmt,
     width: 120,
   },
   {
     title: "전환수",
-    dataIndex: "conversions",
-    key: "conversions",
+    dataIndex: "ccnt",
+    key: "ccnt",
     align: "right",
     render: (value: number) => value.toLocaleString(),
-    sorter: (a, b) => a.conversions - b.conversions,
+    sorter: (a, b) => a.ccnt - b.ccnt,
     width: 100,
   },
   {
     title: "전환율",
-    dataIndex: "conversionRate",
-    key: "conversionRate",
+    dataIndex: "crto",
+    key: "crto",
     align: "right",
     render: (value: number) => (value * 100).toFixed(2) + "%",
-    sorter: (a, b) => a.conversionRate - b.conversionRate,
+    sorter: (a, b) => a.crto - b.crto,
     width: 100,
   },
   {
-    title: "전환단가",
-    dataIndex: "cpa",
-    key: "cpa",
+    title: "전환당 비용",
+    dataIndex: "cpConv",
+    key: "cpConv",
     align: "right",
     render: (value: number) => value.toLocaleString(),
-    sorter: (a, b) => a.cpa - b.cpa,
+    sorter: (a, b) => a.cpConv - b.cpConv,
     width: 100,
   },
   {
-    title: "매출액",
-    dataIndex: "revenue",
-    key: "revenue",
+    title: "전환 매출",
+    dataIndex: "convAmt",
+    key: "convAmt",
     align: "right",
     render: (value: number) => value.toLocaleString() + "원",
-    sorter: (a, b) => a.revenue - b.revenue,
+    sorter: (a, b) => a.convAmt - b.convAmt,
     width: 120,
   },
   {
     title: "ROAS",
-    dataIndex: "roas",
-    key: "roas",
+    dataIndex: "ror",
+    key: "ror",
     align: "right",
     render: (value: number) => (value * 100).toFixed(0) + "%",
-    sorter: (a, b) => a.roas - b.roas,
+    sorter: (a, b) => a.ror - b.ror,
     width: 80,
   },
+  {
+    title: "평균 노출 순위",
+    dataIndex: "avgRnk",
+    key: "avgRnk",
+    align: "right",
+    render: (value: number) => value.toFixed(2),
+    sorter: (a, b) => a.avgRnk - b.avgRnk,
+    width: 120,
+  },
 ];
-
-type DataType = {
-  advertiserName: string; // 광고주명
-  date: string; // 날짜
-  impressions: number; // 노출수
-  clicks: number; // 클릭수
-  cpc: number; // 클릭단가
-  adCost: number; // 광고비
-  conversions: number; // 전환수
-  conversionRate: number; // 전환율 (예: 0.1 -> 0.10%)
-  cpa: number; // 전환단가
-  revenue: number; // 매출액
-  roas: number; // ROAS (예: 3.21 -> 321%)
-};
-
-const data: DataType[] = Array.from({ length: 100 }, (_, i) => ({
-  advertiserName: `cartamin` + (i % 5 === 0 ? " (합계)" : ""),
-  date: i % 5 === 0 ? "-" : `2025-04-12`,
-  impressions: i % 5 === 0 ? 123456 : 456,
-  clicks: i % 5 === 0 ? 12345 : 234,
-  cpc: i % 5 === 0 ? 1234 : 1234,
-  adCost: i % 5 === 0 ? 123456 : 1500,
-  conversions: i % 5 === 0 ? 456 : 3,
-  conversionRate: i % 5 === 0 ? 0.001 : 0.001,
-  cpa: i % 5 === 0 ? 12345 : 12325,
-  revenue: i % 5 === 0 ? 120123 : 20123,
-  roas: i % 5 === 0 ? 3.21 : 3.21,
-}));

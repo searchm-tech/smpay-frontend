@@ -51,3 +51,20 @@ export type SmPayAdvertiserStatusDto = {
   registerOrUpdateDt: string;
   isMyAdvertiser: true;
 };
+
+// 광고주 일별 통계
+export type DailyStat = {
+  advertiserId: number; // 광고주 UID
+
+  impCnt: number; // 노출 수
+  clkCnt: number; // 클릭 수
+  salesAmt: number; // 광고비
+  avgRnk: number; // 평균 노출 순위
+  convAmt: number; // 전환 매출
+  cpc: number; // 클릭 단가
+  ccnt: number; // 전환 수
+  crto: number; // 전환율
+  cpConv: number; // 전환당 비용
+  ror: number; // roas
+  date: string; // 날짜
+};
