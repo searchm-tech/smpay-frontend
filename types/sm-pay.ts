@@ -128,7 +128,7 @@ export type SmPayAdvertiserStautsOrderType =
   | "ADVERTISER_CUSTOMER_ID_DESC"
   | "ADVERTISER_CUSTOMER_ID_ASC";
 
-// SMPay 신청 > 광고주 목록 광고주 데이터 DTO
+// SMPay 관리 > 광고주 상태 데이터 DTO
 export type SmPayAdvertiserStatusDto = {
   userId: number;
   userName: "회원 이름";
@@ -140,4 +140,14 @@ export type SmPayAdvertiserStatusDto = {
   descriptionRegisterDt: string;
   registerOrUpdateDt: string;
   isMyAdvertiser: true;
+};
+
+// SMPay 신청 > 광고주 목록 광고주 데이터 DTO
+export type SmPayAdvertiserApplyDto = {
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserNickName: number;
+  advertiserName: string;
+  advertiserType: SmPayAdvertiserStautsOrderType;
+  registerOrUpdateDt: string;
 };

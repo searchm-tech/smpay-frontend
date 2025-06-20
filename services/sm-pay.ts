@@ -458,7 +458,7 @@ export const getSmPayStatusCountList = async (
 
 /**
  * 광고주 상태 리스트 페이지네이션 조회(SAG019)
- * - 화면 : [대행사] SM Pay 신청 > 광고주 등록 리스트
+ * - 화면 : [대행사] SM Pay 관리 > 목록 리스트
  */
 export const getSmPayAdvertiserStatusList = async ({
   user,

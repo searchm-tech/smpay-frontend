@@ -91,3 +91,10 @@ const SMPayManagementView = () => {
 };
 
 export default SMPayManagementView;
+
+// const { data: advertiserStatusRes } = useSmPayAdvertiserStatusList({
+//   page: tableParams.pagination?.current || 1,
+//   size: tableParams.pagination?.pageSize || 10,
+//   keyword: searchKeyword,
+//   orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+// });

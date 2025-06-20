@@ -12,21 +12,28 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import EditModal from "./EditModal";
 import CreateModal from "./CreateModal";
 
-import { ColumnTooltip, defaultTableParams } from "@/constants/table";
-import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
+import { ColumnTooltip } from "@/constants/table";
+import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
 
 import { cn } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
-import type {
-  SmPayAdvertiserStatusDto,
-  SmPayAdvertiserStautsOrderType,
-} from "@/types/sm-pay";
+import type { SmPayAdvertiserApplyDto } from "@/types/sm-pay";
+import type { SmPayAdvertiserApplyStatus } from "@/types/smpay";
 
 type ViewListProps = {
   onCancel: () => void;
   onSubmit: (id: number) => void;
+};
+
+const defaultTableParams = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  sortField: "ADVERTISER_REGISTER_DESC",
 };
 
 const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
@@ -35,11 +42,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
 
-  const { data: advertiserStatusRes } = useSmPayAdvertiserStatusList({
+  const { data: advertiserApplyRes } = useSmPayAdvertiserApplyList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: searchKeyword,
-    orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+    orderType: tableParams.sortField as SmPayAdvertiserApplyStatus,
   });
 
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
@@ -48,22 +55,22 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
-  const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
+  const columns: TableProps<SmPayAdvertiserApplyDto>["columns"] = [
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
+      dataIndex: "advertiserCustomerId",
       align: "center",
       sorter: true,
     },
     {
       title: "로그인 ID",
-      dataIndex: "loginId",
+      dataIndex: "advertiserLoginId",
       align: "center",
       sorter: true,
     },
     {
       title: "광고주명",
-      dataIndex: "advertiserName",
+      dataIndex: "advertiserNickName",
       align: "center",
       sorter: true,
     },
@@ -73,7 +80,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       align: "center",
       sorter: true,
       render: (_, record) => {
-        if (record.advertiserCustomerId % 2 === 0) {
+        if (!record.advertiserName) {
           return (
             <Button onClick={() => setOpenCreateModal(true)}>정보 등록</Button>
           );
@@ -89,12 +96,13 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       title: ColumnTooltip.status,
       dataIndex: "status",
       align: "center",
-      // render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
+      render: (status: SmPayAdvertiserApplyStatus) =>
+        ADVERTISER_STATUS_MAP[status as SmPayAdvertiserApplyStatus],
       sorter: true,
     },
     {
       title: "최종 수정 일시",
-      dataIndex: "updatedAt",
+      dataIndex: "registerOrUpdateDt",
       align: "center",
       sorter: true,
     },
@@ -119,6 +127,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       handleSearch();
     }
   };
+
+  console.log("advertiserApplyRes", advertiserApplyRes);
 
   return (
     <section className="mt-4">
@@ -146,10 +156,10 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         <LabelBullet labelClassName="text-base font-bold">
           광고주 등록
         </LabelBullet>
-        <Table<SmPayAdvertiserStatusDto>
+        <Table<SmPayAdvertiserApplyDto>
           columns={columns}
-          dataSource={advertiserStatusRes?.content ?? []}
-          total={advertiserStatusRes?.totalCount ?? 0}
+          dataSource={advertiserApplyRes?.content ?? []}
+          total={advertiserApplyRes?.totalCount ?? 0}
           loading={false}
           rowSelection={{
             type: "radio",
@@ -194,31 +204,39 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
 export default ViewList;
 
-const disabledStatuses: SmPayAdvertiserStautsOrderType[] = [
-  "ADVERTISER_REGISTER_DESC",
-  "ADVERTISER_REGISTER_ASC",
-  "ADVERTISER_STATUS_DESC",
-  "ADVERTISER_STATUS_ASC",
-  "ADVERTISER_NAME_DESC",
-  "ADVERTISER_NAME_ASC",
-  "ADVERTISER_ID_DESC",
-  "ADVERTISER_ID_ASC",
-  "ADVERTISER_CUSTOMER_ID_DESC",
+const disabledStatuses: SmPayAdvertiserApplyStatus[] = [
+  "UNSYNC_ADVERTISER",
+  "APPLICABLE",
+  "WAIT_REVIEW",
+  "REJECT",
+  "OPERATION_REVIEW",
+  "OPERATION_REJECT",
+  "OPERATION_REVIEW_SUCCESS",
+  "ADVERTISER_AGREE_WAIT",
+  "ADVERTISER_AGREE_TIME_EXPIRE",
+  "CANCEL",
+  "REGISTER_WITHDRAW_ACCOUNT_FAIL",
 ];
 
-const isRowDisabled = (record: SmPayAdvertiserStatusDto) =>
-  !disabledStatuses.includes(record.advertiserType);
+const isRowDisabled = (record: SmPayAdvertiserApplyDto) =>
+  !disabledStatuses.includes(
+    record.advertiserType as SmPayAdvertiserApplyStatus
+  );
 
-// AVAILABLE: "신청 가능",
-// AGREEMENT_REQUEST: "광고주 동의 요청",
-// AGREEMENT_REJECTED: "광고주 미동의",
-// AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
-// AGREEMENT_COMPLETED: "광고주 동의 완료",
-// REVIEW_REQUEST: "심사 요청",
-// REVIEW_PENDING: "심사 대기",
-// REVIEW_APPROVED: "심사 승인",
-// REVIEW_REJECTED: "심사 반려",
-
-// export const getAdvertiserStatusLabel = (status: AdvertiserStatus): string => {
-//   return ADVERTISER_STATUS_MAP[status] || status;
-// };
+const ADVERTISER_STATUS_MAP = {
+  UNSYNC_ADVERTISER: "광고주 비동기화",
+  APPLICABLE: "신청 가능",
+  WAIT_REVIEW: "심사 대기",
+  REJECT: "심사 반려",
+  OPERATION_REVIEW: "운영 검토 대기",
+  OPERATION_REJECT: "운영 검토 거절",
+  OPERATION_REVIEW_SUCCESS: "운영 검토 완료",
+  ADVERTISER_AGREE_WAIT: "광고주 동의 대기",
+  ADVERTISER_AGREE_TIME_EXPIRE: "광고주 동의 기한 만료",
+  CANCEL: "신청 취소",
+  REGISTER_WITHDRAW_ACCOUNT_FAIL: "출금 계좌 등록 실패",
+  OPERATION: "운영중",
+  PAUSE: "일시중지",
+  TERMINATE_WAIT: "해지 대기",
+  TERMINATE: "해지",
+};

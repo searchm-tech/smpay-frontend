@@ -36,10 +36,13 @@ import type { RequestAgentUser } from "@/types/api/common";
 import type {
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayStatusCount,
+  ResponseSmPayAdvertiserApply,
   QueryParams,
+  SmPayAdvertiserApplyQuery,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "@/hooks/useAuthQuery";
+import { getSmPayAdvertiserApplyList } from "@/services/smpay";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -169,5 +172,16 @@ export const useSmPayAdvertiserStatusList = (params: QueryParams) => {
     queryKey: ["/smpay/advertiser-status-list", params],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserStatusList({ user, queryParams: params }),
+  });
+};
+
+// 광고주 smPay 신청 관리 리스트 조회(SAG022) query
+export const useSmPayAdvertiserApplyList = (
+  params: SmPayAdvertiserApplyQuery
+) => {
+  return useAuthQuery<ResponseSmPayAdvertiserApply>({
+    queryKey: ["/smpay/advertiser-apply-list", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserApplyList({ user, queryParams: params }),
   });
 };
