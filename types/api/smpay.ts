@@ -1,9 +1,10 @@
-import { SmPayAdvertiserApplyStatus } from "@/types/smpay";
 import {
   SmPayAdvertiserApplyDto,
+  SmPayAdvertiserApplyStatus,
   SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
-} from "../sm-pay";
+} from "@/types/smpay";
+
 import { RequestAgentUser } from "./common";
 
 // 광고주 상태 갯수 조회(SAG020) response type
@@ -66,4 +67,42 @@ export type ResponseSmPayAdvertiserApply = {
   page: number;
   size: number;
   totalCount: number;
+};
+
+// 광고주 detail 조회(SAG024) request type
+export type RequestSmPayAdvertiserDetail = {
+  user: RequestAgentUser;
+  advertiserId: number;
+};
+
+// 광고주 detail 조회(SAG024) response type
+export type ResponseSmPayAdvertiserDetail = {
+  advertiserId: number;
+  userId: number;
+  customerId: number;
+  id: string;
+  nickName: string;
+  name: string;
+  representativeName: string;
+  businessRegistrationNumber: string;
+  phoneNumber: string;
+  emailAddress: string;
+  status: SmPayAdvertiserApplyStatus;
+  roleId: number;
+  isLossPrivileges: boolean;
+};
+
+// 광고주 detail 등록 및 수정(SAG023) request type
+export type RequestSmPayAdvertiserDetailPut = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  params: PutSmPayAdvertiserDetail;
+};
+
+export type PutSmPayAdvertiserDetail = {
+  name: string;
+  representativeName: string;
+  representativeNumber: string;
+  phoneNumber: string;
+  emailAddress: string;
 };

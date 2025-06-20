@@ -6,13 +6,11 @@ import {
 
 import {
   fetchSmPayData,
-  getSmPayAdvertiserStatusList,
   getSmPayJudgementData,
   getSmPayJudgementStatus,
   getSmPayRejectReason,
   getSmPayRuleInfo,
   getSmPayStatus,
-  getSmPayStatusCountList,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
   updateSmPayScheduleInfo,
@@ -39,10 +37,17 @@ import type {
   ResponseSmPayAdvertiserApply,
   QueryParams,
   SmPayAdvertiserApplyQuery,
+  PutSmPayAdvertiserDetail,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "@/hooks/useAuthQuery";
-import { getSmPayAdvertiserApplyList } from "@/services/smpay";
+import { useAuthMutation } from "../useAuthMutation";
+import {
+  getSmPayAdvertiserApplyList,
+  getSmPayAdvertiserStatusList,
+  getSmPayStatusCountList,
+  putSmPayAdvertiserDetail,
+} from "@/services/smpay";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -183,5 +188,26 @@ export const useSmPayAdvertiserApplyList = (
     queryKey: ["/smpay/advertiser-apply-list", params],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserApplyList({ user, queryParams: params }),
+  });
+};
+
+// useSmPayAdvertiserUpdate 훅에 전달될 variables 타입 정의
+type SmPayAdvertiserUpdateVariables = {
+  advertiserId: number;
+  params: PutSmPayAdvertiserDetail;
+};
+
+// 광고주 detail 등록 및 수정(SAG023) mutate
+export const useSmPayAdvertiserUpdate = (
+  options?: UseMutationOptions<null, Error, SmPayAdvertiserUpdateVariables>
+) => {
+  return useAuthMutation<null, Error, SmPayAdvertiserUpdateVariables>({
+    mutationFn: (variables, user) =>
+      putSmPayAdvertiserDetail({
+        user,
+        advertiserId: variables.advertiserId,
+        params: variables.params,
+      }),
+    ...options,
   });
 };

@@ -10,7 +10,7 @@ import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 
 import EditModal from "./EditModal";
-import CreateModal from "./CreateModal";
+import CreateModal from "./RegisterModal";
 
 import { ColumnTooltip } from "@/constants/table";
 import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
@@ -19,8 +19,10 @@ import { cn } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
-import type { SmPayAdvertiserApplyDto } from "@/types/sm-pay";
-import type { SmPayAdvertiserApplyStatus } from "@/types/smpay";
+import type {
+  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserApplyDto as TAdvertiser,
+} from "@/types/smpay";
 
 type ViewListProps = {
   onCancel: () => void;
@@ -52,10 +54,10 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
     null
   );
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
-  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  const [editData, setEditData] = useState<TAdvertiser | null>(null);
+  const [registData, setRegistData] = useState<TAdvertiser | null>(null);
 
-  const columns: TableProps<SmPayAdvertiserApplyDto>["columns"] = [
+  const columns: TableProps<TAdvertiser>["columns"] = [
     {
       title: "CUSTOMER ID",
       dataIndex: "advertiserCustomerId",
@@ -82,11 +84,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       render: (_, record) => {
         if (!record.advertiserName) {
           return (
-            <Button onClick={() => setOpenCreateModal(true)}>정보 등록</Button>
+            <Button onClick={() => setRegistData(record)}>정보 등록</Button>
           );
         }
         return (
-          <Button variant="cancel" onClick={() => setOpenEditModal(true)}>
+          <Button variant="cancel" onClick={() => setEditData(record)}>
             정보 변경
           </Button>
         );
@@ -94,10 +96,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     },
     {
       title: ColumnTooltip.status,
-      dataIndex: "status",
+      dataIndex: "advertiserType",
       align: "center",
-      render: (status: SmPayAdvertiserApplyStatus) =>
-        ADVERTISER_STATUS_MAP[status as SmPayAdvertiserApplyStatus],
+      render: (type: SmPayAdvertiserApplyStatus) => {
+        return ADVERTISER_STATUS_MAP[type as SmPayAdvertiserApplyStatus];
+      },
       sorter: true,
     },
     {
@@ -128,13 +131,23 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     }
   };
 
-  console.log("advertiserApplyRes", advertiserApplyRes);
-
   return (
     <section className="mt-4">
-      {openEditModal && <EditModal onClose={() => setOpenEditModal(false)} />}
-      {openCreateModal && (
-        <CreateModal onClose={() => setOpenCreateModal(false)} />
+      {editData && (
+        <EditModal
+          onClose={() => setEditData(null)}
+          advertiserId={editData.advertiserCustomerId}
+        />
+      )}
+      {registData && (
+        <CreateModal
+          onClose={() => setRegistData(null)}
+          onConfirm={() => {
+            setRegistData(null);
+            handleSearch();
+          }}
+          advertiserId={registData.advertiserCustomerId}
+        />
       )}
       <div>
         <LabelBullet labelClassName="text-base font-bold">
@@ -156,7 +169,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         <LabelBullet labelClassName="text-base font-bold">
           광고주 등록
         </LabelBullet>
-        <Table<SmPayAdvertiserApplyDto>
+        <Table<TAdvertiser>
+          rowKey={(record) => record.advertiserCustomerId}
           columns={columns}
           dataSource={advertiserApplyRes?.content ?? []}
           total={advertiserApplyRes?.totalCount ?? 0}
@@ -204,26 +218,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
 export default ViewList;
 
-const disabledStatuses: SmPayAdvertiserApplyStatus[] = [
-  "UNSYNC_ADVERTISER",
-  "APPLICABLE",
-  "WAIT_REVIEW",
-  "REJECT",
-  "OPERATION_REVIEW",
-  "OPERATION_REJECT",
-  "OPERATION_REVIEW_SUCCESS",
-  "ADVERTISER_AGREE_WAIT",
-  "ADVERTISER_AGREE_TIME_EXPIRE",
-  "CANCEL",
-  "REGISTER_WITHDRAW_ACCOUNT_FAIL",
-];
+const isRowDisabled = (record: TAdvertiser) => {
+  return record.advertiserType !== "APPLICABLE";
+};
 
-const isRowDisabled = (record: SmPayAdvertiserApplyDto) =>
-  !disabledStatuses.includes(
-    record.advertiserType as SmPayAdvertiserApplyStatus
-  );
-
-const ADVERTISER_STATUS_MAP = {
+export const ADVERTISER_STATUS_MAP = {
   UNSYNC_ADVERTISER: "광고주 비동기화",
   APPLICABLE: "신청 가능",
   WAIT_REVIEW: "심사 대기",

@@ -20,7 +20,7 @@ import {
 import type { AdvertiserData } from "@/types/adveriser";
 
 const formSchema = z.object({
-  businessName: z.string().min(1, "사업자명을 입력해주세요"),
+  name: z.string().min(1, "광고주명을 입려해주세요."),
   businessOwnerName: z.string().min(1, "대표자명을 입력해주세요"),
   businessNumber: z
     .string()
@@ -42,7 +42,7 @@ const AdvertiserDesEdit = ({ advertiserDetail, onSubmit }: Props) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      businessName: advertiserDetail.businessName || "",
+      name: advertiserDetail.name || "",
       businessOwnerName: advertiserDetail.businessOwnerName || "",
       businessNumber: advertiserDetail.businessNumber || "",
       businessOwnerPhone: advertiserDetail.businessOwnerPhone || "",
@@ -61,7 +61,7 @@ const AdvertiserDesEdit = ({ advertiserDetail, onSubmit }: Props) => {
           <DescriptionItem label="사업자명">
             <FormField
               control={form.control}
-              name="businessName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
