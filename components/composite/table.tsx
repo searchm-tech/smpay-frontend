@@ -18,7 +18,7 @@ interface TableProps<T> extends AntdTableProps<T> {
 const PAGE_SIZE_OPTIONS = ["10", "20", "50", "100"];
 
 // antd 테이블 기반의 테이블 컴포넌트
-function Table<T extends { id: string | number }>({
+function Table<T extends object>({
   columns,
   dataSource,
   total = 50,
@@ -49,7 +49,7 @@ function Table<T extends { id: string | number }>({
         className={classNames}
         columns={columns}
         dataSource={dataSource}
-        rowKey={(record) => record.id}
+        rowKey={(record) => (record as any).id ?? (record as any).key}
         showSorterTooltip={false}
         pagination={{
           pageSize,
