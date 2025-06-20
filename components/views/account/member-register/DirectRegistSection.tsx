@@ -207,7 +207,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         emailAddress: `${emailId}@${selectedAgency?.domainName}`,
         password,
         phoneNumber: phone,
-        agentId: Number(selectedAgency),
+        agentId: Number(selectedAgency?.agentId),
       };
       mutateAddGroupMasterDirect(data);
     }

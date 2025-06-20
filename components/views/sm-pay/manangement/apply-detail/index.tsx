@@ -66,10 +66,10 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
         isHistory
         status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
-      <AdvertiserSection advertiserDetail={advertiserData} />
+      <AdvertiserSection advertiserDetail={null} />
 
       <AccountSection smPayData={response.data} />
-      <IndicatorsJudementSection />
+      <IndicatorsJudementSection advertiserId={advertiserData?.id || 0} />
 
       <RuleSection id={"1"} type="show" />
 

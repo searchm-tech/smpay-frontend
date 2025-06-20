@@ -10,69 +10,85 @@ import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 
 import EditModal from "./EditModal";
-import CreateModal from "./CreateModal";
+import CreateModal from "./RegisterModal";
 
-import { useAdvertiserStore } from "@/store/useAdvertiserStore";
-
-import { ADVERTISER_STATUS_MAP } from "@/constants/status";
-import { ColumnTooltip, defaultTableParams } from "@/constants/table";
+import { ColumnTooltip } from "@/constants/table";
+import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
 
 import { cn } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
-import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
+import type {
+  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserApplyDto as TAdvertiser,
+} from "@/types/smpay";
 
 type ViewListProps = {
   onCancel: () => void;
   onSubmit: (id: number) => void;
 };
 
-const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
-  const { advertiserList, setAdvertiserList } = useAdvertiserStore();
+const defaultTableParams = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  sortField: "ADVERTISER_REGISTER_DESC",
+};
 
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [search, setSearch] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
+
+  const { data: advertiserApplyRes } = useSmPayAdvertiserApplyList({
+    page: tableParams.pagination?.current || 1,
+    size: tableParams.pagination?.pageSize || 10,
+    keyword: searchKeyword,
+    orderType: tableParams.sortField as SmPayAdvertiserApplyStatus,
+  });
 
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
     null
   );
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
-  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  const [editData, setEditData] = useState<TAdvertiser | null>(null);
+  const [registData, setRegistData] = useState<TAdvertiser | null>(null);
 
-  const columns: TableProps<AdvertiserData>["columns"] = [
+  const columns: TableProps<TAdvertiser>["columns"] = [
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
+      dataIndex: "advertiserCustomerId",
       align: "center",
-      sorter: (a, b) => a.customerId.localeCompare(b.customerId),
+      sorter: true,
     },
     {
       title: "로그인 ID",
-      dataIndex: "loginId",
+      dataIndex: "advertiserLoginId",
       align: "center",
-      sorter: (a, b) => a.loginId.localeCompare(b.loginId),
+      sorter: true,
     },
     {
       title: "광고주명",
-      dataIndex: "advertiserName",
+      dataIndex: "advertiserNickName",
       align: "center",
-      sorter: (a, b) => a.advertiserName.localeCompare(b.advertiserName),
+      sorter: true,
     },
     {
       title: ColumnTooltip.info_change,
       dataIndex: "info_change",
       align: "center",
+      sorter: true,
       render: (_, record) => {
-        if (record.id % 2 === 0) {
+        if (!record.advertiserName) {
           return (
-            <Button onClick={() => setOpenCreateModal(true)}>정보 등록</Button>
+            <Button onClick={() => setRegistData(record)}>정보 등록</Button>
           );
         }
         return (
-          <Button variant="cancel" onClick={() => setOpenEditModal(true)}>
+          <Button variant="cancel" onClick={() => setEditData(record)}>
             정보 변경
           </Button>
         );
@@ -80,20 +96,18 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     },
     {
       title: ColumnTooltip.status,
-      dataIndex: "status",
+      dataIndex: "advertiserType",
       align: "center",
-      render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
-      sorter: (a, b) =>
-        ADVERTISER_STATUS_MAP[a.status].localeCompare(
-          ADVERTISER_STATUS_MAP[b.status]
-        ),
+      render: (type: SmPayAdvertiserApplyStatus) => {
+        return ADVERTISER_STATUS_MAP[type as SmPayAdvertiserApplyStatus];
+      },
+      sorter: true,
     },
     {
       title: "최종 수정 일시",
-      dataIndex: "updatedAt",
+      dataIndex: "registerOrUpdateDt",
       align: "center",
-      sorter: (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      sorter: true,
     },
   ];
 
@@ -119,9 +133,21 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
   return (
     <section className="mt-4">
-      {openEditModal && <EditModal onClose={() => setOpenEditModal(false)} />}
-      {openCreateModal && (
-        <CreateModal onClose={() => setOpenCreateModal(false)} />
+      {editData && (
+        <EditModal
+          onClose={() => setEditData(null)}
+          advertiserId={editData.advertiserId}
+        />
+      )}
+      {registData && (
+        <CreateModal
+          onClose={() => setRegistData(null)}
+          onConfirm={() => {
+            setRegistData(null);
+            handleSearch();
+          }}
+          advertiserId={registData.advertiserId}
+        />
       )}
       <div>
         <LabelBullet labelClassName="text-base font-bold">
@@ -143,10 +169,11 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         <LabelBullet labelClassName="text-base font-bold">
           광고주 등록
         </LabelBullet>
-        <Table<AdvertiserData>
+        <Table<TAdvertiser>
+          rowKey={(record) => record.advertiserId}
           columns={columns}
-          dataSource={advertiserList}
-          total={advertiserList.length}
+          dataSource={advertiserApplyRes?.content ?? []}
+          total={advertiserApplyRes?.totalCount ?? 0}
           loading={false}
           rowSelection={{
             type: "radio",
@@ -160,9 +187,9 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             renderCell: (_, record) => {
               return (
                 <Radio
-                  checked={selectedRowKey === record.id}
+                  checked={selectedRowKey === record.advertiserId}
                   disabled={isRowDisabled(record)}
-                  onClick={() => setSelectedRowKey(record.id)}
+                  onClick={() => setSelectedRowKey(record.advertiserId)}
                 />
               );
             },
@@ -173,7 +200,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         />
       </div>
 
-      <div className="flex justify-center gap-4 pb-5">
+      <div className="flex justify-center gap-4 py-5">
         <Button
           className="w-[150px]"
           onClick={() => onSubmit?.(selectedRowKey as number)}
@@ -191,11 +218,24 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
 export default ViewList;
 
-const disabledStatuses: AdvertiserStatus[] = [
-  "AVAILABLE",
-  "AGREEMENT_REJECTED",
-  "REVIEW_REJECTED",
-];
+const isRowDisabled = (record: TAdvertiser) => {
+  return record.advertiserType !== "APPLICABLE";
+};
 
-const isRowDisabled = (record: AdvertiserData) =>
-  !disabledStatuses.includes(record.status);
+export const ADVERTISER_STATUS_MAP = {
+  UNSYNC_ADVERTISER: "광고주 비동기화",
+  APPLICABLE: "신청 가능",
+  WAIT_REVIEW: "심사 대기",
+  REJECT: "심사 반려",
+  OPERATION_REVIEW: "운영 검토 대기",
+  OPERATION_REJECT: "운영 검토 거절",
+  OPERATION_REVIEW_SUCCESS: "운영 검토 완료",
+  ADVERTISER_AGREE_WAIT: "광고주 동의 대기",
+  ADVERTISER_AGREE_TIME_EXPIRE: "광고주 동의 기한 만료",
+  CANCEL: "신청 취소",
+  REGISTER_WITHDRAW_ACCOUNT_FAIL: "출금 계좌 등록 실패",
+  OPERATION: "운영중",
+  PAUSE: "일시중지",
+  TERMINATE_WAIT: "해지 대기",
+  TERMINATE: "해지",
+};

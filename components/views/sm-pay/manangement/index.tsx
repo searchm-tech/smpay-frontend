@@ -1,47 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FilterSection from "./FilterSection";
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 import GuidSection from "../components/GuideSection";
 
-import { useSmpayDataStore } from "@/store/useSmpayDataStore";
-import { useSmPayList } from "@/hooks/queries/sm-pay";
-import { defaultTableParams } from "@/constants/table";
+import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
 
 import type { TableParams } from "@/types/table";
+import { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
+
+const defaultTableParams = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  filters: {},
+  sortField: "ADVERTISER_CUSTOMER_ID_DESC",
+};
 
 const SMPayManagementView = () => {
-  const { smpayList, setSmpayList } = useSmpayDataStore();
-
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
   const [search, setSearch] = useState<string>("");
 
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
 
-  const { data: response, isFetching: loadingData } = useSmPayList({
-    pagination: {
-      current: tableParams.pagination?.current || 1,
-      pageSize: tableParams.pagination?.pageSize || 10,
-    },
-    sort:
-      tableParams.sortField && tableParams.sortOrder
-        ? { field: tableParams.sortField, order: tableParams.sortOrder }
-        : undefined,
-    filters: {
-      ...(tableParams.filters as Record<string, string[]>),
-      ...(selectedStatus !== "ALL" ? { status: [selectedStatus] } : {}),
-      ...(search ? { search: [search] } : {}),
-    },
-  });
-
-  useEffect(() => {
-    if (response?.data) {
-      setSmpayList(response.data);
-    }
-  }, [response?.data]);
+  const { data: advertiserStatusRes, isFetching: loadingData } =
+    useSmPayAdvertiserStatusList({
+      page: tableParams.pagination?.current || 1,
+      size: tableParams.pagination?.pageSize || 10,
+      keyword: search,
+      orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+    });
 
   const handleStatusChange = (status: string) => {
     setSelectedStatus(status);
@@ -51,7 +44,7 @@ const SMPayManagementView = () => {
         ...prev.pagination,
         current: 1,
         pageSize: 10,
-        total: response?.total || 0,
+        total: advertiserStatusRes?.totalCount || 0,
       },
     }));
   };
@@ -66,7 +59,7 @@ const SMPayManagementView = () => {
         ...prev.pagination,
         current: 1,
         pageSize: 10,
-        total: response?.total || 0,
+        total: advertiserStatusRes?.totalCount || 0,
       },
     }));
   };
@@ -82,9 +75,9 @@ const SMPayManagementView = () => {
       <TableSection
         tableParams={tableParams}
         setTableParams={setTableParams}
-        total={response?.total || 0}
+        total={advertiserStatusRes?.totalCount || 0}
         loadingData={loadingData}
-        smpayList={smpayList}
+        dataSource={advertiserStatusRes?.content || []}
       />
     </div>
   );

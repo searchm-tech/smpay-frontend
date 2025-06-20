@@ -1,14 +1,12 @@
 import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
 import {
   mockData,
-  mockRuleInfo,
   mockScheduleInfo,
   mockSmPayJudgementData,
 } from "./mock/sm-pay";
 import type {
   TableParams,
   SmPayResponse,
-  SmPayRuleInfoResponse,
   SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
@@ -24,6 +22,14 @@ import type {
   SmPayJudgementStatus,
   SmPayStatus,
 } from "@/types/sm-pay";
+import { ApiError, get } from "@/lib/api";
+import {
+  RequestSmPayAdvertiserStatus,
+  ResponseSmPayAdvertiserStatus,
+  ResponseSmPayStatusCount,
+} from "@/types/api/smpay";
+import { RequestAgentUser } from "@/types/api/common";
+import { buildQueryParams } from "@/lib/utils";
 
 export const fetchSmPayData = async (
   params: TableParams
@@ -226,24 +232,6 @@ export const getSmPaySubmitDetail = async (
   };
 };
 
-export const getSmPayRuleInfo = async (
-  id: string
-): Promise<SmPayRuleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-  const data = mockRuleInfo.find((item) => item.id === numId);
-
-  if (!data) {
-    return { data: null, success: false };
-  }
-
-  return {
-    data,
-    success: true,
-  };
-};
-
 export const updateSmPayScheduleInfo = async (
   id: string,
   data: ScheduleInfo
@@ -427,3 +415,5 @@ export const getSmPayJudgementStatus =
       success: true,
     };
   };
+
+// ---------- 실제 API -------------------

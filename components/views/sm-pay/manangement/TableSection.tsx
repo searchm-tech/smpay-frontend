@@ -23,21 +23,27 @@ import {
 } from "./dialog";
 import RejectOperationModal from "../components/RejectOperationModal";
 
-import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+import { STATUS_LABELS } from "@/constants/status";
 
 import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { SmPayStatus, SmPayData, ActionButton } from "@/types/sm-pay";
+import type { SmPayStatus, ActionButton } from "@/types/sm-pay";
 import type { TableParams } from "@/types/table";
+import type { SmPayAdvertiserStatusDto as TSmPayData } from "@/types/smpay";
+import { ADVERTISER_STATUS_MAP } from "./apply-write/ViewList";
+import {
+  SmPayAdvertiserStatus,
+  SmPayAdvertiserStatusLabel,
+} from "@/constants/status";
 
 interface TableSectionProps {
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
   total: number;
   loadingData: boolean;
-  smpayList: SmPayData[];
+  dataSource: TSmPayData[];
 }
 
 const TableSection = ({
@@ -45,7 +51,7 @@ const TableSection = ({
   setTableParams,
   total,
   loadingData,
-  smpayList,
+  dataSource,
 }: TableSectionProps) => {
   const router = useRouter();
 
@@ -65,7 +71,7 @@ const TableSection = ({
     router.push(`/sm-pay/management/apply-detail/${id}`);
   };
 
-  const handleTableChange: TableProps<SmPayData>["onChange"] = (
+  const handleTableChange: TableProps<TSmPayData>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -92,7 +98,7 @@ const TableSection = ({
     });
   }, [tableParams.pagination?.current]);
 
-  const columns: TableProps<SmPayData>["columns"] = [
+  const columns: TableProps<TSmPayData>["columns"] = [
     {
       title: "No",
       dataIndex: "no",
@@ -116,10 +122,12 @@ const TableSection = ({
       dataIndex: "loginId",
       align: "center",
       sorter: true,
-      render: (text: string, record: SmPayData) => (
+      render: (text: string, record: TSmPayData) => (
         <LinkTextButton
           onClick={() => {
-            router.push(`/sm-pay/management/apply-detail/${record.no}`);
+            router.push(
+              `/sm-pay/management/apply-detail/${record.advertiserCustomerId}`
+            );
           }}
         >
           {text}
@@ -137,10 +145,12 @@ const TableSection = ({
       dataIndex: "status",
       align: "center",
       sorter: true,
-      render: (value: SmPayStatus, record: SmPayData) => {
+      render: (value: SmPayStatus, record: TSmPayData) => {
         if (value === "REVIEW_REJECTED") {
           return (
-            <LinkTextButton onClick={() => setRejectModalId(record.no)}>
+            <LinkTextButton
+              onClick={() => setRejectModalId(record.advertiserCustomerId)}
+            >
               {STATUS_LABELS[value]}
             </LinkTextButton>
           );
@@ -150,7 +160,9 @@ const TableSection = ({
         if (value === "OPERATION_REVIEW_REJECTED") {
           return (
             <LinkTextButton
-              onClick={() => setRejectOperationModalId(record.no)}
+              onClick={() =>
+                setRejectOperationModalId(record.advertiserCustomerId)
+              }
             >
               {STATUS_LABELS[value]}
             </LinkTextButton>
@@ -159,7 +171,9 @@ const TableSection = ({
 
         if (value === "SUSPENDED") {
           return (
-            <LinkTextButton onClick={() => setStopModalId(record.no)}>
+            <LinkTextButton
+              onClick={() => setStopModalId(record.advertiserCustomerId)}
+            >
               {STATUS_LABELS[value]}
             </LinkTextButton>
           );
@@ -174,14 +188,16 @@ const TableSection = ({
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
-        const availableActions = STATUS_ACTION_BUTTONS[record.status];
+        const availableActions = ADVERTISER_STATUS_MAP[record.advertiserType];
 
         return (
           <div className="flex items-center gap-2">
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() => handleMoveDetailPage(record.no)}
+                onClick={() =>
+                  handleMoveDetailPage(record.advertiserCustomerId)
+                }
               >
                 조회
               </Button>
@@ -208,7 +224,9 @@ const TableSection = ({
             {availableActions.includes("termination_request") && (
               <Button
                 variant="redOutline"
-                onClick={() => setTerminationRequestId(record.no)}
+                onClick={() =>
+                  setTerminationRequestId(record.advertiserCustomerId)
+                }
               >
                 해지 신청
               </Button>
@@ -217,7 +235,7 @@ const TableSection = ({
             {availableActions.includes("resume") && (
               <Button
                 variant="blueOutline"
-                onClick={() => setResumeId(record.no)}
+                onClick={() => setResumeId(record.advertiserCustomerId)}
               >
                 재개
               </Button>
@@ -227,7 +245,7 @@ const TableSection = ({
               <Button
                 variant="blueOutline"
                 onClick={() => {
-                  setApplySubmitId(record.no);
+                  setApplySubmitId(record.advertiserCustomerId);
                 }}
               >
                 광고주 등의 전송
@@ -363,10 +381,10 @@ const TableSection = ({
         />
       )}
 
-      <Table<SmPayData>
+      <Table<TSmPayData>
         columns={columns}
         rowKey="id"
-        dataSource={smpayList}
+        dataSource={dataSource}
         pagination={{
           ...tableParams.pagination,
           total,
@@ -381,3 +399,31 @@ const TableSection = ({
 };
 
 export default TableSection;
+
+export const STATUS_ACTION_BUTTONS: Record<
+  SmPayAdvertiserStatus,
+  ActionButton[]
+> = {
+  [SmPayAdvertiserStatus.UNSYNC_ADVERTISER]: [],
+  [SmPayAdvertiserStatus.APPLICABLE]: [],
+  [SmPayAdvertiserStatus.WAIT_REVIEW]: ["view", "application_cancel"],
+  [SmPayAdvertiserStatus.REJECT]: ["view", "reapply"],
+  [SmPayAdvertiserStatus.OPERATION_REVIEW]: ["view", "application_cancel"],
+  [SmPayAdvertiserStatus.OPERATION_REJECT]: ["view", "reapply"],
+  [SmPayAdvertiserStatus.OPERATION_REVIEW_SUCCESS]: [
+    "view",
+    "advertiser_agreement_send",
+  ],
+  [SmPayAdvertiserStatus.ADVERTISER_AGREE_WAIT]: ["view", "application_cancel"],
+  [SmPayAdvertiserStatus.ADVERTISER_AGREE_TIME_EXPIRE]: [
+    "view",
+    "application_cancel",
+    "resend",
+  ],
+  [SmPayAdvertiserStatus.CANCEL]: ["view", "reapply"],
+  [SmPayAdvertiserStatus.REGISTER_WITHDRAW_ACCOUNT_FAIL]: ["view"],
+  [SmPayAdvertiserStatus.OPERATION]: ["view", "suspend", "termination_request"],
+  [SmPayAdvertiserStatus.PAUSE]: ["view", "termination_request", "resume"],
+  [SmPayAdvertiserStatus.TERMINATE_WAIT]: ["view"],
+  [SmPayAdvertiserStatus.TERMINATE]: ["view"],
+};

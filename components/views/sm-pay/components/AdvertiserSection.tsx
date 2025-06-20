@@ -4,10 +4,12 @@ import {
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { Label } from "@/components/ui/label";
-import type { AdvertiserData } from "@/types/adveriser";
 
+import type { ResponseSmPayAdvertiserDetail } from "@/types/api/smpay";
+
+import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
 type Props = {
-  advertiserDetail: AdvertiserData | null;
+  advertiserDetail: ResponseSmPayAdvertiserDetail | null;
 };
 
 const AdvertiserSection = ({ advertiserDetail }: Props) => {
@@ -20,19 +22,25 @@ const AdvertiserSection = ({ advertiserDetail }: Props) => {
       </div>
       <Descriptions columns={1}>
         <DescriptionItem label="광고주명">
-          <Label>{advertiserDetail?.businessName}</Label>
+          <Label>{advertiserDetail?.name}</Label>
         </DescriptionItem>
         <DescriptionItem label="대표자명">
-          <Label>{advertiserDetail?.businessOwnerName}</Label>
+          <Label>{advertiserDetail?.representativeName}</Label>
         </DescriptionItem>
         <DescriptionItem label="사업자 등록번호">
-          <Label>{advertiserDetail?.businessNumber}</Label>
+          <Label>
+            {formatBusinessNumber(
+              advertiserDetail?.businessRegistrationNumber || ""
+            )}
+          </Label>
         </DescriptionItem>
         <DescriptionItem label="광고주 휴대폰 번호">
-          <Label>{advertiserDetail?.businessOwnerPhone}</Label>
+          <Label>
+            {formatPhoneNumber(advertiserDetail?.phoneNumber || "")}
+          </Label>
         </DescriptionItem>
         <DescriptionItem label="광고주 이메일 주소">
-          <Label>{advertiserDetail?.businessOwnerEmail}</Label>
+          <Label>{advertiserDetail?.emailAddress}</Label>
         </DescriptionItem>
       </Descriptions>
     </section>

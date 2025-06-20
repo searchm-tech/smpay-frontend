@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -11,6 +10,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import LoadingUI from "@/components/common/Loading";
 
 import {
   Descriptions,
@@ -19,12 +20,10 @@ import {
 import { PhoneInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { Modal } from "@/components/composite/modal-components";
-import LoadingUI from "@/components/common/Loading";
 
-import { getSmPayAdvertiserDetail } from "@/services/smpay";
 import { useSmPayAdvertiserUpdate } from "@/hooks/queries/sm-pay";
-import { BUSINESS_NUMBER_REGEX } from "@/constants/reg";
 import { formatBusinessNumber } from "@/utils/format";
+import { BUSINESS_NUMBER_REGEX } from "@/constants/reg";
 
 const formSchema = z.object({
   name: z.string().min(1, "사업자명을 입력해주세요"),
@@ -45,10 +44,11 @@ type FormValues = z.infer<typeof formSchema>;
 
 type Props = {
   onClose: () => void;
+  onConfirm: () => void;
   advertiserId: number;
 };
 
-const EditModal = ({ onClose, advertiserId }: Props) => {
+const RegisterModal = ({ onClose, onConfirm, advertiserId }: Props) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,13 +62,8 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
 
   const { mutate: updateAdvertiserDetail, isPending } =
     useSmPayAdvertiserUpdate({
-      onSuccess: () => onClose(),
+      onSuccess: () => onConfirm(),
     });
-
-  const [isLoading, setIsLoading] = useState(false);
-  const handleConfirm = () => {
-    onClose();
-  };
 
   const handleSubmit = (data: FormValues) => {
     updateAdvertiserDetail({
@@ -83,42 +78,19 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
     });
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    getSmPayAdvertiserDetail({
-      user: { agentId: 1, userId: 1 },
-      advertiserId,
-    })
-      .then((res) => {
-        form.reset({
-          name: res.name,
-          representativeName: res.representativeName,
-          representativeNumber: res.businessRegistrationNumber,
-          phoneNumber: res.phoneNumber,
-          email: res.emailAddress,
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [advertiserId]);
-
   if (isPending) {
     return <LoadingUI title="광고주 정보 등록 중..." />;
   }
 
-  if (isLoading) {
-    return <LoadingUI title="광고주 정보 조회중..." />;
-  }
-
   return (
     <Modal
-      title="광고주 정보 변경"
+      title="광고주 정보 등록"
       open
       onClose={onClose}
-      onConfirm={handleConfirm}
+      cancelDisabled
+      confirmDisabled
     >
-      <div className="w-[50vw]">
+      <div className="w-[65vw]">
         <LabelBullet>광고주 기본 정보</LabelBullet>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -128,7 +100,7 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex gap-4 items-end">
                       <FormControl>
                         <Input className="max-w-[450px]" {...field} />
                       </FormControl>
@@ -142,7 +114,7 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
                   control={form.control}
                   name="representativeName"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex gap-4 items-end">
                       <FormControl>
                         <Input className="max-w-[450px]" {...field} />
                       </FormControl>
@@ -175,14 +147,25 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
                 />
               </DescriptionItem>
               <DescriptionItem label="광고주 휴대폰 번호">
-                <PhoneInput className="w-[450px]" />
-              </DescriptionItem>
-              <DescriptionItem label="광고주 이메일 주소">
                 <FormField
                   control={form.control}
                   name="phoneNumber"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex gap-4">
+                      <FormControl>
+                        <PhoneInput className="w-[450px]" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </DescriptionItem>
+              <DescriptionItem label="광고주 이메일 주소">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-4 items-end">
                       <FormControl>
                         <Input className="max-w-[450px]" {...field} />
                       </FormControl>
@@ -192,6 +175,20 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
                 />
               </DescriptionItem>
             </Descriptions>
+
+            <div className="flex justify-center mt-4 gap-4">
+              <Button
+                type="button"
+                variant="cancel"
+                onClick={onClose}
+                className="w-[150px]"
+              >
+                취소
+              </Button>
+              <Button type="submit" className="w-[150px]">
+                등록
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
@@ -199,4 +196,4 @@ const EditModal = ({ onClose, advertiserId }: Props) => {
   );
 };
 
-export default EditModal;
+export default RegisterModal;
