@@ -192,6 +192,7 @@ const descriptionStyle = {
 
 type ModalProps = {
   onClose: () => void;
+  
 };
 
 const IndicatorModal = ({ onClose }: ModalProps) => {
