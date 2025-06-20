@@ -114,3 +114,30 @@ export type SmPayJudgementData = {
     | "해지 신청 진행"; // 상태
   updatedAt: string; // 최종 수정 일시
 };
+
+//
+export type SmPayAdvertiserStautsOrderType =
+  | "ADVERTISER_REGISTER_DESC"
+  | "ADVERTISER_REGISTER_ASC"
+  | "ADVERTISER_STATUS_DESC"
+  | "ADVERTISER_STATUS_ASC"
+  | "ADVERTISER_NAME_DESC"
+  | "ADVERTISER_NAME_ASC"
+  | "ADVERTISER_ID_DESC"
+  | "ADVERTISER_ID_ASC"
+  | "ADVERTISER_CUSTOMER_ID_DESC"
+  | "ADVERTISER_CUSTOMER_ID_ASC";
+
+// SMPay 신청 > 광고주 목록 광고주 데이터 DTO
+export type SmPayAdvertiserStatusDto = {
+  userId: number;
+  userName: "회원 이름";
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserName: string;
+  advertiserType: SmPayAdvertiserStautsOrderType;
+  description: string;
+  descriptionRegisterDt: string;
+  registerOrUpdateDt: string;
+  isMyAdvertiser: true;
+};

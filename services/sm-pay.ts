@@ -24,9 +24,14 @@ import type {
   SmPayJudgementStatus,
   SmPayStatus,
 } from "@/types/sm-pay";
-import smPayApi, { ApiError, get } from "@/lib/api";
-import { ResponseSmPayStatusCount } from "@/types/api/smpay";
+import { ApiError, get } from "@/lib/api";
+import {
+  RequestSmPayAdvertiserStatus,
+  ResponseSmPayAdvertiserStatus,
+  ResponseSmPayStatusCount,
+} from "@/types/api/smpay";
 import { RequestAgentUser } from "@/types/api/common";
+import { buildQueryParams } from "@/lib/utils";
 
 export const fetchSmPayData = async (
   params: TableParams
@@ -443,6 +448,42 @@ export const getSmPayStatusCountList = async (
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-count-list`
     );
     return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 상태 리스트 페이지네이션 조회(SAG019)
+ * - 화면 : [대행사] SM Pay 신청 > 광고주 등록 리스트
+ */
+export const getSmPayAdvertiserStatusList = async ({
+  user,
+  queryParams,
+}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAdvertiserStatus> => {
+  const { agentId, userId } = user;
+  const paramsResult = buildQueryParams({
+    page: queryParams.page,
+    size: queryParams.size,
+    keyword: queryParams.keyword,
+    orderType: queryParams.orderType,
+  });
+
+  try {
+    const response = await get<ResponseSmPayAdvertiserStatus>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
+    );
+
+    return {
+      ...response,
+      content: response.content.map((item) => ({
+        ...item,
+        id: item.advertiserCustomerId,
+      })),
+    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

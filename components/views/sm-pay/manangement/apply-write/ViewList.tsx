@@ -12,16 +12,17 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import EditModal from "./EditModal";
 import CreateModal from "./CreateModal";
 
-import { useAdvertiserStore } from "@/store/useAdvertiserStore";
-
-import { ADVERTISER_STATUS_MAP } from "@/constants/status";
 import { ColumnTooltip, defaultTableParams } from "@/constants/table";
+import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
 
 import { cn } from "@/lib/utils";
 
 import type { TableProps } from "antd";
 import type { TableParams } from "@/types/table";
-import type { AdvertiserData, AdvertiserStatus } from "@/types/adveriser";
+import type {
+  SmPayAdvertiserStatusDto,
+  SmPayAdvertiserStautsOrderType,
+} from "@/types/sm-pay";
 
 type ViewListProps = {
   onCancel: () => void;
@@ -29,12 +30,17 @@ type ViewListProps = {
 };
 
 const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
-  const { advertiserList, setAdvertiserList } = useAdvertiserStore();
-
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [search, setSearch] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
+
+  const { data: advertiserStatusRes } = useSmPayAdvertiserStatusList({
+    page: tableParams.pagination?.current || 1,
+    size: tableParams.pagination?.pageSize || 10,
+    keyword: searchKeyword,
+    orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+  });
 
   const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
     null
@@ -42,31 +48,32 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
-  const columns: TableProps<AdvertiserData>["columns"] = [
+  const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
     {
       title: "CUSTOMER ID",
       dataIndex: "customerId",
       align: "center",
-      sorter: (a, b) => a.customerId.localeCompare(b.customerId),
+      sorter: true,
     },
     {
       title: "로그인 ID",
       dataIndex: "loginId",
       align: "center",
-      sorter: (a, b) => a.loginId.localeCompare(b.loginId),
+      sorter: true,
     },
     {
       title: "광고주명",
       dataIndex: "advertiserName",
       align: "center",
-      sorter: (a, b) => a.advertiserName.localeCompare(b.advertiserName),
+      sorter: true,
     },
     {
       title: ColumnTooltip.info_change,
       dataIndex: "info_change",
       align: "center",
+      sorter: true,
       render: (_, record) => {
-        if (record.id % 2 === 0) {
+        if (record.advertiserCustomerId % 2 === 0) {
           return (
             <Button onClick={() => setOpenCreateModal(true)}>정보 등록</Button>
           );
@@ -82,18 +89,14 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       title: ColumnTooltip.status,
       dataIndex: "status",
       align: "center",
-      render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
-      sorter: (a, b) =>
-        ADVERTISER_STATUS_MAP[a.status].localeCompare(
-          ADVERTISER_STATUS_MAP[b.status]
-        ),
+      // render: (status: AdvertiserStatus) => ADVERTISER_STATUS_MAP[status],
+      sorter: true,
     },
     {
       title: "최종 수정 일시",
       dataIndex: "updatedAt",
       align: "center",
-      sorter: (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      sorter: true,
     },
   ];
 
@@ -143,10 +146,10 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         <LabelBullet labelClassName="text-base font-bold">
           광고주 등록
         </LabelBullet>
-        <Table<AdvertiserData>
+        <Table<SmPayAdvertiserStatusDto>
           columns={columns}
-          dataSource={advertiserList}
-          total={advertiserList.length}
+          dataSource={advertiserStatusRes?.content ?? []}
+          total={advertiserStatusRes?.totalCount ?? 0}
           loading={false}
           rowSelection={{
             type: "radio",
@@ -160,9 +163,9 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
             renderCell: (_, record) => {
               return (
                 <Radio
-                  checked={selectedRowKey === record.id}
+                  checked={selectedRowKey === record.advertiserCustomerId}
                   disabled={isRowDisabled(record)}
-                  onClick={() => setSelectedRowKey(record.id)}
+                  onClick={() => setSelectedRowKey(record.advertiserCustomerId)}
                 />
               );
             },
@@ -173,7 +176,7 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
         />
       </div>
 
-      <div className="flex justify-center gap-4 pb-5">
+      <div className="flex justify-center gap-4 py-5">
         <Button
           className="w-[150px]"
           onClick={() => onSubmit?.(selectedRowKey as number)}
@@ -191,11 +194,31 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
 
 export default ViewList;
 
-const disabledStatuses: AdvertiserStatus[] = [
-  "AVAILABLE",
-  "AGREEMENT_REJECTED",
-  "REVIEW_REJECTED",
+const disabledStatuses: SmPayAdvertiserStautsOrderType[] = [
+  "ADVERTISER_REGISTER_DESC",
+  "ADVERTISER_REGISTER_ASC",
+  "ADVERTISER_STATUS_DESC",
+  "ADVERTISER_STATUS_ASC",
+  "ADVERTISER_NAME_DESC",
+  "ADVERTISER_NAME_ASC",
+  "ADVERTISER_ID_DESC",
+  "ADVERTISER_ID_ASC",
+  "ADVERTISER_CUSTOMER_ID_DESC",
 ];
 
-const isRowDisabled = (record: AdvertiserData) =>
-  !disabledStatuses.includes(record.status);
+const isRowDisabled = (record: SmPayAdvertiserStatusDto) =>
+  !disabledStatuses.includes(record.advertiserType);
+
+// AVAILABLE: "신청 가능",
+// AGREEMENT_REQUEST: "광고주 동의 요청",
+// AGREEMENT_REJECTED: "광고주 미동의",
+// AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
+// AGREEMENT_COMPLETED: "광고주 동의 완료",
+// REVIEW_REQUEST: "심사 요청",
+// REVIEW_PENDING: "심사 대기",
+// REVIEW_APPROVED: "심사 승인",
+// REVIEW_REJECTED: "심사 반려",
+
+// export const getAdvertiserStatusLabel = (status: AdvertiserStatus): string => {
+//   return ADVERTISER_STATUS_MAP[status] || status;
+// };

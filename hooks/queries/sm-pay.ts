@@ -6,6 +6,7 @@ import {
 
 import {
   fetchSmPayData,
+  getSmPayAdvertiserStatusList,
   getSmPayJudgementData,
   getSmPayJudgementStatus,
   getSmPayRejectReason,
@@ -32,8 +33,13 @@ import type {
 } from "@/services/types";
 import type { RuleInfo, ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
-import type { ResponseSmPayStatusCount } from "@/types/api/smpay";
-import { useSession } from "next-auth/react";
+import type {
+  ResponseSmPayAdvertiserStatus,
+  ResponseSmPayStatusCount,
+  QueryParams,
+} from "@/types/api/smpay";
+
+import { useAuthQuery } from "@/hooks/useAuthQuery";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -150,13 +156,18 @@ export const useSmPayJudgementStatus = () => {
 // ------------- 실제 react-query -----------
 
 // 광고주 상태 갯수 조회(SAG020) query
-
 export const useSmPayStatusCountList = () => {
-  const { data: session } = useSession();
+  return useAuthQuery<ResponseSmPayStatusCount>({
+    queryKey: ["/smpay/status-count-list"],
+    queryFn: (user: RequestAgentUser) => getSmPayStatusCountList(user),
+  });
+};
 
-  return useQuery<ResponseSmPayStatusCount>({
-    queryKey: ["/smpay/status-count-list", session?.user],
-    queryFn: () => getSmPayStatusCountList(session?.user!),
-    enabled: !!session?.user,
+// 광고주 상태 리스트 페이지네이션 조회(SAG019) query
+export const useSmPayAdvertiserStatusList = (params: QueryParams) => {
+  return useAuthQuery<ResponseSmPayAdvertiserStatus>({
+    queryKey: ["/smpay/advertiser-status-list", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserStatusList({ user, queryParams: params }),
   });
 };
