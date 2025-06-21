@@ -13,16 +13,19 @@ import AdvertiseStatusSection from "@/components/views/sm-pay/components/Adverti
 import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 
-import { useMutateSendAdvertiserAgreement } from "@/hooks/queries/advertiser";
-
-import { SmPayAdvertiserStatusLabel, STATUS_LABELS } from "@/constants/status";
+import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import {
   ApplyWriteModal,
   type ApplyWriteModalStatus,
 } from "@/constants/dialog";
 
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
-import { useSmPayAdvertiserDetail } from "@/hooks/queries/sm-pay";
+import {
+  useSmPayAdvertiserDetail,
+  useSmPayWrite,
+} from "@/hooks/queries/sm-pay";
+import { ChargeRule, PrePaymentSchedule, StatIndicator } from "@/types/smpay";
+import { SmPayWriteParams } from "@/types/api/smpay";
 
 type ViewWrieProps = {
   selectedAdNum: number | null;
@@ -51,12 +54,13 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     firstCharge: 0,
     maxCharge: 0,
   });
+  const [reviewerMemo, setReviewerMemo] = useState("");
+
   const [isSimulation, setIsSimulation] = useState(false);
 
-  const { mutate: mutateSendAdAgree, isPending: loadingSend } =
-    useMutateSendAdvertiserAgreement({
-      onSuccess: () => setWriteModal("send-success"),
-    });
+  const { mutate: mutateSendAdAgree, isPending: loadingSend } = useSmPayWrite({
+    onSuccess: () => setWriteModal("send-success"),
+  });
 
   const handleRuleInfoChange = (value: RuleInfo) => {
     setRuleInfo({ ...ruleInfo, ...value });
@@ -76,12 +80,51 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
   };
 
   const handleSendAdAgree = () => {
+    // if (!ruleInfo.roas || ruleInfo.decrease || ruleInfo.increase) {
+    // }
+    const chargeRules: ChargeRule[] = [
+      {
+        standardRoasPercent: ruleInfo.roas,
+        rangeType: "DOWN",
+        boundType:
+          ruleInfo.decreaseType === "flat" ? "FIXED_AMOUNT" : "FIXED_AMOUNT",
+        changePercentOrValue: ruleInfo.decrease,
+      },
+      {
+        standardRoasPercent: ruleInfo.roas,
+        rangeType: "UP",
+        boundType:
+          ruleInfo.decreaseType === "flat" ? "FIXED_AMOUNT" : "FIXED_AMOUNT",
+        changePercentOrValue: ruleInfo.increase,
+      },
+    ];
+
+    const prePaymentSchedule: PrePaymentSchedule = {
+      initialAmount: scheduleInfo.firstCharge,
+      maxChargeLimit: scheduleInfo.maxCharge,
+      minChargeLimit: 0,
+    };
+
+    const statIndicator: StatIndicator = {
+      operationPeriod: 0,
+      dailyAverageRoas: 0, //1.0;
+      monthlyConvAmt: 0, //1.0;
+      dailySalesAmt: 0, //1.0;
+      recommendRoasPercent: 0, // 1.0;
+    };
+
+    const params: SmPayWriteParams = {
+      statIndicator,
+      chargeRule: chargeRules,
+      prePaymentSchedule,
+      reviewerMemo,
+    };
     mutateSendAdAgree({
-      id: selectedAdNum as number,
-      ruleInfo,
-      scheduleInfo,
+      advertiserId: selectedAdNum || 0,
+      params,
     });
   };
+  const handleMemo = (value: string) => setReviewerMemo(value);
 
   return (
     <section className="mt-4">
@@ -133,7 +176,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         type="write"
         handleScheduleInfoChange={handleScheduleInfoChange}
       />
-      <JudgementMemoSection type="write" />
+      <JudgementMemoSection type="write" handleText={handleMemo} />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

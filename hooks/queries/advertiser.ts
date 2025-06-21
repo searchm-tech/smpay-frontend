@@ -6,8 +6,6 @@ import {
 } from "@tanstack/react-query";
 import {
   fetchAdvertisers,
-  SendAdvertiserAgreementParams,
-  sendAdvertiserAgreement,
   getAdvertiserList,
   postAdvertiserSyncJobStatus,
   postAdvertiserSync,
@@ -29,31 +27,6 @@ export const useAdvertiserList = (params: FetchAdvertiserParams) => {
   return useQuery({
     queryKey: ["advertisers", params],
     queryFn: () => fetchAdvertisers(params),
-  });
-};
-
-/**
- * 광고주 동의 요청 발송
- * @param options
- * @returns
- */
-
-interface SendAdvertiserAgreementResponse {
-  success: boolean;
-  message?: string;
-}
-
-export const useMutateSendAdvertiserAgreement = (
-  options?: UseMutationOptions<
-    SendAdvertiserAgreementResponse,
-    Error,
-    SendAdvertiserAgreementParams
-  >
-) => {
-  return useMutation({
-    mutationFn: (params: SendAdvertiserAgreementParams) =>
-      sendAdvertiserAgreement(params),
-    ...options,
   });
 };
 

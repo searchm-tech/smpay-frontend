@@ -9,8 +9,8 @@ import GuidSection, { type ViewType } from "../../components/GuideSection";
 
 const SMPayMasterApplyWriteView = () => {
   const router = useRouter();
-  const [selectedAdNum, setSelectedAdNum] = useState<number | null>(null);
-  const [viewType, setViewType] = useState<ViewType>("guide");
+  const [selectedAdNum, setSelectedAdNum] = useState<number | null>(2976);
+  const [viewType, setViewType] = useState<ViewType>("write");
 
   useEffect(() => {
     window.scrollTo({

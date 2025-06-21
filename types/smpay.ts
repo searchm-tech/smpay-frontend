@@ -69,3 +69,31 @@ export type DailyStat = {
   ror: number; // roas
   date: string; // 날짜
 };
+
+export type StatIndicator = {
+  operationPeriod: number; //  1;
+  dailyAverageRoas: number; //1.0;
+  monthlyConvAmt: number; //1.0;
+  dailySalesAmt: number; //1.0;
+  recommendRoasPercent: number; // 1.0;
+};
+
+export type ChargeRule = {
+  standardRoasPercent: number; //  1; // 기준 ROAS
+  rangeType: string; // "UP";
+  boundType: string; //  "FIXED_AMOUNT"; // 정액
+  changePercentOrValue: number; // 1;
+};
+export type PrePaymentSchedule = {
+  initialAmount: number; // 1;
+  maxChargeLimit: number; //  1;
+  minChargeLimit: number; // 1; -> 일 최소 충전 한도 값은 없으므로 0으로 해도 되는지
+};
+
+const test = {
+  operationPeriod: 1,
+  dailyAverageRoas: 1.0,
+  monthlyConvAmt: 1000.0,
+  dailySalesAmt: 100.0,
+  recommendRoas: 0.8,
+};

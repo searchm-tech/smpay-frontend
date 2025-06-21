@@ -64,6 +64,7 @@ export type ActionButton =
   | "resume" // 재개
   | "resend"; // 재발송
 
+// TODO : api 맞춰 변경이 필요 및 제거 필요
 export type RuleInfo = {
   id: number;
   roas: number;
