@@ -36,12 +36,13 @@ export type SmPayAdvertiserStautsOrderType =
   | "ADVERTISER_ID_DESC"
   | "ADVERTISER_ID_ASC"
   | "ADVERTISER_CUSTOMER_ID_DESC"
-  | "ADVERTISER_CUSTOMER_ID_ASC";
+  | "ADVERTISER_CUSTOMER_ID_ASC"
+  | "NO_ASC";
 
 // SMPay 관리 > 광고주 상태 데이터 DTO
 export type SmPayAdvertiserStatusDto = {
   userId: number;
-  userName: "회원 이름";
+  userName: string;
   advertiserCustomerId: number;
   advertiserLoginId: string;
   advertiserName: string;

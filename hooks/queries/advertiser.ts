@@ -15,7 +15,6 @@ import {
   getAdvertiserBizMoneyList,
 } from "@/services/advertiser";
 import type { FetchAdvertiserParams } from "@/services/types";
-import type { AdvertiserData, TAdvertiserBizMoney } from "@/types/adveriser";
 
 import type {
   RequestAdvertiserList,

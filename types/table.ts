@@ -1,4 +1,5 @@
 import type { FilterValue, SortOrder } from "antd/es/table/interface";
+import { SmPayAdvertiserStautsOrderType } from "./smpay";
 
 export interface TableParams {
   pagination?: {
@@ -9,4 +10,6 @@ export interface TableParams {
   sortField?: string;
   sortOrder?: SortOrder;
   filters?: Record<string, FilterValue | null>;
+  keyword?: string;
+  orderType?: SmPayAdvertiserStautsOrderType;
 }

@@ -5,7 +5,7 @@ import {
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
 
-import { RequestAgentUser } from "./common";
+import { RequestAgentUser, ResponseWithPagination } from "./common";
 
 // 광고주 상태 갯수 조회(SAG020) response type
 export interface ResponseSmPayStatusCount {
@@ -39,12 +39,11 @@ export type QueryParams = {
   orderType: SmPayAdvertiserStautsOrderType;
 };
 
-// 광고주 상태 리스트 페이지네이션 조회(SAG019) response type
-export type ResponseSmPayAdvertiserStatus = {
-  content: SmPayAdvertiserStatusDto[];
-  page: number;
-  size: number;
-  totalCount: number;
+// SM-Pay 관리 > 광고주 상태 리스트
+export type ResponseSmPayAdvertiserStatus = ResponseWithPagination & {
+  content: (SmPayAdvertiserStatusDto & {
+    no: number;
+  })[];
 };
 
 // 광고주 상태 리스트 페이지네이션 조회(SAG019) query params type

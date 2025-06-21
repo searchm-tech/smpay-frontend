@@ -23,20 +23,22 @@ import {
 } from "./dialog";
 import RejectOperationModal from "../components/RejectOperationModal";
 
-import { STATUS_LABELS } from "@/constants/status";
+import {
+  STATUS_ACTION_BUTTONS,
+  SmPayAdvertiserApplyStatusLabel,
+} from "@/constants/status";
 
 import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { SmPayStatus, ActionButton } from "@/types/sm-pay";
+import type { ActionButton } from "@/types/sm-pay";
 import type { TableParams } from "@/types/table";
-import type { SmPayAdvertiserStatusDto as TSmPayData } from "@/types/smpay";
-import { ADVERTISER_STATUS_MAP } from "./apply-write/ViewList";
-import {
-  SmPayAdvertiserStatus,
-  SmPayAdvertiserStatusLabel,
-} from "@/constants/status";
+import type {
+  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserStautsOrderType,
+  SmPayAdvertiserStatusDto as TSmPayData,
+} from "@/types/smpay";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -76,19 +78,37 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    const newParams: TableParams = {
+    let orderType: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      const fieldMap: Record<string, string> = {
+        no: "ADVERTISER_REGISTER",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
+        userId: "ADVERTISER_ID",
+        advertiserType: "ADVERTISER_STATUS",
+        descriptionRegisterDt: "ADVERTISER_REGISTER",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        orderType = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
+      }
+    }
+
+    setTableParams({
+      ...tableParams,
       pagination: {
-        current: pagination.current || 1,
-        pageSize: pagination.pageSize || 10,
-        total: pagination.total || 0,
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
       },
       filters: filters as Record<string, FilterValue>,
-      ...(!Array.isArray(sorter) && {
-        sortField: sorter.field?.toString(),
-        sortOrder: sorter.order,
-      }),
-    };
-    setTableParams(newParams);
+      orderType: orderType,
+    });
   };
 
   useEffect(() => {
@@ -106,20 +126,21 @@ const TableSection = ({
       sorter: true,
     },
     {
-      title: "담당자",
-      dataIndex: "manager",
+      title: "광고주(ID)",
+      dataIndex: "advertiserName",
       align: "center",
       sorter: true,
+      render: (value) => value || "-",
     },
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
+      dataIndex: "advertiserCustomerId",
       align: "center",
       sorter: true,
     },
     {
-      title: "로그인 ID",
-      dataIndex: "loginId",
+      title: "광고주 로그인 ID",
+      dataIndex: "userId",
       align: "center",
       sorter: true,
       render: (text: string, record: TSmPayData) => (
@@ -135,61 +156,20 @@ const TableSection = ({
       ),
     },
     {
-      title: ColumnTooltip.advertiserName,
-      dataIndex: "advertiserName",
-      align: "center",
-      sorter: true,
-    },
-    {
       title: ColumnTooltip.status,
-      dataIndex: "status",
+      dataIndex: "advertiserType",
       align: "center",
       sorter: true,
-      render: (value: SmPayStatus, record: TSmPayData) => {
-        if (value === "REVIEW_REJECTED") {
-          return (
-            <LinkTextButton
-              onClick={() => setRejectModalId(record.advertiserCustomerId)}
-            >
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        // TODO : management가 아니라 -> [시스템관리자] 광고주 운영 현황
-        if (value === "OPERATION_REVIEW_REJECTED") {
-          return (
-            <LinkTextButton
-              onClick={() =>
-                setRejectOperationModalId(record.advertiserCustomerId)
-              }
-            >
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        if (value === "SUSPENDED") {
-          return (
-            <LinkTextButton
-              onClick={() => setStopModalId(record.advertiserCustomerId)}
-            >
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        return <span>{STATUS_LABELS[value]}</span>;
-      },
+      render: (value: SmPayAdvertiserApplyStatus) => (
+        <span>{SmPayAdvertiserApplyStatusLabel(value)}</span>
+      ),
     },
-
     {
       title: "기능",
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
-        const availableActions = ADVERTISER_STATUS_MAP[record.advertiserType];
-
+        const availableActions = STATUS_ACTION_BUTTONS[record.advertiserType];
         return (
           <div className="flex items-center gap-2">
             {availableActions.includes("view") && (
@@ -275,11 +255,12 @@ const TableSection = ({
     },
     {
       title: "최종 수정일시",
-      dataIndex: "lastModifiedAt",
+      dataIndex: "descriptionRegisterDt",
       width: 200,
       align: "center",
       sorter: true,
-      render: (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm"),
+      render: (date: string) =>
+        date ? dayjs(date).format("YYYY-MM-DD HH:mm") : "-",
     },
   ];
 
@@ -399,31 +380,3 @@ const TableSection = ({
 };
 
 export default TableSection;
-
-export const STATUS_ACTION_BUTTONS: Record<
-  SmPayAdvertiserStatus,
-  ActionButton[]
-> = {
-  [SmPayAdvertiserStatus.UNSYNC_ADVERTISER]: [],
-  [SmPayAdvertiserStatus.APPLICABLE]: [],
-  [SmPayAdvertiserStatus.WAIT_REVIEW]: ["view", "application_cancel"],
-  [SmPayAdvertiserStatus.REJECT]: ["view", "reapply"],
-  [SmPayAdvertiserStatus.OPERATION_REVIEW]: ["view", "application_cancel"],
-  [SmPayAdvertiserStatus.OPERATION_REJECT]: ["view", "reapply"],
-  [SmPayAdvertiserStatus.OPERATION_REVIEW_SUCCESS]: [
-    "view",
-    "advertiser_agreement_send",
-  ],
-  [SmPayAdvertiserStatus.ADVERTISER_AGREE_WAIT]: ["view", "application_cancel"],
-  [SmPayAdvertiserStatus.ADVERTISER_AGREE_TIME_EXPIRE]: [
-    "view",
-    "application_cancel",
-    "resend",
-  ],
-  [SmPayAdvertiserStatus.CANCEL]: ["view", "reapply"],
-  [SmPayAdvertiserStatus.REGISTER_WITHDRAW_ACCOUNT_FAIL]: ["view"],
-  [SmPayAdvertiserStatus.OPERATION]: ["view", "suspend", "termination_request"],
-  [SmPayAdvertiserStatus.PAUSE]: ["view", "termination_request", "resume"],
-  [SmPayAdvertiserStatus.TERMINATE_WAIT]: ["view"],
-  [SmPayAdvertiserStatus.TERMINATE]: ["view"],
-};

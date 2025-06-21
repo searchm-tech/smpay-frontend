@@ -63,12 +63,20 @@ export const getSmPayAdvertiserStatusList = async ({
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
     );
 
+    const { page, size, orderType } = queryParams;
+
+    let content = response.content.map((item, index) => ({
+      ...item,
+      no: (page - 1) * size + index + 1,
+    }));
+
+    if (orderType === "NO_ASC") {
+      content = content.reverse();
+    }
+
     return {
       ...response,
-      content: response.content.map((item) => ({
-        ...item,
-        id: item.advertiserCustomerId,
-      })),
+      content,
     };
   } catch (error) {
     if (error instanceof ApiError) {
