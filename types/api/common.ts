@@ -1,4 +1,10 @@
 export type RequestAgentUser = {
-  agentId: string | number;
-  userId: string | number;
+  agentId: number;
+  userId: number;
+};
+
+export type ResponseWithPagination = {
+  page: number;
+  size: number;
+  totalCount: number;
 };
