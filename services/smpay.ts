@@ -1,6 +1,6 @@
 // 광고주 smPay 신청 관리 리스트 조회(SAG022)
 
-import { ApiError, get, put } from "@/lib/api";
+import { ApiError, get, post, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { RequestAgentUser } from "@/types/api/common";
 import {
@@ -10,6 +10,7 @@ import {
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatIndicator,
   RequestSmPayAdvertiserStatus,
+  RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserStatIndicator,
@@ -194,6 +195,31 @@ export const getSmPayAdvertiserDailyStat = async ({
   try {
     const response = await get<DailyStat[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/daily-stat`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 smPay 등록(SAG029) API
+ * - 화면 : SM Pay 신청
+ */
+export const postSmPay = async ({
+  user,
+  advertiserId,
+  params,
+}: RequestSmPayWrite): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await post<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form`,
+      params
     );
     return response;
   } catch (error) {

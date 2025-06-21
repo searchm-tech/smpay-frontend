@@ -1,8 +1,11 @@
 import {
+  ChargeRule,
+  PrePaymentSchedule,
   SmPayAdvertiserApplyDto,
   SmPayAdvertiserApplyStatus,
   SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
+  StatIndicator,
 } from "@/types/smpay";
 
 import { RequestAgentUser, ResponseWithPagination } from "./common";
@@ -125,4 +128,18 @@ export type ResponseSmPayAdvertiserStatIndicator = {
 export type RequestSmPayAdvertiserDailyStat = {
   user: RequestAgentUser;
   advertiserId: number;
+};
+
+// 광고주 smPay 등록(SAG029) request type
+export type RequestSmPayWrite = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  params: SmPayWriteParams;
+};
+
+export type SmPayWriteParams = {
+  statIndicator: StatIndicator;
+  chargeRule: ChargeRule[];
+  prePaymentSchedule: PrePaymentSchedule;
+  reviewerMemo: string;
 };

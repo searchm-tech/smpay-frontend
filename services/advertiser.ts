@@ -96,25 +96,6 @@ export type SendAdvertiserAgreementResponse = {
   message?: string;
 };
 
-export type SendAdvertiserAgreementParams = {
-  id: number;
-  ruleInfo: RuleInfo;
-  scheduleInfo: ScheduleInfo;
-};
-
-export const sendAdvertiserAgreement = async (
-  params: SendAdvertiserAgreementParams
-) => {
-  // 서버 응답을 시뮬레이션하기 위한 지연
-  console.log("params", params);
-
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return {
-    success: true,
-  };
-};
-
 // --- 실제 API ---
 
 // 광고주 리스트 페이지네이션 조회 (SAG012)

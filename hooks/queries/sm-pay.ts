@@ -38,6 +38,7 @@ import type {
   PutSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserStatIndicator,
+  SmPayWriteParams,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -50,6 +51,7 @@ import {
   getSmPayStatusCountList,
   putSmPayAdvertiserDetail,
   getSmPayAdvertiserDailyStat,
+  postSmPay,
 } from "@/services/smpay";
 import type { DailyStat } from "@/types/smpay";
 
@@ -229,5 +231,26 @@ export const useSmPayAdvertiserDailyStat = (advertiserId: number) => {
     queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserDailyStat({ user, advertiserId }),
+  });
+};
+
+// useSmPayWrite 훅에 전달될 variables 타입 정의
+type SmPayWriteVariables = {
+  advertiserId: number;
+  params: SmPayWriteParams;
+};
+
+// 광고주 smPay 등록(SAG029) mutate
+export const useSmPayWrite = (
+  options?: UseMutationOptions<null, Error, SmPayWriteVariables>
+) => {
+  return useAuthMutation<null, Error, SmPayWriteVariables>({
+    mutationFn: (variables, user) =>
+      postSmPay({
+        user,
+        advertiserId: variables.advertiserId,
+        params: variables.params,
+      }),
+    ...options,
   });
 };

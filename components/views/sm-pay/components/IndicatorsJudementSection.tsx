@@ -19,13 +19,7 @@ import {
 import type { DailyStat } from "@/types/smpay";
 import LoadingUI from "@/components/common/Loading";
 
-type StatusInfo = {
-  status: string;
-  statusLabel: string;
-};
-
 type Props = {
-  statusInfo?: StatusInfo;
   advertiserId: number;
 };
 
@@ -35,6 +29,8 @@ const IndicatorsJudementSection = ({ advertiserId }: Props) => {
 
   const { data: advertiserStatIndicator } =
     useSmPayAdvertiserStatIndicator(advertiserId);
+
+  console.log("advertiserStatIndicator", advertiserStatIndicator);
 
   return (
     <section>
